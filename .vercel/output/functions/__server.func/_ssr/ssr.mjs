@@ -11,6 +11,10 @@ if (typeof globalThis.addEventListener === "function") {
 	globalThis.addEventListener("error", (event) => record(event.error ?? event));
 	globalThis.addEventListener("unhandledrejection", (event) => record(event.reason));
 }
+if (typeof process !== "undefined" && typeof process.on === "function") {
+	process.on("uncaughtException", record);
+	process.on("unhandledRejection", record);
+}
 function consumeLastCapturedError() {
 	if (!lastCapturedError) return void 0;
 	if (Date.now() - lastCapturedError.at > TTL_MS) {
@@ -56,13 +60,20 @@ async function getServerEntry() {
 	if (!serverEntryPromise) serverEntryPromise = import("./server-BV6roMQG.mjs").then((m) => m.default ?? m);
 	return serverEntryPromise;
 }
+var lastConsoleError = null;
+var origConsoleError = console.error;
+console.error = (...args) => {
+	lastConsoleError = args.map((a) => String(a?.stack || a)).join("\n");
+	origConsoleError(...args);
+};
 async function normalizeCatastrophicSsrResponse(response) {
 	if (response.status < 500) return response;
 	if (!(response.headers.get("content-type") ?? "").includes("application/json")) return response;
 	const body = await response.clone().text();
 	if (!body.includes("\"unhandled\":true") || !body.includes("\"message\":\"HTTPError\"")) return response;
-	console.error(consumeLastCapturedError() ?? /* @__PURE__ */ new Error(`h3 swallowed SSR error: ${body}`));
-	return new Response(renderErrorPage(), {
+	const errStr = lastConsoleError ?? consumeLastCapturedError()?.stack ?? `h3 swallowed SSR error: ${body}`;
+	origConsoleError("INSTRUMENTED ERROR:", errStr);
+	return new Response(`<html><body><h1>SSR CRASH</h1><pre>${errStr}</pre></body></html>`, {
 		status: 500,
 		headers: { "content-type": "text/html; charset=utf-8" }
 	});
