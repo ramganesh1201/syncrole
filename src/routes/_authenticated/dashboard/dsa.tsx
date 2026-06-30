@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { XP } from "@/lib/syncrole";
 import { toast } from "sonner";
+import { Clock, Bookmark, ArrowRight, RotateCcw } from "lucide-react";
 import {
   BarChart,
   Bar,
@@ -48,12 +49,16 @@ function DSAPage() {
   const [hard, setHard] = useState(0);
   const [platform, setPlatform] = useState("leetcode");
   const [loading, setLoading] = useState(true);
+  
+  // New features state
+  const [revisionQueue, setRevisionQueue] = useState<any[]>([]);
+  const [recommendations, setRecommendations] = useState<any[]>([]);
 
   async function load() {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return setLogs([]);
     const uid = u.user.id;
-    const [logsRes, xpRes, streakRes] = await Promise.all([
+    const [logsRes, xpRes, streakRes, progRes] = await Promise.all([
       supabase
         .from("dsa_progress")
         .select("*")
@@ -62,10 +67,25 @@ function DSAPage() {
         .limit(60),
       supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
+      supabase.from("user_problem_progress").select(`
+        id, problem_id, status, is_bookmarked, needs_revision, last_solved_at,
+        dsa_problems ( id, title, difficulty, leetcode_url, topic_id )
+      `).eq("user_id", uid)
     ]);
     setLogs(logsRes.data ?? []);
     if (xpRes.data) setXpData(xpRes.data);
     if (streakRes.data) setStreakData(streakRes.data);
+    
+    // Process Revision Queue
+    if (progRes.data) {
+      const needsRev = progRes.data.filter((p: any) => p.needs_revision || p.is_bookmarked);
+      setRevisionQueue(needsRev.slice(0, 5));
+    }
+
+    // Process Recommendations (fetch 3 random unseen or weak topic problems)
+    const { data: recData } = await supabase.from("dsa_problems").select("id, title, difficulty, leetcode_url").limit(3);
+    if (recData) setRecommendations(recData);
+
     setLoading(false);
   }
   useEffect(() => {
@@ -370,6 +390,72 @@ function DSAPage() {
           </div>
         </Card>
       </div>
+      
+      {/* Smart Revision & Recommendations */}
+      <div className="grid gap-4 lg:grid-cols-2">
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <SectionLabel icon={RotateCcw}>Revision Queue</SectionLabel>
+            <Link to="/dsa-problems" className="text-xs text-aurora hover:underline">View all</Link>
+          </div>
+          <div className="space-y-3">
+            {revisionQueue.length === 0 ? (
+              <div className="text-sm text-muted-foreground text-center py-6 bg-white/5 rounded-xl border border-white/5">
+                No problems in your revision queue.
+              </div>
+            ) : (
+              revisionQueue.map((item: any) => (
+                <div key={item.id} className="glass rounded-xl p-3 flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-aurora/10 text-aurora rounded-lg"><Bookmark className="w-4 h-4" /></div>
+                    <div>
+                      <div className="text-sm font-medium">{item.dsa_problems?.title || 'Unknown Problem'}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.dsa_problems?.difficulty}</div>
+                    </div>
+                  </div>
+                  {item.dsa_problems?.leetcode_url && (
+                    <a href={item.dsa_problems.leetcode_url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-aurora transition-colors p-2">
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </Card>
+
+        <Card>
+          <div className="flex items-center justify-between mb-4">
+            <SectionLabel icon={Lightbulb}>AI Recommendations</SectionLabel>
+            <Link to="/dsa-problems" className="text-xs text-aurora hover:underline">Explore</Link>
+          </div>
+          <div className="space-y-3">
+            {recommendations.length === 0 ? (
+              <div className="text-sm text-muted-foreground text-center py-6 bg-white/5 rounded-xl border border-white/5">
+                Keep practicing to get recommendations.
+              </div>
+            ) : (
+              recommendations.map((item: any) => (
+                <div key={item.id} className="glass rounded-xl p-3 flex items-center justify-between group">
+                  <div className="flex items-center gap-3">
+                    <div className="p-2 bg-white/5 text-primary/80 rounded-lg"><Target className="w-4 h-4" /></div>
+                    <div>
+                      <div className="text-sm font-medium">{item.title}</div>
+                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.difficulty}</div>
+                    </div>
+                  </div>
+                  {item.leetcode_url && (
+                    <a href={item.leetcode_url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-aurora transition-colors p-2">
+                      <ArrowRight className="w-4 h-4" />
+                    </a>
+                  )}
+                </div>
+              ))
+            )}
+          </div>
+        </Card>
+      </div>
+
     </main>
   );
 }

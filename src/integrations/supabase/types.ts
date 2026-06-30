@@ -220,24 +220,42 @@ export type Database = {
           created_at: string
           description: string | null
           focus_topics: string[] | null
+          hiring_frequency: string | null
           id: string
+          interview_difficulty: string | null
           interview_frequency: string | null
+          oa_difficulty: string | null
+          question_count: number | null
+          recommended_preparation_order: number | null
+          top_topics: string[] | null
         }
         Insert: {
           company_name: string
           created_at?: string
           description?: string | null
           focus_topics?: string[] | null
+          hiring_frequency?: string | null
           id?: string
+          interview_difficulty?: string | null
           interview_frequency?: string | null
+          oa_difficulty?: string | null
+          question_count?: number | null
+          recommended_preparation_order?: number | null
+          top_topics?: string[] | null
         }
         Update: {
           company_name?: string
           created_at?: string
           description?: string | null
           focus_topics?: string[] | null
+          hiring_frequency?: string | null
           id?: string
+          interview_difficulty?: string | null
           interview_frequency?: string | null
+          oa_difficulty?: string | null
+          question_count?: number | null
+          recommended_preparation_order?: number | null
+          top_topics?: string[] | null
         }
         Relationships: []
       }
@@ -347,35 +365,74 @@ export type Database = {
       }
       dsa_problems: {
         Row: {
+          acceptance_rate: number | null
+          blind75: boolean | null
           companies: string[] | null
           created_at: string
           description: string | null
           difficulty: string
+          estimated_solving_time: number | null
+          frequency: number | null
+          grind75: boolean | null
           id: string
+          importance: number | null
+          is_premium: boolean | null
           leetcode_url: string | null
+          neetcode150: boolean | null
+          problem_pattern: string | null
+          recommended_order: number | null
+          subtopic: string | null
+          tags: string[] | null
           title: string
+          top150: boolean | null
           topic_id: string
           xp_reward: number
         }
         Insert: {
+          acceptance_rate?: number | null
+          blind75?: boolean | null
           companies?: string[] | null
           created_at?: string
           description?: string | null
           difficulty: string
+          estimated_solving_time?: number | null
+          frequency?: number | null
+          grind75?: boolean | null
           id?: string
+          importance?: number | null
+          is_premium?: boolean | null
           leetcode_url?: string | null
+          neetcode150?: boolean | null
+          problem_pattern?: string | null
+          recommended_order?: number | null
+          subtopic?: string | null
+          tags?: string[] | null
           title: string
+          top150?: boolean | null
           topic_id: string
           xp_reward?: number
         }
         Update: {
+          acceptance_rate?: number | null
+          blind75?: boolean | null
           companies?: string[] | null
           created_at?: string
           description?: string | null
           difficulty?: string
+          estimated_solving_time?: number | null
+          frequency?: number | null
+          grind75?: boolean | null
           id?: string
+          importance?: number | null
+          is_premium?: boolean | null
           leetcode_url?: string | null
+          neetcode150?: boolean | null
+          problem_pattern?: string | null
+          recommended_order?: number | null
+          subtopic?: string | null
+          tags?: string[] | null
           title?: string
+          top150?: boolean | null
           topic_id?: string
           xp_reward?: number
         }
@@ -424,28 +481,67 @@ export type Database = {
       }
       dsa_topics: {
         Row: {
+          cheat_sheet: string | null
+          common_interview_tricks: string | null
           created_at: string
           description: string | null
           difficulty: string | null
           display_order: number
+          estimated_hours: number | null
           id: string
+          importance_score: number | null
+          important_observations: string | null
+          interview_frequency: string | null
+          key_formulas: string | null
+          memory_tips: string | null
           name: string
+          pattern_recognition: string | null
+          prerequisite_topics: string[] | null
+          theory_summary: string | null
+          typical_mistakes: string | null
+          visualization_notes: string | null
         }
         Insert: {
+          cheat_sheet?: string | null
+          common_interview_tricks?: string | null
           created_at?: string
           description?: string | null
           difficulty?: string | null
           display_order?: number
+          estimated_hours?: number | null
           id?: string
+          importance_score?: number | null
+          important_observations?: string | null
+          interview_frequency?: string | null
+          key_formulas?: string | null
+          memory_tips?: string | null
           name: string
+          pattern_recognition?: string | null
+          prerequisite_topics?: string[] | null
+          theory_summary?: string | null
+          typical_mistakes?: string | null
+          visualization_notes?: string | null
         }
         Update: {
+          cheat_sheet?: string | null
+          common_interview_tricks?: string | null
           created_at?: string
           description?: string | null
           difficulty?: string | null
           display_order?: number
+          estimated_hours?: number | null
           id?: string
+          importance_score?: number | null
+          important_observations?: string | null
+          interview_frequency?: string | null
+          key_formulas?: string | null
+          memory_tips?: string | null
           name?: string
+          pattern_recognition?: string | null
+          prerequisite_topics?: string[] | null
+          theory_summary?: string | null
+          typical_mistakes?: string | null
+          visualization_notes?: string | null
         }
         Relationships: []
       }
@@ -1001,8 +1097,13 @@ export type Database = {
           attempt_count: number
           created_at: string
           id: string
+          is_bookmarked: boolean | null
+          is_favorite: boolean | null
           last_attempted: string | null
+          last_solved_at: string | null
+          needs_revision: boolean | null
           problem_id: string
+          revision_priority: number | null
           solved: boolean
           status: string
           time_spent_minutes: number | null
@@ -1013,8 +1114,13 @@ export type Database = {
           attempt_count?: number
           created_at?: string
           id?: string
+          is_bookmarked?: boolean | null
+          is_favorite?: boolean | null
           last_attempted?: string | null
+          last_solved_at?: string | null
+          needs_revision?: boolean | null
           problem_id: string
+          revision_priority?: number | null
           solved?: boolean
           status?: string
           time_spent_minutes?: number | null
@@ -1025,8 +1131,13 @@ export type Database = {
           attempt_count?: number
           created_at?: string
           id?: string
+          is_bookmarked?: boolean | null
+          is_favorite?: boolean | null
           last_attempted?: string | null
+          last_solved_at?: string | null
+          needs_revision?: boolean | null
           problem_id?: string
+          revision_priority?: number | null
           solved?: boolean
           status?: string
           time_spent_minutes?: number | null
