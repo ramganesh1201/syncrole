@@ -43,7 +43,7 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
       .order("created_at", { ascending: false })
       .limit(20);
 
-    const adaptedLogs = (logs || []).map(log => ({
+    const adaptedLogs = (logs || []).map((log: { id: string; type: string; xp_delta: number; created_at: string }) => ({
       id: log.id,
       title: mapLogTypeToTitle(log.type),
       body: `You earned ${log.xp_delta} XP for completing a ${log.type.replace(/_/g, ' ')}.`,

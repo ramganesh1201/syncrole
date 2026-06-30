@@ -21,7 +21,7 @@ function UpdatePasswordPage() {
 
   // If the user navigates here without a valid session, redirect
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session } }: { data: { session: import("@supabase/supabase-js").Session | null } }) => {
       if (!session) {
         toast.error("Invalid or expired session. Please log in again.");
         router.navigate({ to: "/auth" });
