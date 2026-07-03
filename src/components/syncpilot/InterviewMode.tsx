@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Brain, Send, Loader2, User, Timer, Trophy,
   Mic, MicOff, ChevronLeft, Building2, Briefcase,
-  Target, Play, Settings, History, CheckCircle2, Star, AlertCircle,
+  Target, Play, Settings, History,
 } from "lucide-react";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
@@ -42,7 +42,51 @@ function InterviewTimer({ running }: { running: boolean }) {
   );
 }
 
+function ScoreCard({ score, feedback, strengths, weaknesses }: {
+  score: number; feedback: string; strengths: string[]; weaknesses: string[];
+}) {
+  const getGrade = (s: number) =>
+    s >= 85 ? { grade: "A+", label: "Exceptional", color: "oklch(0.88 0.18 145)" } :
+    s >= 70 ? { grade: "A",  label: "Strong",      color: "oklch(0.75 0.2 200)" } :
+    s >= 55 ? { grade: "B",  label: "Good",        color: "oklch(0.88 0.18 60)" } :
+    s >= 40 ? { grade: "C",  label: "Average",     color: "oklch(0.80 0.20 50)" } :
+              { grade: "D",  label: "Needs Work",  color: "oklch(0.65 0.24 25)" };
 
+  const { grade, label, color } = getGrade(score);
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20, scale: 0.95 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ duration: 0.4, ease: "easeOut" }}
+      className="glass-strong rounded-3xl p-6 border border-white/15 max-w-lg mx-auto"
+    >
+      <div className="text-center mb-5">
+        <div className="text-sm uppercase tracking-widest text-white/40 mb-2">Interview Complete</div>
+        <motion.div
+          initial={{ scale: 0 }}
+          animate={{ scale: 1 }}
+          transition={{ type: "spring", stiffness: 200, delay: 0.2 }}
+          className="font-display text-7xl font-black"
+          style={{ color }}
+        >
+          {grade}
+        </motion.div>
+        <div className="text-xl font-semibold mt-1" style={{ color }}>{label}</div>
+        <div className="text-sm text-white/40 mt-1">Overall Score: <span className="font-mono font-bold text-white">{score}/100</span></div>
+      </div>
+
+  const m = Math.floor(seconds / 60).toString().padStart(2, "0");
+  const s = (seconds % 60).toString().padStart(2, "0");
+
+  return (
+    <div className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono transition ${
+      running ? "bg-red-500/20 text-red-400 border border-red-500/30" : "glass text-white/50"
+    }`}>
+      <Timer className="h-3 w-3" />
+      {m}:{s}
+    </div>
+  );
 
 function ScoreCard({ score, feedback, strengths, weaknesses }: { score: number; feedback: string; strengths: string[]; weaknesses: string[] }) {
   return (

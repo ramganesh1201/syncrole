@@ -18,6 +18,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { XP } from "@/lib/syncrole";
 import { toast } from "sonner";
+import { DSAService } from "@/lib/services/dsa.service";
 import { Clock, Bookmark, ArrowRight, RotateCcw } from "lucide-react";
 import {
   BarChart,
@@ -42,12 +43,18 @@ export const Route = createFileRoute("/_authenticated/dashboard/dsa")({
 
 function DSAPage() {
   const [logs, setLogs] = useState<any[]>([]);
+  const [practiceLogs, setPracticeLogs] = useState<any[]>([]);
+  const [solvedProblems, setSolvedProblems] = useState<any[]>([]);
   const [xpData, setXpData] = useState({ total_xp: 0, level: 1, level_name: "Career Explorer" });
   const [streakData, setStreakData] = useState({ current_streak: 0, longest_streak: 0 });
-  const [easy, setEasy] = useState(0);
-  const [medium, setMedium] = useState(0);
-  const [hard, setHard] = useState(0);
-  const [platform, setPlatform] = useState("leetcode");
+  
+  // Practice Session form state
+  const [duration, setDuration] = useState(30);
+  const [topics, setTopics] = useState("");
+  const [problemsAttempted, setProblemsAttempted] = useState(0);
+  const [notes, setNotes] = useState("");
+  const [confidence, setConfidence] = useState(3);
+  
   const [loading, setLoading] = useState(true);
   
   // New features state
@@ -58,21 +65,33 @@ function DSAPage() {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return setLogs([]);
     const uid = u.user.id;
-    const [logsRes, xpRes, streakRes, progRes] = await Promise.all([
+    const [logsRes, practiceRes, xpRes, streakRes, progRes, solvedRes] = await Promise.all([
       supabase
         .from("dsa_progress")
         .select("*")
         .eq("user_id", uid)
         .order("log_date", { ascending: false })
         .limit(60),
+      supabase
+        .from("activity_logs")
+        .select("*")
+        .eq("user_id", uid)
+        .eq("type", "dsa_practice")
+        .order("created_at", { ascending: false })
+        .limit(60),
       supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("user_problem_progress").select(`
-        id, problem_id, status, is_bookmarked, needs_revision, last_solved_at,
+        id, problem_id, status, is_bookmarked, needs_revision, last_solved_at, solved,
         dsa_problems ( id, title, difficulty, leetcode_url, topic_id )
-      `).eq("user_id", uid)
+      `).eq("user_id", uid),
+      DSAService.getSolvedAnalytics(uid)
     ]);
+    
     setLogs(logsRes.data ?? []);
+    setPracticeLogs(practiceRes.data ?? []);
+    setSolvedProblems(solvedRes ?? []);
+
     if (xpRes.data) setXpData(xpRes.data);
     if (streakRes.data) setStreakData(streakRes.data);
     
@@ -88,105 +107,122 @@ function DSAPage() {
 
     setLoading(false);
   }
+  
   useEffect(() => {
     load();
   }, []);
 
-  const totals = logs.reduce((a, l) => ({ e: a.e + l.easy, m: a.m + l.medium, h: a.h + l.hard }), {
-    e: 0,
-    m: 0,
-    h: 0,
-  });
-  const total = totals.e + totals.m + totals.h;
+  // Analytics Source of Truth: Actual Solved Problems
+  const solvedTotals = solvedProblems.reduce((a, p) => {
+    const diff = p.dsa_problems?.difficulty?.toLowerCase();
+    if (diff === 'easy') a.e++;
+    else if (diff === 'medium') a.m++;
+    else if (diff === 'hard') a.h++;
+    return a;
+  }, { e: 0, m: 0, h: 0 });
 
-  const last7 = Array.from({ length: 7 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (6 - i));
-    const key = d.toISOString().slice(0, 10);
-    const day = logs
-      .filter((l) => l.log_date === key)
-      .reduce((a, l) => a + l.easy + l.medium + l.hard, 0);
-    return { day: d.toLocaleDateString(undefined, { weekday: "short" }), count: day };
-  });
+  const totalSolved = solvedTotals.e + solvedTotals.m + solvedTotals.h;
 
   const last30 = Array.from({ length: 30 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (29 - i));
     const key = d.toISOString().slice(0, 10);
-    const day = logs
-      .filter((l) => l.log_date === key)
-      .reduce((a, l) => a + l.easy + l.medium + l.hard, 0);
+    const day = solvedProblems.filter((p) => {
+      const dateStr = p.last_solved_at || p.updated_at;
+      return dateStr && dateStr.slice(0, 10) === key;
+    }).length;
     return { day: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }), count: day };
   });
 
   const difficultyData = [
-    { name: "Easy", value: totals.e },
-    { name: "Medium", value: totals.m },
-    { name: "Hard", value: totals.h },
+    { name: "Easy", value: solvedTotals.e },
+    { name: "Medium", value: solvedTotals.m },
+    { name: "Hard", value: solvedTotals.h },
   ];
 
-  async function add() {
-    const e = Number(easy) || 0;
-    const m = Number(medium) || 0;
-    const h = Number(hard) || 0;
-    if (e + m + h <= 0) return toast.error("Add at least one problem");
+  async function addPracticeSession() {
+    if (duration <= 0) return toast.error("Duration must be > 0");
+    if (!topics.trim()) return toast.error("Please enter topics studied");
+    
+    setLoading(true);
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
-    const today = new Date().toISOString().slice(0, 10);
-    const { error } = await supabase
-      .from("dsa_progress")
-      .insert({ user_id: u.user.id, easy: e, medium: m, hard: h, platform, log_date: today });
-    if (error) return toast.error(error.message);
-    const xp = (e + m + h) * XP.DSA_PROBLEM;
+    
+    // Base XP on duration and problems attempted (cap to prevent abuse)
+    const xp = Math.min(300, Math.floor(duration / 5) * 5 + (problemsAttempted * 10));
+    
+    const { error } = await supabase.from("activity_logs").insert({
+      user_id: u.user.id,
+      type: "dsa_practice",
+      xp_delta: xp,
+      meta: {
+        duration,
+        topics,
+        problems_attempted: problemsAttempted,
+        notes,
+        confidence,
+        date: new Date().toISOString()
+      }
+    });
+
+    if (error) {
+      toast.error(error.message);
+      setLoading(false);
+      return;
+    }
+
     await supabase.rpc("award_xp", {
       _user: u.user.id,
-      _type: "dsa_logged",
+      _type: "dsa_practice",
       _xp: xp,
-      _meta: { easy, medium, hard },
+      _meta: { duration, topics, problems_attempted: problemsAttempted },
     });
-    // achievements
-    const newTotal = total + easy + medium + hard;
-    for (const [code, n] of [
-      ["dsa_10", 10],
-      ["dsa_50", 50],
-      ["dsa_100", 100],
-    ] as const) {
-      if (newTotal >= n)
-        await supabase
-          .from("achievements")
-          .insert({ user_id: u.user.id, code })
-          .then(() => {});
-    }
+    
     await supabase.rpc("recompute_placement", { _user: u.user.id });
-    await supabase
-      .from("notifications")
-      .insert({
-        user_id: u.user.id,
-        title: "DSA logged 🧠",
-        body: `+${xp} XP for ${easy + medium + hard} problems`,
-        type: "dsa",
-      });
-    toast.success(`+${xp} XP`);
-    setEasy(0);
-    setMedium(0);
-    setHard(0);
+    
+    await supabase.from("notifications").insert({
+      user_id: u.user.id,
+      title: "Practice Session Logged 📚",
+      body: `+${xp} XP for studying ${topics}`,
+      type: "dsa",
+    });
+
+    toast.success(`Session logged! +${xp} XP`);
+    setDuration(30);
+    setTopics("");
+    setProblemsAttempted(0);
+    setNotes("");
+    setConfidence(3);
     load();
   }
 
-  // heatmap last 90 days
+  // Consistency heatmap uses both legacy logs and new practice logs
   const heat = Array.from({ length: 90 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (89 - i));
     const key = d.toISOString().slice(0, 10);
-    const n = logs
-      .filter((l) => l.log_date === key)
-      .reduce((a, l) => a + l.easy + l.medium + l.hard, 0);
-    return { key, n };
+    
+    let intensityScore = 0;
+    
+    // Legacy dsa_progress
+    const legacyDay = logs.filter((l) => l.log_date === key);
+    legacyDay.forEach(l => {
+      intensityScore += (l.easy + l.medium + l.hard);
+    });
+
+    // New activity_logs practice sessions
+    const practiceDay = practiceLogs.filter(p => p.created_at.slice(0, 10) === key);
+    practiceDay.forEach(p => {
+      intensityScore += 1; // 1 session = 1 intensity point
+      if (p.meta?.problems_attempted) intensityScore += p.meta.problems_attempted;
+    });
+
+    return { key, n: intensityScore };
   });
 
-  const canLog = (Number(easy) || 0) + (Number(medium) || 0) + (Number(hard) || 0) > 0;
+  const canLog = duration > 0 && topics.trim().length > 0;
 
-  if (loading) {
+  if (loading && totalSolved === 0 && heat.length === 0) {
     return (
       <div className="grid place-items-center min-h-[60vh]">
         <div className="h-8 w-8 rounded-full border-2 border-aurora border-t-transparent animate-spin" />
@@ -251,10 +287,10 @@ function DSAPage() {
 
       {/* KPI Grid */}
       <div className="grid gap-4 md:grid-cols-4">
-        <Stat label="Total Solved" value={total} accent />
-        <Stat label="Easy ✓" value={totals.e} color="text-green-400" />
-        <Stat label="Medium ✓" value={totals.m} color="text-yellow-400" />
-        <Stat label="Hard ✓" value={totals.h} color="text-red-400" />
+        <Stat label="Total Solved" value={totalSolved} accent />
+        <Stat label="Easy ✓" value={solvedTotals.e} color="text-green-400" />
+        <Stat label="Medium ✓" value={solvedTotals.m} color="text-yellow-400" />
+        <Stat label="Hard ✓" value={solvedTotals.h} color="text-red-400" />
       </div>
 
       {/* Charts Grid */}
@@ -266,7 +302,7 @@ function DSAPage() {
               <LineChart data={last30}>
                 <CartesianGrid stroke="rgba(255,255,255,0.05)" />
                 <XAxis dataKey="day" stroke="rgba(255,255,255,0.4)" fontSize={11} />
-                <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} />
+                <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} allowDecimals={false} />
                 <Tooltip
                   contentStyle={{
                     background: "rgba(0,0,0,0.8)",
@@ -277,6 +313,7 @@ function DSAPage() {
                 <Line
                   type="monotone"
                   dataKey="count"
+                  name="Solved"
                   stroke="oklch(0.72 0.22 295)"
                   strokeWidth={2.5}
                   dot={false}
@@ -304,16 +341,24 @@ function DSAPage() {
                   <Cell fill="oklch(0.85 0.18 70)" />
                   <Cell fill="oklch(0.72 0.22 330)" />
                 </Pie>
+                <Tooltip
+                  contentStyle={{
+                    background: "rgba(0,0,0,0.8)",
+                    border: "1px solid rgba(255,255,255,0.1)",
+                    borderRadius: 12,
+                  }}
+                />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </Card>
       </div>
-      {/* Consistency & Log Problems */}
+
+      {/* Consistency & Practice Sessions */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-2 flex flex-col">
           <SectionLabel icon={Calendar}>Consistency · Last 90 Days</SectionLabel>
-          <div className="mt-4">
+          <div className="mt-4 flex-1">
             <div className="grid grid-cols-[repeat(30,minmax(0,1fr))] sm:grid-cols-[repeat(45,minmax(0,1fr))] md:grid-cols-[repeat(90,minmax(0,1fr))] gap-1">
               {heat.map((c) => {
                 const intensity = c.n === 0 ? 0 : Math.min(4, Math.ceil(c.n / 2));
@@ -327,7 +372,7 @@ function DSAPage() {
                 return (
                   <div
                     key={c.key}
-                    title={`${c.key}: ${c.n}`}
+                    title={`${c.key}: ${c.n} activities`}
                     className="aspect-square rounded-sm"
                     style={{ background: bg }}
                   />
@@ -357,34 +402,83 @@ function DSAPage() {
         </Card>
 
         <Card>
-          <SectionLabel icon={Code2}>Log Problems</SectionLabel>
+          <SectionLabel icon={BookOpen}>Log Practice Session</SectionLabel>
           <div className="mt-4 space-y-3">
-            <Counter label="Easy" value={easy} set={setEasy} color="oklch(0.88 0.18 145)" />
-            <Counter label="Medium" value={medium} set={setMedium} color="oklch(0.85 0.18 70)" />
-            <Counter label="Hard" value={hard} set={setHard} color="oklch(0.72 0.22 330)" />
             <label className="block">
               <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                Platform
+                Topics Studied
               </span>
-              <select
-                value={platform}
-                onChange={(e) => setPlatform(e.target.value)}
+              <input
+                type="text"
+                placeholder="e.g. Dynamic Programming"
+                value={topics}
+                onChange={(e) => setTopics(e.target.value)}
                 className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
-              >
-                <option value="leetcode">LeetCode</option>
-                <option value="gfg">GeeksforGeeks</option>
-                <option value="codeforces">Codeforces</option>
-                <option value="manual">Other</option>
-              </select>
+              />
             </label>
+            <div className="grid grid-cols-2 gap-2">
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Duration (min)
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  step="5"
+                  value={duration}
+                  onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
+                  className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
+                />
+              </label>
+              <label className="block">
+                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                  Attempted
+                </span>
+                <input
+                  type="number"
+                  min="0"
+                  value={problemsAttempted}
+                  onChange={(e) => setProblemsAttempted(parseInt(e.target.value) || 0)}
+                  className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
+                />
+              </label>
+            </div>
+            
+            <label className="block">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex justify-between">
+                <span>Confidence Level</span>
+                <span>{confidence}/5</span>
+              </span>
+              <input
+                type="range"
+                min="1"
+                max="5"
+                value={confidence}
+                onChange={(e) => setConfidence(parseInt(e.target.value) || 3)}
+                className="mt-2 w-full accent-aurora"
+              />
+            </label>
+
+            <label className="block">
+              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+                Notes (Optional)
+              </span>
+              <textarea
+                placeholder="What did you learn today?"
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm resize-none h-16"
+              />
+            </label>
+
             <button
-              onClick={add}
-              disabled={!canLog}
+              onClick={addPracticeSession}
+              disabled={!canLog || loading}
               className={`relative w-full rounded-full py-3 text-sm font-semibold text-primary-foreground overflow-hidden ${!canLog ? "opacity-50 cursor-not-allowed" : ""}`}
             >
               <span className="absolute inset-0 bg-aurora" />
               <span className="relative inline-flex items-center justify-center gap-1">
-                <Plus className="h-4 w-4" /> Log session
+                {loading ? <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> : <><Plus className="h-4 w-4" /> Save Journal</>}
               </span>
             </button>
           </div>
@@ -473,39 +567,6 @@ function Stat({ label, value, accent, color }: any) {
   );
 }
 
-function Counter({ label, value, set, color }: any) {
-  return (
-    <div className="flex items-center justify-between glass rounded-xl px-3 py-2">
-      <div className="flex items-center gap-2">
-        <span className="h-2 w-2 rounded-full" style={{ background: color }} />
-        <span className="text-sm">{label}</span>
-      </div>
-      <div className="flex items-center gap-2">
-        <button
-          onClick={() => set(Math.max(0, value - 1))}
-          className="h-7 w-7 rounded-full glass hover:bg-white/15"
-        >
-          −
-        </button>
-        <motion.div
-          key={value}
-          initial={{ scale: 0.8 }}
-          animate={{ scale: 1 }}
-          className="w-8 text-center font-mono"
-        >
-          {value}
-        </motion.div>
-        <button
-          onClick={() => set(value + 1)}
-          className="h-7 w-7 rounded-full glass hover:bg-white/15"
-        >
-          +
-        </button>
-      </div>
-    </div>
-  );
-}
-
 function Card({ children, className = "" }: any) {
   return <div className={`relative glass-strong rounded-3xl p-5 ${className}`}>{children}</div>;
 }
@@ -528,3 +589,4 @@ function Pill({ icon: Icon, label, accent }: any) {
     </div>
   );
 }
+

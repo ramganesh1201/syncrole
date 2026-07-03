@@ -1,9 +1,10 @@
 import { createFileRoute, Link, useRouter, useSearch } from "@tanstack/react-router";
-import { useEffect, useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { ArrowLeft, ArrowUpRight, Code2, Search, Filter, Star, Bookmark, Clock, SlidersHorizontal, LayoutGrid, CheckCircle2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { ArrowLeft, ArrowUpRight, Code2, Search, Filter, Star, Bookmark, Clock, SlidersHorizontal, LayoutGrid, CheckCircle2, MoreHorizontal, BrainCircuit, ChevronLeft, ChevronRight, TrendingUp, Target, ArrowRight, Award } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { DSAService } from "@/lib/services/dsa.service";
 
 type SearchParams = { topic?: string; difficulty?: string };
 
@@ -58,183 +59,118 @@ function DSAProblemsPage() {
   const router = useRouter();
   const searchParams = useSearch({ from: "/_authenticated/dsa-problems" }) as SearchParams;
   const [problems, setProblems] = useState<Problem[]>([]);
-  const [filtered, setFiltered] = useState<Problem[]>([]);
   const [topics, setTopics] = useState<Topic[]>([]);
   const [userProgress, setUserProgress] = useState<Map<string, ProblemProgress>>(new Map());
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Pagination & Display
   const [page, setPage] = useState(1);
   const itemsPerPage = 20;
+  const [totalCount, setTotalCount] = useState(0);
 
-  // Advanced Filters
+  const [counts, setCounts] = useState({ easy: 0, medium: 0, hard: 0 });
+
   const [showFilters, setShowFilters] = useState(false);
   const [filterState, setFilterState] = useState({
-    solvedStatus: 'all', // all, solved, unsolved
-    list: 'all', // all, blind75, neetcode150
-    bookmark: 'all', // all, bookmarked, favorite
-    sortBy: 'difficulty', // difficulty, popularity, acceptance, newest
+    solvedStatus: 'all',
+    list: 'all',
+    bookmark: 'all',
+    sortBy: 'difficulty',
   });
+
+  // Fetch initial aggregate counts
+  useEffect(() => {
+    Promise.all([
+      supabase.from('dsa_problems').select('*', { count: 'exact', head: true }).ilike('difficulty', 'Easy'),
+      supabase.from('dsa_problems').select('*', { count: 'exact', head: true }).ilike('difficulty', 'Medium'),
+      supabase.from('dsa_problems').select('*', { count: 'exact', head: true }).ilike('difficulty', 'Hard')
+    ]).then(([e, m, h]) => setCounts({ easy: e.count || 0, medium: m.count || 0, hard: h.count || 0 }));
+  }, []);
+
+  useEffect(() => {
+    setPage(1);
+  }, [searchParams, filterState, searchTerm]);
 
   useEffect(() => {
     let cancelled = false;
 
-    async function loadProblems() {
+    async function fetchData() {
       setLoading(true);
       const userRes = await supabase.auth.getUser();
       const uid = userRes.data.user?.id;
-      const userIdForQuery = uid ?? null;
 
-      const [problemRes, topicsRes, progressRes] = await Promise.all([
-        supabase
-          .from("dsa_problems")
-          .select("*")
-          .order("difficulty"),
-        supabase.from("dsa_topics").select("id, name").order("display_order"),
-        userIdForQuery
-          ? supabase
-              .from("user_problem_progress")
-              .select("id, problem_id, status, solved, last_attempted, is_bookmarked, is_favorite")
-              .eq("user_id", userIdForQuery)
-          : Promise.resolve({ data: [], error: null }),
-      ]);
+      if (topics.length === 0) {
+        try {
+          const tData = await DSAService.getTopics();
+          if (tData && !cancelled) setTopics(tData as Topic[]);
+        } catch (e) {
+          console.error("Failed to fetch topics", e);
+        }
+      }
 
-      if (cancelled) return;
+      try {
+        const { data: probData, count } = await DSAService.getProblems(
+          filterState as any,
+          searchTerm,
+          page - 1, // DSAService uses 0-indexed pages internally if we want, wait no, my service does page * itemsPerPage. Let's pass 0-indexed page.
+          itemsPerPage,
+          uid
+        );
 
-      setTopics((topicsRes.data ?? []) as Topic[]);
+        if (cancelled) return;
+        setTotalCount(count);
+        const fetchedProblems = (probData || []) as Problem[];
+        setProblems(fetchedProblems);
 
-      const data = (problemRes.data ?? []) as Problem[];
-      setProblems(data);
-      
-      const progMap = new Map<string, ProblemProgress>(
-        (progressRes.data ?? []).map((item: any) => [item.problem_id as string, item as ProblemProgress])
-      );
-      setUserProgress(progMap);
+        if (uid && fetchedProblems.length > 0) {
+          const ids = fetchedProblems.map(p => p.id);
+          const progressMap = await DSAService.getUserProgress(uid, ids);
+          if (!cancelled) {
+            setUserProgress(progressMap);
+          }
+        }
+      } catch (err: any) {
+        if (!cancelled) toast.error(err.message || "Failed to load problems");
+      }
+
       setLoading(false);
     }
 
-    loadProblems();
-    return () => { cancelled = true; };
-  }, []);
+    const timeout = setTimeout(() => {
+      fetchData();
+    }, 300);
 
-  useEffect(() => {
-    let result = problems;
-
-    if (searchParams.topic) {
-      result = result.filter((p) => p.topic_id === searchParams.topic);
-    }
-
-    if (searchParams.difficulty) {
-      result = result.filter((p) => p.difficulty === searchParams.difficulty);
-    }
-
-    if (searchTerm.trim()) {
-      const term = searchTerm.toLowerCase();
-      result = result.filter((p) => {
-        const titleMatch = p.title.toLowerCase().includes(term);
-        const topicMatch = topics.find((t) => t.id === p.topic_id)?.name.toLowerCase().includes(term);
-        const tagMatch = p.tags?.some(tag => tag.toLowerCase().includes(term));
-        const patternMatch = p.problem_pattern?.toLowerCase().includes(term);
-        return titleMatch || topicMatch || tagMatch || patternMatch;
-      });
-    }
-
-    // Advanced Filters
-    if (filterState.solvedStatus === 'solved') {
-      result = result.filter(p => userProgress.get(p.id)?.solved);
-    } else if (filterState.solvedStatus === 'unsolved') {
-      result = result.filter(p => !userProgress.get(p.id)?.solved);
-    }
-
-    if (filterState.list === 'blind75') {
-      result = result.filter(p => p.blind75);
-    } else if (filterState.list === 'neetcode150') {
-      result = result.filter(p => p.neetcode150);
-    }
-
-    if (filterState.bookmark === 'bookmarked') {
-      result = result.filter(p => userProgress.get(p.id)?.is_bookmarked);
-    } else if (filterState.bookmark === 'favorite') {
-      result = result.filter(p => userProgress.get(p.id)?.is_favorite);
-    }
-
-    // Sorting
-    result.sort((a, b) => {
-      if (filterState.sortBy === 'popularity') {
-        return (b.frequency || 0) - (a.frequency || 0);
-      } else if (filterState.sortBy === 'acceptance') {
-        return (b.acceptance_rate || 0) - (a.acceptance_rate || 0);
-      } else if (filterState.sortBy === 'newest') {
-        return (b.recommended_order || 0) - (a.recommended_order || 0);
-      }
-      // default: difficulty
-      const weight = { easy: 1, medium: 2, hard: 3 };
-      return (weight[a.difficulty as keyof typeof weight] || 0) - (weight[b.difficulty as keyof typeof weight] || 0);
-    });
-
-    setFiltered(result);
-    setPage(1); // reset to page 1 on filter change
-  }, [problems, searchParams, searchTerm, filterState, userProgress, topics]);
-
-  const countByDifficulty = useMemo(() => ({
-    easy: problems.filter((p) => p.difficulty === "easy").length,
-    medium: problems.filter((p) => p.difficulty === "medium").length,
-    hard: problems.filter((p) => p.difficulty === "hard").length,
-  }), [problems]);
+    return () => {
+      cancelled = true;
+      clearTimeout(timeout);
+    };
+  }, [searchParams, filterState, searchTerm, page]);
 
   async function updateProgress(problemId: string, updates: Partial<ProblemProgress>) {
     const { data: userData } = await supabase.auth.getUser();
     if (!userData.user) return;
     const uid = userData.user.id;
-    const now = new Date().toISOString();
+    
     const existing = userProgress.get(problemId);
+    const prob = problems.find(p => p.id === problemId);
 
-    const payload = {
-      user_id: uid,
-      problem_id: problemId,
-      ...existing,
-      ...updates,
-      last_attempted: now,
-    };
-    if (updates.solved === true) payload.status = "solved";
+    try {
+      const payload = await DSAService.updateProblemProgress(uid, problemId, updates, existing, prob);
+      
+      const nextProgress = new Map(userProgress);
+      nextProgress.set(problemId, payload as ProblemProgress);
+      setUserProgress(nextProgress);
 
-    if (existing) {
-      const { error } = await supabase.from("user_problem_progress").update(payload).eq("id", existing.id);
-      if (error) { toast.error(error.message); return; }
-    } else {
-      const { data, error } = await supabase.from("user_problem_progress").insert(payload).select().single();
-      if (error || !data) { toast.error(error?.message ?? "Failed"); return; }
-      payload.id = data.id;
-    }
-
-    const nextProgress = new Map(userProgress);
-    nextProgress.set(problemId, payload as ProblemProgress);
-    setUserProgress(nextProgress);
-
-    // Topic mastery update if solved state changed
-    if (updates.solved !== undefined) {
-      const prob = problems.find(p => p.id === problemId);
-      if (prob) {
-        const topicProblems = problems.filter((p) => p.topic_id === prob.topic_id);
-        const solvedCount = topicProblems.filter((p) => nextProgress.get(p.id)?.solved).length;
-        const completedPercent = topicProblems.length ? Math.round((solvedCount / topicProblems.length) * 100) : 0;
-        await supabase.from("user_topic_progress").upsert({
-          user_id: uid,
-          topic_id: prob.topic_id,
-          completed_percent: completedPercent,
-          mastery_score: completedPercent,
-          last_activity: now,
-        }, { onConflict: ["user_id", "topic_id"] });
+      if (updates.solved !== undefined) {
+        toast.success(updates.solved ? "Marked as solved!" : "Progress updated");
+      } else {
+        if (updates.is_bookmarked !== undefined) toast.success(updates.is_bookmarked ? "Bookmarked" : "Removed bookmark");
+        if (updates.is_favorite !== undefined) toast.success(updates.is_favorite ? "Added to favorites" : "Removed from favorites");
       }
-      toast.success(updates.solved ? "Marked as solved!" : "Progress updated");
-    } else {
-      if (updates.is_bookmarked !== undefined) toast.success(updates.is_bookmarked ? "Bookmarked" : "Removed bookmark");
-      if (updates.is_favorite !== undefined) toast.success(updates.is_favorite ? "Added to favorites" : "Removed from favorites");
+    } catch (e: any) {
+      toast.error(e.message || "Failed to update progress");
     }
   }
-
-  const paginatedProblems = filtered.slice(0, page * itemsPerPage);
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6 flex flex-col md:flex-row gap-6">
@@ -249,7 +185,6 @@ function DSAProblemsPage() {
         </div>
 
         <div className="space-y-5">
-          {/* Status Filter */}
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Status</div>
             <div className="flex flex-col gap-1 text-sm">
@@ -265,7 +200,6 @@ function DSAProblemsPage() {
             </div>
           </div>
 
-          {/* Curated Lists */}
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Curated Lists</div>
             <div className="flex flex-col gap-1 text-sm">
@@ -281,7 +215,6 @@ function DSAProblemsPage() {
             </div>
           </div>
 
-          {/* Saved */}
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Saved</div>
             <div className="flex flex-col gap-1 text-sm">
@@ -297,7 +230,6 @@ function DSAProblemsPage() {
             </div>
           </div>
 
-          {/* Sort */}
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Sort By</div>
             <select 
@@ -323,7 +255,7 @@ function DSAProblemsPage() {
             </button>
           </h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Master {problems.length} highly-curated interview questions.
+            Master {totalCount} highly-curated interview questions.
           </p>
         </div>
 
@@ -333,11 +265,11 @@ function DSAProblemsPage() {
               <button
                 key={diff}
                 onClick={() => {
-                  router.navigate({ to: "/dsa-problems", search: (prev) => ({ ...prev, difficulty: prev.difficulty === diff ? undefined : diff }) });
+                  router.navigate({ to: "/dsa-problems", search: (prev: any) => ({ ...prev, difficulty: prev.difficulty?.toLowerCase() === diff ? undefined : diff }) });
                 }}
-                className={`px-4 py-2 rounded-full text-xs font-medium transition ${searchParams.difficulty === diff ? "bg-aurora text-primary-foreground" : "glass"}`}
+                className={`px-4 py-2 rounded-full text-xs font-medium transition ${searchParams.difficulty?.toLowerCase() === diff ? "bg-aurora text-primary-foreground" : "glass"}`}
               >
-                {diff === "easy" ? "🟢" : diff === "medium" ? "🟡" : "🔴"} {diff} ({countByDifficulty[diff]})
+                {diff === "easy" ? "🟢" : diff === "medium" ? "🟡" : "🔴"} {diff} ({counts[diff]})
               </button>
             ))}
 
@@ -345,7 +277,7 @@ function DSAProblemsPage() {
               value={searchParams.topic ?? ""}
               onChange={(e) => {
                 const topic = e.target.value;
-                router.navigate({ to: "/dsa-problems", search: (prev) => ({ ...prev, topic: topic || undefined }) });
+                router.navigate({ to: "/dsa-problems", search: (prev: any) => ({ ...prev, topic: topic || undefined }) });
               }}
               className="glass rounded-full px-4 py-2 text-sm"
             >
@@ -354,7 +286,7 @@ function DSAProblemsPage() {
             </select>
 
             {(searchParams.difficulty || searchParams.topic) && (
-              <button onClick={() => router.navigate({ to: "/dsa-problems", search: {} })} className="px-3 py-2 rounded-full text-xs bg-white/10 hover:bg-white/15">
+              <button onClick={() => router.navigate({ to: "/dsa-problems", search: {} as any })} className="px-3 py-2 rounded-full text-xs bg-white/10 hover:bg-white/15">
                 Clear
               </button>
             )}
@@ -364,7 +296,7 @@ function DSAProblemsPage() {
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
             <input
               type="text"
-              placeholder="Search by title, tag, pattern..."
+              placeholder="Search by title, pattern..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full glass rounded-full pl-10 pr-4 py-2 text-sm placeholder:text-muted-foreground focus:ring-1 focus:ring-aurora/50"
@@ -373,9 +305,9 @@ function DSAProblemsPage() {
         </div>
 
         <div className="space-y-3">
-          {loading ? (
+          {loading && problems.length === 0 ? (
             <div className="grid place-items-center py-12"><div className="h-8 w-8 rounded-full border-2 border-aurora border-t-transparent animate-spin" /></div>
-          ) : paginatedProblems.length === 0 ? (
+          ) : problems.length === 0 ? (
             <div className="text-center py-12 glass-strong rounded-3xl border border-white/5">
               <Code2 className="h-10 w-10 text-muted-foreground mx-auto mb-3" />
               <div className="font-medium">No problems found</div>
@@ -383,7 +315,7 @@ function DSAProblemsPage() {
             </div>
           ) : (
             <>
-              {paginatedProblems.map((problem) => {
+              {problems.map((problem) => {
                 const progress = userProgress.get(problem.id);
                 const isSolved = progress?.solved;
                 const isBookmarked = progress?.is_bookmarked;
@@ -399,8 +331,8 @@ function DSAProblemsPage() {
                     <div className="flex-1 space-y-3">
                       <div className="font-display font-bold text-lg flex items-center gap-3">
                         <span className={`text-[10px] uppercase tracking-widest px-2.5 py-1 rounded-md ${
-                            problem.difficulty === "easy" ? "bg-green-500/10 text-green-400 border border-green-500/20" : 
-                            problem.difficulty === "medium" ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" : 
+                            problem.difficulty?.toLowerCase() === "easy" ? "bg-green-500/10 text-green-400 border border-green-500/20" : 
+                            problem.difficulty?.toLowerCase() === "medium" ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20" : 
                             "bg-red-500/10 text-red-400 border border-red-500/20"
                           }`}>
                           {problem.difficulty}
@@ -458,10 +390,10 @@ function DSAProblemsPage() {
                 );
               })}
 
-              {filtered.length > paginatedProblems.length && (
+              {problems.length < totalCount && (
                 <div className="pt-6 pb-12 flex justify-center">
-                  <button onClick={() => setPage(p => p + 1)} className="glass px-8 py-3 rounded-full text-sm font-medium hover:bg-white/10 transition">
-                    Load More Problems
+                  <button onClick={() => setPage(p => p + 1)} disabled={loading} className="glass px-8 py-3 rounded-full text-sm font-medium hover:bg-white/10 transition disabled:opacity-50">
+                    {loading ? "Loading..." : "Load More Problems"}
                   </button>
                 </div>
               )}
