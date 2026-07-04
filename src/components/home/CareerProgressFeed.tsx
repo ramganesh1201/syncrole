@@ -4,6 +4,7 @@ import {
   Activity, Code2, Award, CheckCircle, FileText, Zap, Trophy,
   TrendingUp, Flame, Star, Sparkles, MessageSquare,
 } from "lucide-react";
+import * as LucideIcons from "lucide-react";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -102,6 +103,7 @@ function AchievementBadge({ code, unlocked, index }: { code: string; unlocked: b
     "oklch(0.72 0.22 330)",
   ];
   const color = colors[index % colors.length];
+  const IconComponent = (LucideIcons as any)[ach.icon] || LucideIcons.Trophy;
 
   return (
     <motion.div
@@ -112,11 +114,9 @@ function AchievementBadge({ code, unlocked, index }: { code: string; unlocked: b
       whileHover={unlocked ? { y: -6, scale: 1.05 } : {}}
       className={`glass-strong rounded-2xl p-5 text-center ${unlocked ? "cursor-pointer" : "opacity-40 grayscale"}`}
     >
-      <div className="relative h-14 w-14 mx-auto mb-3">
+      <div className="relative h-14 w-14 mx-auto mb-3 flex items-center justify-center">
         <div className="absolute inset-0 rounded-full blur-xl opacity-50" style={{ background: color }} />
-        <div className="relative h-full w-full rounded-full grid place-items-center text-2xl">
-          {ach.emoji}
-        </div>
+        <IconComponent className="h-7 w-7 text-white relative z-10 drop-shadow-md" />
       </div>
       <div className="text-xs font-medium leading-tight">{ach.name}</div>
       {!unlocked && <div className="text-[10px] text-muted-foreground mt-1">Locked</div>}

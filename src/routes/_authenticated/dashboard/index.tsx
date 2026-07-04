@@ -2,35 +2,17 @@ import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import {
-  Sparkles,
-  TrendingUp,
-  Flame,
-  Trophy,
-  Target,
-  Github,
-  FileText,
-  Brain,
-  Zap,
-  ArrowRight,
-  Code2,
-  Loader2,
-  Check,
-  Award,
-  MapPin,
-  Rocket,
-  Star,
-  Activity,
-  MessageSquare,
-  Cpu,
-  ChevronRight,
-  Calendar,
-  Clock,
-  Upload,
+  Sparkles, TrendingUp, Flame, Trophy, Target, Github, FileText, Brain, Zap, ArrowRight,
+  Code2, Loader2, Check, Award, MapPin, Rocket, Star, Activity, MessageSquare, Cpu,
+  ChevronRight, Calendar, Clock, Upload, CheckCircle, Briefcase, Diamond, Crown, Sun,
+  Moon, Code, Terminal, CheckSquare, ShieldAlert, Maximize, FileCheck, Medal, Key,
+  LayoutTemplate, GitCommit, GitMerge, Globe, Mic, Video, MonitorPlay, Users,
+  TerminalSquare, Layers, PartyPopper
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   levelProgress,
-  profileCompletionPct,
+  getProfileCompletionStatus,
   ACHIEVEMENT_CATALOG,
   MISSION_TEMPLATES,
   XP,
@@ -181,7 +163,10 @@ function Dashboard() {
   const prev = scores[1];
   const delta = prev ? latest.total_score - prev.total_score : 0;
   const lp = levelProgress(xp.total_xp);
-  const completion = useMemo(() => (profile ? profileCompletionPct(profile) : 0), [profile]);
+  const { pct: completion, missing: missingProfileTasks } = useMemo(
+    () => getProfileCompletionStatus(profile || {}, !!resume),
+    [profile, resume]
+  );
   const chartData = [...scores]
     .reverse()
     .map((s, i) => ({ x: i, y: s.total_score }));
@@ -345,482 +330,608 @@ function Dashboard() {
   }
 
   if (loading) {
-    return (
-      <div className="grid place-items-center min-h-[60vh]">
-        <Loader2 className="h-8 w-8 animate-spin text-aurora" />
-      </div>
-    );
+    return <DashboardSkeleton />;
   }
+
+  const heroSummary = [];
+  if (latest.resume_score < 70) heroSummary.push("Improve Resume Projects");
+  if (latest.dsa_score < 70) heroSummary.push("Solve 2 Medium DSA Problems");
+  if (interviewSessions.length === 0) heroSummary.push("Finish 1 Mock Interview");
+  if (heroSummary.length === 0) heroSummary.push("Keep practicing your core skills");
+
+  const expectedTimeline = latest.total_score >= 75 ? "1-2 months" : latest.total_score >= 50 ? "3-5 months" : "6+ months";
 
   return (
     <>
-      <main className="relative mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
-        {/* greeting */}
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <div>
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">
-              Welcome back
-            </div>
-            <h1 className="font-display text-3xl md:text-4xl font-bold mt-1">
-              Hey {profile?.full_name?.split(" ")[0] ?? "there"} <span className="text-aurora">👋</span>
-            </h1>
-          </div>
-          <div className="flex flex-wrap gap-2">
-            <Pill icon={Flame} label={`${streak.current_streak}-day streak`} accent />
-            <Pill icon={Trophy} label={`${xp.level_name} · Lv ${xp.level}`} />
-            <Pill icon={Zap} label={`${xp.total_xp} XP`} />
-          </div>
-        </div>
-
-        {/* ── Career Journey Roadmap ── */}
-        <Card>
-          <div className="flex items-center justify-between mb-4">
-            <SectionLabel icon={Rocket}>Career Journey</SectionLabel>
-            <span className="text-[10px] text-muted-foreground uppercase tracking-widest">
-              AI-mapped trajectory
-            </span>
-          </div>
-          <div className="relative">
-            {/* Connecting line */}
-            <div className="absolute top-5 left-5 right-5 h-0.5 bg-white/8" />
-            <motion.div
-              className="absolute top-5 left-5 h-0.5"
-              style={{ background: "linear-gradient(90deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}
-              initial={{ width: 0 }}
-              animate={{ width: `${Math.min(latest.total_score, 100)}%` }}
-              transition={{ duration: 1.5, ease: "easeOut", delay: 0.5 }}
-            />
-            <div className="relative grid grid-cols-4 gap-2">
-              {[
-                {
-                  label: "Current",
-                  sub: profile?.college?.split(" ")[0] ?? "Student",
-                  icon: MapPin,
-                  color: "oklch(0.75 0.2 200)",
-                  active: true,
-                },
-                {
-                  label: "Next Milestone",
-                  sub: latest.total_score < 50 ? "70+ Readiness" : "Interview Ready",
-                  icon: Activity,
-                  color: "oklch(0.88 0.18 60)",
-                  active: latest.total_score >= 30,
-                },
-                {
-                  label: "Target Role",
-                  sub: profile?.career_goal?.split(" ").slice(0, 3).join(" ") ?? "SDE-1",
-                  icon: Cpu,
-                  color: "oklch(0.72 0.22 295)",
-                  active: latest.total_score >= 60,
-                },
-                {
-                  label: "Dream Company",
-                  sub: "Offer Received",
-                  icon: Star,
-                  color: "oklch(0.88 0.20 60)",
-                  active: latest.total_score >= 80,
-                },
-              ].map((step, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 12 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 + i * 0.1 }}
-                  className="flex flex-col items-center text-center gap-2"
-                >
-                  <div
-                    className={`relative h-10 w-10 rounded-full flex items-center justify-center z-10 transition-all ${
-                      step.active ? "ring-2 ring-offset-2 ring-offset-transparent" : "opacity-35"
-                    }`}
-                    style={{
-                      background: step.active
-                        ? `radial-gradient(circle, ${step.color} 40%, transparent 100%)`
-                        : "oklch(1 0 0 / 5%)",
-                      border: `1px solid ${step.color}`,
-                    }}
-                  >
-                    <step.icon className="h-4 w-4 text-white" />
-                    {step.active && (
-                      <span
-                        className="absolute inset-0 rounded-full animate-ping opacity-20"
-                        style={{ background: step.color }}
-                      />
-                    )}
-                  </div>
-                  <div>
-                    <div className="text-xs font-semibold text-white/80">{step.label}</div>
-                    <div className="text-[10px] text-muted-foreground leading-tight">{step.sub}</div>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-        </Card>
-
-        {/* ── Recent Activity + Future Prediction ── */}
-        <div className="grid gap-4 md:grid-cols-2">
-
-          {/* Recent Activity */}
-          <Card>
-            <SectionLabel icon={Activity}>Recent Activity</SectionLabel>
-            <div className="mt-4 space-y-2">
-              {[
-                /* Build activity items from real data */
-                ...achs.slice(-3).map((code, i) => ({
-                  icon: Award,
-                  color: "text-yellow-400",
-                  label: `Achievement unlocked: ${code.replace(/_/g, " ")}`,
-                  time: "Recent",
-                })),
-                ...recentConversations.slice(0, 2).map((c: any) => ({
-                  icon: MessageSquare,
-                  color: "text-cyan-400",
-                  label: `SyncPilot • ${c.title || "Conversation"}`,
-                  time: new Date(c.updated_at).toLocaleDateString(),
-                })),
-                ...interviewSessions.slice(0, 2).map((s: any) => ({
-                  icon: Brain,
-                  color: "text-violet-400",
-                  label: `Interview • ${s.company || "Practice"} — Score ${s.score}`,
-                  time: new Date(s.created_at).toLocaleDateString(),
-                })),
-                ...(scores.length > 0 ? [{
-                  icon: TrendingUp,
-                  color: "text-emerald-400",
-                  label: `Placement score updated → ${latest.total_score}/100`,
-                  time: new Date(scores[0]?.created_at).toLocaleDateString(),
-                }] : []),
-              ].slice(0, 5).map((item, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, x: -8 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.1 * i }}
-                  className="flex items-center gap-3 glass rounded-xl px-3 py-2.5"
-                >
-                  <item.icon className={`h-4 w-4 flex-shrink-0 ${item.color}`} />
-                  <div className="flex-1 min-w-0">
-                    <div className="text-xs text-white/80 truncate">{item.label}</div>
-                    <div className="text-[10px] text-muted-foreground">{item.time}</div>
-                  </div>
-                </motion.div>
-              ))}
-              {achs.length === 0 && recentConversations.length === 0 && interviewSessions.length === 0 && (
-                <div className="text-xs text-muted-foreground text-center py-4">
-                  Complete missions to build your activity feed
-                </div>
-              )}
-            </div>
-          </Card>
-
-          {/* Future Prediction */}
-          <Card>
-            <div className="flex items-center justify-between">
-              <SectionLabel icon={Sparkles}>Future Prediction</SectionLabel>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-violet-500/15 text-violet-400 border border-violet-500/20">
-                AI Model
-              </span>
-            </div>
-            <div className="mt-4 space-y-3">
-              {[
-                {
-                  label: "Placement Probability",
-                  value: Math.min(100, Math.round(latest.total_score * 1.1)),
-                  suffix: "%",
-                  color: "oklch(0.75 0.2 200)",
-                  sub: latest.total_score >= 70 ? "High confidence" : "Improving",
-                },
-                {
-                  label: "Expected CTC Range",
-                  value: latest.total_score >= 70 ? "₹12-18 LPA" : latest.total_score >= 45 ? "₹6-10 LPA" : "₹4-7 LPA",
-                  isText: true,
-                  color: "oklch(0.88 0.18 145)",
-                  sub: "Based on market data",
-                },
-                {
-                  label: "Offer Timeline",
-                  value: latest.total_score >= 75 ? "1-2 months" : latest.total_score >= 50 ? "3-5 months" : "6+ months",
-                  isText: true,
-                  color: "oklch(0.88 0.18 60)",
-                  sub: "If current pace maintained",
-                },
-              ].map((pred, i) => (
-                <motion.div
-                  key={i}
-                  initial={{ opacity: 0, y: 6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.15 * i }}
-                  className="glass rounded-xl p-3 flex items-center justify-between"
-                >
-                  <div>
-                    <div className="text-xs text-white/60">{pred.label}</div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5">{pred.sub}</div>
-                  </div>
-                  <div className="text-base font-bold font-mono" style={{ color: pred.color }}>
-                    {pred.isText ? pred.value : `${pred.value}${pred.suffix}`}
-                  </div>
-                </motion.div>
-              ))}
-              <div className="text-[10px] text-muted-foreground text-center pt-1">
-                Ask SyncPilot "What if I solve 100 more DSA problems?" for simulation
+      <motion.main
+        variants={{
+          hidden: { opacity: 0 },
+          show: { opacity: 1, transition: { staggerChildren: 0.1 } },
+        }}
+        initial="hidden"
+        animate="show"
+        className="relative mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6"
+      >
+        {/* ── 1. PREMIUM HERO SECTION ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 glass-strong rounded-3xl p-6 md:p-8 border border-white/5 hover:border-white/10 transition-colors">
+            <div className="flex-1 max-w-2xl">
+              <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Welcome back</div>
+              <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
+                Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, {profile?.full_name?.split(" ")[0] ?? "there"} <span className="text-aurora inline-block hover:animate-pulse cursor-default">👋</span>
+              </h1>
+              <p className="text-lg text-white/80 mb-2">
+                You're currently <span className="font-bold text-aurora"><AnimatedCounter value={latest.total_score} />% Placement Ready.</span>
+              </p>
+              <div className="text-sm text-white/60 space-y-1">
+                <p>Focus on today:</p>
+                <ul className="list-disc pl-4 space-y-0.5">
+                  {heroSummary.map((s, i) => (
+                    <li key={i}>{s}</li>
+                  ))}
+                </ul>
+                <p className="mt-2 text-xs text-muted-foreground">Estimated Interview Readiness: {expectedTimeline}</p>
               </div>
             </div>
-          </Card>
-        </div>
+            <div className="flex flex-col gap-3 min-w-[200px]">
+              <div className="glass rounded-2xl p-4 flex items-center gap-3 hover:-translate-y-1 hover:shadow-lg hover:shadow-aurora/5 transition-all">
+                <div className="h-10 w-10 rounded-full bg-aurora/10 flex items-center justify-center">
+                  <Trophy className="h-5 w-5 text-aurora" />
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Current Level</div>
+                  <div className="font-bold text-white">{xp.level_name}</div>
+                </div>
+              </div>
+              <div className="glass rounded-2xl p-4 flex items-center gap-3 hover:-translate-y-1 hover:shadow-lg hover:shadow-aurora/5 transition-all">
+                <div className="h-10 w-10 rounded-full bg-orange-500/10 flex items-center justify-center">
+                  <Flame className="h-5 w-5 text-orange-400" />
+                </div>
+                <div>
+                  <div className="text-xs text-muted-foreground">Current Streak</div>
+                  <div className="font-bold text-white"><AnimatedCounter value={streak.current_streak} /> days</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </motion.div>
 
-        {/* KPI grid */}
-        <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
-          {/* placement score */}
-          <Card className="lg:col-span-2 row-span-2">
+        {/* ── 2. PLACEMENT READINESS & KPI GRID ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+          <Card className="lg:col-span-2 row-span-2 hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
             <div className="flex items-start justify-between">
               <SectionLabel icon={Target}>Placement Readiness</SectionLabel>
               {delta !== 0 && (
-                <span
-                  className={`text-xs inline-flex items-center gap-1 ${
-                    delta > 0 ? "text-[oklch(0.88_0.18_145)]" : "text-destructive"
-                  }`}
-                >
-
+                <span className={`text-xs inline-flex items-center gap-1 ${delta > 0 ? "text-[oklch(0.88_0.18_145)]" : "text-destructive"}`}>
                   <TrendingUp className="h-3 w-3" /> {delta > 0 ? "+" : ""}
-                  {delta} pts
+                  <AnimatedCounter value={delta} /> pts
                 </span>
               )}
             </div>
-            <div className="mt-4 flex items-center gap-6">
+            <div className="mt-6 flex flex-col md:flex-row items-center md:items-start gap-8">
               <ScoreRing value={latest.total_score} />
-              <div className="flex-1 space-y-2">
+              <div className="flex-1 w-full space-y-3">
                 {[
-                  { l: "Resume", v: latest.resume_score, i: FileText },
-                  { l: "GitHub", v: latest.github_score, i: Github },
-                  { l: "DSA", v: latest.dsa_score, i: Brain },
-                  { l: "Skills", v: latest.skill_score, i: Sparkles },
-                ].map((b) => (
-                  <div key={b.l} className="flex items-center gap-3">
-                    <b.i className="h-3.5 w-3.5 text-muted-foreground" />
-                    <div className="text-xs w-20 text-muted-foreground">{b.l}</div>
-                    <div className="flex-1 h-1.5 rounded-full bg-white/5 overflow-hidden">
-                      <div className="h-full bg-aurora" style={{ width: `${b.v}%` }} />
-                    </div>
-                    <div className="text-xs font-mono w-8 text-right">{b.v}</div>
-                  </div>
-                ))}
+                  { l: "Resume", v: latest.resume_score, i: FileText, to: "/resume-intelligence" },
+                  { l: "DSA", v: latest.dsa_score, i: Brain, to: "/dashboard/dsa" },
+                  { l: "GitHub", v: latest.github_score, i: Github, to: null },
+                  { l: "Skills", v: latest.skill_score, i: Sparkles, to: null },
+                ].map((b) => {
+                  const Wrapper: any = b.to ? Link : "div";
+                  return (
+                    <Wrapper
+                      key={b.l}
+                      to={b.to || undefined}
+                      className={`group flex items-center gap-3 p-2 -mx-2 rounded-xl transition-colors ${
+                        b.to ? "hover:bg-white/5 cursor-pointer" : "opacity-60 cursor-default"
+                      }`}
+                    >
+                      <b.i className={`h-4 w-4 text-muted-foreground transition-colors ${b.to ? "group-hover:text-aurora" : ""}`} />
+                      <div className={`text-sm w-20 transition-colors ${b.to ? "text-white/80 group-hover:text-white" : "text-white/50"}`}>
+                        {b.l}
+                      </div>
+                      <div className="flex-1 h-2 rounded-full bg-white/5 overflow-hidden">
+                        <motion.div
+                          className={`h-full transition-colors ${b.to ? "bg-aurora/80 group-hover:bg-aurora" : "bg-white/20"}`}
+                          initial={{ width: 0 }}
+                          animate={{ width: `${b.v}%` }}
+                          transition={{ duration: 1, ease: "easeOut" }}
+                        />
+                      </div>
+                      <div className="text-xs font-mono w-8 text-right"><AnimatedCounter value={b.v} /></div>
+                      <div className={`text-[10px] uppercase tracking-widest pl-2 transition-opacity ${
+                        b.to ? "text-aurora opacity-0 group-hover:opacity-100" : "text-muted-foreground opacity-100"
+                      }`}>
+                        {b.to ? "Improve →" : "Soon"}
+                      </div>
+                    </Wrapper>
+                  );
+                })}
               </div>
-            </div>
-            <div className="mt-6 h-32">
-              {chartData.length > 1 ? (
-                <ResponsiveContainer width="100%" height="100%">
-                  <LineChart data={chartData}>
-                    <defs>
-                      <linearGradient id="sg" x1="0" y1="0" x2="1" y2="0">
-                        <stop offset="0%" stopColor="oklch(0.75 0.20 200)" />
-                        <stop offset="100%" stopColor="oklch(0.72 0.22 295)" />
-                      </linearGradient>
-                    </defs>
-                    <XAxis dataKey="x" hide />
-                    <YAxis hide domain={[0, 100]} />
-                    <Tooltip
-                      contentStyle={{
-                        background: "rgba(0,0,0,0.8)",
-                        border: "1px solid rgba(255,255,255,0.1)",
-                        borderRadius: 12,
-                      }}
-                    />
-                    <Line type="monotone" dataKey="y" stroke="url(#sg)" strokeWidth={2.5} dot={false} />
-                  </LineChart>
-                </ResponsiveContainer>
-              ) : (
-                <div className="h-full grid place-items-center text-xs text-muted-foreground">
-                  More activity = better trend graph
-                </div>
-              )}
             </div>
           </Card>
 
           {/* level / xp */}
-          <Card>
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
             <SectionLabel icon={Zap}>Level Progress</SectionLabel>
             <div className="mt-4">
               <div className="font-display text-2xl font-bold">{lp.cur.name}</div>
               <div className="text-xs text-muted-foreground mt-1">
-                Level {lp.cur.lvl}
-                {lp.next && ` — ${lp.toNext} XP to ${lp.next.name}`}
+                Level <AnimatedCounter value={lp.cur.lvl} />
+                {lp.next && (
+                  <span className="opacity-60"> — {lp.toNext} XP to {lp.next.name}</span>
+                )}
               </div>
-              <div className="mt-4 h-2 rounded-full bg-white/5 overflow-hidden">
-                <motion.div className="h-full bg-aurora" initial={{ width: 0 }} animate={{ width: `${lp.pct}%` }} />
+              <div className="mt-4 h-2.5 rounded-full bg-white/5 overflow-hidden">
+                <motion.div className="h-full bg-gradient-to-r from-aurora/60 to-aurora" initial={{ width: 0 }} animate={{ width: `${lp.pct}%` }} transition={{ duration: 1.2, ease: "easeOut" }} />
               </div>
-              <div className="mt-2 text-xs text-muted-foreground">{xp.total_xp} XP</div>
+              <div className="mt-3 flex justify-between items-center text-xs text-muted-foreground">
+                <span className="font-mono text-white/80"><AnimatedCounter value={xp.total_xp} /> XP</span>
+                {lp.next && <span className="font-mono text-white/40">{lp.next.min} XP</span>}
+              </div>
             </div>
           </Card>
 
           {/* profile completion */}
-          <Card>
-            <SectionLabel icon={Check}>Profile</SectionLabel>
-            <div className="mt-4 flex items-center gap-4">
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <SectionLabel icon={Check}>Profile Checklist</SectionLabel>
+            <div className="mt-4 flex items-center gap-4 mb-4">
               <RingMini value={completion} />
               <div>
-                <div className="font-display text-2xl font-bold">{completion}%</div>
+                <div className="font-display text-3xl font-bold"><AnimatedCounter value={completion} />%</div>
                 <div className="text-xs text-muted-foreground">complete</div>
               </div>
             </div>
-            {completion < 100 && (
-              <Link to="/onboarding" className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:underline">
-                Complete now <ArrowRight className="h-3 w-3" />
-              </Link>
+            {missingProfileTasks.length > 0 ? (
+              <div className="bg-white/5 rounded-xl p-3">
+                <div className="text-xs font-semibold text-white/80 mb-2">Complete next:</div>
+                <ul className="space-y-1.5">
+                  {missingProfileTasks.slice(0, 3).map((task: string, i: number) => (
+                    <li key={i} className="text-xs text-muted-foreground flex items-center gap-2">
+                      <div className="h-1 w-1 rounded-full bg-aurora/50" />
+                      {task}
+                    </li>
+                  ))}
+                </ul>
+                <Link to="/onboarding" className="mt-4 block w-full text-center py-2 text-xs bg-aurora/10 text-aurora hover:bg-aurora/20 border border-aurora/20 rounded-lg transition-colors">
+                  Complete Profile →
+                </Link>
+              </div>
+            ) : (
+              <div className="mt-4 block w-full text-center py-3 text-xs bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl flex items-center justify-center gap-2">
+                <CheckCircle className="h-4 w-4" /> Looking good!
+              </div>
             )}
           </Card>
+        </motion.div>
 
-          {/* streak */}
-          <Card>
-            <SectionLabel icon={Flame}>Current Streak</SectionLabel>
-            <div className="mt-4 flex items-baseline gap-2">
-              <motion.div
-                animate={{ scale: [1, 1.08, 1] }}
-                transition={{ repeat: Infinity, duration: 2 }}
-                className="font-display text-5xl font-bold text-aurora"
-              >
-                {streak.current_streak}
-              </motion.div>
-              <div className="text-sm text-muted-foreground">days</div>
+        {/* ── 3. CAREER JOURNEY ROADMAP ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <div className="flex items-center justify-between mb-8">
+              <SectionLabel icon={Rocket}>Career Journey</SectionLabel>
+              <span className="text-[10px] bg-white/5 px-3 py-1 rounded-full border border-white/10 text-muted-foreground uppercase tracking-widest">
+                AI-mapped trajectory
+              </span>
             </div>
-            <div className="text-xs text-muted-foreground mt-2">Longest: {streak.longest_streak} days</div>
+            <div className="relative">
+              {/* Connecting line background */}
+              <div className="absolute top-5 left-5 right-5 h-1 bg-white/5 rounded-full" />
+              {/* Connecting line fill */}
+              <motion.div
+                className="absolute top-5 left-5 h-1 rounded-full"
+                style={{ background: "linear-gradient(90deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}
+                initial={{ width: 0 }}
+                animate={{ width: `${Math.min(latest.total_score, 100)}%` }}
+                transition={{ duration: 2, ease: "easeOut", delay: 0.2 }}
+              />
+              <div className="relative grid grid-cols-4 gap-2">
+                {[
+                  {
+                    label: "Current",
+                    sub: profile?.college?.split(" ")[0] ?? "Student",
+                    icon: MapPin,
+                    color: "oklch(0.75 0.2 200)",
+                    active: true,
+                    pct: 0
+                  },
+                  {
+                    label: "Next Milestone",
+                    sub: latest.total_score < 50 ? "70+ Readiness" : "Interview Ready",
+                    icon: Activity,
+                    color: "oklch(0.88 0.18 60)",
+                    active: latest.total_score >= 30,
+                    pct: 30
+                  },
+                  {
+                    label: "Target Role",
+                    sub: profile?.career_goal?.split(" ").slice(0, 3).join(" ") ?? "SDE-1",
+                    icon: Cpu,
+                    color: "oklch(0.72 0.22 295)",
+                    active: latest.total_score >= 60,
+                    pct: 60
+                  },
+                  {
+                    label: "Dream Company",
+                    sub: "Offer Received",
+                    icon: Star,
+                    color: "oklch(0.88 0.20 60)",
+                    active: latest.total_score >= 80,
+                    pct: 80
+                  },
+                ].map((step, i) => (
+                  <motion.div
+                    key={i}
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: 0.3 + i * 0.1 }}
+                    className="group flex flex-col items-center text-center gap-3 cursor-default"
+                  >
+                    <div
+                      className={`relative h-11 w-11 rounded-full flex items-center justify-center z-10 transition-all duration-300 group-hover:scale-110 ${
+                        step.active ? "ring-4 ring-black/40 ring-offset-2 ring-offset-transparent shadow-lg" : "opacity-40 grayscale"
+                      }`}
+                      style={{
+                        background: step.active ? `radial-gradient(circle, ${step.color} 30%, transparent 100%)` : "oklch(1 0 0 / 10%)",
+                        border: `1.5px solid ${step.color}`,
+                        boxShadow: step.active ? `0 0 20px ${step.color}40` : "none",
+                      }}
+                    >
+                      <step.icon className={`h-4 w-4 ${step.active ? "text-white" : "text-white/50"}`} />
+                      {step.active && <span className="absolute inset-0 rounded-full animate-ping opacity-20" style={{ background: step.color }} />}
+                    </div>
+                    <div>
+                      <div className={`text-xs font-semibold transition-colors ${step.active ? "text-white" : "text-white/40"}`}>{step.label}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{step.sub}</div>
+                      {step.active && latest.total_score >= step.pct && latest.total_score < (step.pct + 25) && (
+                        <div className="mt-2 text-[9px] uppercase tracking-widest text-aurora opacity-0 group-hover:opacity-100 transition-opacity">
+                          In Progress
+                        </div>
+                      )}
+                    </div>
+                  </motion.div>
+                ))}
+              </div>
+            </div>
           </Card>
+        </motion.div>
 
+        {/* ── 4. MISSIONS & ANALYZERS ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          
           {/* missions */}
-          <Card className="md:col-span-2">
-            <div className="flex items-center justify-between">
-              <SectionLabel icon={Target}>Today's Missions</SectionLabel>
-              <span className="text-xs text-muted-foreground">
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <div className="flex items-center justify-between mb-2">
+              <SectionLabel icon={Target}>Daily Missions</SectionLabel>
+              <span className="text-xs text-muted-foreground bg-white/5 px-2 py-0.5 rounded-full">
                 {missions.filter((m) => m.completed).length}/{missions.length}
               </span>
             </div>
             <div className="mt-4 space-y-2">
               {missions.map((m) => (
-                <div
-                  key={m.id}
-                  className={`glass rounded-xl p-3 flex items-center gap-3 ${m.completed ? "opacity-60" : ""}`}
-                >
-                  <button
-                    onClick={() => !m.completed && completeMission(m)}
-                    className={`h-7 w-7 rounded-full grid place-items-center transition ${m.completed ? "bg-aurora" : "glass hover:bg-white/15"}`}
-                  >
-                    {m.completed && <Check className="h-4 w-4" />}
-                  </button>
-                  <div className="flex-1">
-                    <div className={`text-sm font-medium ${m.completed ? "line-through" : ""}`}>{m.title}</div>
-                    <div className="text-xs text-muted-foreground">{m.description}</div>
+                <div key={m.id} className={`glass rounded-xl p-3 flex items-center gap-3 transition-all duration-500 ${m.completed ? "opacity-50 grayscale bg-black/20" : "hover:bg-white/5"}`}>
+                  <div className={`h-7 w-7 shrink-0 rounded-full grid place-items-center transition-all duration-300 ${m.completed ? "bg-aurora scale-100 shadow-[0_0_10px_rgba(var(--aurora-rgb),0.5)]" : "glass border border-white/10"}`}>
+                    {m.completed && <Check className="h-4 w-4 text-black" />}
                   </div>
-                  <div className="text-xs font-mono text-accent">+{m.xp_reward} XP</div>
+                  <div className="flex-1 min-w-0">
+                    <div className={`text-sm font-medium truncate transition-all duration-300 ${m.completed ? "line-through text-white/50" : "text-white/90"}`}>{m.title}</div>
+                    <div className="text-[10px] text-muted-foreground truncate">{m.description}</div>
+                  </div>
+                  <div className="text-[10px] font-mono text-accent whitespace-nowrap bg-aurora/10 px-2 py-0.5 rounded border border-aurora/20">+{m.xp_reward} XP</div>
                 </div>
               ))}
-              {missions.length === 0 && <div className="text-xs text-muted-foreground">Refresh tomorrow for new missions 🌅</div>}
+              {missions.length === 0 && <EmptyState icon={Target} title="No Missions" desc="Refresh tomorrow for new daily missions." />}
             </div>
           </Card>
 
-          {/* DSA quick */}
-          <Card>
-            <SectionLabel icon={Code2}>DSA</SectionLabel>
-            <div className="mt-4">
-              <div className="font-display text-3xl font-bold">{latest.dsa_score}</div>
-              <div className="text-xs text-muted-foreground">DSA score</div>
-              <Link to="/dashboard/dsa" className="mt-3 inline-flex items-center gap-1 text-xs text-accent hover:underline">
-                Open tracker <ArrowRight className="h-3 w-3" />
-              </Link>
-            </div>
-          </Card>
-        </div>
-
-        {/* analyzers */}
-        <div className="grid gap-4 md:grid-cols-2">
-          <Card>
-            <SectionLabel icon={Github}>GitHub Analysis</SectionLabel>
+          {/* GitHub */}
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <SectionLabel icon={Github}>GitHub Intelligence</SectionLabel>
             {gh ? (
-              <div className="mt-4">
-                <div className="flex items-baseline gap-3">
-                  <div className="font-display text-3xl font-bold text-aurora">{gh.score}</div>
-                  <div className="text-xs text-muted-foreground">@{gh.username}</div>
+              <div className="mt-5">
+                <div className="flex items-baseline gap-3 mb-4">
+                  <div className="font-display text-4xl font-bold text-aurora"><AnimatedCounter value={gh.score || 0} /></div>
+                  <div className="text-xs text-muted-foreground uppercase tracking-widest">Score</div>
                 </div>
-                <div className="mt-3 grid grid-cols-3 gap-3 text-center">
-                  <Stat label="Repos" value={gh.repo_count} />
-                  <Stat label="Stars" value={gh.star_count} />
-                  <Stat label="Followers" value={gh.follower_count} />
+                
+                <div className="grid grid-cols-3 gap-2 text-center mb-4">
+                  <div className="glass rounded-xl py-3 flex flex-col items-center justify-center border border-white/5">
+                    <div className="font-display text-xl font-bold"><AnimatedCounter value={gh.repo_count || 0} /></div>
+                    <div className="text-[9px] text-muted-foreground uppercase">Repos</div>
+                  </div>
+                  <div className="glass rounded-xl py-3 flex flex-col items-center justify-center border border-white/5">
+                    <div className="font-display text-xl font-bold"><AnimatedCounter value={gh.star_count || 0} /></div>
+                    <div className="text-[9px] text-muted-foreground uppercase">Stars</div>
+                  </div>
+                  <div className="glass rounded-xl py-3 flex flex-col items-center justify-center border border-white/5">
+                    <div className="font-display text-xl font-bold"><AnimatedCounter value={gh.follower_count || 0} /></div>
+                    <div className="text-[9px] text-muted-foreground uppercase">Followers</div>
+                  </div>
                 </div>
-                <div className="mt-3 text-xs text-muted-foreground">Top: {Object.keys(gh.languages || {}).slice(0, 3).join(" · ") || "—"}</div>
-                <button onClick={analyzeGitHub} className="mt-3 text-xs text-accent hover:underline">
-                  Re-analyze
+
+                {gh.languages && Object.keys(gh.languages).length > 0 && (
+                  <div className="mb-4 bg-white/5 rounded-xl p-3 border border-white/10">
+                    <div className="text-xs font-semibold text-white/80 mb-2">Language Distribution</div>
+                    <div className="flex w-full h-1.5 rounded-full overflow-hidden bg-black/20 gap-0.5">
+                      {Object.entries(gh.languages).slice(0, 4).map(([lang, count]: any, i) => {
+                        const total = Object.values(gh.languages).reduce((a: any, b: any) => a + b, 0) as number;
+                        const pct = (count / total) * 100;
+                        const colors = ["bg-blue-400", "bg-yellow-400", "bg-purple-400", "bg-emerald-400"];
+                        return <motion.div key={lang} initial={{ width: 0 }} animate={{ width: `${pct}%` }} className={colors[i % colors.length]} title={`${lang}: ${Math.round(pct)}%`} />;
+                      })}
+                    </div>
+                    <div className="flex gap-2 flex-wrap mt-2">
+                      {Object.keys(gh.languages).slice(0, 4).map((lang, i) => {
+                        const colors = ["text-blue-400", "text-yellow-400", "text-purple-400", "text-emerald-400"];
+                        const dotColors = ["bg-blue-400", "bg-yellow-400", "bg-purple-400", "bg-emerald-400"];
+                        return (
+                          <div key={lang} className="flex items-center gap-1">
+                            <div className={`h-1.5 w-1.5 rounded-full ${dotColors[i % dotColors.length]}`} />
+                            <span className={`text-[9px] ${colors[i % colors.length]}`}>{lang}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+                
+                <button onClick={analyzeGitHub} className="w-full py-2.5 text-xs text-white/80 hover:text-white font-semibold bg-white/5 hover:bg-white/10 rounded-xl transition-all border border-white/10 flex items-center justify-center gap-2">
+                  <Activity className="h-3.5 w-3.5" /> Re-analyze Profile
                 </button>
               </div>
             ) : (
-              <div className="mt-4">
-                <p className="text-sm text-muted-foreground">Connect GitHub to analyze your projects, languages, and activity.</p>
-                <button onClick={analyzeGitHub} className="mt-3 glass rounded-full px-4 py-2 text-sm hover:bg-white/10">
-                  Analyze now
-                </button>
-              </div>
+              <EmptyState 
+                icon={Github} 
+                title="Connect GitHub" 
+                desc="Analyze your repositories to boost your placement score."
+                ctaText="Analyze Profile"
+                onCta={analyzeGitHub}
+              />
             )}
           </Card>
 
-          <Card className="flex flex-col">
-            <SectionLabel icon={FileText}>Resume Intelligence</SectionLabel>
+          {/* Resume */}
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300 flex flex-col">
+            <div className="flex justify-between items-start">
+              <SectionLabel icon={FileText}>Resume Intelligence</SectionLabel>
+              {resume && <span className="bg-emerald-500/10 text-emerald-400 text-[10px] px-2 py-0.5 rounded-full border border-emerald-500/20">Analyzed</span>}
+            </div>
             {resume ? (
-              <div className="mt-4 flex-1 flex flex-col justify-between">
+              <div className="mt-5 flex-1 flex flex-col justify-between">
                 <div>
-                  <div className="flex items-baseline gap-3">
-                    <div className="font-display text-3xl font-bold text-aurora">{resume.total_score}</div>
-                    <div className="text-xs text-muted-foreground uppercase tracking-widest">Overall Score</div>
+                  <div className="flex items-baseline gap-3 mb-4">
+                    <div className="font-display text-4xl font-bold text-aurora"><AnimatedCounter value={resume.total_score || resume.ats_score || 0} /></div>
+                    <div className="text-xs text-muted-foreground uppercase tracking-widest">Score</div>
                   </div>
-                  <div className="mt-4 grid grid-cols-2 gap-3 text-center">
-                    <Stat label="ATS Score" value={resume.ats_score} />
-                    <Stat label="Keywords" value={resume.keyword_match} />
+                  <div className="grid grid-cols-2 gap-2 text-center mb-4">
+                    <div className="glass rounded-xl py-3 border border-white/5">
+                      <div className="font-display text-xl font-bold"><AnimatedCounter value={resume.ats_score || 0} /></div>
+                      <div className="text-[9px] text-muted-foreground uppercase">ATS Match</div>
+                    </div>
+                    <div className="glass rounded-xl py-3 border border-white/5">
+                      <div className="font-display text-xl font-bold"><AnimatedCounter value={resume.keyword_match || 0} /></div>
+                      <div className="text-[9px] text-muted-foreground uppercase">Keywords</div>
+                    </div>
                   </div>
-                  <div className="mt-4 text-[10px] text-muted-foreground flex justify-between items-center">
-                    <span>Last analyzed: {new Date(resume.created_at).toLocaleDateString()}</span>
-                    <span className="bg-white/5 px-2 py-0.5 rounded-full border border-white/10">Latest Version</span>
-                  </div>
+                  
+                  {/* Dynamic Insights from Resume */}
+                  {(resume.missing_skills?.length > 0 || resume.suggestions?.length > 0) && (
+                    <div className="bg-white/5 rounded-xl p-3 mb-4 text-xs">
+                      {resume.missing_skills?.length > 0 && (
+                        <div className="mb-2">
+                          <div className="font-semibold text-white/80 mb-1">Missing Keywords:</div>
+                          <div className="flex flex-wrap gap-1">
+                            {resume.missing_skills.slice(0, 3).map((k: string, i: number) => (
+                              <span key={i} className="bg-red-500/10 text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded text-[10px]">{k}</span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                      {resume.suggestions?.length > 0 && (
+                        <div>
+                          <div className="font-semibold text-white/80 mb-1">Quick Fix:</div>
+                          <div className="text-muted-foreground line-clamp-2">{resume.suggestions[0]}</div>
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <Link to="/resume-intelligence" className="mt-5 relative w-full block text-center rounded-xl py-2.5 text-sm font-semibold overflow-hidden group">
-                  <span className="absolute inset-0 bg-aurora/10 group-hover:bg-aurora/20 transition-colors" />
-                  <span className="absolute inset-0 border border-aurora/30 rounded-xl" />
-                  <span className="relative flex items-center justify-center gap-2 text-aurora">
-                    Open Resume Intelligence <ArrowRight className="h-4 w-4" />
-                  </span>
+                <Link to="/resume-intelligence" className="w-full text-center py-2.5 text-sm font-semibold bg-aurora/10 hover:bg-aurora/20 text-aurora border border-aurora/30 rounded-xl transition-all flex items-center justify-center gap-2 group">
+                  View Full Analysis <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
                 </Link>
               </div>
             ) : (
-              <div className="mt-4 flex-1 flex flex-col justify-between">
-                <p className="text-sm text-muted-foreground">Upload your resume to unlock AI-powered Resume Intelligence and real ATS scoring.</p>
-                <label className="mt-5 w-full block text-center glass rounded-xl py-2.5 text-sm hover:bg-white/10 transition-colors cursor-pointer relative overflow-hidden group">
-                  <span className="absolute inset-0 bg-aurora/10 group-hover:bg-aurora/20 transition-colors" />
-                  <span className="relative flex items-center justify-center gap-2 text-aurora font-semibold">
-                    <Upload className="w-4 h-4" /> {uploading ? "Uploading..." : "Upload Resume"}
-                  </span>
+              <div className="flex-1 flex flex-col justify-center">
+                <EmptyState 
+                  icon={FileText} 
+                  title="Upload Resume" 
+                  desc="Unlock AI-powered scoring and ATS optimization."
+                />
+                <label className="mt-2 w-full text-center py-2.5 text-sm font-semibold bg-aurora/10 hover:bg-aurora/20 text-aurora border border-aurora/30 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer group">
+                  <Upload className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" /> {uploading ? "Uploading..." : "Upload PDF"}
                   <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleUpload} disabled={uploading} />
                 </label>
               </div>
             )}
           </Card>
-        </div>
+        </motion.div>
 
-        {/* achievements */}
-        <Card>
-          <div className="flex items-center justify-between">
-            <SectionLabel icon={Award}>Achievements</SectionLabel>
-            <span className="text-xs text-muted-foreground">
-              {achs.length}/{Object.keys(ACHIEVEMENT_CATALOG).length} unlocked
-            </span>
-          </div>
-          <div className="mt-4 grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-3">
-            {Object.entries(ACHIEVEMENT_CATALOG).map(([code, a]) => {
-              const unlocked = achs.includes(code);
-              return (
-                <div key={code} className={`glass rounded-2xl p-3 text-center ${unlocked ? "" : "opacity-30 grayscale"}`}>
-                  <div className="text-3xl">{a.emoji}</div>
-                  <div className="mt-2 text-xs font-medium truncate">{a.name}</div>
+        {/* ── 5. ACTIVITY & PREDICTIONS ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          
+          {/* Recent Activity */}
+          <Card className="lg:col-span-2 hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <SectionLabel icon={Activity}>Recent Activity Feed</SectionLabel>
+            <div className="mt-5 space-y-2">
+              {[
+                ...achs.slice(-3).map((code) => ({
+                  icon: Award,
+                  color: "text-yellow-400 bg-yellow-400/10 border-yellow-400/20",
+                  label: "Achievement Unlocked",
+                  sub: code.replace(/_/g, " "),
+                  time: "Recent",
+                })),
+                ...recentConversations.slice(0, 2).map((c: any) => ({
+                  icon: MessageSquare,
+                  color: "text-cyan-400 bg-cyan-400/10 border-cyan-400/20",
+                  label: "SyncPilot Conversation",
+                  sub: c.title || "Career Advice",
+                  time: new Date(c.updated_at).toLocaleDateString(),
+                })),
+                ...interviewSessions.slice(0, 2).map((s: any) => ({
+                  icon: Brain,
+                  color: "text-violet-400 bg-violet-400/10 border-violet-400/20",
+                  label: "Mock Interview Completed",
+                  sub: `${s.company || "Practice"} — Score ${s.score}`,
+                  time: new Date(s.created_at).toLocaleDateString(),
+                })),
+                ...(scores.length > 0 ? [{
+                  icon: TrendingUp,
+                  color: "text-emerald-400 bg-emerald-400/10 border-emerald-400/20",
+                  label: "Placement Score Updated",
+                  sub: `New total: ${latest.total_score}/100`,
+                  time: new Date(scores[0]?.created_at).toLocaleDateString(),
+                }] : []),
+              ].slice(0, 5).map((item, i) => (
+                <div key={i} className="group flex items-center gap-4 glass rounded-2xl px-4 py-3 hover:bg-white/5 transition-colors cursor-default border border-white/5 hover:border-white/10">
+                  <div className={`h-10 w-10 shrink-0 rounded-xl flex items-center justify-center border ${item.color}`}>
+                    <item.icon className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <div className="text-sm text-white/90 font-medium truncate">{item.label}</div>
+                    <div className="text-xs text-muted-foreground truncate mt-0.5">{item.sub}</div>
+                  </div>
+                  <div className="text-[10px] text-muted-foreground whitespace-nowrap bg-black/20 px-2 py-1 rounded-md">
+                    {item.time}
+                  </div>
                 </div>
-              );
-            })}
-          </div>
-        </Card>
-      </main>
+              ))}
+              {achs.length === 0 && recentConversations.length === 0 && interviewSessions.length === 0 && (
+                <EmptyState icon={Activity} title="No Activity Yet" desc="Complete missions and use tools to build your history." />
+              )}
+            </div>
+          </Card>
+
+          {/* Future Prediction */}
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <div className="flex items-center justify-between mb-5">
+              <SectionLabel icon={Sparkles}>AI Prediction</SectionLabel>
+              <span className="text-[9px] px-2 py-0.5 rounded-md bg-violet-500/15 text-violet-400 border border-violet-500/20 uppercase tracking-widest">
+                Forecast
+              </span>
+            </div>
+            <div className="space-y-3">
+              {(() => {
+                const skills = [
+                  { name: "Resume", score: latest.resume_score || 0 },
+                  { name: "GitHub", score: latest.github_score || 0 },
+                  { name: "DSA", score: latest.dsa_score || 0 },
+                  { name: "Communication", score: latest.communication_score || 0 }
+                ].sort((a, b) => a.score - b.score);
+                const weakest = skills[0];
+                const strongest = skills[skills.length - 1];
+
+                return [
+                  {
+                    label: "Placement Probability",
+                    value: Math.min(99, Math.round((latest.total_score || 0) * 1.1)),
+                    suffix: "%",
+                    color: "oklch(0.75 0.2 200)",
+                    sub: latest.total_score >= 70 ? "High confidence" : "Improving",
+                  },
+                  {
+                    label: "Strongest Skill",
+                    value: strongest.name,
+                    isText: true,
+                    color: "oklch(0.88 0.18 145)",
+                    sub: `Score: ${strongest.score}`,
+                  },
+                  {
+                    label: "Action Required",
+                    value: `Improve ${weakest.name}`,
+                    isText: true,
+                    color: "oklch(0.88 0.18 60)",
+                    sub: `Weakest score: ${weakest.score}`,
+                  },
+                ].map((pred, i) => (
+                  <div key={i} className="glass rounded-2xl p-3.5 flex items-center justify-between group hover:bg-white/5 transition-colors border border-transparent hover:border-white/5">
+                    <div>
+                      <div className="text-xs font-medium text-white/80">{pred.label}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5">{pred.sub}</div>
+                    </div>
+                    <div className="text-sm font-bold font-mono transition-transform group-hover:scale-105 text-right max-w-[120px] truncate" style={{ color: pred.color }}>
+                      {pred.isText ? pred.value : <><AnimatedCounter value={Number(pred.value)} />{pred.suffix}</>}
+                    </div>
+                  </div>
+                ));
+              })()}
+              <div className="text-[10px] text-muted-foreground/60 text-center pt-2 leading-relaxed">
+                Predictions generated live from your current data profile.
+              </div>
+            </div>
+          </Card>
+        </motion.div>
+
+        {/* ── 6. ACHIEVEMENT VAULT ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300">
+            <div className="flex items-center justify-between mb-5">
+              <SectionLabel icon={Award}>Achievement Vault</SectionLabel>
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground bg-white/5 px-3 py-1 rounded-full border border-white/10">
+                <span className="text-aurora font-bold">{achs.length}</span> / {Object.keys(ACHIEVEMENT_CATALOG).length} Unlocked
+              </div>
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
+              {Object.entries(ACHIEVEMENT_CATALOG).map(([code, a]) => {
+                const unlocked = achs.includes(code);
+                const IconMap: Record<string, any> = {
+                  Rocket, CheckCircle, Target, Briefcase, Flame, Diamond, Crown, Sun,
+                  Moon, Code, Terminal, CheckSquare, ShieldAlert, Maximize, FileCheck, Medal, Key,
+                  LayoutTemplate, Github, GitCommit, GitMerge, Globe, Mic, Video, MonitorPlay, Users,
+                  TerminalSquare, Layers, PartyPopper, Cpu, Brain, Trophy, Zap, Activity, Award, Star, Code2, MessageSquare, TrendingUp
+                };
+                const IconComponent = IconMap[a.icon] || Trophy;
+
+                let rarityColor = "text-white/60 drop-shadow-md";
+                let bgGlow = "from-white/10";
+                if (unlocked) {
+                  switch(a.rarity) {
+                    case "Common": rarityColor = "text-emerald-400 drop-shadow-[0_0_8px_rgba(52,211,153,0.5)]"; bgGlow = "from-emerald-400/20"; break;
+                    case "Rare": rarityColor = "text-blue-400 drop-shadow-[0_0_10px_rgba(96,165,250,0.6)]"; bgGlow = "from-blue-400/20"; break;
+                    case "Epic": rarityColor = "text-purple-400 drop-shadow-[0_0_12px_rgba(192,132,252,0.8)]"; bgGlow = "from-purple-400/20"; break;
+                    case "Legendary": rarityColor = "text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,1)]"; bgGlow = "from-yellow-400/20"; break;
+                  }
+                }
+
+                return (
+                  <div 
+                    key={code} 
+                    className={`group relative glass rounded-2xl p-4 flex flex-col items-center justify-center text-center transition-all duration-500 overflow-hidden min-h-[110px] ${
+                      unlocked ? "hover:-translate-y-1 hover:shadow-xl border border-white/10 hover:border-white/20 cursor-default" : "opacity-40 grayscale hover:opacity-70 cursor-not-allowed"
+                    }`}
+                  >
+                    {unlocked && (
+                      <div className={`absolute inset-0 bg-gradient-to-b ${bgGlow} to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500`} />
+                    )}
+                    <div className={`mb-3 transition-transform duration-500 ${unlocked ? "group-hover:scale-110 group-hover:-translate-y-1" : ""} ${rarityColor}`}>
+                      <IconComponent className="h-8 w-8 mx-auto" strokeWidth={1.5} />
+                    </div>
+                    <div className="text-[10px] font-bold leading-tight text-white/90 relative z-10 font-display">
+                      {a.name}
+                    </div>
+                    {unlocked && (
+                      <div className="absolute -bottom-8 group-hover:bottom-2 left-0 right-0 text-[8px] text-white/70 transition-all duration-300 px-1 opacity-0 group-hover:opacity-100">
+                        {a.desc}
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </Card>
+        </motion.div>
+
+      </motion.main>
     </>
   );
 }
@@ -908,3 +1019,59 @@ function RingMini({ value }: { value: number }) {
   );
 }
 
+function AnimatedCounter({ value, className }: { value: number; className?: string }) {
+  const mv = useMotionValue(0);
+  const spring = useSpring(mv, { stiffness: 50, damping: 20 });
+  const [display, setDisplay] = useState(0);
+
+  useEffect(() => {
+    mv.set(value);
+  }, [value, mv]);
+
+  useEffect(() => {
+    return spring.on("change", (v) => setDisplay(Math.round(v)));
+  }, [spring]);
+
+  return <span className={className}>{display}</span>;
+}
+
+function DashboardSkeleton() {
+  return (
+    <div className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6 animate-pulse">
+      <div className="flex justify-between items-end">
+        <div className="space-y-2">
+          <div className="h-3 w-24 bg-white/10 rounded-full" />
+          <div className="h-8 w-64 bg-white/10 rounded-xl" />
+        </div>
+        <div className="flex gap-2">
+          <div className="h-8 w-24 bg-white/10 rounded-full" />
+          <div className="h-8 w-24 bg-white/10 rounded-full" />
+        </div>
+      </div>
+      <div className="h-48 w-full bg-white/5 rounded-3xl" />
+      <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+        <div className="lg:col-span-2 row-span-2 h-72 bg-white/5 rounded-3xl" />
+        <div className="h-32 bg-white/5 rounded-3xl" />
+        <div className="h-32 bg-white/5 rounded-3xl" />
+        <div className="md:col-span-2 h-40 bg-white/5 rounded-3xl" />
+      </div>
+    </div>
+  );
+}
+
+function EmptyState({ icon: Icon, title, desc, ctaText, onCta }: any) {
+  return (
+    <div className="flex flex-col items-center justify-center py-8 text-center px-4">
+      <div className="h-12 w-12 rounded-full bg-white/5 flex items-center justify-center mb-3">
+        <Icon className="h-6 w-6 text-muted-foreground" />
+      </div>
+      <h3 className="text-sm font-semibold text-white/90">{title}</h3>
+      <p className="text-xs text-muted-foreground mt-1 mb-4 max-w-[200px]">{desc}</p>
+      {ctaText && onCta && (
+        <button onClick={onCta} className="text-xs bg-aurora/10 text-aurora hover:bg-aurora/20 px-4 py-2 rounded-full transition-colors font-medium border border-aurora/20">
+          {ctaText}
+        </button>
+      )}
+    </div>
+  );
+}

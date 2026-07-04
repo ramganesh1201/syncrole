@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Brain, Send, Loader2, User, Timer, Trophy,
   Mic, MicOff, ChevronLeft, Building2, Briefcase,
-  Target, Play, Settings, History,
+  Target, Play, Settings, History, CheckCircle2, Star, AlertCircle
 } from "lucide-react";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
