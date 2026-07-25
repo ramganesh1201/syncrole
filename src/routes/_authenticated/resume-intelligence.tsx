@@ -43,8 +43,9 @@ function ResumeIntelligence() {
   const [compareWithId, setCompareWithId] = useState<string | null>(null);
 
   const loadData = async () => {
+    console.trace("resume query: fetch resumes from resume_analysis");
     const { data: vData } = await supabase
-      .from("resume_versions")
+      .from("resume_analysis")
       .select("*")
       .order("created_at", { ascending: false });
       
@@ -53,6 +54,7 @@ function ResumeIntelligence() {
       if (!activeResume) setActiveResume(vData[0]);
     } else {
       // Fallback to old resume_analysis table
+      console.trace("resume query: fetch single resume from resume_analysis");
       const { data: oldData } = await supabase
         .from("resume_analysis")
         .select("*")
@@ -97,7 +99,8 @@ function ResumeIntelligence() {
       if (classErr) throw classErr;
       const document_type = classData.document_type || "Unknown";
 
-      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", u.user.id).order("version_number", { ascending: false }).limit(1);
+      console.trace("resume query: fetch version_number from resume_analysis");
+      const { data: existingVersions } = await supabase.from("resume_analysis").select("version_number").eq("user_id", u.user.id).order("version_number", { ascending: false }).limit(1);
       const version_number = existingVersions && existingVersions.length > 0 ? (existingVersions[0].version_number || 0) + 1 : 1;
 
       let insertData: any = {
@@ -114,7 +117,14 @@ function ResumeIntelligence() {
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "ats_scan", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("AI Request Failed", aiErr);
+          throw new Error("AI analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0 || !aiRes.ats_score) {
+          throw new Error("AI returned empty or invalid analysis results.");
+        }
         
         toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
@@ -132,7 +142,15 @@ function ResumeIntelligence() {
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "analyze_document", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("AI Request Failed", aiErr);
+          throw new Error("AI document analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0) {
+          throw new Error("AI returned empty document analysis.");
+        }
+        
         insertData = {
           ...insertData,
           analysis_results: aiRes,
@@ -145,8 +163,18 @@ function ResumeIntelligence() {
       }
 
       toast.loading("Saving Results...", { id: "upload" });
-      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
+      console.trace("resume query: insert into resume_analysis");
+      const { data: inserted, error: insertErr } = await supabase
+        .from("resume_analysis")
+        .insert(insertData)
+        .select()
+        .single();
+        
       if (insertErr) throw insertErr;
+      
+      if (!inserted.file_name || !inserted.extracted_text) {
+        throw new Error("Database schema cache is stale and dropped the inserted columns. Please run 'NOTIFY pgrst, reload_schema;' in your Supabase SQL editor.");
+      }
 
       toast.success("Analysis Complete", { id: "upload" });
       loadData();
@@ -163,7 +191,8 @@ function ResumeIntelligence() {
     if (!confirm("Are you sure you want to delete this version?")) return;
     toast.loading("Deleting...", { id: "delete" });
     try {
-      const { error } = await supabase.from("resume_versions").delete().eq("id", id);
+      console.trace("resume query: delete from resume_analysis");
+      const { error } = await supabase.from("resume_analysis").delete().eq("id", id);
       if (error) throw error;
       toast.success("Version deleted", { id: "delete" });
       loadData();

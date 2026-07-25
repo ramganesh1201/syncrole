@@ -845,25 +845,6 @@ export type Database = {
         }
         Relationships: []
       }
-      resume_versions: {
-        Row: {
-          analysis_results: Json | null
-          ats_score: number | null
-          created_at: string
-          document_type: string | null
-          extracted_text: string | null
-          file_name: string | null
-          file_path: string | null
-          formatting_score: number | null
-          id: string
-          keyword_match: number | null
-          missing_skills: string[] | null
-          project_score: number | null
-          suggestions: string[] | null
-          total_score: number | null
-          user_id: string
-          version_number: number | null
-        }
         Insert: {
           analysis_results?: Json | null
           ats_score?: number | null
@@ -1457,3 +1438,4 @@ export const Constants = {
     },
   },
 } as const
+

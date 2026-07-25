@@ -21,6 +21,10 @@ export async function extractTextFromPDF(file: File): Promise<string> {
       fullText += pageText + "\n";
     }
     
+    if (!fullText.trim()) {
+      throw new Error("No readable text found in this PDF. It might be a scanned image or corrupted.");
+    }
+    
     return fullText;
   } catch (error) {
     console.error("Error extracting PDF text:", error);

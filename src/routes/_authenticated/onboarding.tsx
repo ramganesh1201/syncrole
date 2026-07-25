@@ -398,7 +398,7 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
       if (classErr) throw classErr;
       const document_type = classData.document_type || "Unknown";
 
-      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", user.id).order("version_number", { ascending: false }).limit(1);
+      const { data: existingVersions } = await supabase.from("resume_analysis").select("version_number").eq("user_id", user.id).order("version_number", { ascending: false }).limit(1);
       const version_number = existingVersions && existingVersions.length > 0 ? (existingVersions[0].version_number || 0) + 1 : 1;
 
       let insertData: any = {
@@ -415,7 +415,14 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "ats_scan", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("AI Request Failed", aiErr);
+          throw new Error("AI analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0 || !aiRes.ats_score) {
+          throw new Error("AI returned empty or invalid analysis results.");
+        }
         
         toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
@@ -433,7 +440,15 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "analyze_document", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("AI Request Failed", aiErr);
+          throw new Error("AI document analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0) {
+          throw new Error("AI returned empty document analysis.");
+        }
+        
         insertData = {
           ...insertData,
           analysis_results: aiRes,
@@ -446,8 +461,17 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
       }
 
       toast.loading("Saving Results...", { id: "upload" });
-      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
+      const { data: inserted, error: insertErr } = await supabase
+        .from("resume_analysis")
+        .insert(insertData)
+        .select()
+        .single();
+        
       if (insertErr) throw insertErr;
+      
+      if (!inserted.file_name || !inserted.extracted_text) {
+        throw new Error("Database schema cache is stale and dropped the inserted columns. Please run 'NOTIFY pgrst, reload_schema;' in your Supabase SQL editor.");
+      }
 
       await supabase
         .from("achievements")

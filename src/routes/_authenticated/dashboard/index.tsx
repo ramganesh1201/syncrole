@@ -67,7 +67,7 @@ function Dashboard() {
       supabase.from("achievements").select("code").eq("user_id", uid),
       supabase.from("github_analysis").select("*").eq("user_id", uid).maybeSingle(),
       supabase
-        .from("resume_versions")
+        .from("resume_analysis")
         .select("*")
         .eq("user_id", uid)
         .order("created_at", { ascending: false })
@@ -200,32 +200,59 @@ function Dashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    toast.loading("Uploading...", { id: "upload" });
+
     try {
+      console.log("[Pipeline Trace] 1. Resume selected:", file.name, `(${file.size} bytes)`);
+      if (file.size > 5 * 1024 * 1024) {
+        throw new Error("File must be less than 5MB");
+      }
+
+      setUploading(true);
+      toast.loading("Uploading document...", { id: "upload" });
+
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) throw new Error("Not logged in");
 
-      const ext = file.name.split('.').pop();
-      const path = `${u.user.id}/${Date.now()}.${ext}`;
-      const { error: uploadErr } = await supabase.storage.from("resumes").upload(path, file);
-      if (uploadErr) throw uploadErr;
+      const fileExt = file.name.split('.').pop();
+      const filePath = `${u.user.id}/${crypto.randomUUID()}.${fileExt}`;
+      
+      console.log("[Pipeline Trace] 2. Storage upload initiated to path:", filePath);
+      const { error: uploadError } = await supabase.storage
+        .from('resumes')
+        .upload(filePath, file);
 
-      toast.loading("Extracting Resume...", { id: "upload" });
+      if (uploadError) {
+        console.error("[Pipeline Trace] Storage upload failed:", uploadError);
+        throw uploadError;
+      }
+      console.log("[Pipeline Trace] Storage upload SUCCESS.");
+
+      toast.loading("Extracting text...", { id: "upload" });
+      console.log("[Pipeline Trace] 3. PDF extraction initiated.");
       const resumeText = await extractTextFromPDF(file);
+      console.log("[Pipeline Trace] PDF extraction SUCCESS. Extracted length:", resumeText.length);
 
-      toast.loading("Analysing Skills...", { id: "upload" });
+      toast.loading("Classifying Document...", { id: "upload" });
+      console.log("[Pipeline Trace] 4. AI classification initiated.");
       const { data: classData, error: classErr } = await supabase.functions.invoke("resume-intelligence", {
         body: { action: "classify", resumeText }
       });
-      if (classErr) throw classErr;
-      const document_type = classData.document_type || "Unknown";
+      if (classErr) {
+        console.error("[Pipeline Trace] AI classification failed:", classErr);
+        throw classErr;
+      }
+      
+      const document_type = classData?.document_type || "Unknown";
+      console.log("[Pipeline Trace] AI classification SUCCESS. Type:", document_type);
 
-      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", u.user.id).order("version_number", { ascending: false }).limit(1);
+      console.trace("resume query: fetch version_number in dashboard upload");
+      console.trace("resume query: fetch latest from resume_analysis in dashboard");
+      const { data: existingVersions } = await supabase.from("resume_analysis").select("version_number").eq("user_id", u.user.id).order("version_number", { ascending: false }).limit(1);
       const version_number = existingVersions && existingVersions.length > 0 ? (existingVersions[0].version_number || 0) + 1 : 1;
 
       let insertData: any = {
         user_id: u.user.id,
-        file_path: path,
+        file_path: filePath,
         file_name: file.name,
         extracted_text: resumeText,
         document_type,
@@ -234,10 +261,20 @@ function Dashboard() {
 
       if (document_type === "Resume") {
         toast.loading("Calculating ATS...", { id: "upload" });
+        console.log("[Pipeline Trace] 5. AI ATS Scan initiated.");
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "ats_scan", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("[Pipeline Trace] AI ATS Scan failed:", aiErr);
+          throw new Error("AI analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0 || !aiRes.ats_score) {
+          console.error("[Pipeline Trace] AI ATS Scan returned empty/invalid results:", aiRes);
+          throw new Error("AI returned empty or invalid analysis results.");
+        }
+        console.log("[Pipeline Trace] AI ATS Scan SUCCESS. Score:", aiRes.ats_score);
         
         toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
@@ -255,7 +292,15 @@ function Dashboard() {
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "analyze_document", resumeText }
         });
-        if (aiErr) throw aiErr;
+        
+        if (aiErr) {
+          console.error("AI Request Failed", aiErr);
+          throw new Error("AI document analysis failed: " + (aiErr.message || "Unknown error"));
+        }
+        if (!aiRes || Object.keys(aiRes).length === 0) {
+          throw new Error("AI returned empty document analysis.");
+        }
+        
         insertData = {
           ...insertData,
           analysis_results: aiRes,
@@ -268,13 +313,35 @@ function Dashboard() {
       }
 
       toast.loading("Saving Results...", { id: "upload" });
-      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
-      if (insertErr) throw insertErr;
+      console.log("[Pipeline Trace] 6. Database insert initiated to resume_analysis.");
+      console.log("[Pipeline Trace] Payload:", insertData);
+      
+      const { data: inserted, error: insertErr } = await supabase
+        .from("resume_analysis")
+        .insert(insertData)
+        .select()
+        .single();
+        
+      if (insertErr) {
+        console.error("[Pipeline Trace] Database insert failed:", insertErr);
+        throw insertErr;
+      }
+      
+      console.log("[Pipeline Trace] Database insert SUCCESS. Row returned:", inserted);
+      
+      // Verification that the schema cache accepted the new columns (e.g. file_name, extracted_text)
+      if (!inserted.file_name || !inserted.extracted_text) {
+        console.error("[Pipeline Trace] SCHEMA CACHE FAILURE detected. Database returned NULL for newly added columns.");
+        throw new Error("Database schema cache is stale and dropped the inserted columns. Please run 'NOTIFY pgrst, reload_schema;' in your Supabase SQL editor.");
+      }
 
+      console.log("[Pipeline Trace] 7. Dashboard refresh initiated.");
       toast.success("Analysis Complete", { id: "upload" });
       loadAll();
       nav({ to: "/resume-intelligence" });
+      console.log("[Pipeline Trace] PIPELINE COMPLETE.");
     } catch (e: any) {
+      console.error("[Pipeline Trace] FATAL PIPELINE EXCEPTION:", e);
       toast.error(e.message || "An error occurred during analysis", { id: "upload" });
     } finally {
       setUploading(false);
