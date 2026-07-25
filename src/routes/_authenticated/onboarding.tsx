@@ -369,39 +369,40 @@ function Summary({ label, value }: { label: string; value: string }) {
     </div>
   );
 }
-
 function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
   const [busy, setBusy] = useState(false);
   const [name, setName] = useState<string | null>(null);
 
-  async function upload(e: React.ChangeEvent<HTMLInputElement>) {
+  const upload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setBusy(true);
+    toast.loading("Uploading...", { id: "upload" });
     try {
-      const { data: u } = await supabase.auth.getUser();
-      if (!u.user) return;
-      const path = `${u.user.id}/${Date.now()}-${file.name}`;
-      const { error } = await supabase.storage.from("resumes").upload(path, file, { upsert: true });
-      if (error) throw error;
-      
-      // Parse PDF
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) throw new Error("Not logged in");
+
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("resumes").upload(path, file);
+      if (uploadErr) throw uploadErr;
+
+      toast.loading("Extracting Resume...", { id: "upload" });
       const { extractTextFromPDF } = await import("@/lib/pdf");
       const resumeText = await extractTextFromPDF(file);
-      
-      // Classify Document
+
+      toast.loading("Analysing Skills...", { id: "upload" });
       const { data: classData, error: classErr } = await supabase.functions.invoke("resume-intelligence", {
         body: { action: "classify", resumeText }
       });
       if (classErr) throw classErr;
       const document_type = classData.document_type || "Unknown";
 
-      // Determine Version Number
-      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", u.user.id).order("version_number", { ascending: false }).limit(1);
+      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", user.id).order("version_number", { ascending: false }).limit(1);
       const version_number = existingVersions && existingVersions.length > 0 ? (existingVersions[0].version_number || 0) + 1 : 1;
 
       let insertData: any = {
-        user_id: u.user.id,
+        user_id: user.id,
         file_path: path,
         file_name: file.name,
         extracted_text: resumeText,
@@ -410,12 +411,13 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
       };
 
       if (document_type === "Resume") {
-        // Run ATS Scan
+        toast.loading("Calculating ATS...", { id: "upload" });
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "ats_scan", resumeText }
         });
         if (aiErr) throw aiErr;
-
+        
+        toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
           ...insertData,
           ats_score: aiRes.ats_score,
@@ -427,12 +429,11 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
           missing_skills: aiRes.missing_skills,
         };
       } else {
-        // Run Document Analysis
+        toast.loading("Analysing Document...", { id: "upload" });
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "analyze_document", resumeText }
         });
         if (aiErr) throw aiErr;
-        
         insertData = {
           ...insertData,
           analysis_results: aiRes,
@@ -444,26 +445,29 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
         };
       }
 
-      await supabase.from("resume_versions").insert(insertData);
+      toast.loading("Saving Results...", { id: "upload" });
+      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
+      if (insertErr) throw insertErr;
+
       await supabase
         .from("achievements")
-        .insert({ user_id: u.user.id, code: "resume_uploaded" })
+        .insert({ user_id: user.id, code: "resume_uploaded" })
         .then(() => {});
       await supabase.rpc("award_xp", {
-        _user: u.user.id,
+        _user: user.id,
         _type: "resume_uploaded",
         _xp: XP.RESUME_UPLOAD,
         _meta: {},
       });
-      await supabase.rpc("recompute_placement", { _user: u.user.id });
+      await supabase.rpc("recompute_placement", { _user: user.id });
       setName(file.name);
       onUploaded();
     } catch (e: any) {
-      toast.error(e.message);
+      toast.error(e.message || "An error occurred", { id: "upload" });
     } finally {
       setBusy(false);
     }
-  }
+  };
 
   return (
     <label className="mt-3 block cursor-pointer rounded-2xl border-2 border-dashed border-white/15 px-6 py-10 text-center hover:bg-white/5">

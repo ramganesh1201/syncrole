@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { motion } from "framer-motion";
@@ -22,6 +22,7 @@ function ProfilePage() {
   // Placement stats for Career Identity Card
   const [placementStats, setPlacementStats] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
+  const nav = useNavigate();
 
   useEffect(() => {
     async function load() {
@@ -66,14 +67,80 @@ function ProfilePage() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    toast.loading("Uploading resume...", { id: "resume-upload" });
+    toast.loading("Uploading...", { id: "resume-upload" });
     try {
-      const path = `${user.id}/${Date.now()}_${file.name}`;
-      const { error } = await supabase.storage.from("resumes").upload(path, file);
-      if (error) throw error;
-      toast.success("Resume uploaded! It will be analyzed shortly.", { id: "resume-upload" });
+      const ext = file.name.split('.').pop();
+      const path = `${user.id}/${Date.now()}.${ext}`;
+      const { error: uploadErr } = await supabase.storage.from("resumes").upload(path, file);
+      if (uploadErr) throw uploadErr;
+
+      toast.loading("Extracting Resume...", { id: "resume-upload" });
+      const { extractTextFromPDF } = await import("@/lib/pdf");
+      const resumeText = await extractTextFromPDF(file);
+
+      toast.loading("Analysing Skills...", { id: "resume-upload" });
+      const { data: classData, error: classErr } = await supabase.functions.invoke("resume-intelligence", {
+        body: { action: "classify", resumeText }
+      });
+      if (classErr) throw classErr;
+      const document_type = classData.document_type || "Unknown";
+
+      const { data: existingVersions } = await supabase.from("resume_versions").select("version_number").eq("user_id", user.id).order("version_number", { ascending: false }).limit(1);
+      const version_number = existingVersions && existingVersions.length > 0 ? (existingVersions[0].version_number || 0) + 1 : 1;
+
+      let insertData: any = {
+        user_id: user.id,
+        file_path: path,
+        file_name: file.name,
+        extracted_text: resumeText,
+        document_type,
+        version_number,
+      };
+
+      if (document_type === "Resume") {
+        toast.loading("Calculating ATS...", { id: "resume-upload" });
+        const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
+          body: { action: "ats_scan", resumeText }
+        });
+        if (aiErr) throw aiErr;
+        
+        toast.loading("Generating Recommendations...", { id: "resume-upload" });
+        insertData = {
+          ...insertData,
+          ats_score: aiRes.ats_score,
+          keyword_match: aiRes.keyword_match,
+          formatting_score: aiRes.formatting_score,
+          project_score: aiRes.project_score,
+          total_score: aiRes.total_score,
+          suggestions: aiRes.suggestions,
+          missing_skills: aiRes.missing_skills,
+        };
+      } else {
+        toast.loading("Analysing Document...", { id: "resume-upload" });
+        const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
+          body: { action: "analyze_document", resumeText }
+        });
+        if (aiErr) throw aiErr;
+        insertData = {
+          ...insertData,
+          analysis_results: aiRes,
+          ats_score: 0,
+          keyword_match: 0,
+          formatting_score: 0,
+          project_score: 0,
+          total_score: 0,
+        };
+      }
+
+      toast.loading("Saving Results...", { id: "resume-upload" });
+      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
+      if (insertErr) throw insertErr;
+
+      toast.success("Analysis Complete", { id: "resume-upload" });
+      // Redirect to resume intelligence if it was uploaded from profile
+      nav({ to: "/resume-intelligence" });
     } catch (err: any) {
-      toast.error(err.message || "Failed to upload resume", { id: "resume-upload" });
+      toast.error(err.message || "An error occurred during analysis", { id: "resume-upload" });
     } finally {
       setUploading(false);
     }

@@ -57,6 +57,7 @@ import {
 
 // ── New homepage section components ────────────────────────────
 import HeroSection from "@/components/home/HeroSection";
+const DemoModal = lazy(() => import("@/components/home/DemoModal"));
 import CareerJourneyTimeline from "@/components/home/CareerJourneyTimeline";
 import AICareerTwinSection from "@/components/home/AICareerTwinSection";
 import RecruiterToggleSection from "@/components/home/RecruiterToggleSection";
@@ -352,7 +353,7 @@ function Nav() {
 
 /* ---------- HERO (MARKETING) ---------- */
 
-function MarketingHero() {
+function MarketingHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
@@ -426,7 +427,7 @@ function MarketingHero() {
             Login to Generate Your Placement Score
             <ArrowRight className="h-4 w-4" />
           </GetStartedCTA>
-          <MagneticButton variant="ghost">
+          <MagneticButton variant="ghost" onClick={onOpenDemo}>
             <Play className="h-4 w-4" /> Watch Live Demo
           </MagneticButton>
         </motion.div>
@@ -1803,6 +1804,7 @@ function CursorSpotlight() {
 function Landing() {
   const { user } = useAuth();
   const homeData = useHomeData(user);
+  const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   if (user && homeData.loading) {
     return (
@@ -1825,7 +1827,7 @@ function Landing() {
       <Nav />
 
       {/* SECTION 1 — Hero (globe preserved) */}
-      <HeroSection data={homeData} isAuthed={!!user} />
+      <HeroSection data={homeData} isAuthed={!!user} onOpenDemo={() => setIsDemoOpen(true)} />
 
       {/* SECTION 2 — Career Journey + Future Prediction (merged) */}
       <CareerJourneyTimeline data={homeData} />
@@ -1847,6 +1849,10 @@ function Landing() {
 
       {/* SECTION 8 — Career Transformations (renamed Stories + submission) */}
       <CareerTransformationsSection data={homeData} />
+
+      <Suspense fallback={null}>
+        <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
+      </Suspense>
 
       {/* SECTION 9 — Final CTA */}
       <FinalCTA />

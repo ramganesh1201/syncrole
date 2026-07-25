@@ -200,7 +200,7 @@ function Dashboard() {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    toast.loading("Uploading resume...", { id: "upload" });
+    toast.loading("Uploading...", { id: "upload" });
     try {
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) throw new Error("Not logged in");
@@ -210,8 +210,10 @@ function Dashboard() {
       const { error: uploadErr } = await supabase.storage.from("resumes").upload(path, file);
       if (uploadErr) throw uploadErr;
 
+      toast.loading("Extracting Resume...", { id: "upload" });
       const resumeText = await extractTextFromPDF(file);
 
+      toast.loading("Analysing Skills...", { id: "upload" });
       const { data: classData, error: classErr } = await supabase.functions.invoke("resume-intelligence", {
         body: { action: "classify", resumeText }
       });
@@ -231,10 +233,13 @@ function Dashboard() {
       };
 
       if (document_type === "Resume") {
+        toast.loading("Calculating ATS...", { id: "upload" });
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "ats_scan", resumeText }
         });
         if (aiErr) throw aiErr;
+        
+        toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
           ...insertData,
           ats_score: aiRes.ats_score,
@@ -246,6 +251,7 @@ function Dashboard() {
           missing_skills: aiRes.missing_skills,
         };
       } else {
+        toast.loading("Analysing Document...", { id: "upload" });
         const { data: aiRes, error: aiErr } = await supabase.functions.invoke("resume-intelligence", {
           body: { action: "analyze_document", resumeText }
         });
@@ -261,11 +267,15 @@ function Dashboard() {
         };
       }
 
-      await supabase.from("resume_versions").insert(insertData);
-      toast.success("Resume uploaded successfully", { id: "upload" });
+      toast.loading("Saving Results...", { id: "upload" });
+      const { error: insertErr } = await supabase.from("resume_versions").insert(insertData);
+      if (insertErr) throw insertErr;
+
+      toast.success("Analysis Complete", { id: "upload" });
       loadAll();
+      nav({ to: "/resume-intelligence" });
     } catch (e: any) {
-      toast.error(e.message, { id: "upload" });
+      toast.error(e.message || "An error occurred during analysis", { id: "upload" });
     } finally {
       setUploading(false);
     }

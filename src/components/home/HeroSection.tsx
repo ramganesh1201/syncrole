@@ -142,7 +142,7 @@ function AnimatedCount({ to, suffix }: { to: number; suffix: string }) {
 
 /* ─── Guest Hero ────────────────────────────────────────────── */
 
-function GuestHero() {
+function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
   const y = useTransform(scrollYProgress, [0, 1], [0, 150]);
@@ -207,7 +207,8 @@ function GuestHero() {
             </motion.button>
             <motion.button
               whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
-              className="inline-flex items-center gap-2 rounded-full glass-strong px-7 py-4 text-sm font-semibold hover:bg-white/10 transition"
+              onClick={onOpenDemo}
+              className="inline-flex items-center gap-2 rounded-full glass-strong px-7 py-4 text-sm font-semibold hover:bg-white/10 transition cursor-pointer"
             >
               <Play className="h-4 w-4" /> Watch Live Demo
             </motion.button>
@@ -383,6 +384,6 @@ function AuthHero({ data }: { data: any }) {
 
 /* ─── Export ────────────────────────────────────────────────── */
 
-export default function HeroSection({ data, isAuthed }: { data: any; isAuthed: boolean }) {
-  return isAuthed ? <AuthHero data={data} /> : <GuestHero />;
+export default function HeroSection({ data, isAuthed, onOpenDemo }: { data: any; isAuthed: boolean; onOpenDemo?: () => void }) {
+  return isAuthed ? <AuthHero data={data} /> : <GuestHero onOpenDemo={onOpenDemo} />;
 }
