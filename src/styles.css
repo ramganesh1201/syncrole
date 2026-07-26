@@ -416,8 +416,12 @@ html {
 
 .dropdown-item {
   @apply relative flex w-full cursor-default select-none items-center rounded-xl py-2 pl-3 pr-8 text-sm outline-none transition-all duration-200 text-muted-foreground hover:text-foreground;
-  @apply focus:bg-aurora focus:text-primary-foreground focus:shadow-[0_0_20px_-5px_oklch(0.72_0.22_295/50%)];
   @apply data-[disabled]:pointer-events-none data-[disabled]:opacity-50;
+}
+.dropdown-item:focus {
+  background: var(--gradient-aurora);
+  color: var(--color-primary-foreground);
+  box-shadow: 0 0 20px -5px oklch(0.72 0.22 295/50%);
 }
 
 .dropdown-label {
