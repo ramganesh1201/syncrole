@@ -400,3 +400,46 @@ html {
   50%       { opacity: 0.3; }
 }
 .feed-dot { animation: feed-dot 2s ease-in-out infinite; }
+
+/* ─── Unified Premium Dropdown System ──────────────────────────── */
+
+.dropdown-content {
+  @apply relative z-[100] overflow-hidden rounded-2xl border border-white/10 shadow-2xl;
+  background: linear-gradient(135deg, oklch(0.12 0.02 270 / 95%), oklch(0.16 0.025 270 / 90%));
+  backdrop-filter: blur(28px) saturate(180%);
+  box-shadow: 0 0 0 1px oklch(1 0 0 / 5%) inset, 0 20px 40px -10px oklch(0 0 0 / 70%), 0 0 80px -20px oklch(0.72 0.22 295 / 20%);
+}
+
+.dropdown-viewport {
+  @apply p-1.5;
+}
+
+.dropdown-item {
+  @apply relative flex w-full cursor-default select-none items-center rounded-xl py-2 pl-3 pr-8 text-sm outline-none transition-all duration-200 text-muted-foreground hover:text-foreground;
+  @apply focus:bg-aurora focus:text-primary-foreground focus:shadow-[0_0_20px_-5px_oklch(0.72_0.22_295/50%)];
+  @apply data-[disabled]:pointer-events-none data-[disabled]:opacity-50;
+}
+
+.dropdown-label {
+  @apply px-3 py-2 text-xs font-semibold uppercase tracking-widest text-muted-foreground;
+}
+
+.dropdown-separator {
+  @apply -mx-1.5 my-1.5 h-px bg-white/5;
+}
+
+/* Custom Scrollbar for Dropdowns */
+.dropdown-scrollbar::-webkit-scrollbar {
+  width: 4px;
+  height: 4px;
+}
+.dropdown-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.dropdown-scrollbar::-webkit-scrollbar-thumb {
+  background: oklch(1 0 0 / 10%);
+  border-radius: 9999px;
+}
+.dropdown-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: oklch(1 0 0 / 20%);
+}

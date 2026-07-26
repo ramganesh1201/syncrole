@@ -2,6 +2,7 @@ import { createFileRoute, Link, useRouter, useSearch } from "@tanstack/react-rou
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowLeft, ArrowUpRight, Code2, Search, Filter, Star, Bookmark, Clock, SlidersHorizontal, LayoutGrid, CheckCircle2, MoreHorizontal, BrainCircuit, ChevronLeft, ChevronRight, TrendingUp, Target, ArrowRight, Award } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import { DSAService } from "@/lib/services/dsa.service";
@@ -232,16 +233,20 @@ function DSAProblemsPage() {
 
           <div>
             <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Sort By</div>
-            <select 
+            <Select 
               value={filterState.sortBy} 
-              onChange={e => setFilterState(s => ({ ...s, sortBy: e.target.value }))}
-              className="w-full glass rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-aurora/50"
+              onValueChange={val => setFilterState(s => ({ ...s, sortBy: val }))}
             >
-              <option value="difficulty">Difficulty</option>
-              <option value="popularity">Popularity / Freq</option>
-              <option value="acceptance">Acceptance Rate</option>
-              <option value="newest">Recommended Order</option>
-            </select>
+              <SelectTrigger className="w-full glass rounded-lg px-3 py-2 text-sm outline-none focus:ring-1 focus:ring-aurora/50 border-none shadow-none text-muted-foreground h-auto">
+                <SelectValue placeholder="Sort By" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="difficulty">Difficulty</SelectItem>
+                <SelectItem value="popularity">Popularity / Freq</SelectItem>
+                <SelectItem value="acceptance">Acceptance Rate</SelectItem>
+                <SelectItem value="newest">Recommended Order</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
       </div>
@@ -273,17 +278,21 @@ function DSAProblemsPage() {
               </button>
             ))}
 
-            <select
-              value={searchParams.topic ?? ""}
-              onChange={(e) => {
-                const topic = e.target.value;
+            <Select
+              value={searchParams.topic ?? "all"}
+              onValueChange={(val) => {
+                const topic = val === "all" ? "" : val;
                 router.navigate({ to: "/dsa-problems", search: (prev: any) => ({ ...prev, topic: topic || undefined }) });
               }}
-              className="glass rounded-full px-4 py-2 text-sm"
             >
-              <option value="">All topics</option>
-              {topics.map((topic) => <option key={topic.id} value={topic.id}>{topic.name}</option>)}
-            </select>
+              <SelectTrigger className="glass rounded-full px-4 py-2 text-sm border-none shadow-none w-[180px] h-auto">
+                <SelectValue placeholder="All topics" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All topics</SelectItem>
+                {topics.map((topic) => <SelectItem key={topic.id} value={topic.id}>{topic.name}</SelectItem>)}
+              </SelectContent>
+            </Select>
 
             {(searchParams.difficulty || searchParams.topic) && (
               <button onClick={() => router.navigate({ to: "/dsa-problems", search: {} as any })} className="px-3 py-2 rounded-full text-xs bg-white/10 hover:bg-white/15">

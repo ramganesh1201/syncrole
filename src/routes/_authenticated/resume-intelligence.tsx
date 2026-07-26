@@ -21,6 +21,7 @@ import {
   Trash2,
   Plus
 } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { XP } from "@/lib/syncrole";
 
@@ -371,15 +372,21 @@ function ComparePane({ title, resume, isSelector, resumes, onSelect }: any) {
       <div className="p-4 border-b border-white/5 bg-white/5 flex justify-between items-center">
         <div className="text-sm font-semibold text-muted-foreground">{title}</div>
         {isSelector && resumes && onSelect ? (
-          <select 
-            className="bg-transparent border border-white/10 rounded px-2 py-1 text-sm outline-none"
+          <Select 
             value={resume.id}
-            onChange={(e) => onSelect(e.target.value)}
+            onValueChange={onSelect}
           >
-            {resumes.map((r: any) => (
-              <option key={r.id} value={r.id} className="bg-background text-white">v{r.version_number} - {r.document_type || "Resume"}</option>
-            ))}
-          </select>
+            <SelectTrigger className="bg-transparent border border-white/10 rounded px-2 py-1 text-sm outline-none w-[180px] h-auto shadow-none">
+              <SelectValue placeholder="Select version" />
+            </SelectTrigger>
+            <SelectContent>
+              {resumes.map((r: any) => (
+                <SelectItem key={r.id} value={r.id}>
+                  v{r.version_number} - {r.document_type || "Resume"}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
         ) : (
           <div className="text-sm font-medium">v{resume.version_number} - {resume.document_type || "Resume"}</div>
         )}
