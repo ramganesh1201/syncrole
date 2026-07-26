@@ -279,6 +279,7 @@ function Dashboard() {
         toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
           ...insertData,
+          analysis_results: aiRes,
           ats_score: aiRes.ats_score,
           keyword_match: aiRes.keyword_match,
           formatting_score: aiRes.formatting_score,

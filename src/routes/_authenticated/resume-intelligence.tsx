@@ -129,6 +129,7 @@ function ResumeIntelligence() {
         toast.loading("Generating Recommendations...", { id: "upload" });
         insertData = {
           ...insertData,
+          analysis_results: aiRes,
           ats_score: aiRes.ats_score,
           keyword_match: aiRes.keyword_match,
           formatting_score: aiRes.formatting_score,
@@ -530,6 +531,7 @@ function StatCard({ title, value, outOf, icon: Icon }: any) {
 function AtsTab({ resume }: { resume: any }) {
   // Phase 4: ATS Scanner & Phase 5: Heatmap
   const missing = resume.missing_skills || ["Cloud Architecture", "Docker", "CI/CD"];
+  const heatmap = resume.analysis_results?.heatmap || {};
   
   return (
     <div className="space-y-8">
@@ -547,10 +549,10 @@ function AtsTab({ resume }: { resume: any }) {
             <div>
               <div className="flex justify-between text-sm mb-1">
                 <span className="text-muted-foreground">Match Rate</span>
-                <span className="font-medium">{resume.keyword_match}%</span>
+                <span className="font-medium">{resume.keyword_match || 0}%</span>
               </div>
               <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
-                <motion.div initial={{ width: 0 }} animate={{ width: `${resume.keyword_match}%` }} className="h-full bg-aurora" />
+                <motion.div initial={{ width: 0 }} animate={{ width: `${resume.keyword_match || 0}%` }} className="h-full bg-aurora" />
               </div>
             </div>
             
@@ -572,11 +574,11 @@ function AtsTab({ resume }: { resume: any }) {
             <TrendingUp className="w-4 h-4 text-aurora" /> Section Heatmap
           </h3>
           <div className="space-y-3">
-            <HeatmapRow label="Education" status="strong" />
-            <HeatmapRow label="Experience" status={resume.project_score > 80 ? "strong" : "average"} />
-            <HeatmapRow label="Projects" status={resume.project_score > 70 ? "strong" : "weak"} />
-            <HeatmapRow label="Skills" status="average" />
-            <HeatmapRow label="Achievements" status="weak" />
+            <HeatmapRow label="Education" status={heatmap.education || "strong"} />
+            <HeatmapRow label="Experience" status={heatmap.experience || (resume.project_score > 80 ? "strong" : "average")} />
+            <HeatmapRow label="Projects" status={heatmap.projects || (resume.project_score > 70 ? "strong" : "weak")} />
+            <HeatmapRow label="Skills" status={heatmap.skills || "average"} />
+            <HeatmapRow label="Achievements" status={heatmap.achievements || "weak"} />
           </div>
         </div>
       </div>
