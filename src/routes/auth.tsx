@@ -5,6 +5,7 @@ import { Sparkles, ArrowRight, Mail, Lock, User as UserIcon, Loader2, ArrowLeft 
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AuroraBackground from "@/components/AuroraBackground";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export const Route = createFileRoute("/auth")({
   ssr: false,
@@ -119,15 +120,9 @@ function AuthPage() {
         animate={{ opacity: 1, y: 0 }}
         className="relative z-10 w-full max-w-md"
       >
-        <Link to="/" className="mb-8 flex items-center justify-center gap-2" aria-label="Go to homepage">
-          <div className="relative h-9 w-9">
-            <div className="absolute inset-0 rounded-lg bg-aurora animate-float" />
-            <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-              <Sparkles className="h-4 w-4 text-aurora" />
-            </div>
-          </div>
-          <span className="font-display text-xl font-semibold">SyncRole</span>
-        </Link>
+        <div className="mb-8 flex justify-center">
+          <BrandLogo size="lg" />
+        </div>
 
         <div className="relative rounded-3xl p-px">
           <div className="absolute inset-0 rounded-3xl bg-aurora opacity-50 blur" />

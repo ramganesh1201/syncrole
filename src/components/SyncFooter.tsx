@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default function SyncFooter() {
   const [email, setEmail] = useState("");
@@ -40,15 +41,7 @@ export default function SyncFooter() {
     <footer className="relative border-t border-white/5 mt-24">
       <div className="mx-auto max-w-7xl px-6 py-16 grid gap-12 lg:grid-cols-4">
         <div className="lg:col-span-2">
-          <div className="flex items-center gap-2">
-            <div className="relative h-9 w-9">
-              <div className="absolute inset-0 rounded-lg bg-aurora" />
-              <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-                <Sparkles className="h-4 w-4 text-aurora" />
-              </div>
-            </div>
-            <span className="font-display text-xl font-semibold">SyncRole</span>
-          </div>
+          <BrandLogo size="md" />
           <p className="mt-4 max-w-md text-sm text-muted-foreground">
             The Career Operating System for the next generation of builders. AI-powered placement
             intelligence, gamified growth, real outcomes.

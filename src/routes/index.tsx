@@ -57,6 +57,7 @@ import {
 
 // ── New homepage section components ────────────────────────────
 import HeroSection from "@/components/home/HeroSection";
+import { BrandLogo } from "@/components/ui/brand-logo";
 const DemoModal = lazy(() => import("@/components/home/DemoModal"));
 import CareerJourneyTimeline from "@/components/home/CareerJourneyTimeline";
 import AICareerTwinSection from "@/components/home/AICareerTwinSection";
@@ -315,15 +316,7 @@ function Nav() {
         <div
           className={`flex items-center justify-between rounded-full px-5 py-2.5 transition-all ${scrolled ? "glass-strong" : ""}`}
         >
-          <a href="#" className="flex items-center gap-2">
-            <div className="relative h-8 w-8">
-              <div className="absolute inset-0 rounded-lg bg-aurora animate-float" />
-              <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-                <Sparkles className="h-3.5 w-3.5 text-aurora" />
-              </div>
-            </div>
-            <span className="font-display text-lg font-semibold tracking-tight">SyncRole</span>
-          </a>
+          <BrandLogo size="md" />
           <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
             <a href="#journey" className="hover:text-foreground transition">
               Journey

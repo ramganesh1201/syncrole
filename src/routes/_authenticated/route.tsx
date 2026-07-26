@@ -1,6 +1,7 @@
 import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { Sparkles, LayoutDashboard, Code2, LogOut, Bell, User, Fingerprint, Settings, HelpCircle } from "lucide-react";
+import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell } from "lucide-react";
+import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
@@ -46,15 +47,8 @@ function AuthedLayout() {
     <div className="min-h-screen relative">
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-white/5">
         <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition-opacity">
-            <div className="relative h-8 w-8">
-              <div className="absolute inset-0 rounded-lg bg-aurora" />
-              <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-                <Sparkles className="h-3.5 w-3.5 text-aurora" />
-              </div>
-            </div>
-            <span className="font-display text-lg font-semibold">SyncRole</span>
-          </Link>
+          <BrandLogo size="md" className="hidden md:flex" />
+          <BrandLogo size="sm" className="md:hidden" />
 
           <nav className="hidden md:flex items-center gap-1 text-sm">
             <NavLink to="/dashboard" icon={LayoutDashboard}>
