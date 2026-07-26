@@ -1,6 +1,7 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 import { motion } from "framer-motion";
 import { User, Mail, MapPin, Phone, GraduationCap, Building2, Briefcase, Map, Banknote, Linkedin, Github, Globe, Code2, Target, Upload, FileText, CheckCircle2 } from "lucide-react";
 import { Input } from "@/components/ui/input";
@@ -53,8 +54,45 @@ function ProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase.from("profiles").update(profile).eq("user_id", user.id);
-      if (error) throw error;
+      const payload: Database["public"]["Tables"]["profiles"]["Update"] = {
+        full_name: profile.full_name,
+        phone: profile.phone,
+        city: profile.city,
+        college: profile.college,
+        branch: profile.branch,
+        graduation_year: profile.graduation_year === "" ? null : Number(profile.graduation_year),
+        cgpa: profile.cgpa === "" ? null : Number(profile.cgpa),
+        target_role: profile.target_role,
+        dream_companies: Array.isArray(profile.dream_companies) ? profile.dream_companies : (profile.dream_companies ? String(profile.dream_companies).split(",").map(s => s.trim()).filter(Boolean) : null),
+        preferred_location: profile.preferred_location,
+        expected_salary: profile.expected_salary,
+        career_goal: profile.career_goal || null,
+        skills: Array.isArray(profile.skills) ? profile.skills : (profile.skills ? String(profile.skills).split(",").map(s => s.trim()).filter(Boolean) : null),
+        linkedin: profile.linkedin,
+        github_username: profile.github_username,
+        portfolio: profile.portfolio,
+        leetcode: profile.leetcode,
+        codeforces: profile.codeforces,
+      };
+
+      if ('career_dna' in profile) {
+        (payload as any).career_dna = profile.career_dna || {};
+      }
+
+      console.log("Profile update payload:", payload);
+
+      const { error } = await supabase.from("profiles").update(payload).eq("user_id", user.id);
+      
+      if (error) {
+        console.error("Supabase Save Error Details:", {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+        });
+        throw error;
+      }
+      
       toast.success("Profile updated successfully!");
     } catch (err: any) {
       toast.error(err.message || "Failed to update profile");
