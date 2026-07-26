@@ -10,6 +10,7 @@ import {
   TerminalSquare, Layers, PartyPopper
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { FeatureFlags } from "@/lib/feature-flags";
 import {
   levelProgress,
   getProfileCompletionStatus,
@@ -833,6 +834,29 @@ function Dashboard() {
             )}
           </Card>
         </motion.div>
+
+        {/* ── 4.5. CAREER INTELLIGENCE LAYER ── */}
+        {FeatureFlags.ENABLE_ROLE_EXPLORER && (
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+            <Card className="hover:-translate-y-1 hover:shadow-xl hover:shadow-aurora/5 transition-all duration-300 border-aurora/20 bg-aurora/5">
+              <div className="flex items-center justify-between mb-4">
+                <SectionLabel icon={Globe}>Career Intelligence</SectionLabel>
+                <span className="bg-aurora/20 text-aurora text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest border border-aurora/30 shadow-[0_0_10px_rgba(var(--aurora-rgb),0.3)]">New Feature</span>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                <div>
+                  <h3 className="text-xl font-bold text-white mb-2">Role Explorer & AI Career Mapping</h3>
+                  <p className="text-sm text-white/70 max-w-xl leading-relaxed">
+                    Discover intelligent career paths, missing skills, and salary progressions for top tech roles. Use the Gap Analysis engine to see exactly what you need to master next.
+                  </p>
+                </div>
+                <Link to="/role-explorer" className="w-full md:w-auto px-6 py-3 text-sm font-semibold bg-aurora hover:bg-aurora/90 text-black rounded-xl transition-all flex items-center justify-center gap-2 group whitespace-nowrap shadow-[0_0_20px_rgba(var(--aurora-rgb),0.4)]">
+                  Explore Roles <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                </Link>
+              </div>
+            </Card>
+          </motion.div>
+        )}
 
         {/* ── 5. ACTIVITY & PREDICTIONS ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }} className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">

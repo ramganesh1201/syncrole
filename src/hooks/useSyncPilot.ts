@@ -1,5 +1,9 @@
 import { useState, useCallback, createContext, useContext, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { FeatureFlags } from "@/lib/feature-flags";
+import { CareerDnaService } from "@/lib/services/career-dna.service";
+import { GapAnalysisService } from "@/lib/services/gap-analysis.service";
+
 
 export type SyncPilotMode = "career_twin" | "recruiter" | "interview";
 
@@ -123,12 +127,38 @@ function useSyncPilotInternal() {
     setMessages(prev => [...prev, userMsg]);
 
     try {
+      let finalHistory = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
+      
+      if (FeatureFlags.ENABLE_COMPANY_INTELLIGENCE) {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            const dna = await CareerDnaService.getUnifiedDNA(user.id);
+            if (dna) {
+              const gap = GapAnalysisService.calculateGap(dna, null, null);
+              const intelligenceContext = `[CAREER INTELLIGENCE LAYER INJECTION]\n` +
+                `The user is at Career Stage: ${gap.currentStage}.\n` + 
+                `Next Recommended Milestone: ${gap.nextMilestone}.\n` +
+                `Missing Skills for Target Role: ${gap.missingSkills.join(", ") || "None currently tracked"}.\n` +
+                `Use this data to actively encourage the user. Instead of saying 'You are not ready', show them the next milestone and remind them of their strengths: ${dna.currentStrengths.join(", ") || "their ability to learn"}.`;
+              
+              finalHistory = [
+                { role: "system", content: intelligenceContext },
+                ...finalHistory
+              ];
+            }
+          }
+        } catch (e) {
+          console.error("Failed to inject career intelligence context", e);
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke("syncpilot-chat", {
         body: {
           message,
           mode,
           conversation_id: conversationId,
-          history: messages.slice(-10).map(m => ({ role: m.role, content: m.content })),
+          history: finalHistory,
           company: options?.company ?? "",
           role: options?.role ?? "",
         },

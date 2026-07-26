@@ -15,6 +15,7 @@ import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedUpdatePasswordRouteImport } from './routes/_authenticated/update-password'
 import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedRoleExplorerRouteImport } from './routes/_authenticated/role-explorer'
 import { Route as AuthenticatedResumeIntelligenceRouteImport } from './routes/_authenticated/resume-intelligence'
 import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
 import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
@@ -60,6 +61,12 @@ const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
   path: '/settings',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AuthenticatedRoleExplorerRoute =
+  AuthenticatedRoleExplorerRouteImport.update({
+    id: '/role-explorer',
+    path: '/role-explorer',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedResumeIntelligenceRoute =
   AuthenticatedResumeIntelligenceRouteImport.update({
     id: '/resume-intelligence',
@@ -154,6 +161,7 @@ export interface FileRoutesByFullPath {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/resume-intelligence': typeof AuthenticatedResumeIntelligenceRoute
+  '/role-explorer': typeof AuthenticatedRoleExplorerRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
@@ -174,6 +182,7 @@ export interface FileRoutesByTo {
   '/onboarding': typeof AuthenticatedOnboardingRoute
   '/profile': typeof AuthenticatedProfileRoute
   '/resume-intelligence': typeof AuthenticatedResumeIntelligenceRoute
+  '/role-explorer': typeof AuthenticatedRoleExplorerRoute
   '/settings': typeof AuthenticatedSettingsRoute
   '/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
@@ -197,6 +206,7 @@ export interface FileRoutesById {
   '/_authenticated/onboarding': typeof AuthenticatedOnboardingRoute
   '/_authenticated/profile': typeof AuthenticatedProfileRoute
   '/_authenticated/resume-intelligence': typeof AuthenticatedResumeIntelligenceRoute
+  '/_authenticated/role-explorer': typeof AuthenticatedRoleExplorerRoute
   '/_authenticated/settings': typeof AuthenticatedSettingsRoute
   '/_authenticated/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/_authenticated/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
@@ -220,6 +230,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/resume-intelligence'
+    | '/role-explorer'
     | '/settings'
     | '/update-password'
     | '/dashboard/dsa'
@@ -240,6 +251,7 @@ export interface FileRouteTypes {
     | '/onboarding'
     | '/profile'
     | '/resume-intelligence'
+    | '/role-explorer'
     | '/settings'
     | '/update-password'
     | '/dashboard/dsa'
@@ -262,6 +274,7 @@ export interface FileRouteTypes {
     | '/_authenticated/onboarding'
     | '/_authenticated/profile'
     | '/_authenticated/resume-intelligence'
+    | '/_authenticated/role-explorer'
     | '/_authenticated/settings'
     | '/_authenticated/update-password'
     | '/_authenticated/dashboard/dsa'
@@ -318,6 +331,13 @@ declare module '@tanstack/react-router' {
       path: '/settings'
       fullPath: '/settings'
       preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/role-explorer': {
+      id: '/_authenticated/role-explorer'
+      path: '/role-explorer'
+      fullPath: '/role-explorer'
+      preLoaderRoute: typeof AuthenticatedRoleExplorerRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
     '/_authenticated/resume-intelligence': {
@@ -451,6 +471,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedOnboardingRoute: typeof AuthenticatedOnboardingRoute
   AuthenticatedProfileRoute: typeof AuthenticatedProfileRoute
   AuthenticatedResumeIntelligenceRoute: typeof AuthenticatedResumeIntelligenceRoute
+  AuthenticatedRoleExplorerRoute: typeof AuthenticatedRoleExplorerRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUpdatePasswordRoute: typeof AuthenticatedUpdatePasswordRoute
 }
@@ -468,6 +489,7 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedOnboardingRoute: AuthenticatedOnboardingRoute,
   AuthenticatedProfileRoute: AuthenticatedProfileRoute,
   AuthenticatedResumeIntelligenceRoute: AuthenticatedResumeIntelligenceRoute,
+  AuthenticatedRoleExplorerRoute: AuthenticatedRoleExplorerRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUpdatePasswordRoute: AuthenticatedUpdatePasswordRoute,
 }
