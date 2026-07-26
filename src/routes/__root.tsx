@@ -81,14 +81,16 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Role Explorer" },
+      { name: "description", content: "Role Explorer - Career Intelligence Platform" },
+      { name: "author", content: "Role Explorer" },
+      { property: "og:title", content: "Role Explorer" },
+      { property: "og:description", content: "Role Explorer - Career Intelligence Platform" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:site", content: "@RoleExplorer" },
+      { name: "twitter:title", content: "Role Explorer" },
+      { name: "twitter:description", content: "Role Explorer - Career Intelligence Platform" },
     ],
     links: [
       {
