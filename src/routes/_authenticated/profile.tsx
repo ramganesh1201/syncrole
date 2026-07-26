@@ -54,7 +54,7 @@ function ProfilePage() {
   const handleSave = async () => {
     setSaving(true);
     try {
-      const payload: Database["public"]["Tables"]["profiles"]["Update"] = {
+      const payload: Database["public"]["Tables"]["profiles"]["Update"] & { company_preference?: string | null } = {
         full_name: profile.full_name,
         phone: profile.phone,
         city: profile.city,
@@ -66,7 +66,8 @@ function ProfilePage() {
         dream_companies: Array.isArray(profile.dream_companies) ? profile.dream_companies : (profile.dream_companies ? String(profile.dream_companies).split(",").map(s => s.trim()).filter(Boolean) : null),
         preferred_location: profile.preferred_location,
         expected_salary: profile.expected_salary,
-        career_goal: profile.career_goal || null,
+        career_goal: ["frontend", "backend", "fullstack", "data", "ai", "mobile", "devops", "other"].includes(profile.career_goal) ? profile.career_goal : null,
+        company_preference: ["MNC", "Startup", "Freelance", "Product Based", "Service Based"].includes(profile.company_preference) ? profile.company_preference : null,
         skills: Array.isArray(profile.skills) ? profile.skills : (profile.skills ? String(profile.skills).split(",").map(s => s.trim()).filter(Boolean) : null),
         linkedin: profile.linkedin,
         github_username: profile.github_username,
@@ -365,15 +366,35 @@ function ProfilePage() {
                 </div>
               </div>
               <div className="space-y-2">
-                <label className="text-sm font-medium text-muted-foreground">Career Goal Mode</label>
-                <Select value={profile?.career_goal || ""} onValueChange={(val) => handleSelectChange("career_goal", val)}>
+                <label className="text-sm font-medium text-muted-foreground">Company Preference</label>
+                <Select value={profile?.company_preference || ""} onValueChange={(val) => handleSelectChange("company_preference", val)}>
                   <SelectTrigger className="bg-black/20">
-                    <SelectValue placeholder="Select primary goal" />
+                    <SelectValue placeholder="Select company preference" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="MNC">MNC / Big Tech</SelectItem>
-                    <SelectItem value="STARTUP">High-Growth Startup</SelectItem>
-                    <SelectItem value="FREELANCE">Freelance / Remote</SelectItem>
+                    <SelectItem value="Startup">High-Growth Startup</SelectItem>
+                    <SelectItem value="Freelance">Freelance / Remote</SelectItem>
+                    <SelectItem value="Product Based">Product Based</SelectItem>
+                    <SelectItem value="Service Based">Service Based</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-muted-foreground">Engineering Domain</label>
+                <Select value={profile?.career_goal || ""} onValueChange={(val) => handleSelectChange("career_goal", val)}>
+                  <SelectTrigger className="bg-black/20">
+                    <SelectValue placeholder="Select engineering domain" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="frontend">Frontend</SelectItem>
+                    <SelectItem value="backend">Backend</SelectItem>
+                    <SelectItem value="fullstack">Fullstack</SelectItem>
+                    <SelectItem value="data">Data Engineering</SelectItem>
+                    <SelectItem value="ai">AI / ML</SelectItem>
+                    <SelectItem value="mobile">Mobile Dev</SelectItem>
+                    <SelectItem value="devops">DevOps</SelectItem>
+                    <SelectItem value="other">Other</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
