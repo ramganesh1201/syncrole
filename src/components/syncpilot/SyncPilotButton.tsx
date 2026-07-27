@@ -40,15 +40,6 @@ export function SyncPilotButton({ onClick }: Props) {
         style={{ isolation: "isolate" }}
         aria-label="Open SyncPilot AI Career OS"
       >
-        {/* Outer glow ring */}
-        <span
-          className="absolute inset-[-6px] rounded-full opacity-60"
-          style={{
-            background: "conic-gradient(from 0deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295), oklch(0.85 0.20 330), oklch(0.75 0.2 200))",
-            filter: "blur(4px)",
-            animation: "particle-orbit 8s linear infinite",
-          }}
-        />
 
         {/* Base orb */}
         <span
