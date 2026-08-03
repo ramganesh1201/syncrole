@@ -222,9 +222,8 @@ export default function DreamCompanySection({ data }: { data: any }) {
             <motion.button
               key={c.name}
               onClick={() => setActiveIdx(i)}
-              whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.97 }}
-              className={`rounded-full px-4 py-2 text-sm transition-all ${
+              className={`rounded-full px-4 py-2 text-sm transition-all cursor-pointer ${
                 activeIdx === i
                   ? "bg-aurora text-white shadow-glow"
                   : "glass hover:bg-white/10 text-muted-foreground hover:text-foreground"

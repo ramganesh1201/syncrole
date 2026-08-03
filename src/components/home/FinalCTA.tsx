@@ -66,13 +66,12 @@ export default function FinalCTA() {
             >
               {/* Launch SyncPilot */}
               <motion.button
-                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => {
                   // SyncPilot launcher is in global context — trigger via a custom event
                   window.dispatchEvent(new CustomEvent("open-syncpilot"));
                 }}
-                className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground shadow-glow"
+                className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground shadow-glow hover:brightness-110 transition-all cursor-pointer"
               >
                 <span className="absolute inset-0 rounded-full bg-aurora" />
                 <span className="relative z-10 flex items-center gap-2">
@@ -82,10 +81,9 @@ export default function FinalCTA() {
 
               {/* Start Free */}
               <motion.button
-                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => nav({ to: user ? "/dashboard" : "/auth" })}
-                className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground"
+                className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground hover:brightness-110 transition-all cursor-pointer"
               >
                 <span className="absolute inset-0 rounded-full bg-gradient-to-r from-[oklch(0.88_0.18_145)] to-[oklch(0.75_0.2_200)]" />
                 <span className="relative z-10 flex items-center gap-2">
@@ -96,10 +94,9 @@ export default function FinalCTA() {
 
               {/* Talk to Sales */}
               <motion.button
-                whileHover={{ scale: 1.03 }}
                 whileTap={{ scale: 0.97 }}
                 onClick={() => window.open("mailto:hello@syncrole.app?subject=Sales Inquiry", "_blank")}
-                className="inline-flex items-center gap-2 glass-strong rounded-full px-8 py-4 text-sm font-semibold hover:bg-white/10 transition border border-white/10"
+                className="inline-flex items-center gap-2 glass-strong rounded-full px-8 py-4 text-sm font-semibold hover:bg-white/10 transition border border-white/10 cursor-pointer"
               >
                 <MessageSquare className="h-4 w-4" /> Talk To Sales
               </motion.button>

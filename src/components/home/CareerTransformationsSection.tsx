@@ -225,7 +225,6 @@ function FeaturedStoryCard({ story, index }: { story: Story; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.12 }}
-      whileHover={{ y: -6 }}
       className="w-[380px] shrink-0 glass-strong rounded-3xl p-7 border border-white/10 hover:border-white/20 transition-all duration-300"
     >
       {/* Header */}
@@ -321,10 +320,9 @@ export default function CareerTransformationsSection({ data }: { data: any }) {
             <div className="flex flex-col sm:flex-row gap-3 shrink-0">
               {user && (
                 <motion.button
-                  whileHover={{ scale: 1.03 }}
                   whileTap={{ scale: 0.97 }}
                   onClick={() => setShowModal(true)}
-                  className="inline-flex items-center gap-2 glass-strong rounded-full px-6 py-3 text-sm font-semibold hover:bg-white/10 transition border border-white/10"
+                  className="inline-flex items-center gap-2 glass-strong rounded-full px-6 py-3 text-sm font-semibold hover:bg-white/10 transition border border-white/10 cursor-pointer"
                 >
                   <Sparkles className="h-4 w-4 text-accent" />
                   Share Your Journey

@@ -220,7 +220,7 @@ function DSACompaniesPage() {
                   {c.company_name}{" "}
                   <button
                     onClick={(e) => { e.stopPropagation(); toggleCompany(c.id); }}
-                    className="text-aurora/60 hover:text-aurora transition-colors hover:scale-110"
+                    className="text-aurora/60 hover:text-aurora transition-colors cursor-pointer"
                   >
                     ×
                   </button>

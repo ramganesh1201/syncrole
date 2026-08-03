@@ -196,9 +196,9 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.75 }}
             className="flex flex-wrap items-center justify-center gap-4 mb-20">
             <motion.button
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => nav({ to: "/auth" })}
-              className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground shadow-glow"
+              className="relative inline-flex items-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground shadow-glow hover:brightness-110 transition-all cursor-pointer"
             >
               <span className="absolute inset-0 rounded-full bg-aurora" />
               <span className="relative z-10 flex items-center gap-2">
@@ -206,7 +206,7 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
               </span>
             </motion.button>
             <motion.button
-              whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.97 }}
               onClick={onOpenDemo}
               className="inline-flex items-center gap-2 rounded-full glass-strong px-7 py-4 text-sm font-semibold hover:bg-white/10 transition cursor-pointer"
             >
@@ -344,9 +344,9 @@ function AuthHero({ data }: { data: any }) {
 
             {/* CTA */}
             <motion.button
-              whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
+              whileTap={{ scale: 0.97 }}
               onClick={() => nav({ to: "/dashboard" })}
-              className="relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow"
+              className="relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-primary-foreground shadow-glow hover:brightness-110 transition-all cursor-pointer"
             >
               <span className="absolute inset-0 rounded-full bg-aurora" />
               <span className="relative z-10 flex items-center gap-2">

@@ -120,41 +120,21 @@ function MagneticButton({
   className?: string;
   onClick?: () => void;
 }) {
-  const ref = useRef<HTMLButtonElement>(null);
-  const x = useMotionValue(0);
-  const y = useMotionValue(0);
-  const sx = useSpring(x, { stiffness: 200, damping: 15 });
-  const sy = useSpring(y, { stiffness: 200, damping: 15 });
-
-  function handleMove(e: React.MouseEvent) {
-    const r = ref.current!.getBoundingClientRect();
-    x.set((e.clientX - r.left - r.width / 2) * 0.25);
-    y.set((e.clientY - r.top - r.height / 2) * 0.25);
-  }
-  function handleLeave() {
-    x.set(0);
-    y.set(0);
-  }
-
   const base =
-    "relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-shadow";
+    "relative inline-flex items-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold transition-all cursor-pointer";
   const styles =
     variant === "primary"
-      ? "text-primary-foreground shadow-glow"
+      ? "text-primary-foreground shadow-glow hover:brightness-110"
       : "glass-strong text-foreground hover:bg-white/10";
 
   return (
-    <motion.button
-      ref={ref}
-      style={{ x: sx, y: sy }}
-      onMouseMove={handleMove}
-      onMouseLeave={handleLeave}
+    <button
       onClick={onClick}
       className={`${base} ${styles} ${className}`}
     >
       {variant === "primary" && <span className="absolute inset-0 rounded-full bg-aurora" />}
       <span className="relative z-10 inline-flex items-center gap-2">{children}</span>
-    </motion.button>
+    </button>
   );
 }
 

@@ -249,7 +249,7 @@ function ResumeIntelligence() {
             onClick={() => nav({ to: "/dsa-mentor", search: { mode: "interview" } as any })}
             className="relative rounded-full px-6 py-3 text-sm font-semibold text-primary-foreground overflow-hidden group shadow-[0_0_20px_rgba(45,212,191,0.2)]"
           >
-            <span className="absolute inset-0 bg-aurora transition-transform group-hover:scale-105" />
+            <span className="absolute inset-0 bg-aurora transition-all group-hover:brightness-110" />
             <span className="relative flex items-center gap-2">
               <Play className="h-4 w-4 fill-current" /> Start Mock Interview
             </span>

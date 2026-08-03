@@ -34,9 +34,8 @@ export function SyncPilotButton({ onClick }: Props) {
         initial={{ scale: 0, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
         transition={{ type: "spring", stiffness: 260, damping: 20, delay: 0.5 }}
-        whileHover={{ scale: 1.12 }}
         whileTap={{ scale: 0.93 }}
-        className="relative h-16 w-16 rounded-full flex items-center justify-center animate-breathe"
+        className="relative h-16 w-16 rounded-full flex items-center justify-center animate-breathe cursor-pointer hover:brightness-110 transition-all"
         style={{ isolation: "isolate" }}
         aria-label="Open SyncPilot AI Career OS"
       >

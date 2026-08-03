@@ -26,7 +26,7 @@ export function BrandLogo({ size = "md", showText = true, className }: BrandLogo
     <Link 
       to="/" 
       className={cn(
-        "flex items-center gap-2 outline-none transition-all duration-200 hover:scale-[1.02] hover:brightness-110 group", 
+        "flex items-center gap-2 outline-none transition-all duration-200 hover:brightness-110 group", 
         className
       )}
     >

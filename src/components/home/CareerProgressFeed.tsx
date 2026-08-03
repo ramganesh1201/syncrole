@@ -61,7 +61,7 @@ function EventCard({ event, index }: { event: FeedEvent; index: number }) {
     >
       {/* Icon */}
       <div
-        className="h-10 w-10 rounded-full grid place-items-center shrink-0 transition-transform duration-300 group-hover:scale-110"
+        className="h-10 w-10 rounded-full grid place-items-center shrink-0 transition-colors duration-300"
         style={{ background: `${event.color}20`, border: `1px solid ${event.color}30` }}
       >
         <span style={{ color: event.color }}>
@@ -110,8 +110,7 @@ function AchievementBadge({ code, unlocked, index }: { code: string; unlocked: b
       whileInView={{ opacity: 1, scale: 1, rotate: 0 }}
       viewport={{ once: true }}
       transition={{ delay: index * 0.1, type: "spring", stiffness: 150 }}
-      whileHover={unlocked ? { y: -6, scale: 1.05 } : {}}
-      className={`glass-strong rounded-2xl p-5 text-center ${unlocked ? "cursor-pointer" : "opacity-40 grayscale"}`}
+      className={`glass-strong rounded-2xl p-5 text-center ${unlocked ? "cursor-pointer hover:border-white/20" : "opacity-40 grayscale"}`}
     >
       <div className="relative h-14 w-14 mx-auto mb-3 flex items-center justify-center">
         <div className="absolute inset-0 rounded-full blur-xl opacity-50" style={{ background: color }} />

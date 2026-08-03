@@ -819,7 +819,7 @@ function Dashboard() {
                   )}
                 </div>
                 <Link to="/resume-intelligence" className="w-full text-center py-2.5 text-sm font-semibold bg-aurora/10 hover:bg-aurora/20 text-aurora border border-aurora/30 rounded-xl transition-all flex items-center justify-center gap-2 group">
-                  View Full Analysis <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  View Full Analysis <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             ) : (
@@ -830,7 +830,7 @@ function Dashboard() {
                   desc="Unlock AI-powered scoring and ATS optimization."
                 />
                 <label className="mt-2 w-full text-center py-2.5 text-sm font-semibold bg-aurora/10 hover:bg-aurora/20 text-aurora border border-aurora/30 rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer group">
-                  <Upload className="w-4 h-4 group-hover:-translate-y-0.5 transition-transform" /> {uploading ? "Uploading..." : "Upload PDF"}
+                  <Upload className="w-4 h-4" /> {uploading ? "Uploading..." : "Upload PDF"}
                   <input type="file" accept=".pdf,.doc,.docx" className="hidden" onChange={handleUpload} disabled={uploading} />
                 </label>
               </div>
@@ -854,7 +854,7 @@ function Dashboard() {
                   </p>
                 </div>
                 <Link to="/role-explorer" className="w-full md:w-auto px-6 py-3 text-sm font-semibold bg-aurora hover:bg-aurora/90 text-black rounded-xl transition-all flex items-center justify-center gap-2 group whitespace-nowrap shadow-[0_0_20px_rgba(var(--aurora-rgb),0.4)]">
-                  Explore Roles <ArrowRight className="h-4 w-4 group-hover:translate-x-1 transition-transform" />
+                  Explore Roles <ArrowRight className="h-4 w-4" />
                 </Link>
               </div>
             </Card>

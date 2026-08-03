@@ -120,9 +120,8 @@ function ResumeIntelligence({ data }: { data: any }) {
         </div>
 
         {/* Drop zone */}
-        <motion.div
-          whileHover={{ scale: 1.01 }}
-          className="border-2 border-dashed border-white/15 rounded-2xl p-10 text-center relative overflow-hidden mb-6"
+        <div
+          className="border-2 border-dashed border-white/15 rounded-2xl p-10 text-center relative overflow-hidden mb-6 hover:border-accent/40 transition-colors"
         >
           <motion.div
             animate={{ y: [-100, 100] }}
@@ -139,7 +138,7 @@ function ResumeIntelligence({ data }: { data: any }) {
               <Upload className="h-4 w-4" /> Upload & Analyze
             </Link>
           )}
-        </motion.div>
+        </div>
 
         {/* Benefits list */}
         <div className="space-y-2">

@@ -166,7 +166,7 @@ function UpdatePasswordPage() {
                 <Loader2 className="w-5 h-5 animate-spin" />
               ) : (
                 <>
-                  Update Password <Sparkles className="w-4 h-4 group-hover:scale-125 transition-transform" />
+                  Update Password <Sparkles className="w-4 h-4" />
                 </>
               )}
             </div>
