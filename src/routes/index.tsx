@@ -1771,12 +1771,30 @@ function CursorSpotlight() {
   const x = useMotionValue(-200);
   const y = useMotionValue(-200);
   useEffect(() => {
+    if (typeof window === "undefined" || window.matchMedia("(pointer: coarse)").matches) {
+      return;
+    }
+    let rafId: number | null = null;
+    let latestX = -200;
+    let latestY = -200;
+
     const move = (e: MouseEvent) => {
-      x.set(e.clientX);
-      y.set(e.clientY);
+      if (document.hidden || window.scrollY > 1200) return;
+      latestX = e.clientX;
+      latestY = e.clientY;
+      if (rafId === null) {
+        rafId = window.requestAnimationFrame(() => {
+          x.set(latestX);
+          y.set(latestY);
+          rafId = null;
+        });
+      }
     };
-    window.addEventListener("mousemove", move);
-    return () => window.removeEventListener("mousemove", move);
+    window.addEventListener("mousemove", move, { passive: true });
+    return () => {
+      window.removeEventListener("mousemove", move);
+      if (rafId !== null) window.cancelAnimationFrame(rafId);
+    };
   }, [x, y]);
   return (
     <motion.div

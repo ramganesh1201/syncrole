@@ -269,7 +269,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
               </motion.div>
             )}
 
-            {messages.map((m, i) => (
+            {messages.map((m: any, i: number) => (
               <MessageBubble key={m.id ?? i} role={m.role} content={m.content} />
             ))}
 

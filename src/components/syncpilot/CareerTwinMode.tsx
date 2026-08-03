@@ -296,7 +296,7 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
 
           {/* Message list */}
           <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3">
-            {messages.map((m, i) => (
+            {messages.map((m: any, i: number) => (
               <MessageBubble key={m.id ?? i} role={m.role} content={m.content} timestamp={m.created_at} />
             ))}
 

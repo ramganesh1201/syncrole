@@ -49,7 +49,7 @@ function Dashboard() {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return;
     const uid = u.user.id;
-    const [pRes, xRes, sRes, scRes, mRes, aRes, ghRes, rRes, ivRes, cvRes, oldRes] = await Promise.all([
+    const [pRes, xRes, sRes, scRes, mRes, aRes, ghRes, rRes, ivRes, cvRes] = await Promise.all([
       supabase.from("profiles").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
       supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
@@ -88,14 +88,6 @@ function Dashboard() {
         .eq("user_id", uid)
         .order("updated_at", { ascending: false })
         .limit(5),
-      // Fallback check for old resume_analysis table
-      supabase
-        .from("resume_analysis")
-        .select("*")
-        .eq("user_id", uid)
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle(),
     ]);
     if (pRes.data && !pRes.data.onboarding_completed) {
       nav({ to: "/onboarding" });
@@ -107,7 +99,7 @@ function Dashboard() {
     setScores(scRes.data ?? []);
     setAchs((aRes.data ?? []).map((a: any) => a.code));
     setGh(ghRes.data);
-    setResume(rRes.data || oldRes.data);
+    setResume(rRes.data);
     setInterviewSessions(ivRes?.data ?? []);
     setRecentConversations(cvRes?.data ?? []);
 
@@ -152,25 +144,36 @@ function Dashboard() {
     };
   }, []);
 
-  const latest = scores[0] ?? {
-    total_score: 0,
-    resume_score: 0,
-    github_score: 0,
-    projects_score: 0,
-    dsa_score: 0,
-    communication_score: 60,
-    skill_score: 0,
-  };
-  const prev = scores[1];
-  const delta = prev ? latest.total_score - prev.total_score : 0;
-  const lp = levelProgress(xp.total_xp);
+  const latest = useMemo(
+    () =>
+      scores[0] ?? {
+        total_score: 0,
+        resume_score: 0,
+        github_score: 0,
+        projects_score: 0,
+        dsa_score: 0,
+        communication_score: 60,
+        skill_score: 0,
+      },
+    [scores]
+  );
+  const prev = useMemo(() => scores[1], [scores]);
+  const delta = useMemo(
+    () => (prev ? latest.total_score - prev.total_score : 0),
+    [latest, prev]
+  );
+  const lp = useMemo(() => levelProgress(xp.total_xp), [xp.total_xp]);
   const { pct: completion, missing: missingProfileTasks } = useMemo(
     () => getProfileCompletionStatus(profile || {}, !!resume),
     [profile, resume]
   );
-  const chartData = [...scores]
-    .reverse()
-    .map((s, i) => ({ x: i, y: s.total_score }));
+  const chartData = useMemo(
+    () =>
+      [...scores]
+        .reverse()
+        .map((s, i) => ({ x: i, y: s.total_score })),
+    [scores]
+  );
 
   async function completeMission(m: any) {
     const { data: u } = await supabase.auth.getUser();

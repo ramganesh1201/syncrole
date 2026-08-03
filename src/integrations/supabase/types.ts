@@ -1242,7 +1242,6 @@ export type Database = {
         }
         Relationships: []
       }
-    }
     Views: {
       career_profiles: {
         Row: {

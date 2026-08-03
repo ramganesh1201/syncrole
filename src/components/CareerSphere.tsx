@@ -43,6 +43,11 @@ function NodesAndLines() {
     return pairs;
   }, [nodePositions]);
 
+  const lineFloat32Arrays = useMemo(
+    () => linePairs.map(([a, b]) => new Float32Array([a.x, a.y, a.z, b.x, b.y, b.z])),
+    [linePairs]
+  );
+
   useFrame((state) => {
     if (!group.current) return;
     const t = state.clock.getElapsedTime();
@@ -63,17 +68,14 @@ function NodesAndLines() {
       </mesh>
 
       {/* Connection lines */}
-      {linePairs.map(([a, b], i) => {
-        const pts = new Float32Array([a.x, a.y, a.z, b.x, b.y, b.z]);
-        return (
-          <line key={i}>
-            <bufferGeometry>
-              <bufferAttribute attach="attributes-position" args={[pts, 3]} count={2} />
-            </bufferGeometry>
-            <lineBasicMaterial color="#7dd3fc" transparent opacity={0.35} />
-          </line>
-        );
-      })}
+      {linePairs.map((_, i) => (
+        <line key={i}>
+          <bufferGeometry>
+            <bufferAttribute attach="attributes-position" args={[lineFloat32Arrays[i], 3]} count={2} />
+          </bufferGeometry>
+          <lineBasicMaterial color="#7dd3fc" transparent opacity={0.35} />
+        </line>
+      ))}
 
       {/* Node orbs */}
       {nodePositions.map((p, i) => (

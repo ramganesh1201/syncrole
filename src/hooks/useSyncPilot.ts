@@ -1,4 +1,4 @@
-import { useState, useCallback, createContext, useContext, ReactNode } from "react";
+import { useState, useCallback, createContext, useContext, useMemo, ReactNode } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { FeatureFlags } from "@/lib/feature-flags";
 import { CareerDnaService } from "@/lib/services/career-dna.service";
@@ -9,7 +9,7 @@ export type SyncPilotMode = "career_twin" | "recruiter" | "interview";
 
 export type ChatMessage = {
   id?: string;
-  role: "user" | "assistant";
+  role: "user" | "assistant" | "system";
   content: string;
   created_at?: string;
 };
@@ -217,24 +217,41 @@ function useSyncPilotInternal() {
     }
   }, [mode, conversationId, messages, loadConversations]);
 
-  return {
-    loading,
-    userDataLoading,
-    mode,
-    conversationId,
-    messages,
-    userData,
-    conversations,
+  return useMemo(
+    () => ({
+      loading,
+      userDataLoading,
+      mode,
+      conversationId,
+      messages,
+      userData,
+      conversations,
 
-    // Actions
-    sendMessage,
-    switchMode,
-    startNewConversation,
-    loadUserData,
-    loadConversations,
-    loadConversation,
-    setMessages,
-  };
+      // Actions
+      sendMessage,
+      switchMode,
+      startNewConversation,
+      loadUserData,
+      loadConversations,
+      loadConversation,
+      setMessages,
+    }),
+    [
+      loading,
+      userDataLoading,
+      mode,
+      conversationId,
+      messages,
+      userData,
+      conversations,
+      sendMessage,
+      switchMode,
+      startNewConversation,
+      loadUserData,
+      loadConversations,
+      loadConversation,
+    ]
+  );
 }
 
 const SyncPilotContext = createContext<ReturnType<typeof useSyncPilotInternal> | null>(null);

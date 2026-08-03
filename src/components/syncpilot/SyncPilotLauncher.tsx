@@ -71,7 +71,7 @@ function SyncPilotLauncherInner() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [panelState]);
 
-  const dims = PANEL_DIMS[mode];
+  const dims = PANEL_DIMS[(mode as SyncPilotMode) || "career_twin"] || PANEL_DIMS.career_twin;
 
   const isInterview = mode === "interview";
 

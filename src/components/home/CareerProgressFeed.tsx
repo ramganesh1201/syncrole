@@ -4,7 +4,6 @@ import {
   Activity, Code2, Award, CheckCircle, FileText, Zap, Trophy,
   TrendingUp, Flame, Star, Sparkles, MessageSquare,
 } from "lucide-react";
-import * as LucideIcons from "lucide-react";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
 
 /* ─── Types ─────────────────────────────────────────────────── */
@@ -103,7 +102,7 @@ function AchievementBadge({ code, unlocked, index }: { code: string; unlocked: b
     "oklch(0.72 0.22 330)",
   ];
   const color = colors[index % colors.length];
-  const IconComponent = (LucideIcons as any)[ach.icon] || LucideIcons.Trophy;
+  const IconComponent = Trophy;
 
   return (
     <motion.div

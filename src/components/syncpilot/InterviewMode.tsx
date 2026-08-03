@@ -418,7 +418,7 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
 
       {/* Chat area */}
       <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-        {messages.map((m, i) => {
+        {messages.map((m: any, i: number) => {
           const isUser = m.role === "user";
           return (
             <motion.div key={m.id ?? i}
@@ -437,7 +437,7 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
               }`} style={isUser ? {
                 background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
               } : {}}>
-                {m.content.split("\n").map((line, li) => (
+                {m.content.split("\n").map((line: string, li: number) => (
                   <p key={li} className={line === "" ? "h-2" : ""}>{line}</p>
                 ))}
               </div>

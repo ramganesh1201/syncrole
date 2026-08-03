@@ -32,6 +32,7 @@ function AnimatedNumber({ value }: { value: number }) {
   const [displayValue, setDisplayValue] = useState(0);
   useEffect(() => {
     let startTime: number | null = null;
+    let frameId: number | null = null;
     const duration = 1200;
     const step = (timestamp: number) => {
       if (!startTime) startTime = timestamp;
@@ -39,10 +40,13 @@ function AnimatedNumber({ value }: { value: number }) {
       // easeOutQuart
       const ease = 1 - Math.pow(1 - progress, 4);
       setDisplayValue(Math.floor(ease * value));
-      if (progress < 1) window.requestAnimationFrame(step);
+      if (progress < 1) frameId = window.requestAnimationFrame(step);
       else setDisplayValue(value);
     };
-    window.requestAnimationFrame(step);
+    frameId = window.requestAnimationFrame(step);
+    return () => {
+      if (frameId !== null) window.cancelAnimationFrame(frameId);
+    };
   }, [value]);
   return <>{displayValue}</>;
 }

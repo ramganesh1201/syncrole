@@ -34,6 +34,7 @@ export function BrandLogo({ size = "md", showText = true, className }: BrandLogo
         <img
           src="/favicon1.png"
           alt="SyncRole Logo"
+          decoding="async"
           className="absolute inset-0 w-full h-full object-contain scale-[1.35]"
         />
       </div>
