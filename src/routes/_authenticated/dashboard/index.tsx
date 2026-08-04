@@ -29,6 +29,9 @@ import { AICoachHero } from "@/components/dashboard/AICoachHero";
 import { DailyWorkspaceCard } from "@/components/dashboard/DailyWorkspaceCard";
 import { AchievementMotivation } from "@/components/dashboard/AchievementMotivation";
 import { UnifiedCareerAssets } from "@/components/dashboard/UnifiedCareerAssets";
+import { SessionCompletionCard } from "@/components/dashboard/SessionCompletionCard";
+import { CareerHealthOverview } from "@/components/dashboard/CareerHealthOverview";
+import { dashboardOrchestrator } from "@/lib/career-intelligence";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: Dashboard,
@@ -203,6 +206,23 @@ function Dashboard() {
       resumeMissingSkills: resume?.missing_skills || [],
     };
   }, [profile, latest, resume]);
+
+  const workspaceRef = useRef<HTMLDivElement>(null);
+
+  const orchestration = useMemo(() => {
+    return dashboardOrchestrator.orchestrate(
+      userContext,
+      missions,
+      achs,
+      streak.current_streak
+    );
+  }, [userContext, missions, achs, streak.current_streak]);
+
+  const scrollToWorkspace = () => {
+    if (workspaceRef.current) {
+      workspaceRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
 
   const handleCompanyChange = async (companyId: string) => {
     setProfile((prev: any) => ({ ...prev, dream_companies: [companyId] }));
@@ -492,14 +512,42 @@ function Dashboard() {
           <AICoachHero
             userContext={userContext}
             userName={profile?.full_name || ""}
-            totalXp={xp.total_xp}
-            levelName={xp.level_name}
-            currentStreak={streak.current_streak}
-            scores={scores}
+            orchestration={orchestration}
+            onContinueJourney={scrollToWorkspace}
           />
         </motion.div>
 
-        {/* ── 2. DREAM COMPANY INTELLIGENCE & ADAPTIVE JOURNEY ── */}
+        {/* ── 2. SESSION COMPLETION BANNER (WHEN DONE) ── */}
+        {orchestration.isSessionComplete && (
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+            <SessionCompletionCard
+              readiness={careerEngine.evaluateCompanyReadiness(userContext, userContext.dream_companies?.[0] || "google")}
+            />
+          </motion.div>
+        )}
+
+        {/* ── 3. TODAY'S ACTION WORKSPACE & MISSIONS ── */}
+        <div ref={workspaceRef}>
+          <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+            <DailyWorkspaceCard
+              missions={missions}
+              onCompleteMission={completeMission}
+              userContext={userContext}
+            />
+          </motion.div>
+        </div>
+
+        {/* ── 4. CONCISE CAREER HEALTH OVERVIEW ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <CareerHealthOverview
+            latest={latest}
+            resume={resume}
+            gh={gh}
+            userContext={userContext}
+          />
+        </motion.div>
+
+        {/* ── 5. DREAM COMPANY INTELLIGENCE & ADAPTIVE JOURNEY ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
           <DreamCompanyHero
             userContext={userContext}
@@ -509,16 +557,7 @@ function Dashboard() {
           <AdaptiveFocusWidget userContext={userContext} />
         </motion.div>
 
-        {/* ── 3. TODAY'S ACTION WORKSPACE & MISSIONS ── */}
-        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
-          <DailyWorkspaceCard
-            missions={missions}
-            onCompleteMission={completeMission}
-            userContext={userContext}
-          />
-        </motion.div>
-
-        {/* ── 4. WIN OF THE DAY & MOMENTUM ── */}
+        {/* ── 6. WIN OF THE DAY & MOMENTUM ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
           <AchievementMotivation
             unlockedCodes={achs}
@@ -526,21 +565,9 @@ function Dashboard() {
           />
         </motion.div>
 
-        {/* ── 5. DYNAMIC STEPPING-STONE CAREER PATH ── */}
+        {/* ── 7. DYNAMIC STEPPING-STONE CAREER PATH ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
           <SteppingStonePath userContext={userContext} />
-        </motion.div>
-
-        {/* ── 6. UNIFIED CAREER ASSETS HUB ── */}
-        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
-          <UnifiedCareerAssets
-            latest={latest}
-            resume={resume}
-            gh={gh}
-            uploading={uploading}
-            onUploadResume={handleUpload}
-            onAnalyzeGitHub={analyzeGitHub}
-          />
         </motion.div>
 
         {/* ── 2. PLACEMENT READINESS & KPI GRID ── */}
