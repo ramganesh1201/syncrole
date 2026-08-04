@@ -11,10 +11,17 @@ export function AchievementMotivation({
   unlockedCodes,
   currentStreak,
 }: AchievementMotivationProps) {
-  const latestCode = unlockedCodes[unlockedCodes.length - 1] || "first_login";
-  const latestAchievement = ACHIEVEMENT_CATALOG[latestCode] || ACHIEVEMENT_CATALOG["first_login"];
+  const safeCodes = Array.isArray(unlockedCodes) ? unlockedCodes : [];
+  const latestCode = safeCodes.length > 0 ? safeCodes[safeCodes.length - 1] : null;
+  const latestAchievement =
+    (latestCode ? ACHIEVEMENT_CATALOG[latestCode] : null) ??
+    ACHIEVEMENT_CATALOG["first_login"] ?? {
+      name: "First Steps",
+      desc: "Started your career journey",
+      rarity: "Common",
+    };
 
-  const unlockedCount = unlockedCodes.length;
+  const unlockedCount = safeCodes.length;
   const totalCount = Object.keys(ACHIEVEMENT_CATALOG).length;
 
   return (

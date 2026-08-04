@@ -67,10 +67,13 @@ class DashboardOrchestrator {
     achievements: string[],
     streakDays: number
   ): DashboardOrchestrationResult {
-    const selectedCompanyId = context.dream_companies?.[0] || "google";
+    const safeMissions = Array.isArray(missions) ? missions : [];
+    const safeAchievements = Array.isArray(achievements) ? achievements : [];
+    const safeStreak = typeof streakDays === "number" ? streakDays : 0;
+    const selectedCompanyId = context?.dream_companies?.[0] || "google";
     const readiness = careerEngine.evaluateCompanyReadiness(context, selectedCompanyId);
-    const completedMissionsCount = missions.filter((m) => m.completed).length;
-    const isSessionComplete = missions.length > 0 && completedMissionsCount === missions.length;
+    const completedMissionsCount = safeMissions.filter((m) => m?.completed).length;
+    const isSessionComplete = safeMissions.length > 0 && completedMissionsCount === safeMissions.length;
 
     // 1. Compute Maturity Stage
     let maturityStage: MaturityStage = "Beginner";
@@ -96,14 +99,14 @@ class DashboardOrchestrator {
       personaState,
       readiness,
       context,
-      streakDays
+      safeStreak
     );
 
     // 4. Determine Highest Priority Intelligent Routing Target
     const primaryRoutingTarget = this.determinePrimaryRouting(
       context,
       readiness,
-      missions,
+      safeMissions,
       isSessionComplete
     );
 
@@ -111,8 +114,8 @@ class DashboardOrchestrator {
     const inboxItems = this.generateAIInboxItems(
       context,
       readiness,
-      achievements,
-      streakDays,
+      safeAchievements,
+      safeStreak,
       isSessionComplete
     );
 
@@ -172,7 +175,7 @@ class DashboardOrchestrator {
       case "nearing_target":
         return {
           headline: `You're ${readiness.readinessScore}% Ready for ${readiness.companyName}! 🏆`,
-          message: `You've mastered ${readiness.matchedSkills.length} core requirements. Focus on mock interviews and final project polish.`,
+          message: `You've mastered ${(readiness.matchedSkills ?? []).length} core requirements. Focus on mock interviews and final project polish.`,
         };
       default:
         return {
@@ -221,10 +224,10 @@ class DashboardOrchestrator {
     const firstIncompleteMission = missions.find((m) => !m.completed);
     if (firstIncompleteMission) {
       return {
-        label: `Start Task: ${firstIncompleteMission.title}`,
+        label: `Start Task: ${firstIncompleteMission.title ?? "Next Mission"}`,
         route: firstIncompleteMission.code?.includes("dsa") ? "/dashboard/dsa" : "/dashboard",
-        reason: firstIncompleteMission.description,
-        estimatedGain: `+${firstIncompleteMission.xp_reward} XP & Readiness`,
+        reason: firstIncompleteMission.description ?? "Complete your next career mission",
+        estimatedGain: `+${firstIncompleteMission.xp_reward ?? 50} XP & Readiness`,
         actionType: "mission",
       };
     }
@@ -262,11 +265,13 @@ class DashboardOrchestrator {
     }
 
     // Priority 2: High Impact Opportunity
-    if (readiness.missingSkills.length > 0) {
+    const missingSkills = readiness.missingSkills ?? [];
+    if (missingSkills.length > 0) {
+      const topMissing = missingSkills[0];
       items.push({
         id: "inbox-skill-gap",
-        title: `High Impact Skill Gap: ${readiness.missingSkills[0]}`,
-        message: `${readiness.companyName} explicitly weights ${readiness.missingSkills[0]} in technical rounds.`,
+        title: `High Impact Skill Gap: ${topMissing}`,
+        message: `${readiness.companyName} explicitly weights ${topMissing} in technical rounds.`,
         priority: 2,
         category: "opportunity",
         timestamp: "Top Readiness Opportunity",
