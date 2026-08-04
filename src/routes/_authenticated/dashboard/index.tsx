@@ -25,6 +25,10 @@ import { DreamCompanyHero } from "@/components/career-intelligence/DreamCompanyH
 import { SteppingStonePath } from "@/components/career-intelligence/SteppingStonePath";
 import { AdaptiveFocusWidget } from "@/components/career-intelligence/AdaptiveFocusWidget";
 import { UserCareerContext, CareerRole } from "@/lib/career-intelligence";
+import { AICoachHero } from "@/components/dashboard/AICoachHero";
+import { DailyWorkspaceCard } from "@/components/dashboard/DailyWorkspaceCard";
+import { AchievementMotivation } from "@/components/dashboard/AchievementMotivation";
+import { UnifiedCareerAssets } from "@/components/dashboard/UnifiedCareerAssets";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: Dashboard,
@@ -483,51 +487,19 @@ function Dashboard() {
         animate="show"
         className="relative mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6"
       >
-        {/* ── 1. PREMIUM HERO SECTION ── */}
+        {/* ── 1. LIVING AI COACH & DYNAMIC DAILY CONTEXT ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
-          <div className="flex flex-col md:flex-row items-start md:items-end justify-between gap-6 glass-strong rounded-3xl p-6 md:p-8 border border-white/5 hover:border-white/10 transition-colors">
-            <div className="flex-1 max-w-2xl">
-              <div className="text-xs uppercase tracking-widest text-muted-foreground mb-2">Welcome back</div>
-              <h1 className="font-display text-4xl md:text-5xl font-bold mb-4">
-                Good {new Date().getHours() < 12 ? "Morning" : new Date().getHours() < 18 ? "Afternoon" : "Evening"}, {profile?.full_name?.split(" ")[0] ?? "there"} <span className="text-aurora inline-block hover:animate-pulse cursor-default">👋</span>
-              </h1>
-              <p className="text-lg text-white/80 mb-2">
-                You're currently <span className="font-bold text-aurora"><AnimatedCounter value={latest.total_score} />% Placement Ready.</span>
-              </p>
-              <div className="text-sm text-white/60 space-y-1">
-                <p>Focus on today:</p>
-                <ul className="list-disc pl-4 space-y-0.5">
-                  {heroSummary.map((s, i) => (
-                    <li key={i}>{s}</li>
-                  ))}
-                </ul>
-                <p className="mt-2 text-xs text-muted-foreground">Estimated Interview Readiness: {expectedTimeline}</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-3 min-w-[200px]">
-              <div className="glass rounded-2xl p-4 flex items-center gap-3 hover:-translate-y-1 hover:shadow-lg hover:shadow-aurora/5 transition-all">
-                <div className="h-10 w-10 rounded-full bg-aurora/10 flex items-center justify-center">
-                  <Trophy className="h-5 w-5 text-aurora" />
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Current Level</div>
-                  <div className="font-bold text-white">{xp.level_name}</div>
-                </div>
-              </div>
-              <div className="glass rounded-2xl p-4 flex items-center gap-3 hover:-translate-y-1 hover:shadow-lg hover:shadow-aurora/5 transition-all">
-                <div className="h-10 w-10 rounded-full bg-orange-500/10 flex items-center justify-center">
-                  <Flame className="h-5 w-5 text-orange-400" />
-                </div>
-                <div>
-                  <div className="text-xs text-muted-foreground">Current Streak</div>
-                  <div className="font-bold text-white"><AnimatedCounter value={streak.current_streak} /> days</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <AICoachHero
+            userContext={userContext}
+            userName={profile?.full_name || ""}
+            totalXp={xp.total_xp}
+            levelName={xp.level_name}
+            currentStreak={streak.current_streak}
+            scores={scores}
+          />
         </motion.div>
 
-        {/* ── DREAM COMPANY INTELLIGENCE & ADAPTIVE CAREER JOURNEY ── */}
+        {/* ── 2. DREAM COMPANY INTELLIGENCE & ADAPTIVE JOURNEY ── */}
         <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
           <DreamCompanyHero
             userContext={userContext}
@@ -535,7 +507,40 @@ function Dashboard() {
             onRoleChange={handleRoleChange}
           />
           <AdaptiveFocusWidget userContext={userContext} />
+        </motion.div>
+
+        {/* ── 3. TODAY'S ACTION WORKSPACE & MISSIONS ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <DailyWorkspaceCard
+            missions={missions}
+            onCompleteMission={completeMission}
+            userContext={userContext}
+          />
+        </motion.div>
+
+        {/* ── 4. WIN OF THE DAY & MOMENTUM ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <AchievementMotivation
+            unlockedCodes={achs}
+            currentStreak={streak.current_streak}
+          />
+        </motion.div>
+
+        {/* ── 5. DYNAMIC STEPPING-STONE CAREER PATH ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
           <SteppingStonePath userContext={userContext} />
+        </motion.div>
+
+        {/* ── 6. UNIFIED CAREER ASSETS HUB ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <UnifiedCareerAssets
+            latest={latest}
+            resume={resume}
+            gh={gh}
+            uploading={uploading}
+            onUploadResume={handleUpload}
+            onAnalyzeGitHub={analyzeGitHub}
+          />
         </motion.div>
 
         {/* ── 2. PLACEMENT READINESS & KPI GRID ── */}
