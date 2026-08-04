@@ -21,6 +21,10 @@ import {
 import { toast } from "sonner";
 import { extractTextFromPDF } from "@/lib/pdf";
 import { LineChart, Line, ResponsiveContainer, XAxis, YAxis, Tooltip } from "recharts";
+import { DreamCompanyHero } from "@/components/career-intelligence/DreamCompanyHero";
+import { SteppingStonePath } from "@/components/career-intelligence/SteppingStonePath";
+import { AdaptiveFocusWidget } from "@/components/career-intelligence/AdaptiveFocusWidget";
+import { UserCareerContext, CareerRole } from "@/lib/career-intelligence";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: Dashboard,
@@ -174,6 +178,51 @@ function Dashboard() {
         .map((s, i) => ({ x: i, y: s.total_score })),
     [scores]
   );
+
+  const userContext: UserCareerContext = useMemo(() => {
+    return {
+      user_id: profile?.user_id || "",
+      target_role: (profile?.target_role as CareerRole) || (profile?.career_goal as CareerRole) || "fullstack",
+      dream_companies: profile?.dream_companies && profile.dream_companies.length > 0 ? profile.dream_companies : ["google"],
+      preferred_location: profile?.preferred_location || "Remote",
+      graduation_year: profile?.graduation_year,
+      placementScore: latest.total_score,
+      dsaScore: latest.dsa_score,
+      resumeScore: latest.resume_score,
+      githubScore: latest.github_score,
+      projectsScore: latest.projects_score,
+      skillScore: latest.skill_score,
+      communicationScore: latest.communication_score,
+      skills: profile?.skills || [],
+      githubUsername: profile?.github_username,
+      resumeAtsScore: resume?.ats_score,
+      resumeMissingSkills: resume?.missing_skills || [],
+    };
+  }, [profile, latest, resume]);
+
+  const handleCompanyChange = async (companyId: string) => {
+    setProfile((prev: any) => ({ ...prev, dream_companies: [companyId] }));
+    const { data: u } = await supabase.auth.getUser();
+    if (u.user) {
+      await supabase
+        .from("profiles")
+        .update({ dream_companies: [companyId] })
+        .eq("user_id", u.user.id);
+      toast.success(`Dream company set to ${companyId.toUpperCase()}`);
+    }
+  };
+
+  const handleRoleChange = async (roleId: CareerRole) => {
+    setProfile((prev: any) => ({ ...prev, target_role: roleId }));
+    const { data: u } = await supabase.auth.getUser();
+    if (u.user) {
+      await supabase
+        .from("profiles")
+        .update({ target_role: roleId })
+        .eq("user_id", u.user.id);
+      toast.success(`Target role set to ${roleId}`);
+    }
+  };
 
   async function completeMission(m: any) {
     const { data: u } = await supabase.auth.getUser();
@@ -476,6 +525,17 @@ function Dashboard() {
               </div>
             </div>
           </div>
+        </motion.div>
+
+        {/* ── DREAM COMPANY INTELLIGENCE & ADAPTIVE CAREER JOURNEY ── */}
+        <motion.div variants={{ hidden: { opacity: 0, y: 10 }, show: { opacity: 1, y: 0 } }}>
+          <DreamCompanyHero
+            userContext={userContext}
+            onCompanyChange={handleCompanyChange}
+            onRoleChange={handleRoleChange}
+          />
+          <AdaptiveFocusWidget userContext={userContext} />
+          <SteppingStonePath userContext={userContext} />
         </motion.div>
 
         {/* ── 2. PLACEMENT READINESS & KPI GRID ── */}

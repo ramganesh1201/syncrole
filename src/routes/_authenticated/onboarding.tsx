@@ -65,6 +65,8 @@ function Onboarding() {
     graduation_year: new Date().getFullYear() + 1,
     cgpa: 8.0,
     career_goal: "fullstack",
+    dream_company: "google",
+    preferred_location: "Remote",
     skills: [] as string[],
     github_username: "",
   });
@@ -91,7 +93,7 @@ function Onboarding() {
       });
   }, [nav]);
 
-  const steps = ["About you", "Career goal", "Your skills", "GitHub", "Resume", "Finish"];
+  const steps = ["About you", "Career goal", "Dream target", "Your skills", "GitHub", "Resume", "Finish"];
 
   async function finish() {
     setBusy(true);
@@ -109,6 +111,9 @@ function Onboarding() {
           career_goal: form.career_goal as any,
           skills: form.skills,
           github_username: form.github_username || null,
+          target_role: form.career_goal || "fullstack",
+          dream_companies: [(form as any).dream_company || "google"],
+          preferred_location: (form as any).preferred_location || "Remote",
           onboarding_completed: true,
         })
         .eq("user_id", u.user.id);
@@ -208,6 +213,34 @@ function Onboarding() {
                   </Section>
                 )}
                 {step === 2 && (
+                  <Section title="What's your dream target?" icon={Target}>
+                    <p className="text-xs text-muted-foreground mb-3">
+                      Select your target dream company to customize your readiness score and career journey.
+                    </p>
+                    <div className="grid sm:grid-cols-2 gap-3 mt-2">
+                      {[
+                        { v: "google", label: "Google" },
+                        { v: "microsoft", label: "Microsoft" },
+                        { v: "amazon", label: "Amazon" },
+                        { v: "adobe", label: "Adobe" },
+                        { v: "atlassian", label: "Atlassian" },
+                        { v: "servicenow", label: "ServiceNow" },
+                        { v: "zoho", label: "Zoho" },
+                        { v: "freshworks", label: "Freshworks" },
+                        { v: "startups", label: "High-Growth Startups" },
+                      ].map((c) => (
+                        <button
+                          key={c.v}
+                          onClick={() => setForm({ ...form, dream_company: c.v })}
+                          className={`text-left rounded-2xl p-4 transition ${form.dream_company === c.v ? "bg-aurora text-primary-foreground" : "glass hover:bg-white/10"}`}
+                        >
+                          <div className="font-semibold">{c.label}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </Section>
+                )}
+                {step === 3 && (
                   <Section title="Pick your current skills" icon={Sparkles}>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {SKILL_OPTIONS.map((s) => {
@@ -236,7 +269,7 @@ function Onboarding() {
                     </p>
                   </Section>
                 )}
-                {step === 3 && (
+                {step === 4 && (
                   <Section title="Connect your GitHub" icon={Github}>
                     <Input
                       label="GitHub username"
@@ -250,7 +283,7 @@ function Onboarding() {
                     </p>
                   </Section>
                 )}
-                {step === 4 && (
+                {step === 5 && (
                   <Section title="Upload your resume" icon={FileText}>
                     <p className="text-sm text-muted-foreground">
                       You can skip this and upload it later from the dashboard.
@@ -258,7 +291,7 @@ function Onboarding() {
                     <ResumeUpload onUploaded={() => toast.success("Resume saved")} />
                   </Section>
                 )}
-                {step === 5 && (
+                {step === 6 && (
                   <Section title="You're all set" icon={Sparkles}>
                     <p className="text-sm text-muted-foreground">
                       We'll generate your personalized placement score and daily missions in your
@@ -270,8 +303,8 @@ function Onboarding() {
                         label="Goal"
                         value={GOALS.find((g) => g.v === form.career_goal)?.label || "—"}
                       />
+                      <Summary label="Dream Target" value={form.dream_company?.toUpperCase() || "—"} />
                       <Summary label="Skills" value={`${form.skills.length} selected`} />
-                      <Summary label="GitHub" value={form.github_username || "—"} />
                     </div>
                   </Section>
                 )}
