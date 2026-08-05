@@ -1,4 +1,5 @@
 import { ArrowRight, Home, User, FileText, Sparkles, Trophy } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 import { UserCareerContext } from "@/lib/career-intelligence";
 
 interface CareerJourneyCardProps {
@@ -58,10 +59,10 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
         </div>
       </div>
 
-      <button className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl py-3 text-sm font-semibold transition-all flex items-center justify-center gap-2">
+      <Link to="/role-explorer" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
         View Full Journey
         <ArrowRight className="w-4 h-4" />
-      </button>
+      </Link>
     </div>
   );
 }

@@ -1,4 +1,5 @@
-import { ChevronDown } from "lucide-react";
+import { useState } from "react";
+import { ChevronDown, Check } from "lucide-react";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip } from "recharts";
 
 interface WeeklyProgressCardProps {
@@ -8,16 +9,31 @@ interface WeeklyProgressCardProps {
 }
 
 export function WeeklyProgressCard({ chartData, latestScore, prevScore }: WeeklyProgressCardProps) {
-  // Demo weekly data mapping to match the image, if real data is scarce
-  const days = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const [isOpen, setIsOpen] = useState(false);
+  const [timeframe, setTimeframe] = useState("This Week");
+
+  const timeframes = [
+    { label: "This Week", requiredDays: 1 },
+    { label: "Last 7 Days", requiredDays: 7 },
+    { label: "This Month", requiredDays: 30 },
+    { label: "Last 30 Days", requiredDays: 30 },
+  ];
+
+  // Demo data logic adjusted based on timeframe
+  let displayDays = 7;
+  if (timeframe === "This Month" || timeframe === "Last 30 Days") displayDays = 30;
+
+  const days = displayDays === 7 
+    ? ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"]
+    : Array.from({ length: 30 }, (_, i) => `${i + 1}`);
   
-  // Transform existing chart data to fit a weekly view, or use some dummy logic to make it look good for now
+  // Transform existing chart data to fit the view
   // Real implementation will use actual dates if available in scores, but for UI sake we map index to days.
   const displayData = days.map((day, i) => {
-    const dataPoint = chartData[chartData.length - 7 + i] || chartData[i];
+    const dataPoint = chartData[chartData.length - displayDays + i] || chartData[i];
     return {
       day,
-      score: dataPoint?.y || (30 + i * 2), // fallback slope
+      score: dataPoint?.y || (30 + i * (displayDays === 30 ? 0.5 : 2)), // fallback slope
     };
   });
 
@@ -25,11 +41,49 @@ export function WeeklyProgressCard({ chartData, latestScore, prevScore }: Weekly
 
   return (
     <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-6 flex flex-col justify-between h-full backdrop-blur-xl">
-      <div className="flex items-center justify-between mb-6">
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Weekly Progress</h3>
-        <button className="text-xs text-muted-foreground font-medium flex items-center gap-1 hover:text-white transition-colors">
-          This Week <ChevronDown className="w-3 h-3" />
-        </button>
+      <div className="flex items-center justify-between mb-6 relative">
+        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Progress</h3>
+        
+        <div className="relative">
+          <button 
+            onClick={() => setIsOpen(!isOpen)}
+            className="text-xs text-muted-foreground font-medium flex items-center gap-1 hover:text-white transition-colors p-1"
+          >
+            {timeframe} <ChevronDown className="w-3 h-3" />
+          </button>
+          
+          {isOpen && (
+            <>
+              <div className="fixed inset-0 z-10" onClick={() => setIsOpen(false)} />
+              <div className="absolute right-0 top-full mt-1 w-36 bg-slate-800 border border-white/10 rounded-xl shadow-xl overflow-hidden z-20 py-1">
+                {timeframes.map((tf) => {
+                  const isDisabled = chartData.length > 0 && chartData.length < tf.requiredDays;
+                  return (
+                    <button
+                      key={tf.label}
+                      disabled={isDisabled}
+                      onClick={() => {
+                        setTimeframe(tf.label);
+                        setIsOpen(false);
+                      }}
+                      className={`w-full text-left px-3 py-2 text-xs flex items-center justify-between transition-colors ${
+                        isDisabled 
+                          ? "text-muted-foreground/40 cursor-not-allowed" 
+                          : timeframe === tf.label 
+                            ? "text-white bg-white/5" 
+                            : "text-muted-foreground hover:bg-white/5 hover:text-white"
+                      }`}
+                      title={isDisabled ? "Not enough historical data" : undefined}
+                    >
+                      {tf.label}
+                      {timeframe === tf.label && <Check className="w-3 h-3 text-emerald-400" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <div className="grid grid-cols-4 gap-4 mb-8">

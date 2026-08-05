@@ -1,4 +1,5 @@
 import { FileText, Code2, Github, ArrowRight, Clock, Star } from "lucide-react";
+import { Link } from "@tanstack/react-router";
 
 interface TodayWorkspaceProps {
   missions: any[];
@@ -19,6 +20,7 @@ export function TodayWorkspace({ missions, onComplete }: TodayWorkspaceProps) {
       icon: FileText,
       color: "bg-purple-500/20 text-purple-400",
       btnColor: "bg-purple-600 hover:bg-purple-700 text-white",
+      path: "/resume-intelligence"
     },
     {
       id: "dsa",
@@ -31,6 +33,7 @@ export function TodayWorkspace({ missions, onComplete }: TodayWorkspaceProps) {
       icon: Code2,
       color: "bg-blue-500/20 text-blue-400",
       btnColor: "bg-blue-600 hover:bg-blue-700 text-white",
+      path: "/dashboard/dsa"
     },
     {
       id: "github",
@@ -43,6 +46,7 @@ export function TodayWorkspace({ missions, onComplete }: TodayWorkspaceProps) {
       icon: Github,
       color: "bg-emerald-500/20 text-emerald-400",
       btnColor: "bg-emerald-600 hover:bg-emerald-700 text-white",
+      path: "/profile"
     },
   ];
 
@@ -60,6 +64,7 @@ export function TodayWorkspace({ missions, onComplete }: TodayWorkspaceProps) {
       icon: fallback.icon,
       color: fallback.color,
       btnColor: fallback.btnColor,
+      path: fallback.path
     };
   });
 
@@ -112,18 +117,22 @@ export function TodayWorkspace({ missions, onComplete }: TodayWorkspaceProps) {
                   </div>
                 </div>
 
-                <button
-                  onClick={() => !task.fake && onComplete(task)}
-                  disabled={task.completed}
-                  className={`w-full py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all ${
-                    task.completed
-                      ? "bg-white/10 text-white/50 cursor-not-allowed"
-                      : task.btnColor
-                  }`}
-                >
-                  {task.completed ? "Completed" : "Continue"}
-                  {!task.completed && <ArrowRight className="w-4 h-4" />}
-                </button>
+                {task.completed ? (
+                  <button
+                    disabled
+                    className="w-full py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all bg-white/10 text-white/50 cursor-not-allowed"
+                  >
+                    Completed
+                  </button>
+                ) : (
+                  <Link
+                    to={task.path}
+                    className={`w-full py-2.5 rounded-xl flex items-center justify-center gap-2 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] ${task.btnColor}`}
+                  >
+                    Continue
+                    <ArrowRight className="w-4 h-4" />
+                  </Link>
+                )}
               </div>
             </div>
           );
