@@ -55,7 +55,7 @@ export const CodingProfilesSection = React.memo(function CodingProfilesSection({
           return (
             <div 
               key={p.id}
-              className={`glass border rounded-[24px] p-6 flex flex-col justify-between h-[240px] transition-all group relative overflow-hidden shadow-lg ${
+              className={`glass border rounded-[24px] p-6 flex flex-col justify-between min-h-[260px] h-full transition-all group relative overflow-hidden shadow-lg ${
                 isConnected 
                   ? "bg-slate-900/60 border-white/10 hover:border-white/20 hover:bg-slate-800/80" 
                   : "bg-slate-900/30 border-white/5 border-dashed hover:border-white/20"
@@ -96,7 +96,7 @@ export const CodingProfilesSection = React.memo(function CodingProfilesSection({
                 )}
               </div>
               
-              <div className="mt-4 pt-4 border-t border-white/5 flex items-center gap-3">
+              <div className="mt-auto pt-4 border-t border-white/5 flex items-center gap-3">
                 {isConnected ? (
                   <>
                     <button className="flex-1 h-10 bg-transparent hover:bg-white/5 text-slate-300 border-2 border-white/5 hover:border-white/10 font-bold rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5">
