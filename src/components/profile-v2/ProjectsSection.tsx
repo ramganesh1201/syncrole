@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ExternalLink, Github, FolderDot, Edit, Plus, ChevronRight } from "lucide-react";
+import { ExternalLink, Github, FolderDot, Edit, Plus, LayoutTemplate, Link2 } from "lucide-react";
 
 interface ProjectsSectionProps {
   profile: any;
@@ -12,50 +12,51 @@ export function ProjectsSection({ profile, onEditClick }: ProjectsSectionProps) 
   return (
     <motion.div 
       initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="mb-8"
       id="projects"
     >
-      <div className="flex items-center justify-between mb-4">
-        <h3 className="text-sm font-semibold text-muted-foreground uppercase tracking-wider">Projects & Portfolio</h3>
-        {hasPortfolio && (
-          <button onClick={onEditClick} className="text-xs text-indigo-400 font-semibold flex items-center gap-1 hover:text-indigo-300">
-            Edit Portfolio <ChevronRight className="w-3 h-3" />
-          </button>
-        )}
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h2 className="text-xl font-bold text-white mb-1">Projects & Portfolio</h2>
+          <p className="text-sm text-muted-foreground">Showcase your best work to recruiters.</p>
+        </div>
       </div>
 
       {hasPortfolio ? (
         <div className="grid md:grid-cols-2 gap-6">
-          <div className="glass bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all group">
+          <div className="glass bg-slate-900/60 border border-white/10 rounded-3xl overflow-hidden hover:border-white/20 transition-all group shadow-xl">
             {/* Project Image Placeholder */}
-            <div className="h-40 bg-slate-800 relative overflow-hidden flex items-center justify-center">
+            <div className="h-48 bg-slate-800 relative overflow-hidden flex items-center justify-center border-b border-white/5">
               <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/20 to-purple-500/20 opacity-50 group-hover:opacity-100 transition-opacity" />
-              <FolderDot className="w-12 h-12 text-white/20" />
+              <LayoutTemplate className="w-16 h-16 text-white/10 group-hover:scale-110 transition-transform duration-500" />
+              
+              <div className="absolute top-4 right-4 flex gap-2">
+                <span className="bg-emerald-500/90 text-white backdrop-blur-md px-2.5 py-1 rounded-full text-[10px] font-bold uppercase tracking-wider shadow-lg">Active</span>
+              </div>
             </div>
             
             <div className="p-6">
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start mb-3">
                 <div>
-                  <h4 className="text-lg font-bold text-white">Main Portfolio</h4>
-                  <p className="text-sm text-indigo-400 font-medium">Personal Website</p>
+                  <h4 className="text-lg font-bold text-white mb-0.5 group-hover:text-indigo-400 transition-colors">Main Portfolio</h4>
+                  <p className="text-xs text-indigo-400/80 font-bold uppercase tracking-wider">Personal Website</p>
                 </div>
-                <span className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-2 py-0.5 rounded text-[10px] font-bold uppercase">Active</span>
               </div>
               
-              <p className="text-sm text-muted-foreground mb-6 line-clamp-2">
-                A showcase of my recent work, skills, and professional experience.
+              <p className="text-sm text-muted-foreground mb-6 line-clamp-2 leading-relaxed">
+                A showcase of my recent work, skills, and professional experience, deployed to the web.
               </p>
               
-              <div className="flex flex-wrap gap-2 mb-6">
-                <span className="px-2 py-1 bg-white/5 rounded text-xs text-slate-300 font-medium">React</span>
-                <span className="px-2 py-1 bg-white/5 rounded text-xs text-slate-300 font-medium">Tailwind</span>
+              <div className="flex flex-wrap gap-2 mb-8">
+                <span className="px-2.5 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-300 uppercase tracking-wider">React</span>
+                <span className="px-2.5 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-300 uppercase tracking-wider">Tailwind</span>
+                <span className="px-2.5 py-1 bg-white/5 border border-white/5 rounded-lg text-[10px] font-bold text-slate-300 uppercase tracking-wider">TypeScript</span>
               </div>
               
               <div className="flex items-center gap-3">
-                <a href={profile.portfolio.startsWith('http') ? profile.portfolio : `https://${profile.portfolio}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-white/10 hover:bg-white/20 text-white font-semibold py-2 rounded-xl text-sm transition-colors flex items-center justify-center gap-2">
-                  <ExternalLink className="w-4 h-4" /> Live Demo
+                <a href={profile.portfolio.startsWith('http') ? profile.portfolio : `https://${profile.portfolio}`} target="_blank" rel="noopener noreferrer" className="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-bold py-2.5 rounded-xl text-xs transition-colors flex items-center justify-center gap-1.5 shadow-lg shadow-indigo-500/20">
+                  <ExternalLink className="w-3.5 h-3.5" /> Live Demo
                 </a>
-                <button onClick={onEditClick} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 flex items-center justify-center transition-colors">
+                <button onClick={onEditClick} className="w-10 h-10 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 flex items-center justify-center transition-colors">
                   <Edit className="w-4 h-4 text-slate-300" />
                 </button>
               </div>
@@ -63,17 +64,31 @@ export function ProjectsSection({ profile, onEditClick }: ProjectsSectionProps) 
           </div>
         </div>
       ) : (
-        <div className="glass bg-slate-900/60 border border-white/10 border-dashed rounded-3xl p-10 text-center flex flex-col items-center justify-center gap-4">
-          <div className="w-12 h-12 rounded-full bg-indigo-500/10 flex items-center justify-center">
-            <FolderDot className="w-6 h-6 text-indigo-400" />
+        <div className="glass bg-slate-900/40 border border-white/10 border-dashed rounded-3xl p-12 text-center flex flex-col items-center justify-center gap-5 relative overflow-hidden">
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-500/5 via-transparent to-transparent opacity-50" />
+          
+          <div className="relative">
+            <div className="w-16 h-16 rounded-2xl bg-slate-800/80 flex items-center justify-center border border-white/10 shadow-xl mb-2 relative z-10 mx-auto">
+              <FolderDot className="w-8 h-8 text-indigo-400" />
+            </div>
+            <div className="absolute -inset-4 bg-indigo-500/20 blur-2xl rounded-full z-0" />
           </div>
-          <div>
-            <p className="text-white font-semibold">No portfolio added yet</p>
-            <p className="text-sm text-muted-foreground mt-1 max-w-md mx-auto">Link your personal website or portfolio to showcase your best work to recruiters.</p>
+          
+          <div className="relative z-10 max-w-sm">
+            <p className="text-white font-bold text-lg mb-2">Build your project portfolio</p>
+            <p className="text-sm text-muted-foreground leading-relaxed">
+              Recruiters love to see real-world projects. Link your personal website or import projects directly from GitHub.
+            </p>
           </div>
-          <button onClick={onEditClick} className="bg-white/10 hover:bg-white/20 text-white px-5 py-2 rounded-xl text-sm font-semibold transition-colors flex items-center gap-2">
-            <Plus className="w-4 h-4" /> Add Portfolio URL
-          </button>
+          
+          <div className="flex items-center gap-3 relative z-10 mt-2">
+            <button onClick={onEditClick} className="bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-lg shadow-indigo-500/20">
+              <Link2 className="w-4 h-4" /> Link Portfolio
+            </button>
+            <button onClick={onEditClick} className="bg-white/5 hover:bg-white/10 text-white border border-white/10 px-5 py-2.5 rounded-xl text-sm font-bold transition-colors flex items-center gap-2">
+              <Github className="w-4 h-4" /> Import GitHub
+            </button>
+          </div>
         </div>
       )}
     </motion.div>
