@@ -5,14 +5,19 @@ import { Link } from "@tanstack/react-router";
 
 interface ResumeSummaryProps {
   placementStats: any;
+  resumeAnalysis?: any;
   uploading: boolean;
   onUpload: (e: any) => void;
 }
 
-export const ResumeSummary = React.memo(function ResumeSummary({ placementStats, uploading, onUpload }: ResumeSummaryProps) {
-  const score = placementStats?.resume_score || 0;
-  const hasResume = score > 0;
-  const lastUpdated = placementStats?.created_at ? new Date(placementStats.created_at).toLocaleDateString() : "Never";
+export const ResumeSummary = React.memo(function ResumeSummary({ placementStats, resumeAnalysis, uploading, onUpload }: ResumeSummaryProps) {
+  // Use resumeAnalysis as the primary source of truth, matching the actual Resume Intelligence page
+  const hasResume = !!resumeAnalysis;
+  const score = resumeAnalysis?.overall_score || resumeAnalysis?.total_score || placementStats?.resume_score || 0;
+  
+  // Use the created_at from whichever source has the resume data
+  const dateStr = resumeAnalysis?.created_at || placementStats?.created_at;
+  const lastUpdated = dateStr ? new Date(dateStr).toLocaleDateString() : "Never";
 
   return (
     <motion.div 
@@ -28,7 +33,7 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
           </div>
           {hasResume ? (
             <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest shadow-sm">
-              <CheckCircle2 className="w-3.5 h-3.5" /> Active
+              <CheckCircle2 className="w-3.5 h-3.5" /> Analyzed
             </div>
           ) : (
             <div className="flex items-center gap-1.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 px-3 py-1.5 rounded-md text-[10px] font-black uppercase tracking-widest shadow-sm">
@@ -40,7 +45,7 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
         <h4 className="text-xl font-bold text-white mb-2 font-display">Resume Intelligence</h4>
         <p className="text-sm text-muted-foreground mb-8 leading-relaxed">
           {hasResume 
-            ? "Your resume has been parsed and scored against industry standard ATS systems to determine placement readiness." 
+            ? "Resume analysis is ready. Your ATS score and AI recommendations are available." 
             : "Upload your resume to get an instant ATS score and targeted AI improvement recommendations."}
         </p>
 
@@ -70,7 +75,7 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
           View Full Intelligence <ArrowRight className="w-4 h-4" />
         </Link>
         <label className="flex-1 w-full h-12 cursor-pointer bg-white/5 hover:bg-white/10 text-white border-2 border-white/10 font-bold rounded-xl text-sm transition-all flex items-center justify-center gap-2">
-          <Upload className="w-4 h-4" /> {uploading ? "Uploading..." : "Replace Resume"}
+          <Upload className="w-4 h-4" /> {uploading ? "Wait..." : "Replace"}
           <input type="file" className="hidden" accept=".pdf,.doc,.docx" onChange={onUpload} disabled={uploading} />
         </label>
       </div>

@@ -30,13 +30,14 @@ export const Route = createFileRoute("/_authenticated/profile")({
 function ProfilePage() {
   const { user } = Route.useRouteContext();
   const [profile, setProfile] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+  const [placementStats, setPlacementStats] = useState<any>(null);
   const [xpLevel, setXpLevel] = useState<any>(null);
   const [streak, setStreak] = useState<any>(null);
+  const [resumeAnalysis, setResumeAnalysis] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
   // Placement stats for Career Identity Card
-  const [placementStats, setPlacementStats] = useState<any>(null);
   const [uploading, setUploading] = useState(false);
   const nav = useNavigate();
   const [isEditExpanded, setIsEditExpanded] = useState(false);
@@ -60,8 +61,11 @@ function ProfilePage() {
       const { data: stats } = await supabase.from("placement_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single();
       const { data: xpData } = await supabase.from("xp_levels").select("*").eq("user_id", user.id).maybeSingle();
       const { data: streakData } = await supabase.from("streaks").select("*").eq("user_id", user.id).maybeSingle();
+      const { data: resumeData } = await supabase.from("resume_analysis").select("*").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      
       if (xpData) setXpLevel(xpData);
       if (streakData) setStreak(streakData);
+      if (resumeData) setResumeAnalysis(resumeData);
       
       if (data) setProfile(data);
       if (stats) setPlacementStats(stats);
@@ -284,7 +288,7 @@ function ProfilePage() {
           <section id="professional-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
             <CodingProfilesSection profile={profile} onEditClick={handleEditClick} />
             <div id="resume-github" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
-              <ResumeSummary placementStats={placementStats} uploading={uploading} onUpload={handleResumeUpload} />
+              <ResumeSummary placementStats={placementStats} resumeAnalysis={resumeAnalysis} uploading={uploading} onUpload={handleResumeUpload} />
               <GithubSummary profile={profile} placementStats={placementStats} />
             </div>
           </section>
