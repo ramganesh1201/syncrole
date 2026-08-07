@@ -1,6 +1,6 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
-import { Fingerprint, Target, Sparkles, BrainCircuit, Heart, Briefcase, MapPin, Loader2, CheckCircle2 } from "lucide-react";
+import { Fingerprint, Target, Sparkles, BrainCircuit, Briefcase, MapPin, Loader2, CheckCircle2, ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -16,7 +16,6 @@ function CareerIdentityPage() {
 
   useEffect(() => {
     async function loadData() {
-      // Fetch profile data
       const { data: profileData } = await supabase
         .from("profiles")
         .select("*")
@@ -25,7 +24,6 @@ function CareerIdentityPage() {
         
       if (profileData) setProfile(profileData);
 
-      // Fetch AI analysis for strengths/summary
       const { data: analysisData } = await supabase
         .from("resume_analysis")
         .select("*")
@@ -44,7 +42,7 @@ function CareerIdentityPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 text-aurora animate-spin" />
+        <Loader2 className="w-8 h-8 text-indigo-500 animate-spin" />
       </div>
     );
   }
@@ -53,145 +51,195 @@ function CareerIdentityPage() {
   const targetRole = profile?.target_role;
   const dreamCompany = profile?.dream_companies?.[0];
   const preferredLocation = profile?.preferred_location || profile?.city;
-  const careerGoal = profile?.career_goal ? profile.career_goal.charAt(0).toUpperCase() + profile.career_goal.slice(1) : null;
+  const engineeringDomain = profile?.career_goal ? profile.career_goal.charAt(0).toUpperCase() + profile.career_goal.slice(1) : null;
   const skills = Array.isArray(profile?.skills) ? profile.skills : (profile?.skills ? String(profile.skills).split(",").map(s => s.trim()).filter(Boolean) : []);
+  const careerInterests = profile?.career_dna?.interests || [];
   
-  // Try to find AI-derived strengths or summaries from the resume analysis if available.
-  // We use existing analysis_results data to strictly avoid fabricating AI data.
   const aiResults = resumeAnalysis?.analysis_results || {};
   const hasAiData = Object.keys(aiResults).length > 0;
+  const strengths = Array.isArray(aiResults.key_strengths) ? aiResults.key_strengths : (aiResults.key_strengths ? [aiResults.key_strengths] : []);
   
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-32">
-      {/* Header & Identity Chips */}
+    <div className="max-w-5xl mx-auto px-4 md:px-6 py-8 space-y-10 pb-32">
+      {/* 1. Career Identity Header & Snapshot */}
       <div className="space-y-6">
         <div className="space-y-2">
           <h1 className="text-3xl font-display font-bold text-white flex items-center gap-2">
-            <Fingerprint className="w-8 h-8 text-aurora" /> Career Identity
+            <Fingerprint className="w-8 h-8 text-indigo-400" /> Career Identity
           </h1>
           <p className="text-muted-foreground">Your professional DNA and strategic direction.</p>
         </div>
         
-        <div className="flex flex-wrap items-center gap-3">
+        <div className="flex flex-wrap items-center gap-6 p-4 rounded-2xl bg-white/5 border border-white/5">
           {targetRole && (
-            <span className="flex items-center gap-2 text-sm text-indigo-300 font-bold bg-indigo-500/10 px-3 py-1.5 rounded-lg border border-indigo-500/20">
-              <Briefcase className="w-4 h-4" /> {targetRole}
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Primary Role</span>
+              <span className="text-sm font-bold text-slate-200 flex items-center gap-1.5"><Briefcase className="w-3.5 h-3.5 text-indigo-400" /> {targetRole}</span>
+            </div>
+          )}
+          {engineeringDomain && (
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Domain</span>
+              <span className="text-sm font-bold text-slate-200">{engineeringDomain}</span>
+            </div>
           )}
           {dreamCompany && (
-            <span className="flex items-center gap-2 text-sm text-slate-300 font-medium bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-              <Target className="w-4 h-4 text-slate-400" /> {dreamCompany}
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Dream Company</span>
+              <span className="text-sm font-bold text-slate-200 flex items-center gap-1.5"><Target className="w-3.5 h-3.5 text-rose-400" /> {dreamCompany}</span>
+            </div>
           )}
           {preferredLocation && (
-            <span className="flex items-center gap-2 text-sm text-slate-300 font-medium bg-white/5 px-3 py-1.5 rounded-lg border border-white/5">
-              <MapPin className="w-4 h-4 text-slate-400" /> {preferredLocation}
-            </span>
+            <div className="flex flex-col gap-1">
+              <span className="text-[10px] font-black tracking-widest text-slate-500 uppercase">Preferred Location</span>
+              <span className="text-sm font-bold text-slate-200 flex items-center gap-1.5"><MapPin className="w-3.5 h-3.5 text-emerald-400" /> {preferredLocation}</span>
+            </div>
           )}
         </div>
       </div>
 
+      {/* 2. Career Direction */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">Career Direction</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div className="glass bg-slate-900/60 border border-white/5 p-5 rounded-[20px]">
+            <p className="text-[10px] font-black tracking-widest text-indigo-400/80 uppercase mb-2">Target Role</p>
+            <p className="font-bold text-white text-lg">{targetRole || <span className="text-slate-500 text-sm font-medium">Not specified</span>}</p>
+          </div>
+          <div className="glass bg-slate-900/60 border border-white/5 p-5 rounded-[20px]">
+            <p className="text-[10px] font-black tracking-widest text-rose-400/80 uppercase mb-2">Target Company</p>
+            <p className="font-bold text-white text-lg">{dreamCompany || <span className="text-slate-500 text-sm font-medium">Not specified</span>}</p>
+          </div>
+          <div className="glass bg-slate-900/60 border border-white/5 p-5 rounded-[20px]">
+            <p className="text-[10px] font-black tracking-widest text-emerald-400/80 uppercase mb-2">Engineering Domain</p>
+            <p className="font-bold text-white text-lg">{engineeringDomain || <span className="text-slate-500 text-sm font-medium">Not specified</span>}</p>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Career Goal (Optional) */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">Career Goal</h2>
+        {engineeringDomain || targetRole ? (
+          <div className="p-6 rounded-[20px] bg-indigo-500/10 border border-indigo-500/20 shadow-inner">
+            <p className="text-[10px] font-black tracking-widest text-indigo-400 uppercase mb-2">Your Current Direction</p>
+            <p className="text-slate-200 font-medium leading-relaxed">
+              Transitioning into a {targetRole || "specialized"} role within {engineeringDomain || "the tech"} domain{dreamCompany ? `, aiming for opportunities at ${dreamCompany}` : ''}.
+            </p>
+          </div>
+        ) : (
+          <div className="p-6 rounded-[20px] bg-slate-900/60 border border-white/5 flex flex-col items-start gap-2">
+            <p className="text-sm font-medium text-slate-300">Career goal not added yet</p>
+            <p className="text-xs text-slate-500">Add your career direction from your profile to personalize SyncPilot recommendations.</p>
+            <Link to="/profile" className="text-xs font-bold text-indigo-400 hover:text-indigo-300 mt-2 flex items-center gap-1">
+              Update Profile <ArrowRight className="w-3.5 h-3.5" />
+            </Link>
+          </div>
+        )}
+      </section>
+
+      {/* 4. Technical Profile & Strengths */}
       <div className="grid md:grid-cols-2 gap-8">
         
-        {/* Career Goals */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3 }} className="glass rounded-[24px] p-6 md:p-8 border border-white/5 space-y-6 shadow-lg bg-slate-900/60">
-          <h3 className="font-bold text-lg flex items-center gap-2 text-white"><Target className="w-5 h-5 text-indigo-400" /> Career Goals</h3>
-          
-          {targetRole || dreamCompany || careerGoal ? (
-            <div className="space-y-5">
-              {targetRole && (
-                <div>
-                  <p className="text-[10px] uppercase text-muted-foreground font-black tracking-widest mb-1">Target Role</p>
-                  <p className="text-sm font-bold text-slate-200">{targetRole}</p>
-                </div>
-              )}
-              {dreamCompany && (
-                <div>
-                  <p className="text-[10px] uppercase text-muted-foreground font-black tracking-widest mb-1">Dream Company</p>
-                  <p className="text-sm font-bold text-slate-200">{dreamCompany}</p>
-                </div>
-              )}
-              {careerGoal && (
-                <div>
-                  <p className="text-[10px] uppercase text-muted-foreground font-black tracking-widest mb-1">Engineering Domain</p>
-                  <p className="text-sm font-bold text-slate-200">{careerGoal}</p>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="p-4 rounded-xl bg-black/20 border border-white/5 text-center mt-2">
-              <p className="text-sm text-slate-400 font-medium">No career goals set yet.</p>
-              <p className="text-xs text-slate-500 mt-1">Update your profile to set your direction.</p>
-            </div>
-          )}
-        </motion.div>
+        {/* Technical Skills */}
+        <section className="space-y-4">
+          <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">Technical Profile</h2>
+          <div className="glass bg-slate-900/60 border border-white/5 p-6 md:p-8 rounded-[24px] h-full">
+            {skills && skills.length > 0 ? (
+              <div className="flex flex-wrap gap-2">
+                {skills.map((skill: string) => (
+                  <span key={skill} className="px-3 py-1.5 rounded-lg bg-black/40 border border-white/10 text-slate-200 text-xs font-bold uppercase tracking-wide">
+                    {skill}
+                  </span>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-6">
+                <p className="text-sm text-slate-400 font-medium">No technical skills added yet.</p>
+              </div>
+            )}
+          </div>
+        </section>
 
-        {/* Core Interests */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.1 }} className="glass rounded-[24px] p-6 md:p-8 border border-white/5 space-y-6 shadow-lg bg-slate-900/60">
-          <h3 className="font-bold text-lg flex items-center gap-2 text-white"><Heart className="w-5 h-5 text-rose-400" /> Core Interests & Tech</h3>
-          
-          {skills && skills.length > 0 ? (
+        {/* Strengths */}
+        <section className="space-y-4">
+          <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">Career Strengths</h2>
+          <div className="glass bg-slate-900/60 border border-white/5 p-6 md:p-8 rounded-[24px] h-full flex flex-col">
+            {strengths && strengths.length > 0 ? (
+              <ul className="space-y-4">
+                {strengths.slice(0, 4).map((strength: string, i: number) => (
+                  <li key={i} className="flex items-start gap-3 text-sm text-slate-200 font-medium leading-relaxed">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {strength}
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="text-center py-4 flex flex-col items-center justify-center flex-1">
+                <Sparkles className="w-8 h-8 text-slate-600 mb-3" />
+                <p className="text-sm text-slate-300 font-medium">No strengths analyzed yet.</p>
+                <p className="text-xs text-slate-500 mt-2 mb-4 max-w-[80%]">Complete a resume analysis to identify your strongest career signals.</p>
+                <Link to="/resume-intelligence" className="text-xs font-bold bg-white/10 hover:bg-white/15 border border-white/10 text-white px-4 py-2 rounded-lg transition-colors">
+                  Open Resume Intelligence
+                </Link>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+
+      {/* 5. Career Interests (Conditional) */}
+      {careerInterests && careerInterests.length > 0 && (
+        <section className="space-y-4">
+          <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">Career Interests</h2>
+          <div className="glass bg-slate-900/60 border border-white/5 p-6 rounded-[24px]">
             <div className="flex flex-wrap gap-2">
-              {skills.map((skill: string) => (
-                <span key={skill} className="px-3 py-1.5 rounded-lg bg-black/30 border border-white/5 text-slate-300 text-xs font-bold uppercase tracking-wide">
-                  {skill}
+              {careerInterests.map((interest: string) => (
+                <span key={interest} className="px-3 py-1.5 rounded-lg bg-indigo-500/10 border border-indigo-500/20 text-indigo-300 text-xs font-bold uppercase tracking-wide">
+                  {interest}
                 </span>
               ))}
             </div>
-          ) : (
-            <div className="p-4 rounded-xl bg-black/20 border border-white/5 text-center mt-2">
-              <p className="text-sm text-slate-400 font-medium">No core skills or interests defined.</p>
-            </div>
-          )}
-        </motion.div>
+          </div>
+        </section>
+      )}
 
-        {/* Superpowers */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.2 }} className="glass rounded-[24px] p-6 md:p-8 border border-white/5 space-y-6 shadow-lg bg-slate-900/60">
-          <h3 className="font-bold text-lg flex items-center gap-2 text-white"><Sparkles className="w-5 h-5 text-amber-400" /> Technical Strengths</h3>
-          
-          {hasAiData && aiResults.key_strengths ? (
-            <ul className="space-y-4">
-              {(Array.isArray(aiResults.key_strengths) ? aiResults.key_strengths : [aiResults.key_strengths]).slice(0, 3).map((strength: string, i: number) => (
-                <li key={i} className="flex items-start gap-3 text-sm text-slate-300 font-medium leading-relaxed">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" /> {strength}
-                </li>
-              ))}
-            </ul>
-          ) : (
-             <div className="p-4 rounded-xl bg-black/20 border border-white/5 text-center mt-2">
-              <p className="text-sm text-slate-400 font-medium">No strengths analyzed yet.</p>
-              <p className="text-xs text-slate-500 mt-1">Upload a resume to generate AI insights.</p>
-            </div>
-          )}
-        </motion.div>
-
-        {/* AI Summary */}
-        <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, delay: 0.3 }} className="glass rounded-[24px] p-6 md:p-8 border border-indigo-500/20 space-y-6 shadow-lg bg-indigo-950/20">
-          <h3 className="font-bold text-lg flex items-center gap-2 text-white"><BrainCircuit className="w-5 h-5 text-indigo-400" /> AI Career Summary</h3>
-          
+      {/* 6. AI Career Insight (Conditional) */}
+      <section className="space-y-4">
+        <h2 className="text-xs font-black tracking-widest text-slate-500 uppercase">AI Career Insight</h2>
+        <div className="glass bg-indigo-950/20 border border-indigo-500/20 p-6 md:p-8 rounded-[24px]">
           {hasAiData ? (
-             <div className="space-y-5">
+             <div className="grid sm:grid-cols-2 gap-8">
                {aiResults.summary && (
-                 <div>
-                   <p className="text-[10px] uppercase text-indigo-300/70 font-black tracking-widest mb-1.5">Current Profile</p>
+                 <div className="space-y-2">
+                   <div className="flex items-center gap-1.5 mb-3">
+                     <BrainCircuit className="w-4 h-4 text-indigo-400" />
+                     <p className="text-[10px] uppercase text-indigo-300/70 font-black tracking-widest">Profile Signal</p>
+                   </div>
                    <p className="text-sm text-slate-200 leading-relaxed font-medium">{aiResults.summary}</p>
                  </div>
                )}
-               {aiResults.biggest_gap && (
-                 <div className="pt-4 border-t border-white/5">
-                   <p className="text-[10px] uppercase text-amber-400/80 font-black tracking-widest mb-1.5">Primary Growth Area</p>
-                   <p className="text-sm text-slate-200 leading-relaxed font-medium">{aiResults.biggest_gap}</p>
-                 </div>
-               )}
+               <div className="space-y-6">
+                 {aiResults.biggest_gap && (
+                   <div className="space-y-2">
+                     <p className="text-[10px] uppercase text-amber-400/80 font-black tracking-widest">Growth Area</p>
+                     <p className="text-sm text-slate-200 leading-relaxed font-medium">{aiResults.biggest_gap}</p>
+                   </div>
+                 )}
+               </div>
              </div>
           ) : (
-            <div className="p-4 rounded-xl bg-black/20 border border-white/5 text-center mt-2">
-              <p className="text-sm text-slate-400 font-medium">No AI summary available.</p>
-              <p className="text-xs text-slate-500 mt-1">AI Coach requires resume analysis data.</p>
+            <div className="text-center py-6 flex flex-col items-center">
+              <BrainCircuit className="w-8 h-8 text-slate-600 mb-3" />
+              <p className="text-sm text-slate-300 font-medium">Your AI career profile hasn't been generated yet.</p>
+              <p className="text-xs text-slate-500 mt-2 mb-4">Analyze your resume to unlock personalized career insights.</p>
+              <Link to="/resume-intelligence" className="text-xs font-bold bg-indigo-500 hover:bg-indigo-600 text-white px-5 py-2.5 rounded-lg transition-colors shadow-lg shadow-indigo-500/20">
+                Open Resume Intelligence
+              </Link>
             </div>
           )}
-        </motion.div>
-      </div>
+        </div>
+      </section>
+      
     </div>
   );
 }
