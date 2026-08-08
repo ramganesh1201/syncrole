@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Brain, Send, Loader2, User, Timer, Trophy,
   Mic, MicOff, ChevronLeft, Building2, Briefcase,
-  Target, Play, Settings, History, CheckCircle2, Star, AlertCircle
+  Target, Play, Settings, History, CheckCircle2, Star, AlertCircle, TrendingUp, Award, Code2, Lock, Sparkles, ArrowDown
 } from "lucide-react";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
+import { useChatScroll } from "@/hooks/useChatScroll";
 
 type Props = {
   onClose: () => void;
@@ -127,12 +128,10 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
     score: number; feedback: string; strengths: string[]; weaknesses: string[];
   } | null>(null);
   const [showHistory, setShowHistory] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollRef, showScrollButton, handleScroll, scrollToBottom } = useChatScroll(messages);
 
   useEffect(() => { loadUserData(); }, []);
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   // Jump to active phase if a conversation is loaded from history
   useEffect(() => {
@@ -417,56 +416,74 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
       </div>
 
       {/* Chat area */}
-      <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
-        {messages.map((m: any, i: number) => {
-          const isUser = m.role === "user";
-          return (
-            <motion.div key={m.id ?? i}
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
-            >
-              {!isUser && (
-                <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-                  <Brain className="h-4 w-4 text-white" />
+      <div className="flex-1 flex flex-col min-w-0 min-h-0 relative">
+        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" ref={scrollRef} onScroll={handleScroll}>
+          {messages.map((m: any, i: number) => {
+            const isUser = m.role === "user";
+            return (
+              <motion.div key={m.id ?? i}
+                initial={{ opacity: 0, y: 8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
+              >
+                {!isUser && (
+                  <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center"
+                    style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
+                    <Brain className="h-4 w-4 text-white" />
+                  </div>
+                )}
+                <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
+                  isUser ? "rounded-tr-sm text-white" : "glass rounded-tl-sm border border-white/8"
+                }`} style={isUser ? {
+                  background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
+                } : {}}>
+                  {m.content.split("\n").map((line: string, li: number) => (
+                    <p key={li} className={line === "" ? "h-2" : ""}>{line}</p>
+                  ))}
                 </div>
-              )}
-              <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
-                isUser ? "rounded-tr-sm text-white" : "glass rounded-tl-sm border border-white/8"
-              }`} style={isUser ? {
-                background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
-              } : {}}>
-                {m.content.split("\n").map((line: string, li: number) => (
-                  <p key={li} className={line === "" ? "h-2" : ""}>{line}</p>
-                ))}
-              </div>
-              {isUser && (
-                <div className="flex-shrink-0 h-8 w-8 rounded-full glass flex items-center justify-center">
-                  <User className="h-4 w-4" />
-                </div>
-              )}
-            </motion.div>
-          );
-        })}
+                {isUser && (
+                  <div className="flex-shrink-0 h-8 w-8 rounded-full glass flex items-center justify-center">
+                    <User className="h-4 w-4" />
+                  </div>
+                )}
+              </motion.div>
+            );
+          })}
 
-        {loading && (
-          <div className="flex gap-3 items-center">
-            <div className="h-8 w-8 rounded-full flex items-center justify-center"
-              style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-              <Brain className="h-4 w-4 text-white" />
-            </div>
-            <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 border border-white/8">
-              <div className="flex gap-1.5">
-                {[0, 0.15, 0.3].map((d, i) => (
-                  <motion.div key={i} className="h-2 w-2 rounded-full bg-violet-400"
-                    animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 0.7, delay: d }} />
-                ))}
+          {loading && (
+            <div className="flex gap-3 items-center">
+              <div className="h-8 w-8 rounded-full flex items-center justify-center"
+                style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
+                <Brain className="h-4 w-4 text-white" />
+              </div>
+              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 border border-white/8">
+                <div className="flex gap-1.5">
+                  {[0, 0.15, 0.3].map((d, i) => (
+                    <motion.div key={i} className="h-2 w-2 rounded-full bg-violet-400"
+                      animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 0.7, delay: d }} />
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
-        )}
-        <div ref={messagesEndRef} />
+          )}
+        </div>
+
+        <div className="absolute right-6 bottom-4 z-50 pointer-events-none">
+          <AnimatePresence>
+            {showScrollButton && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                animate={{ opacity: 1, scale: 1, y: 0 }}
+                exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                onClick={scrollToBottom}
+                aria-label="Scroll to latest message"
+                className="h-8 w-8 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+                <ArrowDown className="h-4 w-4" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
 
       {/* Input */}

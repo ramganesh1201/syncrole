@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Briefcase, Send, Loader2, User, ChevronLeft,
   TrendingUp, AlertTriangle, CheckCircle2, Brain,
-  Target, Shield, Zap, BarChart3, History,
+  Target, Shield, Zap, BarChart3, History, ArrowDown,
 } from "lucide-react";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
+import { useChatScroll } from "@/hooks/useChatScroll";
 
 type Props = {
   onClose: () => void;
@@ -120,7 +121,8 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
   const [company, setCompany] = useState("");
   const [role, setRole] = useState("");
   const [showHistory, setShowHistory] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  const { scrollRef, showScrollButton, handleScroll, scrollToBottom } = useChatScroll(messages);
 
   useEffect(() => { loadUserData(); }, []);
 
@@ -133,10 +135,6 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
       sendMessage(RECRUITER_PROMPTS[0], { company, role });
     }
   }, [userDataLoading, autoReportSent, loading, messages.length, company, role, sendMessage]);
-
-  useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
 
   const ps = userData?.placementScore;
 
@@ -254,10 +252,10 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
         )}
 
         {/* Right: Chat with Recruiter AI */}
-        <div className="flex-1 flex flex-col min-w-0 min-h-0">
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 relative">
 
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4">
+          <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" ref={scrollRef} onScroll={handleScroll}>
             {messages.length === 0 && !loading && (
               <motion.div
                 initial={{ opacity: 0 }}
@@ -290,7 +288,23 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
                 <span className="text-[11px] text-white/30">Analyzing your profile…</span>
               </div>
             )}
-            <div ref={messagesEndRef} />
+          </div>
+
+          <div className="absolute right-6 bottom-20 z-50 pointer-events-none">
+            <AnimatePresence>
+              {showScrollButton && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.8, y: 10 }}
+                  onClick={scrollToBottom}
+                  aria-label="Scroll to latest message"
+                  className="h-8 w-8 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </motion.button>
+              )}
+            </AnimatePresence>
           </div>
 
           {/* Input */}
