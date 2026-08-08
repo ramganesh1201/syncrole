@@ -120,39 +120,6 @@ function SettingsPage() {
                   <p className="text-sm text-slate-500 mt-1">Customize the visual and auditory experience of SyncRole.</p>
                 </div>
                 
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-200 text-sm">Theme</p>
-                    <p className="text-sm text-slate-500 mt-1">SyncRole is optimized for Dark Mode</p>
-                  </div>
-                  <div className="flex items-center gap-1.5 bg-black/30 p-1.5 rounded-lg border border-white/10 shrink-0">
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => setSettings(s => ({...s, theme: "light"}))}
-                      className={`rounded-md px-4 transition-colors ${settings.theme === "light" ? "bg-white/15 text-white font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
-                    >
-                      Light
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => setSettings(s => ({...s, theme: "dark"}))}
-                      className={`rounded-md px-4 transition-colors ${settings.theme === "dark" ? "bg-white/15 text-white font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
-                    >
-                      Dark
-                    </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="sm" 
-                      onClick={() => setSettings(s => ({...s, theme: "system"}))}
-                      className={`rounded-md px-4 transition-colors ${settings.theme === "system" ? "bg-white/15 text-white font-semibold" : "text-slate-400 hover:text-slate-200 hover:bg-white/5"}`}
-                    >
-                      System
-                    </Button>
-                  </div>
-                </div>
-                
                 <div className="flex flex-row items-center justify-between border-t border-white/5 pt-6 gap-4">
                   <div className="flex items-center gap-4">
                     <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
