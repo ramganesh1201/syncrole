@@ -10,21 +10,106 @@ const corsHeaders = {
 
 // ── Mode-specific system prompts (improved) ──────────────────────────────
 
+// ── Helper: format GitHub repos for context ──────────────────────────────────
+function formatGitHubRepos(repos: any[]): string {
+  if (!repos || repos.length === 0) return "[DATA UNAVAILABLE] - No repository details retrieved.";
+  return repos.map((r: any, i: number) => {
+    const parts = [`${i + 1}. ${r.name}`];
+    if (r.description) parts.push(`   Description: ${r.description}`);
+    if (r.language) parts.push(`   Language: ${r.language}`);
+    if (r.stargazers_count > 0) parts.push(`   Stars: ${r.stargazers_count}`);
+    if (r.forks_count > 0) parts.push(`   Forks: ${r.forks_count}`);
+    if (r.html_url) parts.push(`   URL: ${r.html_url}`);
+    if (r.homepage) parts.push(`   Demo: ${r.homepage}`);
+    if (r.topics?.length > 0) parts.push(`   Topics: ${r.topics.join(", ")}`);
+    parts.push(`   Visibility: ${r.private ? "Private" : "Public"}`);
+    parts.push(`   Last updated: ${r.updated_at ? new Date(r.updated_at).toLocaleDateString() : "Unknown"}`);
+    return parts.join("\n");
+  }).join("\n\n");
+}
+
+// ── Helper: format resume context ─────────────────────────────────────────────
+function formatResumeContext(resume: any): string {
+  if (!resume) return "[DATA UNAVAILABLE] - No resume analyzed yet.";
+  const parts = [
+    `- ATS Score: ${resume.ats_score ?? "[DATA UNAVAILABLE]"}/100`,
+    `- Keyword Match: ${resume.keyword_match ?? "[DATA UNAVAILABLE]"}/100`,
+    `- Total Score: ${resume.total_score ?? "[DATA UNAVAILABLE]"}/100`,
+    `- Formatting Score: ${resume.formatting_score ?? "[DATA UNAVAILABLE]"}/100`,
+    `- Project Score: ${resume.project_score ?? "[DATA UNAVAILABLE]"}/100`,
+  ];
+  if (resume.missing_skills?.length > 0) parts.push(`- Missing Skills: ${resume.missing_skills.join(", ")}`);
+  if (resume.suggestions?.length > 0) parts.push(`- Suggestions: ${resume.suggestions.join("; ")}`);
+  if (resume.analysis_results) {
+    try {
+      const ar = typeof resume.analysis_results === "string" ? JSON.parse(resume.analysis_results) : resume.analysis_results;
+      if (ar.strengths?.length > 0) parts.push(`- Strengths: ${ar.strengths.join(", ")}`);
+      if (ar.weaknesses?.length > 0) parts.push(`- Weaknesses: ${ar.weaknesses.join(", ")}`);
+      if (ar.experience?.length > 0) parts.push(`- Experience: ${ar.experience.map((e: any) => typeof e === "string" ? e : e.title || e.role || JSON.stringify(e)).slice(0, 3).join("; ")}`);
+      if (ar.education?.length > 0) parts.push(`- Education: ${ar.education.map((e: any) => typeof e === "string" ? e : e.degree || e.institution || JSON.stringify(e)).slice(0, 3).join("; ")}`);
+      if (ar.projects?.length > 0) parts.push(`- Projects Found: ${ar.projects.map((p: any) => typeof p === "string" ? p : p.name || p.title || JSON.stringify(p)).slice(0, 5).join("; ")}`);
+      if (ar.skills?.length > 0) parts.push(`- Skills Identified: ${ar.skills.join(", ")}`);
+    } catch (_) { /* ignore parse errors */ }
+  }
+  parts.push(`- Analysis Date: ${resume.created_at ? new Date(resume.created_at).toLocaleDateString() : "Unknown"}`);
+  return parts.join("\n");
+}
+
+// ── Helper: format profile context ────────────────────────────────────────────
+function formatProfileContext(profile: any): string {
+  if (!profile) return "[DATA UNAVAILABLE]";
+  const parts = [
+    `- Name: ${profile.full_name ?? "[DATA UNAVAILABLE]"}`,
+    `- College: ${profile.college ?? "[DATA UNAVAILABLE]"}`,
+    `- Branch: ${profile.branch ?? "[DATA UNAVAILABLE]"}`,
+    `- Graduation Year: ${profile.graduation_year ?? "[DATA UNAVAILABLE]"}`,
+    `- CGPA: ${profile.cgpa ?? "[DATA UNAVAILABLE]"}`,
+  ];
+  if (profile.city) parts.push(`- City: ${profile.city}`);
+  if (profile.linkedin) parts.push(`- LinkedIn: ${profile.linkedin}`);
+  if (profile.portfolio) parts.push(`- Portfolio: ${profile.portfolio}`);
+  if (profile.leetcode) parts.push(`- LeetCode: ${profile.leetcode}`);
+  if (profile.codeforces) parts.push(`- Codeforces: ${profile.codeforces}`);
+  return parts.join("\n");
+}
+
+// ── Shared DATA RULES block ───────────────────────────────────────────────────
+const DATA_RULES = `
+DATA RULES:
+1. You are assisting the currently authenticated user only.
+2. Use only information contained in CURRENT USER CONTEXT.
+3. Never use another user's information.
+4. Never use generic example data as if it belongs to the user.
+5. Never invent repository names, project names, scores, skills, companies, achievements, resume details, or career statistics.
+6. Never infer an exact value when the actual value is unavailable.
+7. Distinguish between aggregate statistics (GitHub Summary) and detailed records (GitHub Repositories). Do NOT generate repository names from a repository count.
+8. If detailed information is unavailable, explicitly say that it is unavailable.
+9. If a user asks for a list, return the actual records available in CURRENT USER CONTEXT.
+10. If the requested data is not available, explain exactly what information is unavailable instead of generating placeholders.
+11. Use the user's actual profile, GitHub, resume, DSA, placement, career and activity information whenever relevant.
+12. Never expose authentication tokens, API keys, passwords, or internal security information.
+13. Do not claim to have accessed GitHub data unless GitHub data was actually provided above.
+14. Treat missing data as missing data, not as an invitation to guess.
+15. Separate FACTS (from data) from RECOMMENDATIONS (your suggestions). Never present a recommendation as a stored data point.
+16. Sound like a brilliant senior career mentor who knows the user deeply based on the data.
+17. Never say you are ChatGPT or any other AI.
+`;
+
+// ── Mode-specific system prompts ──────────────────────────────────────────────
+
 function buildCareerTwinPrompt(ctx: UserContext): string {
   return `
 CURRENT USER CONTEXT
 
 Identity:
-- Name: ${ctx.profile?.full_name ?? "[DATA UNAVAILABLE]"}
-- College: ${ctx.profile?.college ?? "[DATA UNAVAILABLE]"}
-- Branch: ${ctx.profile?.branch ?? "[DATA UNAVAILABLE]"}
-- Graduation Year: ${ctx.profile?.graduation_year ?? "[DATA UNAVAILABLE]"}
-- CGPA: ${ctx.profile?.cgpa ?? "[DATA UNAVAILABLE]"}
+${formatProfileContext(ctx.profile)}
 
 Career Goals:
 - Career Goal: ${ctx.profile?.career_goal ?? "[DATA UNAVAILABLE]"}
 - Target Role: ${ctx.profile?.target_role ?? "[DATA UNAVAILABLE]"}
 - Dream Companies: ${(ctx.profile?.dream_companies ?? []).join(", ") || "[DATA UNAVAILABLE]"}
+- Preferred Location: ${ctx.profile?.preferred_location ?? "[DATA UNAVAILABLE]"}
+- Expected Salary: ${ctx.profile?.expected_salary ?? "[DATA UNAVAILABLE]"}
 
 Skills:
 ${(ctx.profile?.skills ?? []).length > 0 ? (ctx.profile?.skills ?? []).join(", ") : "[DATA UNAVAILABLE]"}
@@ -41,21 +126,29 @@ Recent Activity & XP:
 - Current Streak: ${ctx.streak?.current_streak ?? 0} days (Best: ${ctx.streak?.longest_streak ?? 0} days)
 - Achievements Unlocked: ${ctx.achievements.length} total
 
-GitHub:
-${ctx.github ? `- Username: ${ctx.profile?.github_username ?? "[DATA UNAVAILABLE]"}
-- Repos: ${ctx.github.repo_count}, Stars: ${ctx.github.star_count}, Followers: ${ctx.github.follower_count}
-- Top Languages: ${Object.keys(ctx.github.languages || {}).slice(0, 3).join(", ") || "None detected"}
+GitHub Summary:
+${ctx.github ? `- Username: @${ctx.github.username ?? ctx.profile?.github_username ?? "[DATA UNAVAILABLE]"}
+- Total Repos: ${ctx.github.repo_count ?? "[DATA UNAVAILABLE]"}
+- Stars: ${ctx.github.star_count ?? 0}
+- Followers: ${ctx.github.follower_count ?? 0}
+- GitHub Score: ${ctx.github.score ?? "[DATA UNAVAILABLE]"}/100
+- Top Languages: ${Object.keys(ctx.github.languages || {}).slice(0, 5).join(", ") || "None detected"}
 - Strengths: ${(ctx.github.strengths || []).join(", ") || "None"}
-- Recommendations: ${(ctx.github.recommendations || []).slice(0, 2).join("; ") || "None"}` : "[DATA UNAVAILABLE] - GitHub not connected or analyzed yet."}
+- Weaknesses: ${(ctx.github.weaknesses || []).join(", ") || "None"}
+- Recommendations: ${(ctx.github.recommendations || []).join("; ") || "None"}
+- Last Analyzed: ${ctx.github.analyzed_at ? new Date(ctx.github.analyzed_at).toLocaleDateString() : "Unknown"}` : "[DATA UNAVAILABLE] - GitHub not connected or analyzed yet."}
 
-Resume:
-${ctx.resume ? `- ATS Score: ${ctx.resume.ats_score}/100
-- Keyword Match: ${ctx.resume.keyword_match}/100
-- Total Score: ${ctx.resume.total_score}/100
-- Top Suggestions: ${(ctx.resume.suggestions || []).slice(0, 2).join("; ") || "None"}` : "[DATA UNAVAILABLE] - No resume analyzed yet."}
+GitHub Repositories (detailed):
+${formatGitHubRepos(ctx.githubRepos)}
 
-DSA:
+Resume Intelligence:
+${formatResumeContext(ctx.resume)}
+
+DSA Progress:
 ${ctx.dsaTopics.length > 0 ? ctx.dsaTopics.map((t: any) => `- ${t.topic_name ?? t.topic_id}: ${t.solved_count ?? 0} solved`).join("\n") : "[DATA UNAVAILABLE] - No DSA progress tracked yet."}
+
+Interview History:
+${ctx.interviewSessions.length > 0 ? ctx.interviewSessions.map((s: any) => `- ${s.company ?? "Unknown"} (${s.role ?? "Unknown"}): Score ${s.score ?? "N/A"} on ${s.created_at ? new Date(s.created_at).toLocaleDateString() : "Unknown"}`).join("\n") : "[DATA UNAVAILABLE]"}
 
 AI Memory (Previous Sessions):
 ${ctx.memory ? `- Career Goals: ${ctx.memory.career_goals ?? "[DATA UNAVAILABLE]"}
@@ -63,19 +156,7 @@ ${ctx.memory ? `- Career Goals: ${ctx.memory.career_goals ?? "[DATA UNAVAILABLE]
 - Preferred Roles: ${(ctx.memory.preferred_roles ?? []).join(", ") || "[DATA UNAVAILABLE]"}
 - Known Weak Areas: ${(ctx.memory.weak_areas ?? []).join(", ") || "None noted"}
 - Known Strong Areas: ${(ctx.memory.strong_areas ?? []).join(", ") || "None noted"}` : "[DATA UNAVAILABLE]"}
-
-DATA RULES:
-- Treat provided user data as factual application data.
-- Do not invent missing values.
-- If data is [DATA UNAVAILABLE], clearly say it is unavailable and you need them to connect or complete it. Do not assume or generate fake metrics.
-- Separate facts from recommendations. (e.g. FACT: "Your GitHub score is 61%." RECOMMENDATION: "I recommend adding more React projects.")
-- Personalize recommendations based on the user's Target Role and Dream Companies.
-- Use the most recent available data provided above.
-- Never refer to another user's information.
-- Never assume information that isn't present.
-- Sound like a brilliant senior career mentor who knows the user deeply based on the data.
-- Never say you are ChatGPT or any other AI.
-`;
+${DATA_RULES}`;
 }
 
 function buildRecruiterPrompt(ctx: UserContext, company: string, role: string): string {
@@ -91,15 +172,12 @@ You are NOT ChatGPT. You are SyncPilot's Recruiter Intelligence.
 CURRENT USER CONTEXT
 
 Identity:
-- Name: ${ctx.profile?.full_name ?? "[DATA UNAVAILABLE]"}
-- College: ${ctx.profile?.college ?? "[DATA UNAVAILABLE]"}
-- Branch: ${ctx.profile?.branch ?? "[DATA UNAVAILABLE]"}
-- Graduation Year: ${ctx.profile?.graduation_year ?? "[DATA UNAVAILABLE]"}
-- CGPA: ${ctx.profile?.cgpa ?? "[DATA UNAVAILABLE]"}
+${formatProfileContext(ctx.profile)}
 
 Career Goals:
 - Career Goal: ${ctx.profile?.career_goal ?? "[DATA UNAVAILABLE]"}
 - Target Role: ${ctx.profile?.target_role ?? "[DATA UNAVAILABLE]"}
+- Dream Companies: ${(ctx.profile?.dream_companies ?? []).join(", ") || "[DATA UNAVAILABLE]"}
 
 Skills:
 ${(ctx.profile?.skills ?? []).length > 0 ? (ctx.profile?.skills ?? []).join(", ") : "[DATA UNAVAILABLE]"}
@@ -111,16 +189,20 @@ ${ctx.placementScore > 0 ? `- Overall Score: ${ctx.placementScore}/100
 - DSA Score: ${ctx.latestScore?.dsa_score ?? 0}/100
 - Skills Score: ${ctx.latestScore?.skill_score ?? 0}/100` : "[DATA UNAVAILABLE]"}
 
-GitHub:
-${ctx.github ? `- Username: ${ctx.profile?.github_username ?? "[DATA UNAVAILABLE]"}
-- Repos: ${ctx.github.repo_count}, Stars: ${ctx.github.star_count}
-- Languages: ${Object.keys(ctx.github.languages || {}).join(", ") || "None"}` : "[DATA UNAVAILABLE] - GitHub not connected."}
+GitHub Summary:
+${ctx.github ? `- Username: @${ctx.github.username ?? ctx.profile?.github_username ?? "[DATA UNAVAILABLE]"}
+- Total Repos: ${ctx.github.repo_count ?? "[DATA UNAVAILABLE]"}, Stars: ${ctx.github.star_count ?? 0}
+- Languages: ${Object.keys(ctx.github.languages || {}).join(", ") || "None"}
+- GitHub Score: ${ctx.github.score ?? "[DATA UNAVAILABLE]"}/100` : "[DATA UNAVAILABLE] - GitHub not connected."}
 
-Resume:
-${ctx.resume ? `ATS Score: ${ctx.resume.ats_score}, Keyword Match: ${ctx.resume.keyword_match}` : "[DATA UNAVAILABLE] - No resume submitted."}
+GitHub Repositories (detailed):
+${formatGitHubRepos(ctx.githubRepos)}
+
+Resume Intelligence:
+${formatResumeContext(ctx.resume)}
 
 DSA:
-${ctx.dsaTopics.length > 0 ? `Topics tracked: ${ctx.dsaTopics.length}` : "[DATA UNAVAILABLE] - No DSA progress tracked."}
+${ctx.dsaTopics.length > 0 ? ctx.dsaTopics.map((t: any) => `- ${t.topic_name ?? t.topic_id}: ${t.solved_count ?? 0} solved`).join("\n") : "[DATA UNAVAILABLE] - No DSA progress tracked."}
 
 Company Fit & JD Match:
 ${ctx.companyFit ? `- Fit Score for ${ctx.companyFit.company_name}: ${ctx.companyFit.fit_score}/100
@@ -128,14 +210,7 @@ ${ctx.companyFit ? `- Fit Score for ${ctx.companyFit.company_name}: ${ctx.compan
 - Missing Reqs: ${(ctx.companyFit.missing_requirements || []).join(", ") || "None"}` : "[DATA UNAVAILABLE]"}
 ${ctx.jdMatch ? `- Recent JD Match Score: ${ctx.jdMatch.match_score}/100
 - Missing Skills: ${(ctx.jdMatch.missing_skills || []).join(", ") || "None"}` : "[DATA UNAVAILABLE]"}
-
-DATA RULES:
-- Treat provided user data as factual application data.
-- Do not invent missing values.
-- If data is [DATA UNAVAILABLE], point it out as a red flag (e.g. "You haven't connected your GitHub"). Do not assume they have repositories.
-- Separate facts from recommendations.
-- Evaluate the candidate rigorously based ONLY on the data provided above.
-
+${DATA_RULES}
 FORMAT your response as:
 
 ## RECRUITER REPORT
@@ -278,6 +353,7 @@ interface UserContext {
   streak: any;
   latestScore: any;
   github: any;
+  githubRepos: any[];
   resume: any;
   dsaTopics: any[];
   achievements: any[];
@@ -369,12 +445,54 @@ serve(async (req) => {
       supabase.from("resume_jd_matches").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
 
+    // ── Fetch GitHub repository details from public API ────────────────────
+    // Reuses the same public GitHub API that the dashboard's analyzeGitHub() uses.
+    // This provides actual repository-level data (names, descriptions, languages, etc.)
+    // that the aggregate github_analysis table does not store.
+    let githubRepos: any[] = [];
+    const ghUsername = profileRes.data?.github_username || githubRes.data?.username;
+    if (ghUsername) {
+      try {
+        const ghResponse = await fetch(
+          `https://api.github.com/users/${encodeURIComponent(ghUsername)}/repos?per_page=100&sort=updated`,
+          { headers: { "Accept": "application/vnd.github.v3+json", "User-Agent": "SyncRole-SyncPilot" } }
+        );
+        if (ghResponse.ok) {
+          const repoData = await ghResponse.json();
+          if (Array.isArray(repoData)) {
+            githubRepos = repoData.map((r: any) => ({
+              name: r.name,
+              description: r.description,
+              html_url: r.html_url,
+              homepage: r.homepage,
+              language: r.language,
+              stargazers_count: r.stargazers_count,
+              forks_count: r.forks_count,
+              private: r.private,
+              updated_at: r.updated_at,
+              created_at: r.created_at,
+              topics: r.topics,
+              default_branch: r.default_branch,
+              open_issues_count: r.open_issues_count,
+              license: r.license?.spdx_id,
+              size: r.size,
+            }));
+          }
+        } else {
+          console.warn(`GitHub API returned ${ghResponse.status} for user ${ghUsername}`);
+        }
+      } catch (ghErr) {
+        console.warn("Failed to fetch GitHub repos for SyncPilot context:", ghErr);
+      }
+    }
+
     const ctx: UserContext = {
       profile: profileRes.data,
       xp: xpRes.data,
       streak: streakRes.data,
       latestScore: placementRes.data,
       github: githubRes.data,
+      githubRepos,
       resume: resumeRes.data,
       dsaTopics: dsaRes.data ?? [],
       achievements: achievementsRes.data ?? [],
