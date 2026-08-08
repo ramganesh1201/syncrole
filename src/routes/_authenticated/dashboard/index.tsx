@@ -531,7 +531,11 @@ function Dashboard() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
         <div className="h-[360px]">
-          <WeeklyProgressCard chartData={chartData} latestScore={latest.total_score} prevScore={prev?.total_score || latest.total_score} />
+          <WeeklyProgressCard 
+            scores={scores} 
+            currentXp={xp.total_xp} 
+            currentStreak={streak.current_streak} 
+          />
         </div>
         <div className="h-[360px]">
           <RecentActivityCard recentConversations={recentConversations} />
