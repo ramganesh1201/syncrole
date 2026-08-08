@@ -126,6 +126,18 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
 
   useEffect(() => { loadUserData(); }, []);
 
+  // Sync actual user data to defaults if not manually changed
+  useEffect(() => {
+    if (userData?.profile) {
+      if (!company && userData.profile.dream_companies?.length > 0) {
+        setCompany(userData.profile.dream_companies[0]);
+      }
+      if (!role && userData.profile.target_role) {
+        setRole(userData.profile.target_role);
+      }
+    }
+  }, [userData]);
+
   // Auto-generate recruiter report on first open
   useEffect(() => {
     if (!autoReportSent && !loading && !userDataLoading && messages.length === 0) {

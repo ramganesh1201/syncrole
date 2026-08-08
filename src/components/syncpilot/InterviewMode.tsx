@@ -118,10 +118,10 @@ function ScoreCard({ score, feedback, strengths, weaknesses }: { score: number; 
 type Phase = "setup" | "chamber-entry" | "active" | "scorecard";
 
 export function InterviewMode({ onClose, onSwitchMode }: Props) {
-  const { messages, loading, sendMessage, loadUserData, switchMode, startNewConversation, conversations, loadConversation } = useSyncPilot();
+  const { messages, loading, sendMessage, loadUserData, userData, switchMode, startNewConversation, conversations, loadConversation } = useSyncPilot();
   const [phase, setPhase] = useState<Phase>("setup");
-  const [company, setCompany] = useState("Google");
-  const [role, setRole]    = useState("SDE-1");
+  const [company, setCompany] = useState("");
+  const [role, setRole]    = useState("");
   const [input, setInput]  = useState("");
   const [interviewStarted, setInterviewStarted] = useState(false);
   const [scoreData, setScoreData] = useState<{
@@ -132,6 +132,18 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
   const { scrollRef, showScrollButton, handleScroll, scrollToBottom } = useChatScroll(messages);
 
   useEffect(() => { loadUserData(); }, []);
+
+  // Sync actual user data to defaults if not manually changed
+  useEffect(() => {
+    if (userData?.profile) {
+      if (!company && userData.profile.dream_companies?.length > 0) {
+        setCompany(userData.profile.dream_companies[0]);
+      }
+      if (!role && userData.profile.target_role) {
+        setRole(userData.profile.target_role);
+      }
+    }
+  }, [userData]);
 
   // Jump to active phase if a conversation is loaded from history
   useEffect(() => {
