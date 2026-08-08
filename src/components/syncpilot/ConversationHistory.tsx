@@ -36,7 +36,7 @@ export function ConversationHistory({ conversations, onSelect, onClose }: Props)
       animate={{ width: 280, opacity: 1 }}
       exit={{ width: 0, opacity: 0 }}
       transition={{ duration: 0.22, ease: "easeOut" }}
-      className="flex-shrink-0 border-r border-white/8 flex flex-col overflow-hidden bg-slate-900/95 backdrop-blur-md h-full relative z-10 shadow-none"
+      className="flex-shrink-0 border-r border-white/8 flex flex-col overflow-hidden bg-slate-900/95 backdrop-blur-md h-full absolute inset-y-0 left-0 z-50 shadow-2xl @[700px]:relative @[700px]:z-10 @[700px]:shadow-none"
     >
       {/* Header */}
       <div className="flex items-center justify-between px-3 py-2.5 border-b border-white/8">

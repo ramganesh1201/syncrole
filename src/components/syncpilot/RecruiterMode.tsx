@@ -222,7 +222,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
       </div>
 
       {/* ── Two-column layout ── */}
-      <div className="flex-1 overflow-hidden flex gap-0">
+      <div className="flex-1 overflow-hidden flex gap-0 @container">
         
         {/* Conversation History Sidebar */}
         <AnimatePresence>

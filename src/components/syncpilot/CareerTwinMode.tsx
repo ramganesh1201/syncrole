@@ -169,7 +169,7 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
       </div>
 
       {/* ── Body ── */}
-      <div className="flex-1 overflow-hidden flex">
+      <div className="flex-1 overflow-hidden flex @container">
 
         {/* Conversation History Sidebar */}
         <AnimatePresence>
