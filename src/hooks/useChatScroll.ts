@@ -4,49 +4,44 @@ export function useChatScroll<T>(messages: T[]) {
   const scrollRef = useRef<HTMLDivElement>(null);
   const [showScrollButton, setShowScrollButton] = useState(false);
   
-  // Start with auto-scroll enabled
-  const isAutoScrolling = useRef(true);
   const lastMessagesLength = useRef(messages.length);
 
-  const handleScroll = useCallback(() => {
+  const checkScroll = useCallback(() => {
     if (!scrollRef.current) return;
     const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-    const isNearBottom = scrollHeight - scrollTop - clientHeight < 50;
     
-    if (isNearBottom) {
-      isAutoScrolling.current = true;
-      setShowScrollButton(false);
-    } else {
-      isAutoScrolling.current = false;
-      setShowScrollButton(true);
-    }
+    // Consider it "near bottom" if within a small threshold (e.g., 100px)
+    const isNearBottom = scrollHeight - scrollTop - clientHeight < 100;
+    
+    // Only show button if there's meaningful overflow and we aren't near the bottom
+    const hasOverflow = scrollHeight > clientHeight;
+    setShowScrollButton(hasOverflow && !isNearBottom);
   }, []);
+
+  const handleScroll = useCallback(() => {
+    checkScroll();
+  }, [checkScroll]);
 
   useEffect(() => {
     if (!scrollRef.current) return;
+    
     const isNewMessage = messages.length > lastMessagesLength.current;
     lastMessagesLength.current = messages.length;
 
-    // If it's a completely new message (e.g. user sent), always scroll smoothly.
-    // Otherwise (streaming chunk), only auto-scroll if user is already at bottom.
-    if (isNewMessage || isAutoScrolling.current) {
+    if (isNewMessage) {
+      // User sent a new message -> smoothly bring it into view
       const { scrollHeight, clientHeight } = scrollRef.current;
       scrollRef.current.scrollTo({
         top: scrollHeight - clientHeight,
-        // use smooth only for new messages to avoid flickering during streams
-        behavior: isNewMessage ? "smooth" : "auto", 
+        behavior: "smooth",
       });
       setShowScrollButton(false);
-      isAutoScrolling.current = true;
     } else {
-      // Content expanded, but user is scrolled up. Check if still not near bottom
-      const { scrollTop, scrollHeight, clientHeight } = scrollRef.current;
-      const isNearBottom = scrollHeight - scrollTop - clientHeight < 50;
-      if (!isNearBottom) {
-        setShowScrollButton(true);
-      }
+      // Streaming updates: DO NOT force scroll to bottom. 
+      // Let the content grow naturally downward so the user can read from the top.
+      checkScroll();
     }
-  }, [messages]);
+  }, [messages, checkScroll]);
 
   const scrollToBottom = useCallback(() => {
     if (!scrollRef.current) return;
@@ -56,8 +51,12 @@ export function useChatScroll<T>(messages: T[]) {
       behavior: "smooth",
     });
     setShowScrollButton(false);
-    isAutoScrolling.current = true;
   }, []);
+
+  // Check initial state after mount
+  useEffect(() => {
+    checkScroll();
+  }, [checkScroll]);
 
   return { scrollRef, showScrollButton, handleScroll, scrollToBottom };
 }
