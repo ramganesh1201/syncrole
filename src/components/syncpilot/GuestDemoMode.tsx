@@ -33,7 +33,7 @@ function MessageBubble({ role, content }: { role: "user" | "assistant"; content:
           <Brain className="h-3.5 w-3.5 text-white" />
         </div>
       )}
-      <div className={`max-w-[82%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed ${
+      <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed break-words overflow-hidden ${
         isUser
           ? "text-white rounded-tr-sm"
           : "glass rounded-tl-sm text-foreground"
@@ -197,7 +197,7 @@ export function GuestDemoMode({ onClose }: Props) {
            </motion.div>
         )}
         
-        <div className="absolute right-5 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
           <AnimatePresence>
             {showScrollButton && (
               <motion.button

@@ -97,7 +97,7 @@ function MessageBubble({ role, content }: { role: "user" | "assistant"; content:
           <Briefcase className="h-3.5 w-3.5 text-white" />
         </div>
       )}
-      <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed whitespace-pre-wrap ${
+      <div className={`max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed whitespace-pre-wrap break-words overflow-hidden ${
         isUser ? "text-white rounded-tr-sm" : "glass rounded-tl-sm"
       }`} style={isUser ? {
         background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
@@ -303,7 +303,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
               )}
             </div>
 
-            <div className="absolute right-5 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+            <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
               <AnimatePresence>
                 {showScrollButton && (
                   <motion.button

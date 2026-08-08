@@ -444,7 +444,7 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
                     <Brain className="h-4 w-4 text-white" />
                   </div>
                 )}
-                <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed ${
+                <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed break-words overflow-hidden ${
                   isUser ? "rounded-tr-sm text-white" : "glass rounded-tl-sm border border-white/8"
                 }`} style={isUser ? {
                   background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
@@ -480,7 +480,7 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
           )}
         </div>
 
-        <div className="absolute right-5 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
           <AnimatePresence>
             {showScrollButton && (
               <motion.button
