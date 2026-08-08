@@ -178,7 +178,6 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
               conversations={conversations}
               onSelect={(id) => { loadConversation(id); setShowHistory(false); }}
               onClose={() => setShowHistory(false)}
-              isOverlay={true}
             />
           )}
         </AnimatePresence>
