@@ -293,44 +293,46 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
           </AnimatePresence>
 
           {/* Message list */}
-          <div className="flex-1 overflow-y-auto px-4 py-2 space-y-3" ref={scrollRef} onScroll={handleScroll}>
-            {messages.map((m: any, i: number) => (
-              <MessageBubble key={m.id ?? i} role={m.role} content={m.content} timestamp={m.created_at} />
-            ))}
+          <div className="flex-1 relative min-h-0">
+            <div className="h-full overflow-y-auto px-4 py-2 space-y-3" ref={scrollRef} onScroll={handleScroll}>
+              {messages.map((m: any, i: number) => (
+                <MessageBubble key={m.id ?? i} role={m.role} content={m.content} timestamp={m.created_at} />
+              ))}
 
-            {loading && (
-              <div className="flex gap-2 items-start">
-                <div className="h-7 w-7 rounded-full flex items-center justify-center"
-                  style={{ background: "linear-gradient(135deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}>
-                  <Brain className="h-3.5 w-3.5 text-white" />
-                </div>
-                <div className="glass rounded-2xl rounded-tl-sm px-4 py-3">
-                  <div className="flex gap-1">
-                    {[0, 0.2, 0.4].map((d, i) => (
-                      <motion.div key={i} className="h-1.5 w-1.5 rounded-full bg-cyan-400"
-                        animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: d }} />
-                    ))}
+              {loading && (
+                <div className="flex gap-2 items-start">
+                  <div className="h-7 w-7 rounded-full flex items-center justify-center"
+                    style={{ background: "linear-gradient(135deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}>
+                    <Brain className="h-3.5 w-3.5 text-white" />
+                  </div>
+                  <div className="glass rounded-2xl rounded-tl-sm px-4 py-3">
+                    <div className="flex gap-1">
+                      {[0, 0.2, 0.4].map((d, i) => (
+                        <motion.div key={i} className="h-1.5 w-1.5 rounded-full bg-cyan-400"
+                          animate={{ y: [0, -5, 0] }} transition={{ repeat: Infinity, duration: 0.8, delay: d }} />
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="absolute right-6 bottom-[130px] z-50 pointer-events-none">
-            <AnimatePresence>
-              {showScrollButton && (
-                <motion.button
-                  initial={{ opacity: 0, scale: 0.8, y: 10 }}
-                  animate={{ opacity: 1, scale: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.8, y: 10 }}
-                  onClick={scrollToBottom}
-                  aria-label="Scroll to latest message"
-                  className="h-8 w-8 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
-                >
-                  <ArrowDown className="h-4 w-4" />
-                </motion.button>
               )}
-            </AnimatePresence>
+            </div>
+
+            <div className="absolute right-5 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+              <AnimatePresence>
+                {showScrollButton && (
+                  <motion.button
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    onClick={scrollToBottom}
+                    aria-label="Scroll to latest message"
+                    className="h-10 w-10 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
+                  >
+                    <ArrowDown className="h-5 w-5" />
+                  </motion.button>
+                )}
+              </AnimatePresence>
+            </div>
           </div>
 
           {/* Quick chips (when messages exist) */}

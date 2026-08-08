@@ -196,23 +196,23 @@ export function GuestDemoMode({ onClose }: Props) {
              </div>
            </motion.div>
         )}
-      </div>
-
-      <div className="absolute right-6 bottom-24 z-50 pointer-events-none">
-        <AnimatePresence>
-          {showScrollButton && (
-            <motion.button
-              initial={{ opacity: 0, scale: 0.8, y: 10 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.8, y: 10 }}
-              onClick={scrollToBottom}
-              aria-label="Scroll to latest message"
-              className="h-8 w-8 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
-            >
-              <ArrowDown className="h-4 w-4" />
-            </motion.button>
-          )}
-        </AnimatePresence>
+        
+        <div className="absolute right-5 top-1/2 -translate-y-1/2 z-50 pointer-events-none">
+          <AnimatePresence>
+            {showScrollButton && (
+              <motion.button
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.8 }}
+                onClick={scrollToBottom}
+                aria-label="Scroll to latest message"
+                className="h-10 w-10 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
+              >
+                <ArrowDown className="h-5 w-5" />
+              </motion.button>
+            )}
+          </AnimatePresence>
+        </div>
       </div>
     </div>
 
