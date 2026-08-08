@@ -436,39 +436,83 @@ function Dashboard() {
     try {
       const [userRes, repoRes] = await Promise.all([
         fetch(`https://api.github.com/users/${username}`).then((r) => r.json()),
-        fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`).then(
-          (r) => r.json(),
-        ),
+        fetch(`https://api.github.com/users/${username}/repos?per_page=100&sort=updated`).then((r) => r.json()),
       ]);
       if (userRes.message === "Not Found") throw new Error("GitHub user not found");
-      const repos = Array.isArray(repoRes) ? repoRes : [];
-      const stars = repos.reduce((s, r) => s + (r.stargazers_count ?? 0), 0);
+      if (userRes.message && userRes.message.includes("API rate limit")) throw new Error("GitHub temporarily limited this analysis. Please try again later.");
+
+      const allRepos = Array.isArray(repoRes) ? repoRes : [];
+      const analyzedRepos = allRepos.filter(r => !r.fork);
+      
+      const stars = analyzedRepos.reduce((s, r) => s + (r.stargazers_count ?? 0), 0);
       const langs: Record<string, number> = {};
-      repos.forEach((r) => {
+      let reposWithDocs = 0;
+      let recentlyUpdated = 0;
+      const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+      const normalizedRepos = analyzedRepos.map(r => {
         if (r.language) langs[r.language] = (langs[r.language] ?? 0) + 1;
+        if (r.description || r.has_wiki) reposWithDocs++;
+        if (new Date(r.updated_at) > thirtyDaysAgo) recentlyUpdated++;
+        
+        return {
+          name: r.name,
+          description: r.description,
+          url: r.html_url,
+          homepage: r.homepage,
+          language: r.language,
+          topics: r.topics || [],
+          stars: r.stargazers_count ?? 0,
+          forks: r.forks_count ?? 0,
+          updated_at: r.updated_at
+        };
       });
-      const score = Math.min(100, repos.length * 4 + stars * 2 + (userRes.followers ?? 0));
+
+      // Dimensions
+      const projectQuality = Math.min(100, Math.round((stars * 10) + (analyzedRepos.length * 2)));
+      const activityScore = Math.min(100, Math.round((recentlyUpdated / (analyzedRepos.length || 1)) * 100 + recentlyUpdated * 5));
+      const docScore = Math.min(100, Math.round((reposWithDocs / (analyzedRepos.length || 1)) * 100));
+      const techDepth = Math.min(100, Math.round(Object.keys(langs).length * 15 + Math.max(0, ...Object.values(langs)) * 10));
+      
+      const healthScore = Math.round((projectQuality + activityScore + docScore + techDepth) / 4) || 0;
+
+      // Strengths & Weaknesses
+      const strengths = [];
+      const weaknesses = [];
+      if (stars >= 10) strengths.push(`Recognized projects (${stars} total stars)`);
+      if (recentlyUpdated >= 3) strengths.push("Consistent recent activity");
+      if (Object.keys(langs).length >= 4) strengths.push("Broad technology exposure");
+      if (docScore < 50) weaknesses.push("Many repositories lack descriptions or documentation");
+      if (recentlyUpdated === 0) weaknesses.push("No recent repository activity");
+      
+      const sortedLangs = Object.entries(langs).sort((a, b) => b[1] - a[1]);
+      const topLang = sortedLangs.length > 0 ? sortedLangs[0][0] : "Code";
+
+      const recommendations = [];
+      if (docScore < 70) recommendations.push("Improve README documentation: Add project overview, setup instructions and screenshots.");
+      if (recentlyUpdated < 2) recommendations.push("Maintain recent activity: Continue improving existing projects.");
+      if (stars < 5) recommendations.push("Increase project presentation: Add live demos to your strongest projects.");
+
       const { data: u } = await supabase.auth.getUser();
       if (!u.user) return;
+      
       await supabase
         .from("github_analysis")
         .upsert({
           user_id: u.user.id,
           username,
-          repo_count: repos.length,
+          repo_count: userRes.public_repos ?? 0,
           star_count: stars,
           follower_count: userRes.followers ?? 0,
           languages: langs,
-          score,
-          strengths: Object.keys(langs).slice(0, 3),
-          weaknesses: stars < 5 ? ["Low star count — add documentation"] : [],
-          recommendations: [
-            "Pin top 6 projects",
-            "Add READMEs with screenshots",
-            "Push consistently",
-          ],
+          repositories: normalizedRepos,
+          score: healthScore,
+          strengths: strengths.length ? strengths : ["Not enough GitHub activity data to confidently identify this strength."],
+          weaknesses,
+          recommendations,
           analyzed_at: new Date().toISOString(),
         });
+        
       await supabase
         .from("achievements")
         .insert({ user_id: u.user.id, code: "github_connected" })

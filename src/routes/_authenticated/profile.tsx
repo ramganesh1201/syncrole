@@ -34,6 +34,7 @@ function ProfilePage() {
   const [xpLevel, setXpLevel] = useState<any>(null);
   const [streak, setStreak] = useState<any>(null);
   const [resumeAnalysis, setResumeAnalysis] = useState<any>(null);
+  const [githubAnalysis, setGithubAnalysis] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   
@@ -62,10 +63,12 @@ function ProfilePage() {
       const { data: xpData } = await supabase.from("xp_levels").select("*").eq("user_id", user.id).maybeSingle();
       const { data: streakData } = await supabase.from("streaks").select("*").eq("user_id", user.id).maybeSingle();
       const { data: resumeData } = await supabase.from("resume_analysis").select("*").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      const { data: ghData } = await supabase.from("github_analysis").select("*").eq("user_id", user.id).maybeSingle();
       
       if (xpData) setXpLevel(xpData);
       if (streakData) setStreak(streakData);
       if (resumeData) setResumeAnalysis(resumeData);
+      if (ghData) setGithubAnalysis(ghData);
       
       if (data) setProfile(data);
       if (stats) setPlacementStats(stats);
@@ -289,7 +292,7 @@ function ProfilePage() {
             <CodingProfilesSection profile={profile} onEditClick={handleEditClick} />
             <div id="resume-github" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
               <ResumeSummary placementStats={placementStats} resumeAnalysis={resumeAnalysis} uploading={uploading} onUpload={handleResumeUpload} />
-              <GithubSummary profile={profile} placementStats={placementStats} />
+              <GithubSummary profile={profile} placementStats={placementStats} githubAnalysis={githubAnalysis} />
             </div>
           </section>
           

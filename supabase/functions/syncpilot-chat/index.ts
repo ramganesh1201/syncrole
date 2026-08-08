@@ -445,44 +445,44 @@ serve(async (req) => {
       supabase.from("resume_jd_matches").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle(),
     ]);
 
-    // ── Fetch GitHub repository details from public API ────────────────────
-    // Reuses the same public GitHub API that the dashboard's analyzeGitHub() uses.
-    // This provides actual repository-level data (names, descriptions, languages, etc.)
-    // that the aggregate github_analysis table does not store.
+    // ── Fetch GitHub repository details ──────────────────────────────────
     let githubRepos: any[] = [];
-    const ghUsername = profileRes.data?.github_username || githubRes.data?.username;
-    if (ghUsername) {
-      try {
-        const ghResponse = await fetch(
-          `https://api.github.com/users/${encodeURIComponent(ghUsername)}/repos?per_page=100&sort=updated`,
-          { headers: { "Accept": "application/vnd.github.v3+json", "User-Agent": "SyncRole-SyncPilot" } }
-        );
-        if (ghResponse.ok) {
-          const repoData = await ghResponse.json();
-          if (Array.isArray(repoData)) {
-            githubRepos = repoData.map((r: any) => ({
-              name: r.name,
-              description: r.description,
-              html_url: r.html_url,
-              homepage: r.homepage,
-              language: r.language,
-              stargazers_count: r.stargazers_count,
-              forks_count: r.forks_count,
-              private: r.private,
-              updated_at: r.updated_at,
-              created_at: r.created_at,
-              topics: r.topics,
-              default_branch: r.default_branch,
-              open_issues_count: r.open_issues_count,
-              license: r.license?.spdx_id,
-              size: r.size,
-            }));
+    if (githubRes.data?.repositories && Array.isArray(githubRes.data.repositories) && githubRes.data.repositories.length > 0) {
+      // Use persisted repository data from github_analysis to avoid rate limits
+      githubRepos = githubRes.data.repositories;
+    } else {
+      const ghUsername = profileRes.data?.github_username || githubRes.data?.username;
+      if (ghUsername) {
+        try {
+          const ghResponse = await fetch(
+            `https://api.github.com/users/${encodeURIComponent(ghUsername)}/repos?per_page=100&sort=updated`,
+            { headers: { "Accept": "application/vnd.github.v3+json", "User-Agent": "SyncRole-SyncPilot" } }
+          );
+          if (ghResponse.ok) {
+            const repoData = await ghResponse.json();
+            if (Array.isArray(repoData)) {
+              githubRepos = repoData.map((r: any) => ({
+                name: r.name,
+                description: r.description,
+                html_url: r.html_url,
+                homepage: r.homepage,
+                language: r.language,
+                stargazers_count: r.stargazers_count,
+                forks_count: r.forks_count,
+                private: r.private,
+                updated_at: r.updated_at,
+                created_at: r.created_at,
+                topics: r.topics,
+                default_branch: r.default_branch,
+                open_issues_count: r.open_issues_count,
+                license: r.license?.spdx_id,
+                size: r.size,
+              }));
+            }
           }
-        } else {
-          console.warn(`GitHub API returned ${ghResponse.status} for user ${ghUsername}`);
+        } catch (e) {
+          console.error("Failed to fetch GitHub repos for SyncPilot context", e);
         }
-      } catch (ghErr) {
-        console.warn("Failed to fetch GitHub repos for SyncPilot context:", ghErr);
       }
     }
 

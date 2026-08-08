@@ -552,6 +552,7 @@ export type Database = {
           languages: Json | null
           recommendations: string[] | null
           repo_count: number | null
+          repositories: Json | null
           score: number | null
           star_count: number | null
           strengths: string[] | null
@@ -565,6 +566,7 @@ export type Database = {
           languages?: Json | null
           recommendations?: string[] | null
           repo_count?: number | null
+          repositories?: Json | null
           score?: number | null
           star_count?: number | null
           strengths?: string[] | null
@@ -578,6 +580,7 @@ export type Database = {
           languages?: Json | null
           recommendations?: string[] | null
           repo_count?: number | null
+          repositories?: Json | null
           score?: number | null
           star_count?: number | null
           strengths?: string[] | null
