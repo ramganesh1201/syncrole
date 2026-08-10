@@ -1,7 +1,7 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Sparkles, ArrowRight, Mail, Lock, User as UserIcon, Loader2, ArrowLeft } from "lucide-react";
+import { Sparkles, ArrowRight, Mail, Lock, User as UserIcon, Loader2, ArrowLeft, Eye, EyeOff } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 import AuroraBackground from "@/components/AuroraBackground";
@@ -286,19 +286,34 @@ function Field({
   disabled?: boolean;
   autoComplete?: string;
 }) {
+  const [showPwd, setShowPwd] = useState(false);
+  const isPassword = p.type === "password";
+  const inputType = isPassword ? (showPwd ? "text" : "password") : (p.type ?? "text");
+
   return (
-    <div className="relative">
-      <Icon className="pointer-events-none absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+    <div className="relative group flex items-center">
+      <Icon className="pointer-events-none absolute left-4 h-[18px] w-[18px] text-muted-foreground transition-colors group-focus-within:text-accent" />
       <input
-        type={p.type ?? "text"}
+        type={inputType}
         value={p.value}
         onChange={(e) => p.onChange(e.target.value)}
         placeholder={p.placeholder}
         disabled={disabled}
         autoComplete={autoComplete}
-        className="w-full glass rounded-full pl-11 pr-4 py-3 text-sm outline-none focus:ring-2 ring-accent/50 disabled:opacity-50 transition-all"
+        className={`w-full glass rounded-full py-3 pl-12 text-sm outline-none focus:ring-2 ring-accent/50 disabled:opacity-50 transition-all ${isPassword ? 'pr-12' : 'pr-4'}`}
         aria-label={p.placeholder}
       />
+      {isPassword && (
+        <button
+          type="button"
+          onClick={() => setShowPwd(!showPwd)}
+          disabled={disabled}
+          className="absolute right-4 h-[18px] w-[18px] text-muted-foreground hover:text-white transition-colors focus:outline-none disabled:opacity-50"
+          aria-label={showPwd ? "Hide password" : "Show password"}
+        >
+          {showPwd ? <EyeOff className="h-full w-full" /> : <Eye className="h-full w-full" />}
+        </button>
+      )}
     </div>
   );
 }
