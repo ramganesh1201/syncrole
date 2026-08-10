@@ -292,7 +292,7 @@ function Field({
 
   return (
     <div className="relative group flex items-center">
-      <Icon className="pointer-events-none absolute left-4 h-[18px] w-[18px] text-muted-foreground transition-colors group-focus-within:text-accent" />
+      <Icon className="pointer-events-none absolute left-4 h-[18px] w-[18px] text-white/50 z-10 transition-colors group-focus-within:text-accent" />
       <input
         type={inputType}
         value={p.value}
