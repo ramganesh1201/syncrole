@@ -124,9 +124,9 @@ function AuthPage() {
           <BrandLogo size="lg" />
         </div>
 
-        <div className="relative rounded-3xl p-px">
-          <div className="absolute inset-0 rounded-3xl bg-aurora opacity-50 blur" />
-          <div className="relative rounded-[23px] glass-strong p-8">
+        <div className="relative rounded-3xl">
+          <div className="absolute inset-0 rounded-3xl bg-aurora opacity-10 blur-xl" />
+          <div className="relative rounded-[23px] glass-strong p-8 border border-white/10 shadow-2xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={mode}
@@ -190,7 +190,7 @@ function AuthPage() {
                     type="email"
                     value={email}
                     onChange={setEmail}
-                    placeholder="you@college.edu"
+                    placeholder="Enter your email address"
                     disabled={busy}
                     autoComplete="email"
                   />
