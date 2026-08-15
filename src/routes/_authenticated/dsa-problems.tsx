@@ -96,38 +96,33 @@ function DSAProblemsPage() {
     init();
   }, []);
 
-  useEffect(() => {
-    async function fetchProblems() {
-      setLoading(true);
-      try {
-        const { data: userData } = await supabase.auth.getUser();
-        const userId = userData.user?.id;
+  const fetchProblems = useCallback(async () => {
+    setLoading(true);
+    try {
+      const { data: userData } = await supabase.auth.getUser();
+      const userId = userData.user?.id;
 
-        const { data, count } = await DSAService.getProblems(
-          filters,
-          searchTerm,
-          page,
-          ITEMS_PER_PAGE,
-          userId
-        );
+      const { data, count } = await DSAService.getProblems(
+        filters,
+        searchTerm,
+        page,
+        ITEMS_PER_PAGE,
+        userId
+      );
 
-        setProblems(data as Problem[]);
-        setTotalCount(count);
+      setProblems(data as Problem[]);
+      setTotalCount(count);
 
-        if (userId && data && data.length > 0) {
-          const problemIds = data.map((p) => p.id);
-          const progressMap = await DSAService.getUserProgress(userId, problemIds);
-          setUserProgress(progressMap);
-        }
-      } catch (err) {
-        console.error("Failed to load problems:", err);
-      } finally {
-        setLoading(false);
+      if (userId && data && data.length > 0) {
+        const problemIds = data.map((p) => p.id);
+        const progressMap = await DSAService.getUserProgress(userId, problemIds);
+        setUserProgress(progressMap);
       }
+    } catch (err) {
+      console.error("Failed to load problems:", err);
+    } finally {
+      setLoading(false);
     }
-
-    const timer = setTimeout(fetchProblems, 300);
-    return () => clearTimeout(timer);
   }, [
     filters.sortBy,
     filters.topic,
@@ -138,6 +133,20 @@ function DSAProblemsPage() {
     searchTerm,
     page,
   ]);
+
+  useEffect(() => {
+    const timer = setTimeout(fetchProblems, 150);
+    return () => clearTimeout(timer);
+  }, [fetchProblems]);
+
+  // Window focus listener to refresh progress when returning to library
+  useEffect(() => {
+    function handleFocus() {
+      fetchProblems();
+    }
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [fetchProblems]);
 
   function updateFilter(key: string, value: string | undefined) {
     setPage(0);
@@ -631,11 +640,15 @@ function DSAProblemsPage() {
               <>
                 {problems.map((problem) => {
                   const progress = userProgress.get(problem.id);
-                  const isSolved = progress?.solved;
-                  const isBookmarked = progress?.is_bookmarked;
-                  const isFavorite = progress?.is_favorite;
-                  const status = progress?.status ?? (isSolved ? "solved" : "not_started");
-                  const hasStarted = status === "in_progress" || status === "attempted";
+                  const isSolved = Boolean(progress?.solved === true || progress?.status === "solved");
+                  const isBookmarked = Boolean(progress?.is_bookmarked);
+                  const isFavorite = Boolean(progress?.is_favorite);
+                  const hasStarted = !isSolved && (
+                    progress?.status === "in_progress" ||
+                    progress?.status === "attempted" ||
+                    (progress?.run_count ?? 0) > 0 ||
+                    (progress?.submission_count ?? 0) > 0
+                  );
 
                   return (
                     <motion.div
