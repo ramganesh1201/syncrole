@@ -38,8 +38,8 @@ CROSS JOIN (VALUES
   ('JSON:{"nums":[3,2,4],"target":6}',       '[1,2]',  true,  false, 2),
   ('JSON:{"nums":[3,3],"target":6}',         '[0,1]',  true,  false, 3),
   -- hidden tests
-  ('JSON:{"nums":[1,5,8,3,2],"target":10}',  '[1,3]',  false, true,  4),
-  ('JSON:{"nums":[-1,-2,-3,-4,-5],"target":-8}', '[-4,-5]|[3,4]', false, true, 5),
+  ('JSON:{"nums":[1,5,8,3,2],"target":10}',  '[2,4]|[4,2]',  false, true,  4),
+  ('JSON:{"nums":[-1,-2,-3,-4,-5],"target":-8}', '[2,4]|[4,2]', false, true, 5),
   ('JSON:{"nums":[0,4,3,0],"target":0}',     '[0,3]',  false, true,  6),
   ('JSON:{"nums":[1,2,3,4,5,6,7,8,9,10],"target":19}', '[8,9]', false, true, 7),
   ('JSON:{"nums":[100,200,300,400],"target":700}', '[2,3]', false, true, 8)

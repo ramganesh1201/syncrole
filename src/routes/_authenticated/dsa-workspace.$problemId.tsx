@@ -124,7 +124,7 @@ function DSAWorkspacePage() {
 
   // Handle Run Code
   const handleRunCode = useCallback(async () => {
-    if (!userId || !problem || uiState !== "idle") return;
+    if (!userId || !problem || uiState === "submitting" || uiState === "running") return;
 
     if (problem.execution_status === "unavailable") {
       toast.info("Practice mode active: Test execution is unavailable for this problem.", {
@@ -141,58 +141,56 @@ function DSAWorkspacePage() {
 
     setIsRunOnly(true);
     setUiState("submitting");
-    setSubmissionResult(null);
     session.onRunCode();
 
     // Mark as attempted in user progress
     await DSAWorkspaceService.updateProblemStatus(userId, problemId, "attempted");
 
-    const { submissionId, error } = await DSASubmissionService.createAndExecute({
-      userId,
-      problemId,
-      sessionId: session.sessionId,
-      language,
-      sourceCode: draft.code,
-      isRunOnly: true,
-      attemptNumber: submissionCount + 1,
-    });
-
-    if (error || !submissionId) {
-      setUiState("done");
-      setSubmissionResult({
-        id: "",
-        status: "system_error" as SubmissionStatus,
-        passed_tests: 0,
-        total_tests: 0,
-        execution_time_ms: null,
-        memory_kb: null,
-        error_type: "system_error",
-        error_message:
-          error ?? "Execution service temporarily unavailable. This run was not counted.",
-        attempt_number: submissionCount + 1,
-        is_run_only: true,
-        created_at: new Date().toISOString(),
-      });
-      return;
-    }
-
-    setUiState("running");
-
     try {
+      const { submissionId, error } = await DSASubmissionService.createAndExecute({
+        userId,
+        problemId,
+        sessionId: session.sessionId,
+        language,
+        sourceCode: draft.code,
+        isRunOnly: true,
+        attemptNumber: submissionCount + 1,
+      });
+
+      if (error || !submissionId) {
+        setSubmissionResult({
+          id: "",
+          status: "system_error" as SubmissionStatus,
+          passed_tests: 0,
+          total_tests: 0,
+          execution_time_ms: null,
+          memory_kb: null,
+          error_type: "system_error",
+          error_message:
+            error ?? "Execution service temporarily unavailable. Your code draft was saved and this run was not penalized.",
+          attempt_number: submissionCount + 1,
+          is_run_only: true,
+          created_at: new Date().toISOString(),
+        });
+        return;
+      }
+
+      setUiState("running");
+
       const result = await DSASubmissionService.pollSubmissionResult(submissionId, (status) => {
         if (status === "running") setUiState("running");
       });
       setSubmissionResult(result);
-      setUiState("done");
     } catch (err: any) {
       toast.error(err.message ?? "Failed to get results.");
+    } finally {
       setUiState("idle");
     }
   }, [userId, problem, draft.code, language, uiState, session, submissionCount, problemId]);
 
   // Handle Submit
   const handleSubmit = useCallback(async () => {
-    if (!userId || !problem || uiState !== "idle") return;
+    if (!userId || !problem || uiState === "submitting" || uiState === "running") return;
 
     if (problem.execution_status === "unavailable") {
       toast.info("Practice mode active: Automated test judging is unavailable for this problem.", {
@@ -209,7 +207,6 @@ function DSAWorkspacePage() {
 
     setIsRunOnly(false);
     setUiState("submitting");
-    setSubmissionResult(null);
     session.onSubmit();
     const newAttempt = submissionCount + 1;
     setSubmissionCount(newAttempt);
@@ -217,44 +214,42 @@ function DSAWorkspacePage() {
     // Mark as attempted
     await DSAWorkspaceService.updateProblemStatus(userId, problemId, "attempted");
 
-    const { submissionId, error } = await DSASubmissionService.createAndExecute({
-      userId,
-      problemId,
-      sessionId: session.sessionId,
-      language,
-      sourceCode: draft.code,
-      isRunOnly: false,
-      attemptNumber: newAttempt,
-    });
-
-    if (error || !submissionId) {
-      setUiState("done");
-      setSubmissionResult({
-        id: "",
-        status: "system_error" as SubmissionStatus,
-        passed_tests: 0,
-        total_tests: 0,
-        execution_time_ms: null,
-        memory_kb: null,
-        error_type: "system_error",
-        error_message:
-          error ?? "Execution service temporarily unavailable. Your submission was not counted as a failed attempt.",
-        attempt_number: newAttempt,
-        is_run_only: false,
-        created_at: new Date().toISOString(),
-      });
-      return;
-    }
-
-    setUiState("running");
-
     try {
+      const { submissionId, error } = await DSASubmissionService.createAndExecute({
+        userId,
+        problemId,
+        sessionId: session.sessionId,
+        language,
+        sourceCode: draft.code,
+        isRunOnly: false,
+        attemptNumber: newAttempt,
+      });
+
+      if (error || !submissionId) {
+        setSubmissionResult({
+          id: "",
+          status: "system_error" as SubmissionStatus,
+          passed_tests: 0,
+          total_tests: 0,
+          execution_time_ms: null,
+          memory_kb: null,
+          error_type: "system_error",
+          error_message:
+            error ?? "Execution service temporarily unavailable. Your code draft was saved and this attempt was not penalized.",
+          attempt_number: newAttempt,
+          is_run_only: false,
+          created_at: new Date().toISOString(),
+        });
+        return;
+      }
+
+      setUiState("running");
+
       const result = await DSASubmissionService.pollSubmissionResult(submissionId, (status) => {
         if (status === "running") setUiState("running");
       });
 
       setSubmissionResult(result);
-      setUiState("done");
 
       if (result.status === "accepted") {
         toast.success("🎉 Accepted! Verified solution recorded!", { duration: 4000 });
@@ -265,6 +260,7 @@ function DSAWorkspacePage() {
       }
     } catch (err: any) {
       toast.error(err.message ?? "Failed to get results.");
+    } finally {
       setUiState("idle");
     }
   }, [userId, problem, draft.code, language, uiState, session, submissionCount, problemId]);
@@ -302,6 +298,7 @@ function DSAWorkspacePage() {
   }
 
   const isSolved = userProgress?.solved || submissionResult?.status === "accepted";
+  const isExecuting = uiState === "submitting" || uiState === "running";
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
@@ -352,11 +349,11 @@ function DSAWorkspacePage() {
                 <button
                   id="btn-run-code"
                   onClick={handleRunCode}
-                  disabled={uiState !== "idle"}
+                  disabled={isExecuting}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold transition-all",
                     "glass border border-white/10 hover:border-aurora/40 hover:text-aurora",
-                    uiState !== "idle" && "opacity-50 cursor-not-allowed"
+                    isExecuting && "opacity-50 cursor-not-allowed"
                   )}
                 >
                   {uiState === "running" && isRunOnly ? (
@@ -371,15 +368,15 @@ function DSAWorkspacePage() {
                 <button
                   id="btn-submit"
                   onClick={handleSubmit}
-                  disabled={uiState !== "idle"}
+                  disabled={isExecuting}
                   className={cn(
                     "inline-flex items-center gap-1.5 rounded-full px-4 py-1.5 text-xs font-semibold text-primary-foreground transition-all relative overflow-hidden",
-                    uiState !== "idle" ? "opacity-50 cursor-not-allowed" : ""
+                    isExecuting ? "opacity-50 cursor-not-allowed" : ""
                   )}
                 >
                   <span className="absolute inset-0 bg-aurora" />
                   <span className="relative flex items-center gap-1.5">
-                    {uiState !== "idle" && !isRunOnly ? (
+                    {isExecuting && !isRunOnly ? (
                       <Loader2 className="h-3.5 w-3.5 animate-spin" />
                     ) : (
                       <Send className="h-3.5 w-3.5" />
@@ -482,14 +479,14 @@ function DSAWorkspacePage() {
             <div className="flex gap-3">
               <button
                 onClick={handleRunCode}
-                disabled={uiState !== "idle"}
+                disabled={isExecuting}
                 className="flex-1 flex items-center justify-center gap-2 rounded-xl glass border border-white/10 py-2.5 text-sm font-medium disabled:opacity-50"
               >
                 <Play className="h-4 w-4" /> Run Code
               </button>
               <button
                 onClick={handleSubmit}
-                disabled={uiState !== "idle"}
+                disabled={isExecuting}
                 className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-aurora text-primary-foreground py-2.5 text-sm font-semibold disabled:opacity-50"
               >
                 <Send className="h-4 w-4" /> Submit

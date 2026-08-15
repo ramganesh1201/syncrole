@@ -45,14 +45,6 @@ export const TestResultPanel: React.FC<TestResultPanelProps> = ({
     );
   }
 
-  if (state === "idle") {
-    return (
-      <div className="flex items-center justify-center h-full text-xs text-muted-foreground bg-black/20 rounded-xl border border-white/5">
-        Run code or submit to see verified test results
-      </div>
-    );
-  }
-
   if (state === "running" || state === "submitting") {
     return (
       <div className="flex flex-col items-center justify-center h-full text-aurora gap-2 bg-black/20 rounded-xl border border-white/5">
@@ -64,7 +56,13 @@ export const TestResultPanel: React.FC<TestResultPanelProps> = ({
     );
   }
 
-  if (!result) return null;
+  if (!result) {
+    return (
+      <div className="flex items-center justify-center h-full text-xs text-muted-foreground bg-black/20 rounded-xl border border-white/5">
+        Run code or submit to see verified test results
+      </div>
+    );
+  }
 
   const renderStatus = () => {
     switch (result.status) {
