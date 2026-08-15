@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
   LayoutGrid,
   CheckCircle2,
-  Map,
+  Map as MapIcon,
   RotateCcw,
   Sparkles,
   X,
@@ -309,12 +309,12 @@ function DSAProblemsPage() {
         </div>
         <div className="space-y-1">
           {[
-            { id: "all", label: "All" },
+            { id: "all", label: "All", icon: null },
             { id: "bookmarked", label: "Bookmarked", icon: Bookmark },
             { id: "favorite", label: "Favorites", icon: Star },
           ].map((opt) => {
             const isSelected = filters.bookmark === opt.id;
-            const Icon = opt.icon;
+            const IconComponent = opt.icon;
             return (
               <button
                 key={opt.id}
@@ -336,7 +336,7 @@ function DSAProblemsPage() {
                     {isSelected && <Check className="w-2.5 h-2.5 stroke-[3]" />}
                   </div>
                   <span className="flex items-center gap-1.5">
-                    {Icon && <Icon className="w-3.5 h-3.5" />}
+                    {IconComponent && <IconComponent className="w-3.5 h-3.5" />}
                     {opt.label}
                   </span>
                 </div>
@@ -423,7 +423,7 @@ function DSAProblemsPage() {
             to="/dsa-roadmap"
             className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-foreground shrink-0"
           >
-            <Map className="w-4 h-4 text-aurora shrink-0" />
+            <MapIcon className="w-4 h-4 text-aurora shrink-0" />
             <span>Roadmap View</span>
           </Link>
         </div>
