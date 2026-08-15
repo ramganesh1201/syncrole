@@ -1,5 +1,5 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { motion } from "framer-motion";
 import {
   Code2,
@@ -20,6 +20,7 @@ import {
 import { supabase } from "@/integrations/supabase/client";
 import { DSAService } from "@/lib/services/dsa.service";
 import { TodayPracticePanel } from "@/components/dsa/TodayPracticePanel";
+import { ConsistencyHeatmap, HeatmapDayData } from "@/components/dsa/ConsistencyHeatmap";
 import {
   BarChart,
   Bar,
@@ -38,7 +39,6 @@ import {
 
 export const Route = createFileRoute("/_authenticated/dashboard/dsa")({
   component: DSAPage,
-  head: () => ({ meta: [{ title: "DSA Command Center — SyncRole" }] }),
 });
 
 export interface PracticeAnalytics {
@@ -70,6 +70,10 @@ function DSAPage() {
   
   const [revisionQueue, setRevisionQueue] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+
+  const [sessionsData, setSessionsData] = useState<any[]>([]);
+  const [submissionsData, setSubmissionsData] = useState<any[]>([]);
+  const [progressData, setProgressData] = useState<any[]>([]);
 
   const [analytics, setAnalytics] = useState<PracticeAnalytics>({
     totalActiveMinutes: 0,
@@ -117,6 +121,10 @@ function DSAPage() {
     setLogs(logsRes.data ?? []);
     setPracticeLogs(practiceRes.data ?? []);
     setSolvedProblems(solvedRes ?? []);
+
+    setSessionsData(sessionsRes.data ?? []);
+    setSubmissionsData(subRes.data ?? []);
+    setProgressData(progRes.data ?? []);
 
     if (xpRes.data) setXpData(xpRes.data);
     if (streakRes.data) setStreakData(streakRes.data);
@@ -193,28 +201,61 @@ function DSAPage() {
     { name: "Hard", value: solvedTotals.h },
   ];
 
-  const heat = Array.from({ length: 90 }).map((_, i) => {
-    const d = new Date();
-    d.setDate(d.getDate() - (89 - i));
-    const key = toLocalDateStr(d);
-    
-    let intensityScore = 0;
-    
-    const legacyDay = logs.filter((l) => l.log_date === key);
-    legacyDay.forEach(l => {
-      intensityScore += (l.easy + l.medium + l.hard);
+  const heatmapDays = useMemo<HeatmapDayData[]>(() => {
+    return Array.from({ length: 90 }).map((_, i) => {
+      const d = new Date();
+      d.setDate(d.getDate() - (89 - i));
+      const key = toLocalDateStr(d);
+
+      let activeSecs = 0;
+      let runs = 0;
+      let subs = 0;
+      let solves = 0;
+
+      // 1. Practice sessions on this local day
+      const daySessions = sessionsData.filter((s: any) => {
+        return toLocalDateStr(s.last_heartbeat_at || s.created_at) === key;
+      });
+      daySessions.forEach((s: any) => {
+        activeSecs += s.active_seconds ?? 0;
+      });
+
+      // 2. Submissions / runs on this local day
+      const daySubmissions = submissionsData.filter((sub: any) => {
+        return toLocalDateStr(sub.created_at) === key;
+      });
+      daySubmissions.forEach((sub: any) => {
+        if (sub.is_run_only) {
+          runs += 1;
+        } else {
+          subs += 1;
+        }
+      });
+
+      // 3. Verified solves on this local day
+      const daySolves = progressData.filter((p: any) => {
+        if (!p.solved && p.status !== "solved") return false;
+        const solveDate = p.last_solved_at || p.first_solved_at || p.updated_at;
+        return solveDate && toLocalDateStr(solveDate) === key;
+      });
+      solves = daySolves.length;
+
+      const activeMins = Math.round(activeSecs / 60);
+      const intensityScore = (activeMins * 1) + (runs * 1) + (subs * 2) + (solves * 4);
+
+      return {
+        dateKey: key,
+        dateObj: d,
+        activeSeconds: activeSecs,
+        runCount: runs,
+        submissionCount: subs,
+        solvedCount: solves,
+        intensityScore,
+      };
     });
+  }, [sessionsData, submissionsData, progressData]);
 
-    const practiceDay = practiceLogs.filter(p => toLocalDateStr(p.created_at) === key);
-    practiceDay.forEach(p => {
-      intensityScore += 1;
-      if (p.meta?.problems_attempted) intensityScore += p.meta.problems_attempted;
-    });
-
-    return { key, n: intensityScore };
-  });
-
-  if (loading && totalSolved === 0 && heat.length === 0) {
+  if (loading && totalSolved === 0 && heatmapDays.every((d) => d.intensityScore === 0)) {
     return (
       <div className="grid place-items-center min-h-[60vh]">
         <div className="h-8 w-8 rounded-full border-2 border-aurora border-t-transparent animate-spin" />
@@ -380,27 +421,9 @@ function DSAPage() {
         <Card className="lg:col-span-2">
           <SectionLabel icon={Calendar}>Consistency Heatmap (90 Days)</SectionLabel>
           <p className="text-xs text-muted-foreground mt-1 mb-4">
-            Every block represents active practice sessions & verified solves.
+            Every cell represents active practice sessions & verified solves.
           </p>
-          <div className="grid grid-cols-15 gap-1.5 overflow-x-auto pb-2">
-            {heat.map((h) => {
-              const bg =
-                h.n === 0
-                  ? "bg-white/5"
-                  : h.n < 3
-                  ? "bg-aurora/30 border border-aurora/40"
-                  : h.n < 6
-                  ? "bg-aurora/60 border border-aurora/70"
-                  : "bg-aurora border border-white/20 shadow-[0_0_8px_rgba(168,85,247,0.5)]";
-              return (
-                <div
-                  key={h.key}
-                  title={`${h.key}: ${h.n} practice activities`}
-                  className={`h-4 w-4 rounded-sm ${bg} transition-all hover:scale-125 cursor-pointer`}
-                />
-              );
-            })}
-          </div>
+          <ConsistencyHeatmap days={heatmapDays} loading={loading} />
         </Card>
 
         <Card>
