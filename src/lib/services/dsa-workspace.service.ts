@@ -2,7 +2,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 /**
  * WorkspaceProblem — enriched problem data for the DSA workspace.
- * Only problems with has_internal_engine=true have full data.
+ * Supports both execution-enabled problems and practice-only problems.
  */
 export interface WorkspaceProblem {
   id: string;
@@ -23,6 +23,7 @@ export interface WorkspaceProblem {
   time_limit_ms: number;
   memory_limit_mb: number;
   has_internal_engine: boolean;
+  execution_status: "enabled" | "unavailable";
   leetcode_url: string | null;
   xp_reward: number;
   tags: string[] | null;
@@ -44,6 +45,7 @@ export interface CodeDraft {
 export class DSAWorkspaceService {
   /**
    * Fetches a workspace problem by ID, with topic name.
+   * Handles left join on dsa_topics and provides sensible fallback starter code.
    */
   static async getWorkspaceProblem(
     problemId: string
@@ -57,7 +59,7 @@ export class DSAWorkspaceService {
         starter_code_js, supported_languages,
         time_limit_ms, memory_limit_mb, has_internal_engine,
         leetcode_url, xp_reward, tags,
-        dsa_topics!inner(name)
+        dsa_topics(name)
       `
       )
       .eq("id", problemId)
@@ -66,13 +68,40 @@ export class DSAWorkspaceService {
     if (error) throw error;
     if (!data) return null;
 
+    const hasInternalEngine = Boolean(data.has_internal_engine);
+    
+    // Check if test cases exist for this problem
+    let executionStatus: "enabled" | "unavailable" = "unavailable";
+    if (hasInternalEngine) {
+      const { count } = await supabase
+        .from("dsa_test_cases")
+        .select("id", { count: "exact", head: true })
+        .eq("problem_id", problemId);
+      
+      if (count && count > 0) {
+        executionStatus = "enabled";
+      }
+    }
+
+    const defaultStarter = `/**
+ * Problem: ${data.title}
+ * Language: JavaScript
+ */
+
+function solution() {
+  // Write your solution here
+}
+`;
+
     return {
       ...data,
       topic_name: (data as any).dsa_topics?.name ?? undefined,
+      starter_code_js: data.starter_code_js || defaultStarter,
       supported_languages: data.supported_languages ?? ["javascript"],
       time_limit_ms: data.time_limit_ms ?? 2000,
       memory_limit_mb: data.memory_limit_mb ?? 128,
-      has_internal_engine: data.has_internal_engine ?? false,
+      has_internal_engine: hasInternalEngine,
+      execution_status: executionStatus,
     } as WorkspaceProblem;
   }
 
@@ -108,6 +137,40 @@ export class DSAWorkspaceService {
       .maybeSingle();
 
     return data;
+  }
+
+  /**
+   * Updates problem progress status (e.g. from not_started to in_progress or attempted).
+   */
+  static async updateProblemStatus(
+    userId: string,
+    problemId: string,
+    status: "in_progress" | "attempted" | "solved",
+    extraFields: Record<string, any> = {}
+  ): Promise<void> {
+    const existing = await this.getUserProblemProgress(userId, problemId);
+    
+    // Solved status should never regress
+    if (existing?.solved && status !== "solved") {
+      return;
+    }
+
+    const payload: Record<string, any> = {
+      user_id: userId,
+      problem_id: problemId,
+      status: existing?.solved ? "solved" : status,
+      last_attempted: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+      ...extraFields,
+    };
+
+    if (!existing) {
+      payload.first_started_at = new Date().toISOString();
+    }
+
+    await supabase
+      .from("user_problem_progress")
+      .upsert(payload, { onConflict: "user_id, problem_id" });
   }
 
   /**
@@ -152,7 +215,6 @@ export class DSAWorkspaceService {
     );
 
     if (error) {
-      // Non-fatal — local storage is the primary draft store
       console.warn("[DSAWorkspace] Failed to save server draft:", error.message);
     }
   }

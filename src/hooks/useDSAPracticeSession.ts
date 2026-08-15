@@ -19,15 +19,11 @@ interface SessionState {
 /**
  * Manages an automatic DSA practice session with active-time tracking.
  *
- * Active time = time during which the user is actually interacting with the page.
- * Wall time = total elapsed time since session start.
+ * Active time = time during which the tab is visible and the user is actively interacting.
+ * Wall time = total elapsed seconds since session start.
  *
- * Uses visibilitychange + focus/blur to detect idle state.
- * Writes to DB every 30 seconds via a debounced heartbeat.
- * Active time is capped server-side at 35s per heartbeat to prevent abuse.
- *
- * IMPORTANT: Active time is NOT a perfect measure of thinking time.
- * It measures: time the tab was visible and the user had recently interacted.
+ * Flushes incremental deltas to DB every 30 seconds via heartbeat.
+ * Handles page refresh (restores existing active session) and tab close.
  */
 export function useDSAPracticeSession({
   userId,
@@ -46,25 +42,29 @@ export function useDSAPracticeSession({
     error: null,
   });
 
-  // Track time in refs so intervals always have fresh values without re-renders
   const sessionIdRef = useRef<string | null>(null);
   const activeSecondsRef = useRef(0);
   const wallSecondsRef = useRef(0);
+  
+  // Track last flushed values to send exact incremental deltas in heartbeats
+  const lastFlushedActiveRef = useRef(0);
+  const lastFlushedWallRef = useRef(0);
+
   const isIdleRef = useRef(false);
   const lastActivityRef = useRef<number>(Date.now());
   const heartbeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const inactivityTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const runCountRef = useRef(0);
   const submissionCountRef = useRef(0);
+  const heartbeatFlushCounterRef = useRef(0);
 
-  // --- Activity detection ---
+  // Activity detection
   const markActive = useCallback(() => {
     lastActivityRef.current = Date.now();
     if (isIdleRef.current) {
       isIdleRef.current = false;
       setState((s) => ({ ...s, isIdle: false }));
     }
-    // Reset inactivity timer
     if (inactivityTimerRef.current) clearTimeout(inactivityTimerRef.current);
     inactivityTimerRef.current = setTimeout(() => {
       isIdleRef.current = true;
@@ -72,9 +72,7 @@ export function useDSAPracticeSession({
     }, DSASessionService.INACTIVITY_TIMEOUT_MS);
   }, []);
 
-  // --- Heartbeat: ticks every second for local counter, flushes to DB every 30s ---
-  const heartbeatFlushRef = useRef(0);
-
+  // Tick function running every second
   const tick = useCallback(() => {
     wallSecondsRef.current += 1;
 
@@ -86,32 +84,36 @@ export function useDSAPracticeSession({
       activeSecondsRef.current += 1;
     }
 
-    heartbeatFlushRef.current += 1;
+    heartbeatFlushCounterRef.current += 1;
 
-    // Update UI every second
+    // Update local UI state every second
     setState((s) => ({
       ...s,
       activeSeconds: activeSecondsRef.current,
       isIdle: isIdleRef.current,
     }));
 
-    // Flush to DB every 30 seconds
-    if (
-      heartbeatFlushRef.current >= 30 &&
-      sessionIdRef.current
-    ) {
-      heartbeatFlushRef.current = 0;
-      DSASessionService.heartbeat(
-        sessionIdRef.current,
-        Math.min(activeSecondsRef.current, DSASessionService.MAX_ACTIVE_SECONDS_PER_SESSION),
-        wallSecondsRef.current
-      ).catch(() => {
-        // non-fatal
-      });
+    // Flush incremental deltas to DB every 30 seconds
+    if (heartbeatFlushCounterRef.current >= 30 && sessionIdRef.current) {
+      heartbeatFlushCounterRef.current = 0;
+
+      const activeDelta = activeSecondsRef.current - lastFlushedActiveRef.current;
+      const wallDelta = wallSecondsRef.current - lastFlushedWallRef.current;
+
+      lastFlushedActiveRef.current = activeSecondsRef.current;
+      lastFlushedWallRef.current = wallSecondsRef.current;
+
+      if (activeDelta > 0 || wallDelta > 0) {
+        DSASessionService.heartbeat(
+          sessionIdRef.current,
+          activeDelta,
+          wallDelta
+        ).catch(() => {});
+      }
     }
   }, []);
 
-  // --- Initialize session ---
+  // Initialize session
   useEffect(() => {
     if (!userId || !problemId) return;
 
@@ -127,13 +129,14 @@ export function useDSAPracticeSession({
         if (cancelled) return;
 
         sessionIdRef.current = session.id;
-        // Restore from existing session values
         activeSecondsRef.current = session.active_seconds ?? 0;
         wallSecondsRef.current = session.wall_seconds ?? 0;
+        lastFlushedActiveRef.current = session.active_seconds ?? 0;
+        lastFlushedWallRef.current = session.wall_seconds ?? 0;
         runCountRef.current = session.run_count ?? 0;
         submissionCountRef.current = session.submission_count ?? 0;
 
-        const isResumed = session.active_seconds > 0;
+        const isResumed = (session.active_seconds ?? 0) > 0;
 
         setState((s) => ({
           ...s,
@@ -155,24 +158,19 @@ export function useDSAPracticeSession({
     return () => { cancelled = true; };
   }, [userId, problemId]);
 
-  // --- Start tick interval once session is initialized ---
+  // Start tick interval once session is ready
   useEffect(() => {
     if (!state.sessionId) return;
 
-    // Start ticking every second
     heartbeatIntervalRef.current = setInterval(tick, 1000);
-
-    // Start initial inactivity timer
     markActive();
 
-    // Visibility change handler
     function handleVisibilityChange() {
       if (document.visibilityState === "visible") {
         markActive();
       }
     }
 
-    // Activity event handlers
     function handleActivity() { markActive(); }
 
     document.addEventListener("visibilitychange", handleVisibilityChange);
@@ -188,18 +186,21 @@ export function useDSAPracticeSession({
       document.removeEventListener("click", handleActivity);
       document.removeEventListener("mousemove", handleActivity);
 
-      // Final heartbeat flush on unmount
+      // Flush final heartbeat on unmount
       if (sessionIdRef.current) {
-        DSASessionService.heartbeat(
-          sessionIdRef.current,
-          activeSecondsRef.current,
-          wallSecondsRef.current
-        ).catch(() => {});
+        const activeDelta = activeSecondsRef.current - lastFlushedActiveRef.current;
+        const wallDelta = wallSecondsRef.current - lastFlushedWallRef.current;
+        if (activeDelta > 0 || wallDelta > 0) {
+          DSASessionService.heartbeat(
+            sessionIdRef.current,
+            activeDelta,
+            wallDelta
+          ).catch(() => {});
+        }
       }
     };
   }, [state.sessionId, tick, markActive]);
 
-  // --- Expose action callbacks ---
   const onRunCode = useCallback(() => {
     runCountRef.current += 1;
     setState((s) => ({ ...s, runCount: runCountRef.current }));

@@ -11,10 +11,14 @@ import {
   Award,
   Calendar,
   Lightbulb,
+  Clock,
+  CheckCircle2,
+  Activity,
+  Play,
+  Send,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DSAService } from "@/lib/services/dsa.service";
-import { Clock, Bookmark, ArrowRight, RotateCcw } from "lucide-react";
 import { TodayPracticePanel } from "@/components/dsa/TodayPracticePanel";
 import {
   BarChart,
@@ -37,6 +41,15 @@ export const Route = createFileRoute("/_authenticated/dashboard/dsa")({
   head: () => ({ meta: [{ title: "DSA Command Center — SyncRole" }] }),
 });
 
+export interface PracticeAnalytics {
+  totalActiveMinutes: number;
+  weeklyActiveMinutes: number;
+  attemptedCount: number;
+  solvedCount: number;
+  totalSubmissions: number;
+  fastestRuntimeMs: number | null;
+}
+
 function DSAPage() {
   const [logs, setLogs] = useState<any[]>([]);
   const [practiceLogs, setPracticeLogs] = useState<any[]>([]);
@@ -45,36 +58,50 @@ function DSAPage() {
   const [streakData, setStreakData] = useState({ current_streak: 0, longest_streak: 0 });
   const [loading, setLoading] = useState(true);
   
-  // New features state
   const [revisionQueue, setRevisionQueue] = useState<any[]>([]);
   const [recommendations, setRecommendations] = useState<any[]>([]);
+
+  const [analytics, setAnalytics] = useState<PracticeAnalytics>({
+    totalActiveMinutes: 0,
+    weeklyActiveMinutes: 0,
+    attemptedCount: 0,
+    solvedCount: 0,
+    totalSubmissions: 0,
+    fastestRuntimeMs: null,
+  });
 
   async function load() {
     const { data: u } = await supabase.auth.getUser();
     if (!u.user) return setLogs([]);
     const uid = u.user.id;
-    const [logsRes, practiceRes, xpRes, streakRes, progRes, solvedRes] = await Promise.all([
-      supabase
-        .from("dsa_progress")
-        .select("*")
-        .eq("user_id", uid)
-        .order("log_date", { ascending: false })
-        .limit(60),
-      supabase
-        .from("activity_logs")
-        .select("*")
-        .eq("user_id", uid)
-        .eq("type", "dsa_practice")
-        .order("created_at", { ascending: false })
-        .limit(60),
-      supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
-      supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
-      supabase.from("user_problem_progress").select(`
-        id, problem_id, status, is_bookmarked, needs_revision, last_solved_at, solved,
-        dsa_problems ( id, title, difficulty, leetcode_url, topic_id )
-      `).eq("user_id", uid),
-      DSAService.getSolvedAnalytics(uid)
-    ]);
+
+    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+
+    const [logsRes, practiceRes, xpRes, streakRes, progRes, solvedRes, sessionsRes, subCountRes] =
+      await Promise.all([
+        supabase
+          .from("dsa_progress")
+          .select("*")
+          .eq("user_id", uid)
+          .order("log_date", { ascending: false })
+          .limit(60),
+        supabase
+          .from("activity_logs")
+          .select("*")
+          .eq("user_id", uid)
+          .eq("type", "dsa_practice")
+          .order("created_at", { ascending: false })
+          .limit(60),
+        supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
+        supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
+        supabase.from("user_problem_progress").select(`
+          id, problem_id, status, is_bookmarked, needs_revision, last_solved_at, solved, best_execution_time_ms,
+          dsa_problems ( id, title, difficulty, leetcode_url, topic_id )
+        `).eq("user_id", uid),
+        DSAService.getSolvedAnalytics(uid),
+        supabase.from("dsa_practice_sessions").select("active_seconds, created_at").eq("user_id", uid),
+        supabase.from("dsa_submissions").select("id", { count: "exact", head: true }).eq("user_id", uid),
+      ]);
     
     setLogs(logsRes.data ?? []);
     setPracticeLogs(practiceRes.data ?? []);
@@ -83,14 +110,42 @@ function DSAPage() {
     if (xpRes.data) setXpData(xpRes.data);
     if (streakRes.data) setStreakData(streakRes.data);
     
+    // Process Practice Analytics
+    const sessions = sessionsRes.data ?? [];
+    const totalActiveSecs = sessions.reduce((sum, s) => sum + (s.active_seconds ?? 0), 0);
+    const weeklyActiveSecs = sessions
+      .filter((s) => s.created_at >= sevenDaysAgo)
+      .reduce((sum, s) => sum + (s.active_seconds ?? 0), 0);
+
+    const progData = progRes.data ?? [];
+    const attemptedCount = progData.filter((p: any) => p.status && p.status !== "not_started").length;
+    const solvedCount = progData.filter((p: any) => p.solved).length;
+
+    const runtimes = progData
+      .map((p: any) => p.best_execution_time_ms)
+      .filter((t: any): t is number => typeof t === "number" && t > 0);
+    const fastestRuntimeMs = runtimes.length > 0 ? Math.min(...runtimes) : null;
+
+    setAnalytics({
+      totalActiveMinutes: Math.round(totalActiveSecs / 60),
+      weeklyActiveMinutes: Math.round(weeklyActiveSecs / 60),
+      attemptedCount,
+      solvedCount,
+      totalSubmissions: subCountRes.count ?? 0,
+      fastestRuntimeMs,
+    });
+
     // Process Revision Queue
     if (progRes.data) {
       const needsRev = progRes.data.filter((p: any) => p.needs_revision || p.is_bookmarked);
       setRevisionQueue(needsRev.slice(0, 5));
     }
 
-    // Process Recommendations (fetch 3 random unseen or weak topic problems)
-    const { data: recData } = await supabase.from("dsa_problems").select("id, title, difficulty, leetcode_url").limit(3);
+    // Process Recommendations
+    const { data: recData } = await supabase
+      .from("dsa_problems")
+      .select("id, title, difficulty, leetcode_url")
+      .limit(3);
     if (recData) setRecommendations(recData);
 
     setLoading(false);
@@ -100,7 +155,6 @@ function DSAPage() {
     load();
   }, []);
 
-  // Analytics Source of Truth: Actual Solved Problems
   const solvedTotals = solvedProblems.reduce((a, p) => {
     const diff = p.dsa_problems?.difficulty?.toLowerCase();
     if (diff === 'easy') a.e++;
@@ -128,7 +182,6 @@ function DSAPage() {
     { name: "Hard", value: solvedTotals.h },
   ];
 
-  // Consistency heatmap uses both legacy logs and new practice logs
   const heat = Array.from({ length: 90 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (89 - i));
@@ -136,23 +189,19 @@ function DSAPage() {
     
     let intensityScore = 0;
     
-    // Legacy dsa_progress
     const legacyDay = logs.filter((l) => l.log_date === key);
     legacyDay.forEach(l => {
       intensityScore += (l.easy + l.medium + l.hard);
     });
 
-    // New activity_logs practice sessions
     const practiceDay = practiceLogs.filter(p => p.created_at.slice(0, 10) === key);
     practiceDay.forEach(p => {
-      intensityScore += 1; // 1 session = 1 intensity point
+      intensityScore += 1;
       if (p.meta?.problems_attempted) intensityScore += p.meta.problems_attempted;
     });
 
     return { key, n: intensityScore };
   });
-
-
 
   if (loading && totalSolved === 0 && heat.length === 0) {
     return (
@@ -174,7 +223,7 @@ function DSAPage() {
         <div>
           <h1 className="font-display text-4xl font-bold">DSA Command Center</h1>
           <p className="text-sm text-muted-foreground mt-2">
-            Track progress, master topics, prepare for interviews.
+            Track real practice time, master topics, prepare for technical interviews.
           </p>
         </div>
         <div className="flex gap-2">
@@ -217,18 +266,46 @@ function DSAPage() {
         </Link>
       </div>
 
-      {/* KPI Grid */}
-      <div className="grid gap-4 md:grid-cols-4">
-        <Stat label="Total Solved" value={totalSolved} accent />
-        <Stat label="Easy ✓" value={solvedTotals.e} color="text-green-400" />
-        <Stat label="Medium ✓" value={solvedTotals.m} color="text-yellow-400" />
-        <Stat label="Hard ✓" value={solvedTotals.h} color="text-red-400" />
+      {/* Primary KPI Grid (Auto-Tracked Practice Stats) */}
+      <div className="grid gap-4 md:grid-cols-5">
+        <Stat
+          label="Total Active Time"
+          value={analytics.totalActiveMinutes > 60 ? `${Math.round(analytics.totalActiveMinutes / 60)}h` : `${analytics.totalActiveMinutes}m`}
+          accent
+        />
+        <Stat
+          label="Weekly Practice"
+          value={`${analytics.weeklyActiveMinutes}m`}
+          color="text-aurora"
+        />
+        <Stat
+          label="Attempted"
+          value={analytics.attemptedCount}
+          color="text-yellow-400"
+        />
+        <Stat
+          label="Verified Solved"
+          value={totalSolved}
+          color="text-green-400"
+        />
+        <Stat
+          label="Fastest Solve"
+          value={analytics.fastestRuntimeMs ? `${analytics.fastestRuntimeMs}ms` : "N/A"}
+          color="text-accent"
+        />
+      </div>
+
+      {/* Difficulty Breakdown */}
+      <div className="grid gap-4 md:grid-cols-3">
+        <Stat label="Easy Verified ✓" value={solvedTotals.e} color="text-green-400" />
+        <Stat label="Medium Verified ✓" value={solvedTotals.m} color="text-yellow-400" />
+        <Stat label="Hard Verified ✓" value={solvedTotals.h} color="text-red-400" />
       </div>
 
       {/* Charts Grid */}
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
-          <SectionLabel icon={TrendingUp}>Last 30 Days</SectionLabel>
+          <SectionLabel icon={TrendingUp}>Last 30 Days Activity</SectionLabel>
           <div className="mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={last30}>
@@ -264,14 +341,14 @@ function DSAPage() {
                   data={difficultyData}
                   cx="50%"
                   cy="50%"
-                  innerRadius={40}
+                  innerRadius={60}
                   outerRadius={80}
-                  paddingAngle={2}
+                  paddingAngle={5}
                   dataKey="value"
                 >
-                  <Cell fill="oklch(0.88 0.18 145)" />
-                  <Cell fill="oklch(0.85 0.18 70)" />
-                  <Cell fill="oklch(0.72 0.22 330)" />
+                  <Cell fill="#4ade80" />
+                  <Cell fill="#facc15" />
+                  <Cell fill="#f87171" />
                 </Pie>
                 <Tooltip
                   contentStyle={{
@@ -280,56 +357,38 @@ function DSAPage() {
                     borderRadius: 12,
                   }}
                 />
+                <Legend verticalAlign="bottom" height={36} />
               </PieChart>
             </ResponsiveContainer>
           </div>
         </Card>
       </div>
 
-      {/* Consistency & Practice Sessions */}
+      {/* Heatmap & Today's Practice Panel */}
       <div className="grid gap-4 lg:grid-cols-3">
-        <Card className="lg:col-span-2 flex flex-col">
-          <SectionLabel icon={Calendar}>Consistency · Last 90 Days</SectionLabel>
-          <div className="mt-4 flex-1">
-            <div className="grid grid-cols-[repeat(30,minmax(0,1fr))] sm:grid-cols-[repeat(45,minmax(0,1fr))] md:grid-cols-[repeat(90,minmax(0,1fr))] gap-1">
-              {heat.map((c) => {
-                const intensity = c.n === 0 ? 0 : Math.min(4, Math.ceil(c.n / 2));
-                const bg = [
-                  "oklch(1 0 0 / 0.05)",
-                  "oklch(0.72 0.22 295 / 0.25)",
-                  "oklch(0.72 0.22 295 / 0.5)",
-                  "oklch(0.72 0.22 295 / 0.75)",
-                  "oklch(0.72 0.22 295)",
-                ][intensity];
-                return (
-                  <div
-                    key={c.key}
-                    title={`${c.key}: ${c.n} activities`}
-                    className="aspect-square rounded-sm"
-                    style={{ background: bg }}
-                  />
-                );
-              })}
-            </div>
-            <div className="mt-4 flex gap-3 text-xs text-muted-foreground">
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm" style={{ background: "oklch(1 0 0 / 0.05)" }} />{" "}
-                No activity
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm bg-aurora/20" /> Low
-              </div>
-              <div className="flex items-center gap-1.5">
-                <div className="w-3 h-3 rounded-sm bg-aurora/50" /> Medium
-              </div>
-              <div className="flex items-center gap-1.5">
+        <Card className="lg:col-span-2">
+          <SectionLabel icon={Calendar}>Consistency Heatmap (90 Days)</SectionLabel>
+          <p className="text-xs text-muted-foreground mt-1 mb-4">
+            Every block represents active practice sessions & verified solves.
+          </p>
+          <div className="grid grid-cols-15 gap-1.5 overflow-x-auto pb-2">
+            {heat.map((h) => {
+              const bg =
+                h.n === 0
+                  ? "bg-white/5"
+                  : h.n < 3
+                  ? "bg-aurora/30 border border-aurora/40"
+                  : h.n < 6
+                  ? "bg-aurora/60 border border-aurora/70"
+                  : "bg-aurora border border-white/20 shadow-[0_0_8px_rgba(168,85,247,0.5)]";
+              return (
                 <div
-                  className="w-3 h-3 rounded-sm"
-                  style={{ background: "oklch(0.72 0.22 295)" }}
-                />{" "}
-                High
-              </div>
-            </div>
+                  key={h.key}
+                  title={`${h.key}: ${h.n} practice activities`}
+                  className={`h-4 w-4 rounded-sm ${bg} transition-all hover:scale-125 cursor-pointer`}
+                />
+              );
+            })}
           </div>
         </Card>
 
@@ -337,109 +396,43 @@ function DSAPage() {
           <TodayPracticePanel />
         </Card>
       </div>
-      
-      {/* Smart Revision & Recommendations */}
-      <div className="grid gap-4 lg:grid-cols-2">
-        <Card>
-          <div className="flex items-center justify-between mb-4">
-            <SectionLabel icon={RotateCcw}>Revision Queue</SectionLabel>
-            <Link to="/dsa-problems" className="text-xs text-aurora hover:underline">View all</Link>
-          </div>
-          <div className="space-y-3">
-            {revisionQueue.length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-6 bg-white/5 rounded-xl border border-white/5">
-                No problems in your revision queue.
-              </div>
-            ) : (
-              revisionQueue.map((item: any) => (
-                <div key={item.id} className="glass rounded-xl p-3 flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-aurora/10 text-aurora rounded-lg"><Bookmark className="w-4 h-4" /></div>
-                    <div>
-                      <div className="text-sm font-medium">{item.dsa_problems?.title || 'Unknown Problem'}</div>
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.dsa_problems?.difficulty}</div>
-                    </div>
-                  </div>
-                  {item.dsa_problems?.leetcode_url && (
-                    <a href={item.dsa_problems.leetcode_url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-aurora transition-colors p-2">
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </Card>
-
-        <Card>
-          <div className="flex items-center justify-between mb-4">
-            <SectionLabel icon={Lightbulb}>AI Recommendations</SectionLabel>
-            <Link to="/dsa-problems" className="text-xs text-aurora hover:underline">Explore</Link>
-          </div>
-          <div className="space-y-3">
-            {recommendations.length === 0 ? (
-              <div className="text-sm text-muted-foreground text-center py-6 bg-white/5 rounded-xl border border-white/5">
-                Keep practicing to get recommendations.
-              </div>
-            ) : (
-              recommendations.map((item: any) => (
-                <div key={item.id} className="glass rounded-xl p-3 flex items-center justify-between group">
-                  <div className="flex items-center gap-3">
-                    <div className="p-2 bg-white/5 text-primary/80 rounded-lg"><Target className="w-4 h-4" /></div>
-                    <div>
-                      <div className="text-sm font-medium">{item.title}</div>
-                      <div className="text-[10px] text-muted-foreground uppercase tracking-widest">{item.difficulty}</div>
-                    </div>
-                  </div>
-                  {item.leetcode_url && (
-                    <a href={item.leetcode_url} target="_blank" rel="noreferrer" className="text-muted-foreground hover:text-aurora transition-colors p-2">
-                      <ArrowRight className="w-4 h-4" />
-                    </a>
-                  )}
-                </div>
-              ))
-            )}
-          </div>
-        </Card>
-      </div>
-
     </main>
   );
 }
 
-function Stat({ label, value, accent, color }: any) {
+function SectionLabel({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="glass-strong rounded-2xl p-5">
-      <div className="text-xs uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div
-        className={`mt-2 font-display text-3xl font-bold ${accent ? "text-aurora" : color || ""}`}
-      >
+    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
+      <Icon className="h-3.5 w-3.5 text-aurora" />
+      <span>{children}</span>
+    </div>
+  );
+}
+
+function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
+  return <div className={`glass-strong rounded-3xl p-5 border border-white/5 ${className}`}>{children}</div>;
+}
+
+function Stat({ label, value, accent, color }: { label: string; value: React.ReactNode; accent?: boolean; color?: string }) {
+  return (
+    <div className={`glass-strong rounded-3xl p-5 border border-white/5 ${accent ? "border-aurora/30 bg-aurora/5" : ""}`}>
+      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
+      <div className={`font-display text-2xl font-bold mt-1 ${color ?? (accent ? "text-aurora" : "")}`}>
         {value}
       </div>
     </div>
   );
 }
 
-function Card({ children, className = "" }: any) {
-  return <div className={`relative glass-strong rounded-3xl p-5 ${className}`}>{children}</div>;
-}
-
-function SectionLabel({ icon: Icon, children }: any) {
-  return (
-    <div className="inline-flex items-center gap-2 rounded-full glass px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
-      <Icon className="h-3 w-3 text-accent" />
-      <span className="uppercase tracking-widest">{children}</span>
-    </div>
-  );
-}
-
-function Pill({ icon: Icon, label, accent }: any) {
+function Pill({ icon: Icon, label, accent }: { icon: React.ElementType; label: string; accent?: boolean }) {
   return (
     <div
-      className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs ${accent ? "bg-aurora text-primary-foreground" : "glass"}`}
+      className={`glass rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1.5 border border-white/10 ${
+        accent ? "text-aurora border-aurora/30 bg-aurora/10" : ""
+      }`}
     >
-      <Icon className="h-3.5 w-3.5" /> {label}
+      <Icon className="h-3.5 w-3.5" />
+      {label}
     </div>
   );
 }
-

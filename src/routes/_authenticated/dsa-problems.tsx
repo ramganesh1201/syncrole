@@ -385,38 +385,30 @@ function DSAProblemsPage() {
                       </div>
 
                       <div className="flex items-center gap-2 w-full lg:w-auto">
-                        {problem.has_internal_engine ? (
-                          /* Internal engine: open workspace for verified solve */
-                          <Link
-                            to="/dsa-workspace/$problemId"
-                            params={{ problemId: problem.id }}
-                            className="flex-1 lg:flex-none justify-center rounded-xl bg-aurora px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-aurora/90 shadow-lg shadow-aurora/20 transition flex items-center gap-1.5"
+                        {/* Primary action: Open internal SyncRole workspace for ALL problems */}
+                        <Link
+                          to="/dsa-workspace/$problemId"
+                          params={{ problemId: problem.id }}
+                          className="flex-1 lg:flex-none justify-center rounded-xl bg-aurora px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-aurora/90 shadow-lg shadow-aurora/20 transition flex items-center gap-1.5"
+                        >
+                          {isSolved ? (
+                            <><CheckCircle2 className="w-4 h-4" /> Practice Again</>
+                          ) : (
+                            <><Code2 className="w-4 h-4" /> Solve Inside SyncRole</>
+                          )}
+                        </Link>
+
+                        {/* Secondary action: LeetCode link if available */}
+                        {problem.leetcode_url && (
+                          <a
+                            href={problem.leetcode_url}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="flex-none justify-center rounded-xl bg-white/5 px-3 py-2.5 text-xs font-medium hover:bg-white/10 transition flex items-center gap-1 border border-white/10 text-muted-foreground hover:text-foreground"
+                            title="View on LeetCode"
                           >
-                            {isSolved ? (
-                              <><CheckCircle2 className="w-4 h-4" /> Practice Again</>
-                            ) : (
-                              <><Code2 className="w-4 h-4" /> Solve Inside SyncRole</>
-                            )}
-                          </Link>
-                        ) : (
-                          /* External: LeetCode link + manual Mark Solved */
-                          <>
-                            {problem.leetcode_url && (
-                              <a href={problem.leetcode_url} target="_blank" rel="noreferrer" className="flex-1 lg:flex-none justify-center rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium hover:bg-white/10 transition flex items-center gap-1 border border-white/10">
-                                Solve <ArrowUpRight className="h-4 w-4" />
-                              </a>
-                            )}
-                            <button
-                              onClick={() => updateProgress(problem.id, { solved: !isSolved })}
-                              className={`flex-1 lg:flex-none justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition flex items-center gap-2 ${
-                                isSolved
-                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
-                                  : 'glass border border-white/10 hover:bg-white/10'
-                              }`}
-                            >
-                              {isSolved ? <><CheckCircle2 className="w-4 h-4" /> Solved</> : "Mark Solved"}
-                            </button>
-                          </>
+                            LeetCode <ArrowUpRight className="h-3.5 w-3.5" />
+                          </a>
                         )}
                       </div>
                     </div>
