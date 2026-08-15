@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { getExecutionProvider } from "./providers/index.ts";
 
 // ================================================================
 // DSA Execute Edge Function — Supabase Deno Runtime
@@ -6,16 +7,9 @@ import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 // SECURITY MODEL:
 // - Authenticates via JWT before any operation
 // - Loads test cases server-side (hidden tests NEVER sent to browser)
-// - Executes user code in a restricted Deno Worker
+// - Routes execution through external untrusted provider (Piston)
 // - Judges and updates submission via service role only
 // - verify_dsa_solve / record_dsa_attempt called server-side
-//
-// EXECUTION ENVIRONMENT (honest limitations):
-// - Deno Worker with no net/read/write/env/run/ffi permissions
-// - Hard timeout via setTimeout + Worker.terminate()
-// - Does NOT provide Linux cgroup memory isolation
-// - For V1 (10 curated problems, JS only), acceptable trade-off
-// - Future: route through Judge0 or nsjail container for scale
 // ================================================================
 
 const CORS_HEADERS = {
@@ -25,17 +19,22 @@ const CORS_HEADERS = {
 };
 
 const MAX_SOURCE_SIZE_BYTES = 64 * 1024;   // 64 KB
-const MAX_OUTPUT_SIZE_BYTES = 1024 * 1024; // 1 MB
-const EXECUTION_TIMEOUT_MS  = 4000;        // 4s hard worker kill
+const EXECUTION_TIMEOUT_MS  = 4000;        // 4s timeout
 
-Deno.serve(async (req) => {
+Deno.serve(async (req: Request) => {
   if (req.method === "OPTIONS") {
     return new Response("ok", { headers: CORS_HEADERS });
   }
 
   try {
-    const body = await req.json();
-    const { submission_id, is_run_only } = body;
+    let body: any;
+    try {
+      body = await req.json();
+    } catch (_) {
+      return jsonError("Invalid JSON request body", 400);
+    }
+
+    const { submission_id, is_run_only } = body || {};
 
     if (!submission_id || typeof submission_id !== "string") {
       return jsonError("Missing submission_id", 400);
@@ -47,9 +46,14 @@ Deno.serve(async (req) => {
     }
     const token = authHeader.replace("Bearer ", "");
 
-    const supabaseUrl   = Deno.env.get("SUPABASE_URL")!;
-    const anonKey       = Deno.env.get("SUPABASE_ANON_KEY")!;
-    const serviceKey    = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const supabaseUrl   = Deno.env.get("SUPABASE_URL");
+    const anonKey       = Deno.env.get("SUPABASE_ANON_KEY");
+    const serviceKey    = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
+
+    if (!supabaseUrl || !anonKey || !serviceKey) {
+      console.error("[dsa-execute] Missing required Supabase environment variables");
+      return jsonError("Server configuration error", 500);
+    }
 
     const userClient = createClient(supabaseUrl, anonKey, {
       global: { headers: { Authorization: `Bearer ${token}` } },
@@ -68,7 +72,11 @@ Deno.serve(async (req) => {
       .eq("user_id", user.id)
       .single();
 
-    if (subErr || !submission) return jsonError("Submission not found or access denied", 404);
+    if (subErr || !submission) {
+      return jsonError("Submission not found or access denied", 404);
+    }
+
+    // Ensure single execution per submission
     if (submission.status !== "queued") {
       return jsonResponse({ message: "Already processed", status: submission.status });
     }
@@ -95,19 +103,22 @@ Deno.serve(async (req) => {
       await markSysError(serviceClient, submission_id, "Problem not found");
       return jsonError("Problem not found", 404);
     }
+
     if (!problem.has_internal_engine) {
       await markSysError(serviceClient, submission_id, "Problem does not support internal execution");
       return jsonError("Problem does not support internal execution", 422);
     }
 
-    // Load test cases via service role (hidden tests included here for Submit)
+    // Load test cases via service role (hidden tests included only for Submit)
     let tcQuery = serviceClient
       .from("dsa_test_cases")
       .select("id, input, expected_output, is_hidden, ordering")
       .eq("problem_id", submission.problem_id)
       .order("ordering");
 
-    if (is_run_only) tcQuery = tcQuery.eq("is_sample", true);
+    if (is_run_only) {
+      tcQuery = tcQuery.eq("is_sample", true);
+    }
 
     const { data: testCases, error: tcErr } = await tcQuery;
     if (tcErr || !testCases?.length) {
@@ -120,8 +131,10 @@ Deno.serve(async (req) => {
 
     const timeLimitMs = Math.min(problem.time_limit_ms ?? 2000, EXECUTION_TIMEOUT_MS);
 
-    // Execute
-    const execResult = await executeCode({
+    // Execute via Provider Abstraction (Piston API)
+    const provider = getExecutionProvider();
+    const execResult = await provider.execute({
+      language: submission.language,
       code: submission.source_code,
       testCases: testCases.map((tc) => ({
         input: tc.input,
@@ -130,23 +143,9 @@ Deno.serve(async (req) => {
       timeLimitMs,
     });
 
-    // Judge
-    let finalStatus: string;
-    let passedCount = 0;
+    const finalStatus = execResult.type;
+    const passedCount = execResult.passedCount ?? 0;
     const totalCount = testCases.length;
-
-    if (execResult.type === "compile_error") {
-      finalStatus = "compile_error";
-    } else if (execResult.type === "runtime_error") {
-      finalStatus = "runtime_error";
-    } else if (execResult.type === "time_limit") {
-      finalStatus = "time_limit";
-    } else if (execResult.type === "system_error") {
-      finalStatus = "system_error";
-    } else {
-      passedCount = execResult.results!.filter((r) => r.passed).length;
-      finalStatus = passedCount === totalCount ? "accepted" : "wrong_answer";
-    }
 
     // Safe error message — never reveal hidden test content
     const safeErrMsg =
@@ -184,198 +183,34 @@ Deno.serve(async (req) => {
           _is_run_only: false,
         });
       }
-      // system_error → no user penalty
+      // system_error → no user penalty, no XP, no attempt record
     } else {
-      await serviceClient.rpc("record_dsa_attempt", {
-        _user: user.id,
-        _problem_id: submission.problem_id,
-        _is_run_only: true,
-      });
+      if (finalStatus !== "system_error") {
+        await serviceClient.rpc("record_dsa_attempt", {
+          _user: user.id,
+          _problem_id: submission.problem_id,
+          _is_run_only: true,
+        });
+      }
     }
 
-    return jsonResponse({ status: finalStatus, passed_tests: passedCount, total_tests: totalCount });
+    return jsonResponse({
+      status: finalStatus,
+      passed_tests: passedCount,
+      total_tests: totalCount,
+    });
   } catch (err: unknown) {
-    console.error("[dsa-execute]", err instanceof Error ? err.message : err);
+    console.error("[dsa-execute] Unhandled error:", err instanceof Error ? err.message : err);
     return jsonError("Internal server error", 500);
   }
 });
-
-// ================================================================
-// Execution Engine
-// ================================================================
-
-interface TestCase {
-  input: string;
-  expectedOutput: string;
-}
-
-interface TestResult {
-  passed: boolean;
-}
-
-type ExecType = "compile_error" | "runtime_error" | "time_limit" | "system_error" | "success";
-
-interface ExecResult {
-  type: ExecType;
-  results?: TestResult[];
-  executionTimeMs?: number;
-  errorMessage?: string;
-}
-
-async function executeCode(opts: {
-  code: string;
-  testCases: TestCase[];
-  timeLimitMs: number;
-}): Promise<ExecResult> {
-  const { code, testCases, timeLimitMs } = opts;
-  const startTime = Date.now();
-  const workerSrc = buildHarness(code, testCases);
-
-  return new Promise<ExecResult>((resolve) => {
-    let worker: Worker | null = null;
-    let timer: ReturnType<typeof setTimeout> | null = null;
-
-    function cleanup() {
-      if (timer) clearTimeout(timer);
-      try { worker?.terminate(); } catch {}
-    }
-
-    try {
-      const blob = new Blob([workerSrc], { type: "application/javascript" });
-      const url  = URL.createObjectURL(blob);
-
-      worker = new Worker(url, {
-        type: "module",
-        // @ts-ignore — Deno-specific option
-        deno: {
-          permissions: {
-            net:    false,
-            read:   false,
-            write:  false,
-            env:    false,
-            run:    false,
-            ffi:    false,
-            hrtime: false,
-          },
-        },
-      });
-
-      URL.revokeObjectURL(url);
-
-      timer = setTimeout(() => {
-        cleanup();
-        resolve({ type: "time_limit", executionTimeMs: timeLimitMs, errorMessage: "Time limit exceeded" });
-      }, timeLimitMs + 500);
-
-      worker.onmessage = (e: MessageEvent) => {
-        const elapsed = Date.now() - startTime;
-        cleanup();
-        const msg = e.data;
-        if (msg.type === "compile_error") {
-          resolve({ type: "compile_error", errorMessage: msg.message });
-        } else if (msg.type === "runtime_error") {
-          resolve({ type: "runtime_error", errorMessage: msg.message });
-        } else if (msg.type === "results") {
-          resolve({ type: "success", results: msg.results, executionTimeMs: elapsed });
-        } else {
-          resolve({ type: "system_error", errorMessage: "Unknown worker message" });
-        }
-      };
-
-      worker.onerror = (e: ErrorEvent) => {
-        cleanup();
-        resolve({ type: "runtime_error", errorMessage: e.message ?? "Worker error" });
-      };
-    } catch (err: unknown) {
-      cleanup();
-      resolve({
-        type: "system_error",
-        errorMessage: err instanceof Error ? err.message : "Worker init failed",
-      });
-    }
-  });
-}
-
-/**
- * Builds the sandboxed worker script.
- * User code is JSON-encoded to safely embed without escaping issues.
- * The worker uses new Function() to eval the user code — this runs
- * inside the Worker context which has no net/fs/env access.
- */
-function buildHarness(userCode: string, testCases: TestCase[]): string {
-  const codeJson  = JSON.stringify(userCode);
-  const tcJson    = JSON.stringify(testCases);
-  const maxOutput = MAX_OUTPUT_SIZE_BYTES;
-
-  const lines = [
-    '"use strict";',
-    "const MAX_OUT = " + maxOutput + ";",
-    "const TC = " + tcJson + ";",
-    "const CODE = " + codeJson + ";",
-    "",
-    "async function run() {",
-    "  let fn;",
-    "  try {",
-    "    const m = CODE.match(/function\\s+(\\w+)\\s*\\(/);",
-    '    if (!m) throw new Error("No function definition found.");',
-    "    const name = m[1];",
-    "    const wrap = new Function(CODE + '\\n' + 'return typeof ' + name + ' !== \"undefined\" ? ' + name + ' : null;');",
-    "    fn = wrap();",
-    '    if (typeof fn !== "function") throw new Error("Function \\"" + name + "\\" not found.");',
-    "  } catch (e) {",
-    '    self.postMessage({ type: "compile_error", message: String(e && e.message ? e.message : e) });',
-    "    return;",
-    "  }",
-    "  const results = [];",
-    "  for (const tc of TC) {",
-    "    try {",
-    "      let args = [];",
-    '      if (typeof tc.input === "string" && tc.input.startsWith("JSON:")) {',
-    "        const p = JSON.parse(tc.input.slice(5));",
-    "        args = Object.values(p);",
-    "      }",
-    "      let r = fn(...args);",
-    "      if (r && typeof r.then === 'function') r = await r;",
-    "      let out = JSON.stringify(r);",
-    '      if (out === undefined) out = "undefined";',
-    "      if (new TextEncoder().encode(out).length > MAX_OUT) {",
-    '        self.postMessage({ type: "runtime_error", message: "Output exceeds size limit" });',
-    "        return;",
-    "      }",
-    "      const exp = tc.expectedOutput.trim();",
-    "      const act = out.trim();",
-    "      let ok = act === exp;",
-    '      if (!ok && exp.includes("|")) {',
-    '        ok = exp.split("|").some(function(e) { return e.trim() === act; });',
-    "      }",
-    "      if (!ok) {",
-    "        try {",
-    "          ok = JSON.stringify(JSON.parse(exp)) === JSON.stringify(JSON.parse(act));",
-    "        } catch(_) {}",
-    "      }",
-    "      results.push({ passed: ok });",
-    "    } catch (e) {",
-    "      const msg = String(e && e.message ? e.message : e).slice(0, 500);",
-    '      self.postMessage({ type: "runtime_error", message: msg });',
-    "      return;",
-    "    }",
-    "  }",
-    '  self.postMessage({ type: "results", results: results });',
-    "}",
-    "run().catch(function(e) {",
-    '  self.postMessage({ type: "runtime_error", message: String(e && e.message ? e.message : e) });',
-    "});",
-  ];
-
-  return lines.join("\n");
-}
 
 // ================================================================
 // Helpers
 // ================================================================
 
 async function updateSub(
-  client: ReturnType<typeof createClient>,
+  client: any,
   id: string,
   data: Record<string, unknown>
 ) {
@@ -383,7 +218,7 @@ async function updateSub(
 }
 
 async function markSysError(
-  client: ReturnType<typeof createClient>,
+  client: any,
   id: string,
   msg: string
 ) {
@@ -402,7 +237,8 @@ function sanitizeErr(msg: string | null): string | null {
       (l) =>
         !l.includes("/home/") &&
         !l.includes("/usr/") &&
-        !l.includes("deno:")
+        !l.includes("deno:") &&
+        !l.includes("/piston/")
     )
     .join("\n")
     .trim()
