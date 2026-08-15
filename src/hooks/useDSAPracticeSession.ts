@@ -201,6 +201,26 @@ export function useDSAPracticeSession({
     };
   }, [state.sessionId, tick, markActive]);
 
+  const onRunCode = useCallback(() => {
+    runCountRef.current += 1;
+    setState((s) => ({ ...s, runCount: runCountRef.current }));
+    markActive();
+
+    if (sessionIdRef.current) {
+      DSASessionService.incrementRunCount(sessionIdRef.current).catch(() => {});
+    }
+  }, [markActive]);
+
+  const onSubmit = useCallback(() => {
+    submissionCountRef.current += 1;
+    setState((s) => ({ ...s, submissionCount: submissionCountRef.current }));
+    markActive();
+
+    if (sessionIdRef.current) {
+      DSASessionService.incrementSubmissionCount(sessionIdRef.current).catch(() => {});
+    }
+  }, [markActive]);
+
   const isFinalizedRef = useRef(false);
 
   const finalizeSession = useCallback((finalStatus: "solved" | "attempted" | "abandoned" = "solved") => {
