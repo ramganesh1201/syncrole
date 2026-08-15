@@ -18,7 +18,7 @@ import {
   X,
   ListFilter,
   Check,
-  ChevronDown,
+  Zap,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { DSAService } from "@/lib/services/dsa.service";
@@ -200,15 +200,15 @@ function DSAProblemsPage() {
     Boolean(searchParams.sortBy) ||
     Boolean(searchTerm.trim());
 
-  // Shared Sidebar Component Logic
+  // Shared Sidebar Content Component
   const SidebarContent = () => (
     <div className="space-y-6">
       {/* STATUS */}
       <div className="space-y-2.5">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
           <span>Status</span>
           {filters.solvedStatus !== "all" && (
-            <span className="text-[10px] text-aurora font-mono font-normal">Active</span>
+            <span className="text-[10px] text-aurora font-mono">Active</span>
           )}
         </div>
         <div className="space-y-1">
@@ -222,7 +222,7 @@ function DSAProblemsPage() {
               <button
                 key={opt.id}
                 onClick={() => updateFilter("solvedStatus", opt.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                   isSelected
                     ? "bg-aurora/15 text-aurora border border-aurora/30 font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -248,10 +248,10 @@ function DSAProblemsPage() {
 
       {/* CURATED LISTS */}
       <div className="space-y-2.5 pt-4 border-t border-white/5">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
           <span>Curated Lists</span>
           {filters.list !== "all" && (
-            <span className="text-[10px] text-aurora font-mono font-normal">Active</span>
+            <span className="text-[10px] text-aurora font-mono">Active</span>
           )}
         </div>
         <div className="space-y-1">
@@ -265,7 +265,7 @@ function DSAProblemsPage() {
               <button
                 key={opt.id}
                 onClick={() => updateFilter("list", opt.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                   isSelected
                     ? "bg-aurora/15 text-aurora border border-aurora/30 font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -301,10 +301,10 @@ function DSAProblemsPage() {
 
       {/* SAVED */}
       <div className="space-y-2.5 pt-4 border-t border-white/5">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground flex items-center justify-between">
           <span>Saved</span>
           {filters.bookmark !== "all" && (
-            <span className="text-[10px] text-aurora font-mono font-normal">Active</span>
+            <span className="text-[10px] text-aurora font-mono">Active</span>
           )}
         </div>
         <div className="space-y-1">
@@ -319,7 +319,7 @@ function DSAProblemsPage() {
               <button
                 key={opt.id}
                 onClick={() => updateFilter("bookmark", opt.id)}
-                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-all ${
+                className={`w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-medium transition-colors ${
                   isSelected
                     ? "bg-aurora/15 text-aurora border border-aurora/30 font-semibold"
                     : "text-muted-foreground hover:text-foreground hover:bg-white/5"
@@ -348,14 +348,14 @@ function DSAProblemsPage() {
 
       {/* SORT BY */}
       <div className="space-y-2.5 pt-4 border-t border-white/5">
-        <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
+        <div className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
           Sort By
         </div>
         <Select
           value={filters.sortBy}
           onValueChange={(val) => updateFilter("sortBy", val)}
         >
-          <SelectTrigger className="w-full glass rounded-xl px-3 py-2 text-xs border-white/10 h-9 bg-black/20">
+          <SelectTrigger className="w-full glass rounded-xl px-3 py-2 text-xs border-white/10 h-9 bg-black/20 focus:ring-1 focus:ring-aurora/50">
             <SelectValue placeholder="Sort order" />
           </SelectTrigger>
           <SelectContent>
@@ -372,7 +372,8 @@ function DSAProblemsPage() {
       {hasActiveFilters && (
         <button
           onClick={clearAllFilters}
-          className="w-full mt-2 py-2 px-3 rounded-xl glass text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-white/10 transition flex items-center justify-center gap-1.5 border border-white/10"
+          className="w-full mt-2 py-2 px-3 rounded-xl glass text-xs font-medium text-muted-foreground hover:text-foreground hover:bg-white/10 transition-colors flex items-center justify-center gap-1.5 border border-white/10"
+          aria-label="Clear all active filters"
         >
           <X className="w-3.5 h-3.5" /> Clear All Filters
         </button>
@@ -382,22 +383,22 @@ function DSAProblemsPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
-      {/* Page Header */}
+      {/* Page Header (Clean, Linear/Vercel Workspace Style) */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link
             to="/dashboard/dsa"
-            className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground mb-2"
+            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2"
           >
-            <ArrowLeft className="h-3 w-3" /> Back to DSA Command Center
+            <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
           </Link>
-          <h1 className="font-display text-3xl font-bold flex items-center gap-3">
+          <h1 className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-tight flex flex-wrap items-center gap-2.5">
             <span>SyncRole DSA Problem Library</span>
-            <span className="text-xs bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-1 rounded-full font-sans font-medium">
-              Internal Engine
+            <span className="text-[11px] font-sans font-medium bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
+              <Sparkles className="w-3 h-3 text-aurora" /> Internal Engine
             </span>
           </h1>
-          <p className="text-sm text-muted-foreground mt-1">
+          <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
             Master algorithms with interactive code execution, autosaved drafts, and verified solution tracking.
           </p>
         </div>
@@ -406,18 +407,20 @@ function DSAProblemsPage() {
           {/* Mobile Filter Toggle Button */}
           <button
             onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-            className="lg:hidden glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition flex items-center gap-2 border border-white/10 text-aurora"
+            className="lg:hidden glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-aurora"
+            aria-label="Toggle filters menu"
           >
-            <ListFilter className="w-4 h-4" />
+            <SlidersHorizontal className="w-4 h-4" />
             <span>Filters</span>
             {hasActiveFilters && (
               <span className="w-2 h-2 rounded-full bg-aurora animate-pulse" />
             )}
           </button>
 
+          {/* Roadmap View Button */}
           <Link
             to="/dsa-roadmap"
-            className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition flex items-center gap-2 border border-white/10"
+            className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-foreground"
           >
             <BrainCircuit className="w-4 h-4 text-aurora" /> Roadmap View
           </Link>
@@ -434,12 +437,13 @@ function DSAProblemsPage() {
             className="lg:hidden glass-strong rounded-3xl p-5 border border-white/10 overflow-hidden space-y-4"
           >
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
-              <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
+              <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
                 <SlidersHorizontal className="w-4 h-4 text-aurora" /> Filter Problems
               </h3>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
-                className="p-1 rounded-full hover:bg-white/10 text-muted-foreground"
+                className="p-1 rounded-full hover:bg-white/10 text-muted-foreground transition-colors"
+                aria-label="Close filters menu"
               >
                 <X className="w-4 h-4" />
               </button>
@@ -454,7 +458,7 @@ function DSAProblemsPage() {
         {/* LEFT SIDEBAR (Desktop / Tablet) */}
         <aside className="hidden lg:block w-64 shrink-0 glass-strong rounded-3xl p-5 border border-white/5 space-y-6 sticky top-20">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <h3 className="font-display font-bold text-sm text-white flex items-center gap-2">
+            <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-aurora" /> Filters
             </h3>
             {hasActiveFilters && (
@@ -507,9 +511,9 @@ function DSAProblemsPage() {
                 </Select>
               </div>
 
-              {/* Search Input */}
+              {/* Clean Search Input with Magnifying Glass Icon */}
               <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground" />
+                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
                 <input
                   type="text"
                   placeholder="Search title, pattern..."
@@ -518,7 +522,7 @@ function DSAProblemsPage() {
                     setPage(0);
                     setSearchTerm(e.target.value);
                   }}
-                  className="w-full glass rounded-full pl-9 pr-4 py-2 text-xs placeholder:text-muted-foreground focus:ring-1 focus:ring-aurora/50 h-9"
+                  className="w-full glass rounded-full pl-9 pr-4 py-2 text-xs placeholder:text-muted-foreground/60 focus:ring-1 focus:ring-aurora/50 h-9"
                 />
               </div>
             </div>
@@ -533,6 +537,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => updateFilter("solvedStatus", "all")}
+                      aria-label="Remove status filter"
                     />
                   </span>
                 )}
@@ -542,6 +547,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => updateFilter("list", "all")}
+                      aria-label="Remove list filter"
                     />
                   </span>
                 )}
@@ -551,6 +557,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => updateFilter("difficulty", "all")}
+                      aria-label="Remove difficulty filter"
                     />
                   </span>
                 )}
@@ -560,6 +567,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => updateFilter("topic", "all")}
+                      aria-label="Remove topic filter"
                     />
                   </span>
                 )}
@@ -569,6 +577,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => updateFilter("bookmark", "all")}
+                      aria-label="Remove bookmark filter"
                     />
                   </span>
                 )}
@@ -578,6 +587,7 @@ function DSAProblemsPage() {
                     <X
                       className="w-3 h-3 cursor-pointer hover:text-white"
                       onClick={() => setSearchTerm("")}
+                      aria-label="Remove search term"
                     />
                   </span>
                 )}
@@ -607,7 +617,7 @@ function DSAProblemsPage() {
                 {hasActiveFilters && (
                   <button
                     onClick={clearAllFilters}
-                    className="mt-2 glass px-4 py-2 rounded-full text-xs text-aurora hover:bg-white/10 transition"
+                    className="mt-2 glass px-4 py-2 rounded-full text-xs text-aurora hover:bg-white/10 transition-colors"
                   >
                     Reset Filters
                   </button>
@@ -628,7 +638,7 @@ function DSAProblemsPage() {
                       key={problem.id}
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`glass-strong rounded-2xl p-5 flex flex-col gap-4 lg:flex-row lg:items-center justify-between transition group border ${
+                      className={`glass-strong rounded-2xl p-5 flex flex-col gap-4 lg:flex-row lg:items-center justify-between transition-colors group border ${
                         isSolved
                           ? "border-green-500/20 bg-green-500/5"
                           : hasStarted
@@ -637,7 +647,7 @@ function DSAProblemsPage() {
                       }`}
                     >
                       <div className="flex-1 space-y-3 min-w-0">
-                        <div className="font-display font-bold text-base flex flex-wrap items-center gap-2.5">
+                        <div className="font-display font-semibold text-base flex flex-wrap items-center gap-2.5">
                           <span
                             className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-md font-sans font-semibold ${
                               problem.difficulty?.toLowerCase() === "easy"
@@ -651,14 +661,14 @@ function DSAProblemsPage() {
                           </span>
                           <span className="text-white truncate">{problem.title}</span>
                           {isSolved && (
-                            <span className="flex items-center text-green-400 text-xs bg-green-400/10 px-2 py-0.5 rounded-full border border-green-400/20 font-sans font-medium">
+                            <span className="inline-flex items-center text-green-400 text-xs bg-green-400/10 px-2 py-0.5 rounded-full border border-green-400/20 font-sans font-medium">
                               <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Solved
                             </span>
                           )}
                         </div>
 
                         <div className="flex flex-wrap items-center gap-2 text-xs">
-                          <span className="text-muted-foreground flex items-center gap-1">
+                          <span className="text-muted-foreground inline-flex items-center gap-1">
                             <LayoutGrid className="w-3.5 h-3.5" />
                             {topics.find((topic) => topic.id === problem.topic_id)?.name ??
                               "Algorithms"}
@@ -680,8 +690,8 @@ function DSAProblemsPage() {
                             </span>
                           )}
                           {problem.estimated_solving_time && (
-                            <span className="text-muted-foreground flex items-center gap-1 ml-1">
-                              <Clock className="w-3 h-3" /> {problem.estimated_solving_time}m
+                            <span className="text-muted-foreground inline-flex items-center gap-1 ml-1">
+                              <Clock className="w-3.5 h-3.5" /> {problem.estimated_solving_time}m
                             </span>
                           )}
                         </div>
@@ -707,7 +717,7 @@ function DSAProblemsPage() {
                           )}
 
                           {progress && (progress.run_count > 0 || progress.submission_count > 0) && (
-                            <div className="text-[11px] text-muted-foreground font-mono flex items-center gap-2">
+                            <div className="text-[11px] text-muted-foreground font-mono inline-flex items-center gap-2">
                               <span className="text-aurora font-medium capitalize">
                                 {progress.status === "solved" ? "✓ Verified Solved" : progress.status}
                               </span>
@@ -733,6 +743,7 @@ function DSAProblemsPage() {
                                 : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
                             }`}
                             title="Favorite problem"
+                            aria-label="Favorite problem"
                           >
                             <Star
                               className="w-4 h-4"
@@ -749,23 +760,24 @@ function DSAProblemsPage() {
                                 : "text-muted-foreground hover:bg-white/10 hover:text-foreground"
                             }`}
                             title="Bookmark problem"
+                            aria-label="Bookmark problem"
                           >
                             <Bookmark
                               className="w-4 h-4"
                               fill={isBookmarked ? "currentColor" : "none"}
                             />
                           </button>
-                          <div className="text-xs font-mono font-bold text-aurora bg-aurora/10 px-2 py-0.5 rounded ml-1">
-                            +{problem.xp_reward} XP
+                          <div className="text-xs font-mono font-bold text-aurora bg-aurora/10 px-2 py-0.5 rounded ml-1 inline-flex items-center gap-1">
+                            <Zap className="w-3 h-3 text-aurora" /> +{problem.xp_reward} XP
                           </div>
                         </div>
 
                         <div className="flex items-center gap-2 w-full lg:w-auto">
-                          {/* Unified Primary Action: Open SyncRole Practice Workspace */}
+                          {/* Primary Action: Open SyncRole Practice Workspace */}
                           <Link
                             to="/dsa-workspace/$problemId"
                             params={{ problemId: problem.id }}
-                            className={`flex-1 lg:flex-none justify-center rounded-xl px-4 py-2 text-xs font-semibold transition flex items-center gap-1.5 shadow-lg ${
+                            className={`flex-1 lg:flex-none justify-center rounded-xl px-4 py-2 text-xs font-semibold transition-colors flex items-center gap-1.5 shadow-lg ${
                               isSolved
                                 ? "bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30 shadow-green-500/10"
                                 : hasStarted
@@ -798,7 +810,7 @@ function DSAProblemsPage() {
                     <button
                       onClick={() => setPage((p) => p + 1)}
                       disabled={loading}
-                      className="glass px-8 py-3 rounded-full text-xs font-medium hover:bg-white/10 transition disabled:opacity-50"
+                      className="glass px-8 py-3 rounded-full text-xs font-medium hover:bg-white/10 transition-colors disabled:opacity-50"
                     >
                       {loading ? "Loading..." : "Load More Problems"}
                     </button>
