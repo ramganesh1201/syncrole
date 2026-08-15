@@ -1245,6 +1245,188 @@ export type Database = {
         }
         Relationships: []
       }
+      dsa_code_drafts: {
+        Row: {
+          code: string
+          id: string
+          language: string
+          problem_id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          code?: string
+          id?: string
+          language?: string
+          problem_id: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          code?: string
+          id?: string
+          language?: string
+          problem_id?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dsa_code_drafts_problem_id_fkey"
+            columns: ["problem_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_problems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      dsa_practice_sessions: {
+        Row: {
+          active_seconds: number
+          created_at: string
+          ended_at: string | null
+          final_status: string
+          id: string
+          last_heartbeat_at: string
+          problem_id: string
+          run_count: number
+          started_at: string
+          submission_count: number
+          updated_at: string
+          user_id: string
+          wall_seconds: number
+        }
+        Insert: {
+          active_seconds?: number
+          created_at?: string
+          ended_at?: string | null
+          final_status?: string
+          id?: string
+          last_heartbeat_at?: string
+          problem_id: string
+          run_count?: number
+          started_at?: string
+          submission_count?: number
+          updated_at?: string
+          user_id: string
+          wall_seconds?: number
+        }
+        Update: {
+          active_seconds?: number
+          created_at?: string
+          ended_at?: string | null
+          final_status?: string
+          id?: string
+          last_heartbeat_at?: string
+          problem_id?: string
+          run_count?: number
+          started_at?: string
+          submission_count?: number
+          updated_at?: string
+          user_id?: string
+          wall_seconds?: number
+        }
+        Relationships: []
+      }
+      dsa_submissions: {
+        Row: {
+          attempt_number: number
+          created_at: string
+          error_message: string | null
+          error_type: string | null
+          execution_time_ms: number | null
+          id: string
+          is_run_only: boolean
+          language: string
+          memory_kb: number | null
+          passed_tests: number
+          practice_session_id: string | null
+          problem_id: string
+          source_code: string
+          status: string
+          total_tests: number
+          user_id: string
+        }
+        Insert: {
+          attempt_number?: number
+          created_at?: string
+          error_message?: string | null
+          error_type?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          is_run_only?: boolean
+          language?: string
+          memory_kb?: number | null
+          passed_tests?: number
+          practice_session_id?: string | null
+          problem_id: string
+          source_code: string
+          status?: string
+          total_tests?: number
+          user_id: string
+        }
+        Update: {
+          attempt_number?: number
+          created_at?: string
+          error_message?: string | null
+          error_type?: string | null
+          execution_time_ms?: number | null
+          id?: string
+          is_run_only?: boolean
+          language?: string
+          memory_kb?: number | null
+          passed_tests?: number
+          practice_session_id?: string | null
+          problem_id?: string
+          source_code?: string
+          status?: string
+          total_tests?: number
+          user_id?: string
+        }
+        Relationships: []
+      }
+      dsa_test_cases: {
+        Row: {
+          created_at: string
+          expected_output: string
+          id: string
+          input: string
+          is_hidden: boolean
+          is_sample: boolean
+          ordering: number
+          problem_id: string
+        }
+        Insert: {
+          created_at?: string
+          expected_output: string
+          id?: string
+          input: string
+          is_hidden?: boolean
+          is_sample?: boolean
+          ordering?: number
+          problem_id: string
+        }
+        Update: {
+          created_at?: string
+          expected_output?: string
+          id?: string
+          input?: string
+          is_hidden?: boolean
+          is_sample?: boolean
+          ordering?: number
+          problem_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "dsa_test_cases_problem_id_fkey"
+            columns: ["problem_id"]
+            isOneToOne: false
+            referencedRelation: "dsa_problems"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+    }
     Views: {
       career_profiles: {
         Row: {
@@ -1287,6 +1469,14 @@ export type Database = {
         Returns: boolean
       }
       recompute_placement: { Args: { _user: string }; Returns: number }
+      record_dsa_attempt: {
+        Args: { _is_run_only?: boolean; _problem_id: string; _user: string }
+        Returns: undefined
+      }
+      verify_dsa_solve: {
+        Args: { _execution_time_ms?: number; _memory_kb?: number; _problem_id: string; _submission_id: string; _user: string }
+        Returns: Json
+      }
     }
     Enums: {
       app_role: "user" | "admin"

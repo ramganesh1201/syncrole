@@ -30,6 +30,7 @@ type Problem = {
   neetcode150: boolean | null;
   top150: boolean | null;
   grind75: boolean | null;
+  has_internal_engine: boolean | null;
 };
 
 type Topic = { id: string; name: string };
@@ -384,15 +385,39 @@ function DSAProblemsPage() {
                       </div>
 
                       <div className="flex items-center gap-2 w-full lg:w-auto">
-                        {problem.leetcode_url && (
-                          <a href={problem.leetcode_url} target="_blank" rel="noreferrer" className="flex-1 lg:flex-none justify-center rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium hover:bg-white/10 transition flex items-center gap-1 border border-white/10">
-                            Solve <ArrowUpRight className="h-4 w-4" />
-                          </a>
+                        {problem.has_internal_engine ? (
+                          /* Internal engine: open workspace for verified solve */
+                          <Link
+                            to="/dsa-workspace/$problemId"
+                            params={{ problemId: problem.id }}
+                            className="flex-1 lg:flex-none justify-center rounded-xl bg-aurora px-4 py-2.5 text-sm font-semibold text-primary-foreground hover:bg-aurora/90 shadow-lg shadow-aurora/20 transition flex items-center gap-1.5"
+                          >
+                            {isSolved ? (
+                              <><CheckCircle2 className="w-4 h-4" /> Practice Again</>
+                            ) : (
+                              <><Code2 className="w-4 h-4" /> Solve Inside SyncRole</>
+                            )}
+                          </Link>
+                        ) : (
+                          /* External: LeetCode link + manual Mark Solved */
+                          <>
+                            {problem.leetcode_url && (
+                              <a href={problem.leetcode_url} target="_blank" rel="noreferrer" className="flex-1 lg:flex-none justify-center rounded-xl bg-white/5 px-4 py-2.5 text-sm font-medium hover:bg-white/10 transition flex items-center gap-1 border border-white/10">
+                                Solve <ArrowUpRight className="h-4 w-4" />
+                              </a>
+                            )}
+                            <button
+                              onClick={() => updateProgress(problem.id, { solved: !isSolved })}
+                              className={`flex-1 lg:flex-none justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition flex items-center gap-2 ${
+                                isSolved
+                                  ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30'
+                                  : 'glass border border-white/10 hover:bg-white/10'
+                              }`}
+                            >
+                              {isSolved ? <><CheckCircle2 className="w-4 h-4" /> Solved</> : "Mark Solved"}
+                            </button>
+                          </>
                         )}
-
-                        <button onClick={() => updateProgress(problem.id, { solved: !isSolved })} className={`flex-1 lg:flex-none justify-center rounded-xl px-4 py-2.5 text-sm font-medium transition flex items-center gap-2 ${isSolved ? 'bg-green-500/20 text-green-400 border border-green-500/30 hover:bg-green-500/30' : 'bg-aurora text-primary-foreground hover:bg-aurora/90 shadow-lg shadow-aurora/20'}`}>
-                          {isSolved ? <><CheckCircle2 className="w-4 h-4" /> Solved</> : "Mark Solved"}
-                        </button>
                       </div>
                     </div>
                   </motion.div>

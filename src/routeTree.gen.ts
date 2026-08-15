@@ -28,6 +28,7 @@ import { Route as AuthenticatedDsaCompaniesRouteImport } from './routes/_authent
 import { Route as AuthenticatedCareerIdentityRouteImport } from './routes/_authenticated/career-identity'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
+import { Route as AuthenticatedDsaWorkspaceProblemIdRouteImport } from './routes/_authenticated/dsa-workspace.$problemId'
 import { Route as AuthenticatedDashboardWorkspaceRouteImport } from './routes/_authenticated/dashboard.workspace'
 import { Route as AuthenticatedDashboardDsaRouteImport } from './routes/_authenticated/dashboard/dsa'
 
@@ -133,6 +134,12 @@ const AuthenticatedDashboardIndexRoute =
     path: '/',
     getParentRoute: () => AuthenticatedDashboardRouteRoute,
   } as any)
+const AuthenticatedDsaWorkspaceProblemIdRoute =
+  AuthenticatedDsaWorkspaceProblemIdRouteImport.update({
+    id: '/dsa-workspace/$problemId',
+    path: '/dsa-workspace/$problemId',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardWorkspaceRoute =
   AuthenticatedDashboardWorkspaceRouteImport.update({
     id: '/workspace',
@@ -166,6 +173,7 @@ export interface FileRoutesByFullPath {
   '/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
   '/dashboard/workspace': typeof AuthenticatedDashboardWorkspaceRoute
+  '/dsa-workspace/$problemId': typeof AuthenticatedDsaWorkspaceProblemIdRoute
   '/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesByTo {
@@ -187,6 +195,7 @@ export interface FileRoutesByTo {
   '/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
   '/dashboard/workspace': typeof AuthenticatedDashboardWorkspaceRoute
+  '/dsa-workspace/$problemId': typeof AuthenticatedDsaWorkspaceProblemIdRoute
   '/dashboard': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRoutesById {
@@ -211,6 +220,7 @@ export interface FileRoutesById {
   '/_authenticated/update-password': typeof AuthenticatedUpdatePasswordRoute
   '/_authenticated/dashboard/dsa': typeof AuthenticatedDashboardDsaRoute
   '/_authenticated/dashboard/workspace': typeof AuthenticatedDashboardWorkspaceRoute
+  '/_authenticated/dsa-workspace/$problemId': typeof AuthenticatedDsaWorkspaceProblemIdRoute
   '/_authenticated/dashboard/': typeof AuthenticatedDashboardIndexRoute
 }
 export interface FileRouteTypes {
@@ -235,6 +245,7 @@ export interface FileRouteTypes {
     | '/update-password'
     | '/dashboard/dsa'
     | '/dashboard/workspace'
+    | '/dsa-workspace/$problemId'
     | '/dashboard/'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -256,6 +267,7 @@ export interface FileRouteTypes {
     | '/update-password'
     | '/dashboard/dsa'
     | '/dashboard/workspace'
+    | '/dsa-workspace/$problemId'
     | '/dashboard'
   id:
     | '__root__'
@@ -279,6 +291,7 @@ export interface FileRouteTypes {
     | '/_authenticated/update-password'
     | '/_authenticated/dashboard/dsa'
     | '/_authenticated/dashboard/workspace'
+    | '/_authenticated/dsa-workspace/$problemId'
     | '/_authenticated/dashboard/'
   fileRoutesById: FileRoutesById
 }
@@ -424,6 +437,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
       parentRoute: typeof AuthenticatedDashboardRouteRoute
     }
+    '/_authenticated/dsa-workspace/$problemId': {
+      id: '/_authenticated/dsa-workspace/$problemId'
+      path: '/dsa-workspace/$problemId'
+      fullPath: '/dsa-workspace/$problemId'
+      preLoaderRoute: typeof AuthenticatedDsaWorkspaceProblemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard/workspace': {
       id: '/_authenticated/dashboard/workspace'
       path: '/workspace'
@@ -474,6 +494,7 @@ interface AuthenticatedRouteRouteChildren {
   AuthenticatedRoleExplorerRoute: typeof AuthenticatedRoleExplorerRoute
   AuthenticatedSettingsRoute: typeof AuthenticatedSettingsRoute
   AuthenticatedUpdatePasswordRoute: typeof AuthenticatedUpdatePasswordRoute
+  AuthenticatedDsaWorkspaceProblemIdRoute: typeof AuthenticatedDsaWorkspaceProblemIdRoute
 }
 
 const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
@@ -492,6 +513,8 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
   AuthenticatedRoleExplorerRoute: AuthenticatedRoleExplorerRoute,
   AuthenticatedSettingsRoute: AuthenticatedSettingsRoute,
   AuthenticatedUpdatePasswordRoute: AuthenticatedUpdatePasswordRoute,
+  AuthenticatedDsaWorkspaceProblemIdRoute:
+    AuthenticatedDsaWorkspaceProblemIdRoute,
 }
 
 const AuthenticatedRouteRouteWithChildren =

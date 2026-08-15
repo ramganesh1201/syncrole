@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import {
   Code2,
-  Plus,
   ArrowLeft,
   Flame,
   Zap,
@@ -11,15 +10,12 @@ import {
   TrendingUp,
   Award,
   Calendar,
-  BookOpen,
-  Briefcase,
   Lightbulb,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { XP } from "@/lib/syncrole";
-import { toast } from "sonner";
 import { DSAService } from "@/lib/services/dsa.service";
 import { Clock, Bookmark, ArrowRight, RotateCcw } from "lucide-react";
+import { TodayPracticePanel } from "@/components/dsa/TodayPracticePanel";
 import {
   BarChart,
   Bar,
@@ -47,14 +43,6 @@ function DSAPage() {
   const [solvedProblems, setSolvedProblems] = useState<any[]>([]);
   const [xpData, setXpData] = useState({ total_xp: 0, level: 1, level_name: "Career Explorer" });
   const [streakData, setStreakData] = useState({ current_streak: 0, longest_streak: 0 });
-  
-  // Practice Session form state
-  const [duration, setDuration] = useState(30);
-  const [topics, setTopics] = useState("");
-  const [problemsAttempted, setProblemsAttempted] = useState(0);
-  const [notes, setNotes] = useState("");
-  const [confidence, setConfidence] = useState(3);
-  
   const [loading, setLoading] = useState(true);
   
   // New features state
@@ -140,62 +128,6 @@ function DSAPage() {
     { name: "Hard", value: solvedTotals.h },
   ];
 
-  async function addPracticeSession() {
-    if (duration <= 0) return toast.error("Duration must be > 0");
-    if (!topics.trim()) return toast.error("Please enter topics studied");
-    
-    setLoading(true);
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) return;
-    
-    // Base XP on duration and problems attempted (cap to prevent abuse)
-    const xp = Math.min(300, Math.floor(duration / 5) * 5 + (problemsAttempted * 10));
-    
-    const { error } = await supabase.from("activity_logs").insert({
-      user_id: u.user.id,
-      type: "dsa_practice",
-      xp_delta: xp,
-      meta: {
-        duration,
-        topics,
-        problems_attempted: problemsAttempted,
-        notes,
-        confidence,
-        date: new Date().toISOString()
-      }
-    });
-
-    if (error) {
-      toast.error(error.message);
-      setLoading(false);
-      return;
-    }
-
-    await supabase.rpc("award_xp", {
-      _user: u.user.id,
-      _type: "dsa_practice",
-      _xp: xp,
-      _meta: { duration, topics, problems_attempted: problemsAttempted },
-    });
-    
-    await supabase.rpc("recompute_placement", { _user: u.user.id });
-    
-    await supabase.from("notifications").insert({
-      user_id: u.user.id,
-      title: "Practice Session Logged 📚",
-      body: `+${xp} XP for studying ${topics}`,
-      type: "dsa",
-    });
-
-    toast.success(`Session logged! +${xp} XP`);
-    setDuration(30);
-    setTopics("");
-    setProblemsAttempted(0);
-    setNotes("");
-    setConfidence(3);
-    load();
-  }
-
   // Consistency heatmap uses both legacy logs and new practice logs
   const heat = Array.from({ length: 90 }).map((_, i) => {
     const d = new Date();
@@ -220,7 +152,7 @@ function DSAPage() {
     return { key, n: intensityScore };
   });
 
-  const canLog = duration > 0 && topics.trim().length > 0;
+
 
   if (loading && totalSolved === 0 && heat.length === 0) {
     return (
@@ -402,86 +334,7 @@ function DSAPage() {
         </Card>
 
         <Card>
-          <SectionLabel icon={BookOpen}>Log Practice Session</SectionLabel>
-          <div className="mt-4 space-y-3">
-            <label className="block">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                Topics Studied
-              </span>
-              <input
-                type="text"
-                placeholder="e.g. Dynamic Programming"
-                value={topics}
-                onChange={(e) => setTopics(e.target.value)}
-                className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
-              />
-            </label>
-            <div className="grid grid-cols-2 gap-2">
-              <label className="block">
-                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Duration (min)
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  step="5"
-                  value={duration}
-                  onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
-                  className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
-                />
-              </label>
-              <label className="block">
-                <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                  Attempted
-                </span>
-                <input
-                  type="number"
-                  min="0"
-                  value={problemsAttempted}
-                  onChange={(e) => setProblemsAttempted(parseInt(e.target.value) || 0)}
-                  className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm"
-                />
-              </label>
-            </div>
-            
-            <label className="block">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex justify-between">
-                <span>Confidence Level</span>
-                <span>{confidence}/5</span>
-              </span>
-              <input
-                type="range"
-                min="1"
-                max="5"
-                value={confidence}
-                onChange={(e) => setConfidence(parseInt(e.target.value) || 3)}
-                className="mt-2 w-full accent-aurora"
-              />
-            </label>
-
-            <label className="block">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
-                Notes (Optional)
-              </span>
-              <textarea
-                placeholder="What did you learn today?"
-                value={notes}
-                onChange={(e) => setNotes(e.target.value)}
-                className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm resize-none h-16"
-              />
-            </label>
-
-            <button
-              onClick={addPracticeSession}
-              disabled={!canLog || loading}
-              className={`relative w-full rounded-full py-3 text-sm font-semibold text-primary-foreground overflow-hidden ${!canLog ? "opacity-50 cursor-not-allowed" : ""}`}
-            >
-              <span className="absolute inset-0 bg-aurora" />
-              <span className="relative inline-flex items-center justify-center gap-1">
-                {loading ? <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin" /> : <><Plus className="h-4 w-4" /> Save Journal</>}
-              </span>
-            </button>
-          </div>
+          <TodayPracticePanel />
         </Card>
       </div>
       
