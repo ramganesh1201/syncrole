@@ -12,7 +12,7 @@ import {
   SlidersHorizontal,
   LayoutGrid,
   CheckCircle2,
-  BrainCircuit,
+  Map,
   RotateCcw,
   Sparkles,
   X,
@@ -383,23 +383,24 @@ function DSAProblemsPage() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
-      {/* Page Header (Clean, Linear/Vercel Workspace Style) */}
+      {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link
             to="/dashboard/dsa"
             className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2"
           >
-            <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
+            <ArrowLeft className="h-3.5 w-3.5 shrink-0" /> Back to DSA Command Center
           </Link>
           <h1 className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-tight flex flex-wrap items-center gap-2.5">
-            <span>SyncRole DSA Problem Library</span>
-            <span className="text-[11px] font-sans font-medium bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
-              <Sparkles className="w-3 h-3 text-aurora" /> Internal Engine
+            <span>DSA Problem Library</span>
+            <span className="text-[11px] font-sans font-medium bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0">
+              <Code2 className="w-3.5 h-3.5 text-aurora shrink-0" />
+              <span>Internal Engine</span>
             </span>
           </h1>
           <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
-            Master algorithms with interactive code execution, autosaved drafts, and verified solution tracking.
+            Practice algorithms with interactive code execution, autosaved drafts, and verified solution tracking.
           </p>
         </div>
 
@@ -410,7 +411,7 @@ function DSAProblemsPage() {
             className="lg:hidden glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-aurora"
             aria-label="Toggle filters menu"
           >
-            <SlidersHorizontal className="w-4 h-4" />
+            <Filter className="w-4 h-4 text-aurora shrink-0" />
             <span>Filters</span>
             {hasActiveFilters && (
               <span className="w-2 h-2 rounded-full bg-aurora animate-pulse" />
@@ -420,9 +421,10 @@ function DSAProblemsPage() {
           {/* Roadmap View Button */}
           <Link
             to="/dsa-roadmap"
-            className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-foreground"
+            className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-foreground shrink-0"
           >
-            <BrainCircuit className="w-4 h-4 text-aurora" /> Roadmap View
+            <Map className="w-4 h-4 text-aurora shrink-0" />
+            <span>Roadmap View</span>
           </Link>
         </div>
       </div>
@@ -438,7 +440,8 @@ function DSAProblemsPage() {
           >
             <div className="flex items-center justify-between border-b border-white/10 pb-3">
               <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
-                <SlidersHorizontal className="w-4 h-4 text-aurora" /> Filter Problems
+                <Filter className="w-4 h-4 text-aurora shrink-0" />
+                <span>Filter Problems</span>
               </h3>
               <button
                 onClick={() => setMobileFiltersOpen(false)}
@@ -459,7 +462,8 @@ function DSAProblemsPage() {
         <aside className="hidden lg:block w-64 shrink-0 glass-strong rounded-3xl p-5 border border-white/5 space-y-6 sticky top-20">
           <div className="flex items-center justify-between border-b border-white/10 pb-3">
             <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-aurora" /> Filters
+              <Filter className="w-4 h-4 text-aurora shrink-0" />
+              <span>Filters</span>
             </h3>
             {hasActiveFilters && (
               <span className="text-[10px] bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded-full font-mono">
@@ -511,9 +515,9 @@ function DSAProblemsPage() {
                 </Select>
               </div>
 
-              {/* Clean Search Input with Magnifying Glass Icon */}
-              <div className="relative w-full sm:w-64">
-                <Search className="absolute left-3 top-1/2 h-3.5 w-3.5 -translate-y-1/2 text-muted-foreground pointer-events-none" />
+              {/* Search Input with Magnifying Glass Icon */}
+              <div className="relative w-full sm:w-64 flex items-center">
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10 shrink-0" />
                 <input
                   type="text"
                   placeholder="Search title, pattern..."
@@ -522,7 +526,7 @@ function DSAProblemsPage() {
                     setPage(0);
                     setSearchTerm(e.target.value);
                   }}
-                  className="w-full glass rounded-full pl-9 pr-4 py-2 text-xs placeholder:text-muted-foreground/60 focus:ring-1 focus:ring-aurora/50 h-9"
+                  className="w-full glass rounded-full pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-aurora/50 h-9"
                 />
               </div>
             </div>
