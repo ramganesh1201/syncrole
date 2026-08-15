@@ -208,9 +208,12 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
             />
           </div>
 
-          {/* Recent sessions */}
+          {/* Recent practice history */}
           {stats.recentSessions.length > 0 && (
             <div className="space-y-2">
+              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+                Recent Practice Activity
+              </div>
               {stats.recentSessions.map((s) => (
                 <Link
                   key={s.id}
@@ -218,11 +221,22 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
                   params={{ problemId: s.problem_id }}
                   className="flex items-center justify-between glass rounded-xl px-3 py-2 text-xs hover:bg-white/5 transition-colors group"
                 >
-                  <span className="truncate text-foreground/80 group-hover:text-foreground transition-colors">
-                    {s.problem_title ?? "Unknown Problem"}
-                  </span>
-                  <span className={`flex-none ml-2 ${statusColor[s.final_status] ?? "text-muted-foreground"} capitalize font-medium`}>
-                    {s.final_status === "in_progress" ? "In progress" : s.final_status}
+                  <div className="min-w-0 flex-1">
+                    <div className="truncate text-foreground/90 group-hover:text-foreground font-medium transition-colors">
+                      {s.problem_title ?? "DSA Problem"}
+                    </div>
+                    <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                      {formatTime(s.active_seconds)} active
+                    </div>
+                  </div>
+                  <span
+                    className={`flex-none ml-3 text-[11px] ${
+                      statusColor[s.final_status] ?? "text-muted-foreground"
+                    } font-semibold capitalize bg-white/5 px-2 py-0.5 rounded border border-white/5`}
+                  >
+                    {s.final_status === "in_progress"
+                      ? "In progress"
+                      : s.final_status}
                   </span>
                 </Link>
               ))}

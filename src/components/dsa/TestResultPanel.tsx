@@ -32,14 +32,14 @@ export const TestResultPanel: React.FC<TestResultPanelProps> = ({
   if (executionStatus === "unavailable") {
     return (
       <div className="flex flex-col items-center justify-center h-full p-6 text-center text-xs text-muted-foreground bg-black/20 rounded-xl border border-white/5 gap-2">
-        <div className="p-2 rounded-full bg-yellow-500/10 border border-yellow-500/20 text-yellow-400">
+        <div className="p-2 rounded-full bg-aurora/10 border border-aurora/20 text-aurora">
           <Info className="w-5 h-5" />
         </div>
         <div className="font-semibold text-sm text-foreground">
           Practice Mode Active
         </div>
         <p className="max-w-md text-muted-foreground leading-relaxed">
-          Practice mode is available. Automated test execution is not yet available for this problem. Your code draft and active practice time are being recorded automatically.
+          Work through this problem inside SyncRole. Your practice time, code draft, and session activity are tracked automatically. Automated test execution will be added to this problem soon.
         </p>
       </div>
     );
