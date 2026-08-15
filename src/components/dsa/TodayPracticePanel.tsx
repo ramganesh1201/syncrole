@@ -76,17 +76,19 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
           .eq("user_id", user.id)
           .gte("created_at", todayStr),
 
-        // Problems solved today
+        // Solved problems for user
         supabase
           .from("user_problem_progress")
-          .select("problem_id, first_solved_at")
+          .select("problem_id, first_solved_at, last_solved_at, updated_at, solved")
           .eq("user_id", user.id)
-          .eq("solved", true)
-          .gte("first_solved_at", todayStr),
+          .eq("solved", true),
       ]);
 
       const sessions = sessionsRes.data ?? [];
       const submissions = submissionsRes.data ?? [];
+      const allSolved = solvedRes.data ?? [];
+
+      const todayKey = `${todayStart.getFullYear()}-${String(todayStart.getMonth() + 1).padStart(2, "0")}-${String(todayStart.getDate()).padStart(2, "0")}`;
 
       const totalActiveSeconds = sessions.reduce(
         (sum, s) => sum + (s.active_seconds ?? 0),
@@ -97,7 +99,13 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
       const problemsAttempted = new Set(
         sessions.map((s) => s.problem_id)
       ).size;
-      const problemsSolved = (solvedRes.data ?? []).length;
+      const problemsSolved = allSolved.filter((p) => {
+        const d = p.last_solved_at || p.first_solved_at || p.updated_at;
+        if (!d) return false;
+        const dt = new Date(d);
+        const k = `${dt.getFullYear()}-${String(dt.getMonth() + 1).padStart(2, "0")}-${String(dt.getDate()).padStart(2, "0")}`;
+        return k === todayKey;
+      }).length;
 
       // Enrich sessions with problem titles (best effort)
       const problemIds = [...new Set(sessions.map((s) => s.problem_id))];
@@ -214,32 +222,38 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
               <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
                 Recent Practice Activity
               </div>
-              {stats.recentSessions.map((s) => (
-                <Link
-                  key={s.id}
-                  to="/dsa-workspace/$problemId"
-                  params={{ problemId: s.problem_id }}
-                  className="flex items-center justify-between glass rounded-xl px-3 py-2 text-xs hover:bg-white/5 transition-colors group"
-                >
-                  <div className="min-w-0 flex-1">
-                    <div className="truncate text-foreground/90 group-hover:text-foreground font-medium transition-colors">
-                      {s.problem_title ?? "DSA Problem"}
-                    </div>
-                    <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                      {formatTime(s.active_seconds)} active
-                    </div>
-                  </div>
-                  <span
-                    className={`flex-none ml-3 text-[11px] ${
-                      statusColor[s.final_status] ?? "text-muted-foreground"
-                    } font-semibold capitalize bg-white/5 px-2 py-0.5 rounded border border-white/5`}
+              {stats.recentSessions.map((s) => {
+                const isSolved = s.final_status === "solved";
+                const displayStatus = isSolved ? "solved" : s.final_status === "in_progress" ? "in_progress" : s.final_status;
+                return (
+                  <Link
+                    key={s.id}
+                    to="/dsa-workspace/$problemId"
+                    params={{ problemId: s.problem_id }}
+                    className="flex items-center justify-between glass rounded-xl px-3 py-2 text-xs hover:bg-white/5 transition-colors group"
                   >
-                    {s.final_status === "in_progress"
-                      ? "In progress"
-                      : s.final_status}
-                  </span>
-                </Link>
-              ))}
+                    <div className="min-w-0 flex-1">
+                      <div className="truncate text-foreground/90 group-hover:text-foreground font-medium transition-colors">
+                        {s.problem_title ?? "DSA Problem"}
+                      </div>
+                      <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                        {formatTime(s.active_seconds)} active
+                      </div>
+                    </div>
+                    <span
+                      className={`flex-none ml-3 text-[11px] ${
+                        statusColor[displayStatus] ?? "text-muted-foreground"
+                      } font-semibold capitalize bg-white/5 px-2 py-0.5 rounded border border-white/5`}
+                    >
+                      {displayStatus === "solved"
+                        ? "✓ Solved"
+                        : displayStatus === "in_progress"
+                        ? "In progress"
+                        : displayStatus}
+                    </span>
+                  </Link>
+                );
+              })}
             </div>
           )}
 

@@ -50,6 +50,16 @@ export interface PracticeAnalytics {
   fastestRuntimeMs: number | null;
 }
 
+function toLocalDateStr(dateInput: string | Date | null | undefined): string {
+  if (!dateInput) return "";
+  const d = new Date(dateInput);
+  if (isNaN(d.getTime())) return "";
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const day = String(d.getDate()).padStart(2, "0");
+  return `${year}-${month}-${day}`;
+}
+
 function DSAPage() {
   const [logs, setLogs] = useState<any[]>([]);
   const [practiceLogs, setPracticeLogs] = useState<any[]>([]);
@@ -77,7 +87,7 @@ function DSAPage() {
 
     const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
 
-    const [logsRes, practiceRes, xpRes, streakRes, progRes, solvedRes, sessionsRes, subCountRes] =
+    const [logsRes, practiceRes, xpRes, streakRes, progRes, solvedRes, sessionsRes, subCountRes, subRes] =
       await Promise.all([
         supabase
           .from("dsa_progress")
@@ -95,12 +105,13 @@ function DSAPage() {
         supabase.from("xp_levels").select("*").eq("user_id", uid).maybeSingle(),
         supabase.from("streaks").select("*").eq("user_id", uid).maybeSingle(),
         supabase.from("user_problem_progress").select(`
-          id, problem_id, status, is_bookmarked, needs_revision, last_solved_at, solved, best_execution_time_ms,
+          id, problem_id, status, is_bookmarked, needs_revision, last_solved_at, first_solved_at, solved, best_execution_time_ms, updated_at,
           dsa_problems ( id, title, difficulty, leetcode_url, topic_id )
         `).eq("user_id", uid),
         DSAService.getSolvedAnalytics(uid),
-        supabase.from("dsa_practice_sessions").select("active_seconds, created_at").eq("user_id", uid),
+        supabase.from("dsa_practice_sessions").select("active_seconds, created_at, last_heartbeat_at").eq("user_id", uid),
         supabase.from("dsa_submissions").select("id", { count: "exact", head: true }).eq("user_id", uid),
+        supabase.from("dsa_submissions").select("id, status, is_run_only, created_at").eq("user_id", uid),
       ]);
     
     setLogs(logsRes.data ?? []);
@@ -119,7 +130,7 @@ function DSAPage() {
 
     const progData = progRes.data ?? [];
     const attemptedCount = progData.filter((p: any) => p.status && p.status !== "not_started").length;
-    const solvedCount = progData.filter((p: any) => p.solved).length;
+    const solvedCount = progData.filter((p: any) => p.solved || p.status === "solved").length;
 
     const runtimes = progData
       .map((p: any) => p.best_execution_time_ms)
@@ -163,15 +174,15 @@ function DSAPage() {
     return a;
   }, { e: 0, m: 0, h: 0 });
 
-  const totalSolved = solvedTotals.e + solvedTotals.m + solvedTotals.h;
+  const totalSolved = Math.max(analytics.solvedCount, solvedTotals.e + solvedTotals.m + solvedTotals.h);
 
   const last30 = Array.from({ length: 30 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (29 - i));
-    const key = d.toISOString().slice(0, 10);
+    const key = toLocalDateStr(d);
     const day = solvedProblems.filter((p) => {
-      const dateStr = p.last_solved_at || p.updated_at;
-      return dateStr && dateStr.slice(0, 10) === key;
+      const dateStr = p.last_solved_at || p.first_solved_at || p.updated_at;
+      return dateStr && toLocalDateStr(dateStr) === key;
     }).length;
     return { day: d.toLocaleDateString(undefined, { month: "short", day: "numeric" }), count: day };
   });
@@ -185,7 +196,7 @@ function DSAPage() {
   const heat = Array.from({ length: 90 }).map((_, i) => {
     const d = new Date();
     d.setDate(d.getDate() - (89 - i));
-    const key = d.toISOString().slice(0, 10);
+    const key = toLocalDateStr(d);
     
     let intensityScore = 0;
     
@@ -194,7 +205,7 @@ function DSAPage() {
       intensityScore += (l.easy + l.medium + l.hard);
     });
 
-    const practiceDay = practiceLogs.filter(p => p.created_at.slice(0, 10) === key);
+    const practiceDay = practiceLogs.filter(p => toLocalDateStr(p.created_at) === key);
     practiceDay.forEach(p => {
       intensityScore += 1;
       if (p.meta?.problems_attempted) intensityScore += p.meta.problems_attempted;
