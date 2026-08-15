@@ -176,6 +176,15 @@ Deno.serve(async (req: Request) => {
           _execution_time_ms: execResult.executionTimeMs ?? null,
           _memory_kb: null,
         });
+        if (submission.practice_session_id) {
+          await serviceClient
+            .from("dsa_practice_sessions")
+            .update({
+              final_status: "solved",
+              ended_at: new Date().toISOString(),
+            })
+            .eq("id", submission.practice_session_id);
+        }
       } else if (finalStatus !== "system_error") {
         await serviceClient.rpc("record_dsa_attempt", {
           _user: user.id,

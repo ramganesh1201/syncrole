@@ -253,6 +253,7 @@ function DSAWorkspacePage() {
 
       if (result.status === "accepted") {
         toast.success("🎉 Accepted! Verified solution recorded!", { duration: 4000 });
+        session.finalizeSession("solved");
         if (userId) {
           const freshProgress = await DSAWorkspaceService.getUserProblemProgress(userId, problemId);
           setUserProgress(freshProgress);

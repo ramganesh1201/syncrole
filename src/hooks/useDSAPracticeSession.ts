@@ -201,30 +201,38 @@ export function useDSAPracticeSession({
     };
   }, [state.sessionId, tick, markActive]);
 
-  const onRunCode = useCallback(() => {
-    runCountRef.current += 1;
-    setState((s) => ({ ...s, runCount: runCountRef.current }));
-    markActive();
+  const isFinalizedRef = useRef(false);
+
+  const finalizeSession = useCallback((finalStatus: "solved" | "attempted" | "abandoned" = "solved") => {
+    if (isFinalizedRef.current) return;
+    isFinalizedRef.current = true;
+
+    if (heartbeatIntervalRef.current) {
+      clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = null;
+    }
+    if (inactivityTimerRef.current) {
+      clearTimeout(inactivityTimerRef.current);
+      inactivityTimerRef.current = null;
+    }
 
     if (sessionIdRef.current) {
-      DSASessionService.incrementRunCount(sessionIdRef.current).catch(() => {});
+      const activeDelta = activeSecondsRef.current - lastFlushedActiveRef.current;
+      const wallDelta = wallSecondsRef.current - lastFlushedWallRef.current;
+      if (activeDelta > 0 || wallDelta > 0) {
+        DSASessionService.heartbeat(sessionIdRef.current, activeDelta, wallDelta).catch(() => {});
+      }
+      DSASessionService.endSession(sessionIdRef.current, finalStatus).catch(() => {});
     }
-  }, [markActive]);
 
-  const onSubmit = useCallback(() => {
-    submissionCountRef.current += 1;
-    setState((s) => ({ ...s, submissionCount: submissionCountRef.current }));
-    markActive();
-
-    if (sessionIdRef.current) {
-      DSASessionService.incrementSubmissionCount(sessionIdRef.current).catch(() => {});
-    }
-  }, [markActive]);
+    setState((s) => ({ ...s, isIdle: true }));
+  }, []);
 
   return {
     ...state,
     sessionId: sessionIdRef.current,
     onRunCode,
     onSubmit,
+    finalizeSession,
   };
 }
