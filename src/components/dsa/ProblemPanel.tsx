@@ -158,22 +158,6 @@ export const ProblemPanel: React.FC<ProblemPanelProps> = ({
           </TabsContent>
         </div>
       </Tabs>
-
-      {/* Footer link to LeetCode as secondary action */}
-      {problem.leetcode_url && (
-        <div className="flex-none p-2.5 border-t border-white/10 bg-black/20 flex justify-between items-center text-xs">
-          <span className="text-muted-foreground text-[11px]">External Problem Link:</span>
-          <a
-            href={problem.leetcode_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="inline-flex items-center text-xs text-aurora hover:underline font-medium transition-colors"
-          >
-            <ExternalLink className="w-3 h-3 mr-1" />
-            View on LeetCode
-          </a>
-        </div>
-      )}
     </div>
   );
 };

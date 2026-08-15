@@ -1,4 +1,4 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import { Calendar, Zap, CheckCircle2, Clock, ArrowLeft, ExternalLink } from "lucide-react";
@@ -214,16 +214,17 @@ function DSADailyPage() {
 
   const status = getStatusFromRow(progress);
 
-  async function openLeetCode() {
-    if (!today?.problem?.leetcode_url) {
-      toast.error("No external link available for this challenge.");
+  const navigate = useNavigate();
+
+  async function openDailyWorkspace() {
+    if (!today?.problem?.id) {
+      toast.error("Daily challenge problem is unavailable.");
       return;
     }
 
     const { data: auth } = await supabase.auth.getUser();
     if (!auth.user) return;
 
-    // If NOT_STARTED, create progress row as IN_PROGRESS.
     if (!progress) {
       setBusy(true);
       try {
@@ -242,28 +243,26 @@ function DSADailyPage() {
               claimed_at: null,
               completed_at: null,
             },
-            { onConflict: "user_id,challenge_id" },
+            { onConflict: "user_id,challenge_id" }
           )
           .select(
-            "id,user_id,challenge_id,completed,completed_at,xp_earned,claimed,claimed_at,created_at,started_at,status",
+            "id,user_id,challenge_id,completed,completed_at,xp_earned,claimed,claimed_at,created_at,started_at,status"
           )
           .single();
 
         if (insertRes.error) throw insertRes.error;
         setProgress(insertRes.data as unknown as UserDailyProgress);
-        window.open(today.problem.leetcode_url, "_blank", "noopener,noreferrer");
       } catch (e) {
         console.error(e);
-        toast.error("Failed to start daily challenge.");
       } finally {
         setBusy(false);
       }
-
-      return;
     }
 
-    // Already started/completed/claimed: just open link.
-    window.open(today.problem.leetcode_url, "_blank", "noopener,noreferrer");
+    navigate({
+      to: "/dsa-workspace/$problemId",
+      params: { problemId: today.problem.id },
+    });
   }
 
   async function markCompleted() {
@@ -494,7 +493,7 @@ function DSADailyPage() {
 
             {status === "not_started" && (
               <button
-                onClick={() => void openLeetCode()}
+                onClick={() => void openDailyWorkspace()}
                 disabled={busy}
                 className="relative w-full rounded-2xl py-4 text-base font-semibold text-primary-foreground overflow-hidden transition disabled:opacity-50"
               >
@@ -510,14 +509,14 @@ function DSADailyPage() {
                 <div className="flex items-center justify-between gap-3">
                   <div>
                     <div className="font-medium">In Progress</div>
-                    <div className="text-sm text-muted-foreground">Open the link, solve it, then confirm below.</div>
+                    <div className="text-sm text-muted-foreground">Solve inside the SyncRole DSA Workspace, then claim reward when done.</div>
                   </div>
                   <button
-                    onClick={() => void openLeetCode()}
+                    onClick={() => void openDailyWorkspace()}
                     disabled={busy}
-                    className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-2 text-xs hover:bg-white/15 transition"
+                    className="inline-flex items-center gap-2 rounded-full bg-aurora px-4 py-2 text-xs font-semibold text-primary-foreground transition"
                   >
-                    <ExternalLink className="h-3.5 w-3.5" /> Open
+                    Open Workspace
                   </button>
                 </div>
 

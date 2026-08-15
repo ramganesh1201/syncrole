@@ -346,19 +346,6 @@ function DSAWorkspacePage() {
 
           {/* Right: action buttons */}
           <div className="flex-none flex items-center gap-2">
-            {problem.leetcode_url && (
-              <a
-                href={problem.leetcode_url}
-                target="_blank"
-                rel="noreferrer"
-                className="hidden sm:inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground glass rounded-lg px-3 py-1.5 transition-colors"
-                title="View original problem on LeetCode"
-              >
-                <ExternalLink className="h-3.5 w-3.5" />
-                LeetCode
-              </a>
-            )}
-
             {problem.execution_status === "enabled" ? (
               <>
                 {/* Run Code */}
