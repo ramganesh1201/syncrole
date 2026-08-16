@@ -22,6 +22,7 @@ import {
   Building2,
   Compass,
   Lock,
+  Zap,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
