@@ -67,6 +67,7 @@ import DreamCompanySection from "@/components/home/DreamCompanySection";
 import CareerProgressFeed from "@/components/home/CareerProgressFeed";
 import CareerTransformationsSection from "@/components/home/CareerTransformationsSection";
 import FinalCTA from "@/components/home/FinalCTA";
+import MobileHomepage from "@/components/home/MobileHomepage";
 
 const CareerSphere = lazy(() => import("../components/CareerSphere"));
 
@@ -1814,41 +1815,49 @@ function Landing() {
         rel="stylesheet"
       />
 
-      <CursorSpotlight />
-      <Nav />
+      {/* MOBILE EXPERIENCE (<768px) */}
+      <div className="block md:hidden">
+        <MobileHomepage data={homeData} onOpenDemo={() => setIsDemoOpen(true)} />
+      </div>
 
-      {/* SECTION 1 — Hero (globe preserved) */}
-      <HeroSection data={homeData} isAuthed={!!user} onOpenDemo={() => setIsDemoOpen(true)} />
+      {/* DESKTOP EXPERIENCE (>=768px) - UNCHANGED */}
+      <div className="hidden md:block">
+        <CursorSpotlight />
+        <Nav />
 
-      {/* SECTION 2 — Career Journey + Future Prediction (merged) */}
-      <CareerJourneyTimeline data={homeData} />
+        {/* SECTION 1 — Hero (globe preserved) */}
+        <HeroSection data={homeData} isAuthed={!!user} onOpenDemo={() => setIsDemoOpen(true)} />
 
-      {/* SECTION 3 — AI Career Twin (centerpiece) */}
-      <AICareerTwinSection data={homeData} />
+        {/* SECTION 2 — Career Journey + Future Prediction (merged) */}
+        <CareerJourneyTimeline data={homeData} />
 
-      {/* SECTION 4 — Student ↔ Recruiter Toggle */}
-      <RecruiterToggleSection data={homeData} />
+        {/* SECTION 3 — AI Career Twin (centerpiece) */}
+        <AICareerTwinSection data={homeData} />
 
-      {/* SECTION 5 — AI Intelligence Center (Resume + GitHub + Placement) */}
-      <AIIntelligenceCenter data={homeData} />
+        {/* SECTION 4 — Student ↔ Recruiter Toggle */}
+        <RecruiterToggleSection data={homeData} />
 
-      {/* SECTION 6 — Dream Company Analyzer (9 companies) */}
-      <DreamCompanySection data={homeData} />
+        {/* SECTION 5 — AI Intelligence Center (Resume + GitHub + Placement) */}
+        <AIIntelligenceCenter data={homeData} />
 
-      {/* SECTION 7 — Career Progress Feed (Activity + Weekly + Achievements) */}
-      <CareerProgressFeed data={homeData} />
+        {/* SECTION 6 — Dream Company Analyzer (9 companies) */}
+        <DreamCompanySection data={homeData} />
 
-      {/* SECTION 8 — Career Transformations (renamed Stories + submission) */}
-      <CareerTransformationsSection data={homeData} />
+        {/* SECTION 7 — Career Progress Feed (Activity + Weekly + Achievements) */}
+        <CareerProgressFeed data={homeData} />
+
+        {/* SECTION 8 — Career Transformations (renamed Stories + submission) */}
+        <CareerTransformationsSection data={homeData} />
+
+        {/* SECTION 9 — Final CTA */}
+        <FinalCTA />
+
+        <SyncFooter />
+      </div>
 
       <Suspense fallback={null}>
         <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
       </Suspense>
-
-      {/* SECTION 9 — Final CTA */}
-      <FinalCTA />
-
-      <SyncFooter />
     </main>
   );
 }
