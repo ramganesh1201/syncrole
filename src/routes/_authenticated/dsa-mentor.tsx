@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -11,6 +11,7 @@ import {
   CalendarDays,
   Activity,
   Briefcase,
+  TrendingUp,
   Sparkles,
   Send,
   Clock,
@@ -34,6 +35,12 @@ import {
   Layers,
   Bug,
   Grid,
+  BookOpen,
+  MessageSquareCode,
+  Search,
+  GitBranch,
+  Network,
+  Hash,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnalyticsEngine } from "@/lib/analytics";
@@ -126,6 +133,19 @@ function AnimatedNumber({ value }: { value: number }) {
     };
   }, [value]);
   return <>{displayValue}</>;
+}
+
+// Semantic Icon Resolver for DSA Topics & Patterns
+function getTopicPatternIcon(name: string) {
+  const n = name.toLowerCase();
+  if (n.includes("binary") || n.includes("search")) return Search;
+  if (n.includes("array") || n.includes("matrix") || n.includes("grid")) return Grid;
+  if (n.includes("tree")) return GitBranch;
+  if (n.includes("graph") || n.includes("network")) return Network;
+  if (n.includes("dynamic") || n.includes("dp")) return Cpu;
+  if (n.includes("hash") || n.includes("map") || n.includes("set")) return Hash;
+  if (n.includes("string")) return FileText;
+  return Star;
 }
 
 function DSAMentorPage() {
@@ -274,7 +294,7 @@ function DSAMentorPage() {
     }
   }
 
-  // Boot sequence animation
+  // Boot animation screen
   if (booting) {
     return (
       <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden">
@@ -325,7 +345,7 @@ function DSAMentorPage() {
   // Pre-formatted DNA dimensions fallback matching reference image
   const defaultDnaDimensions = [
     { name: "Problem Solving", score: 41, icon: Brain, delta: "↑ 2%" },
-    { name: "Logical Thinking", score: 54, icon: Code, delta: "↑ 3%" },
+    { name: "Logical Thinking", score: 54, icon: Code2, delta: "↑ 3%" },
     { name: "Pattern Recognition", score: 11, icon: Layers, delta: "↑ 0%" },
     { name: "Optimization Skills", score: 30, icon: Zap, delta: "↑ 2%" },
     { name: "Debugging", score: 60, icon: Bug, delta: "↑ 4%" },
@@ -375,7 +395,7 @@ function DSAMentorPage() {
         </Link>
       </div>
 
-      {/* Hero Header & High Confidence Card */}
+      {/* Hero Header & High Confidence Badge */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
@@ -390,7 +410,7 @@ function DSAMentorPage() {
         </div>
 
         {/* Top Right High Confidence Shield Card matching Reference */}
-        <div className="glass rounded-2xl p-3.5 px-4 border border-aurora/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] shrink-0 flex items-center gap-3 bg-black/40">
+        <div className="glass rounded-2xl p-3.5 px-4 border border-aurora/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] shrink-0 flex items-center gap-3 bg-black/40 select-none">
           <div className="p-2.5 rounded-xl bg-aurora/15 text-aurora border border-aurora/30 shadow-inner">
             <ShieldCheck className="w-5 h-5 text-aurora" />
           </div>
@@ -421,29 +441,36 @@ function DSAMentorPage() {
             </span>
           </div>
 
-          <div className="space-y-3 pt-1">
+          <div className="space-y-3.5 pt-1">
             {displayDna.map((d) => {
               const IconComp = d.icon ?? Brain;
+              const numericValue = typeof d.score === "number" ? d.score : 0;
+              const barWidthPercent = Math.min(Math.max(numericValue, 0), 100);
+
               return (
                 <div key={d.name} className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium flex items-center gap-2">
-                      <IconComp className="w-3.5 h-3.5 text-aurora" />
+                      <div className="p-1 rounded bg-white/5 border border-white/10 shrink-0">
+                        <IconComp className="w-3.5 h-3.5 text-aurora" />
+                      </div>
                       <span>{d.name}</span>
                     </span>
                     <div className="flex items-center gap-2 font-mono">
                       <span className="text-white font-bold">
-                        <AnimatedNumber value={d.score} />%
+                        <AnimatedNumber value={numericValue} />%
                       </span>
-                      <span className="text-[10px] text-green-400 font-semibold">
-                        {d.delta ?? "↑ 2%"}
-                      </span>
+                      {d.delta && (
+                        <span className="text-[10px] text-green-400 font-semibold">
+                          {d.delta}
+                        </span>
+                      )}
                     </div>
                   </div>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-cyan-400 via-aurora to-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.4)]"
-                      style={{ width: `${d.score}%` }}
+                      className="h-full bg-gradient-to-r from-cyan-400 via-aurora to-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.4)] transition-all duration-500"
+                      style={{ width: `${barWidthPercent}%` }}
                     />
                   </div>
                 </div>
@@ -489,7 +516,7 @@ function DSAMentorPage() {
               </div>
 
               <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Activity className="w-5 h-5 text-cyan-400 mx-auto" />
+                <TrendingUp className="w-5 h-5 text-cyan-400 mx-auto" />
                 <div className="font-display text-2xl font-bold text-white">
                   92<span className="text-xs text-muted-foreground font-normal">/100</span>
                 </div>
@@ -533,26 +560,31 @@ function DSAMentorPage() {
                     { name: "Binary Search", mastery: 11, level: "Intermediate • High Confidence", trend: "↑ Trending" },
                     { name: "Arrays", mastery: 8, level: "Beginner • Developing", trend: "→" },
                   ]
-              ).map((p: any, i) => (
-                <div
-                  key={i}
-                  className="bg-white/5 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs"
-                >
-                  <div className="space-y-0.5">
-                    <div className="font-semibold text-white flex items-center gap-2">
-                      <Star className="w-3.5 h-3.5 text-aurora" />
-                      <span>{p.name}</span>
+              ).map((p: any, i) => {
+                const PatternIconComp = getTopicPatternIcon(p.name);
+                return (
+                  <div
+                    key={i}
+                    className="bg-white/5 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs"
+                  >
+                    <div className="space-y-0.5">
+                      <div className="font-semibold text-white flex items-center gap-2">
+                        <div className="p-1 rounded bg-aurora/10 text-aurora">
+                          <PatternIconComp className="w-3.5 h-3.5" />
+                        </div>
+                        <span>{p.name}</span>
+                      </div>
+                      <div className="text-[10px] text-muted-foreground">
+                        {p.level ?? (p.mastery > 50 ? "Intermediate • High Confidence" : "Beginner • Developing")}
+                      </div>
                     </div>
-                    <div className="text-[10px] text-muted-foreground">
-                      {p.level ?? (p.mastery > 50 ? "Intermediate • High Confidence" : "Beginner • Developing")}
+                    <div className="text-right font-mono">
+                      <div className="font-bold text-aurora">{p.mastery}%</div>
+                      <div className="text-[9px] text-green-400">{p.trend ?? "↑ Trending"}</div>
                     </div>
                   </div>
-                  <div className="text-right font-mono">
-                    <div className="font-bold text-aurora">{p.mastery}%</div>
-                    <div className="text-[9px] text-green-400">{p.trend ?? "↑ Trending"}</div>
-                  </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
@@ -645,7 +677,7 @@ function DSAMentorPage() {
                   <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div
                       className="h-full bg-gradient-to-r from-aurora to-cyan-400 rounded-full"
-                      style={{ width: `${c.readiness}%` }}
+                      style={{ width: `${Math.min(Math.max(c.readiness, 0), 100)}%` }}
                     />
                   </div>
                 </div>
@@ -695,7 +727,7 @@ function DSAMentorPage() {
                   </div>
                   <div className="flex items-center gap-2 pt-0.5">
                     <div className="flex-1 h-1 bg-white/5 rounded-full overflow-hidden">
-                      <div className="h-full bg-aurora rounded-full" style={{ width: `${t.mastery}%` }} />
+                      <div className="h-full bg-aurora rounded-full" style={{ width: `${Math.min(Math.max(t.mastery, 0), 100)}%` }} />
                     </div>
                     <span className="text-[10px] font-mono font-bold text-aurora">{t.mastery}%</span>
                   </div>
@@ -778,7 +810,7 @@ function DSAMentorPage() {
                     <span className="font-mono font-bold text-white">{item.score}%</span>
                   </div>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-gradient-to-r from-aurora to-purple-500 rounded-full" style={{ width: `${item.score}%` }} />
+                    <div className="h-full bg-gradient-to-r from-aurora to-purple-500 rounded-full" style={{ width: `${Math.min(Math.max(item.score, 0), 100)}%` }} />
                   </div>
                 </div>
               ))}
@@ -837,7 +869,7 @@ function DSAMentorPage() {
 
               <button
                 onClick={() => navigate({ to: "/dsa-problems" })}
-                className="bg-white/10 hover:bg-aurora text-foreground hover:text-primary-foreground font-semibold px-3.5 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1"
+                className="bg-white/10 hover:bg-aurora text-foreground hover:text-primary-foreground font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1"
               >
                 <span>Start</span>
                 <ArrowRight className="w-3 h-3" />
@@ -848,7 +880,7 @@ function DSAMentorPage() {
       </div>
 
       {/* ---------------------------------------------------------------- */}
-      {/* SECTION 6: ENTERPRISE AI CODE COACH (PROMINENT AI WORKSPACE) */}
+      {/* SECTION 6: AI CODE COACH WORKSPACE */}
       {/* ---------------------------------------------------------------- */}
       <div className="glass-strong rounded-3xl border border-aurora/40 shadow-[0_0_50px_rgba(168,85,247,0.15)] relative overflow-hidden flex flex-col mt-8 bg-black/40">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-aurora/10 blur-[100px] rounded-full pointer-events-none" />
@@ -856,11 +888,11 @@ function DSAMentorPage() {
         {/* Chat Header */}
         <div className="flex items-center gap-4 p-5 md:p-6 border-b border-white/5 bg-black/40 relative z-10">
           <div className="p-3 bg-gradient-to-br from-aurora to-aurora/80 rounded-2xl text-primary-foreground shadow-lg shadow-aurora/20">
-            <Code2 className="w-6 h-6" />
+            <Bot className="w-6 h-6" />
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-display text-xl font-bold tracking-tight text-white truncate">
-              ENTERPRISE AI CODE COACH
+            <h2 className="font-display text-xl font-bold tracking-tight text-white truncate flex items-center gap-2">
+              <span>AI Code Coach</span>
             </h2>
             <p className="text-xs text-muted-foreground truncate">
               Always here to help you solve, understand and master DSA.
@@ -928,28 +960,28 @@ function DSAMentorPage() {
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                   <div className="flex items-start gap-2">
-                    <HelpCircle className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <BookOpen className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Explain concepts clearly</div>
                       <div className="text-[10px] text-muted-foreground">Step-by-step guidance</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Code className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <Bug className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Review & debug code</div>
                       <div className="text-[10px] text-muted-foreground">Find issues & optimize</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Target className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <Lightbulb className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Practice smarter</div>
                       <div className="text-[10px] text-muted-foreground">Curated problems & hints</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Lightbulb className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <MessageSquareCode className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Interview prep</div>
                       <div className="text-[10px] text-muted-foreground">Real-world insights</div>
@@ -1051,7 +1083,7 @@ function DSAMentorPage() {
                   void handleSend();
                 }
               }}
-              placeholder="Message your AI Mentor (e.g. 'Why does my binary search code fail?')..."
+              placeholder="Ask your AI Coding Coach anything — paste code, explain an error, or ask about DSA..."
               className="flex-1 bg-[#0F172A]/80 border border-white/10 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-aurora/50 focus:ring-1 focus:ring-aurora/50 transition-all placeholder:text-slate-500 text-white relative z-10 shadow-inner"
             />
             <button
