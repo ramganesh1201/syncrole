@@ -1,13 +1,33 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { motion } from "framer-motion";
-import { ArrowLeft, Check, Briefcase, Activity, Code2, Users, Layers } from "lucide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState, useMemo } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  ArrowLeft,
+  Check,
+  Briefcase,
+  Activity,
+  Code2,
+  Users,
+  Layers,
+  Plus,
+  Target,
+  Sparkles,
+  TrendingUp,
+  AlertCircle,
+  X,
+  ChevronRight,
+  Clock,
+  Play,
+  RotateCcw,
+  Building2,
+  Compass,
+} from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/dsa-companies")({
   component: DSACompaniesPage,
-  head: () => ({ meta: [{ title: "Company Prep — SyncRole" }] }),
+  head: () => ({ meta: [{ title: "Target Companies & Strategy — SyncRole" }] }),
 });
 
 type Company = {
@@ -16,6 +36,7 @@ type Company = {
   description: string | null;
   interview_frequency: string | null;
   focus_topics: string[] | null;
+  top_topics: string[] | null;
   interview_difficulty: string | null;
   oa_difficulty: string | null;
   hiring_frequency: string | null;
@@ -25,210 +46,975 @@ type Company = {
 
 type UserCompanyFocus = { id: string; company_id: string };
 
-function DSACompaniesPage() {
-  const [companies, setCompanies] = useState<Company[]>([]);
-  const [userFocus, setUserFocus] = useState<Set<string>>(new Set());
-  const [loading, setLoading] = useState(true);
+type Problem = {
+  id: string;
+  title: string;
+  difficulty: string;
+  topic_id: string;
+  companies: string[] | null;
+  tags: string[] | null;
+};
 
-  async function load() {
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) return;
-    const uid = u.user.id;
-    const [compRes, focusRes] = await Promise.all([
-      supabase.from("company_question_sets").select("*").order("recommended_preparation_order", { ascending: true }),
-      supabase.from("user_company_focus").select("company_id").eq("user_id", uid),
-    ]);
-    
-    // Fallback sort if recommended_preparation_order is null
-    let sorted = (compRes.data ?? []) as Company[];
-    sorted.sort((a, b) => {
-      if (a.recommended_preparation_order === null && b.recommended_preparation_order === null) return a.company_name.localeCompare(b.company_name);
-      if (a.recommended_preparation_order === null) return 1;
-      if (b.recommended_preparation_order === null) return -1;
-      return a.recommended_preparation_order - b.recommended_preparation_order;
-    });
+type Topic = { id: string; name: string };
 
-    setCompanies(sorted);
-    setUserFocus(new Set((focusRes.data ?? []).map((f: UserCompanyFocus) => f.company_id)));
-    setLoading(false);
+type UserProgress = {
+  problem_id: string;
+  solved: boolean;
+  status: string;
+  run_count: number;
+  submission_count: number;
+};
+
+// Known company logo URLs (SimpleIcons CDN with white invert filter for dark mode)
+const COMPANY_LOGOS: Record<string, string> = {
+  Google: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/google.svg",
+  Amazon: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/amazon.svg",
+  Microsoft: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/microsoft.svg",
+  Meta: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/meta.svg",
+  Netflix: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/netflix.svg",
+  Uber: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/uber.svg",
+  Flipkart: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/flipkart.svg",
+  Atlassian: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/atlassian.svg",
+  Adobe: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/adobe.svg",
+  Apple: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/apple.svg",
+  Airbnb: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/airbnb.svg",
+  Stripe: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/stripe.svg",
+  LinkedIn: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linkedin.svg",
+};
+
+// Company Logo Component with graceful Initial-Avatar Fallback
+function CompanyLogo({ name, className = "w-7 h-7" }: { name: string; className?: string }) {
+  const [failed, setFailed] = useState(false);
+  const logoUrl = COMPANY_LOGOS[name];
+  const initial = name ? name.charAt(0).toUpperCase() : "C";
+
+  if (!logoUrl || failed) {
+    return (
+      <div
+        className={`${className} rounded-full bg-gradient-to-br from-aurora/30 to-aurora/10 border border-aurora/40 flex items-center justify-center font-display font-bold text-aurora text-xs shadow-sm select-none`}
+      >
+        {initial}
+      </div>
+    );
   }
 
-  async function toggleCompany(companyId: string) {
-    const { data: u } = await supabase.auth.getUser();
-    if (!u.user) return;
-    const isSelected = userFocus.has(companyId);
-    if (isSelected) {
-      await supabase
-        .from("user_company_focus")
-        .delete()
-        .eq("company_id", companyId)
-        .eq("user_id", u.user.id);
-      const newFocus = new Set(userFocus);
-      newFocus.delete(companyId);
-      setUserFocus(newFocus);
-    } else {
-      await supabase
-        .from("user_company_focus")
-        .insert({ company_id: companyId, user_id: u.user.id });
-      setUserFocus(new Set([...userFocus, companyId]));
+  return (
+    <img
+      src={logoUrl}
+      alt={`${name} logo`}
+      onError={() => setFailed(true)}
+      className={`${className} object-contain filter invert brightness-200 opacity-90 transition-opacity group-hover:opacity-100`}
+    />
+  );
+}
+
+function DSACompaniesPage() {
+  const navigate = useNavigate();
+  const [companies, setCompanies] = useState<Company[]>([]);
+  const [userFocus, setUserFocus] = useState<Set<string>>(new Set());
+  const [problems, setProblems] = useState<Problem[]>([]);
+  const [topics, setTopics] = useState<Topic[]>([]);
+  const [userProgressMap, setUserProgressMap] = useState<Map<string, UserProgress>>(new Map());
+  const [loading, setLoading] = useState(true);
+  const [activeStrategyCompany, setActiveStrategyCompany] = useState<Company | null>(null);
+
+  async function load() {
+    setLoading(true);
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) {
+        setLoading(false);
+        return;
+      }
+      const uid = u.user.id;
+
+      const [compRes, focusRes, probRes, topicRes, progRes] = await Promise.all([
+        supabase
+          .from("company_question_sets")
+          .select("*")
+          .order("recommended_preparation_order", { ascending: true }),
+        supabase.from("user_company_focus").select("company_id").eq("user_id", uid),
+        supabase
+          .from("dsa_problems")
+          .select("id, title, difficulty, topic_id, companies, tags"),
+        supabase.from("dsa_topics").select("id, name"),
+        supabase
+          .from("user_problem_progress")
+          .select("problem_id, solved, status, run_count, submission_count")
+          .eq("user_id", uid),
+      ]);
+
+      let sorted = (compRes.data ?? []) as Company[];
+      sorted.sort((a, b) => {
+        if (a.recommended_preparation_order === null && b.recommended_preparation_order === null)
+          return a.company_name.localeCompare(b.company_name);
+        if (a.recommended_preparation_order === null) return 1;
+        if (b.recommended_preparation_order === null) return -1;
+        return a.recommended_preparation_order - b.recommended_preparation_order;
+      });
+
+      setCompanies(sorted);
+      setUserFocus(new Set((focusRes.data ?? []).map((f: UserCompanyFocus) => f.company_id)));
+      setProblems((probRes.data ?? []) as Problem[]);
+      setTopics((topicRes.data ?? []) as Topic[]);
+
+      const progMap = new Map<string, UserProgress>();
+      (progRes.data ?? []).forEach((p: any) => progMap.set(p.problem_id, p));
+      setUserProgressMap(progMap);
+    } catch (err) {
+      console.error("Failed to load company preparation data:", err);
+      toast.error("Failed to load target companies data.");
+    } finally {
+      setLoading(false);
     }
-    toast.success(isSelected ? "Company removed" : "Company added");
   }
 
   useEffect(() => {
     load();
   }, []);
 
+  async function toggleCompany(companyId: string) {
+    const { data: u } = await supabase.auth.getUser();
+    if (!u.user) return;
+    const isSelected = userFocus.has(companyId);
+    try {
+      if (isSelected) {
+        const { error } = await supabase
+          .from("user_company_focus")
+          .delete()
+          .eq("company_id", companyId)
+          .eq("user_id", u.user.id);
+
+        if (error) throw error;
+        const newFocus = new Set(userFocus);
+        newFocus.delete(companyId);
+        setUserFocus(newFocus);
+        toast.success("Target company removed");
+      } else {
+        const { error } = await supabase
+          .from("user_company_focus")
+          .insert({ company_id: companyId, user_id: u.user.id });
+
+        if (error) throw error;
+        setUserFocus(new Set([...userFocus, companyId]));
+        toast.success("Target company added!");
+      }
+    } catch (err: any) {
+      toast.error(err.message ?? "Failed to update target company.");
+    }
+  }
+
+  // Topic map (id -> name)
+  const topicMap = useMemo(() => {
+    const map = new Map<string, string>();
+    topics.forEach((t) => map.set(t.id, t.name));
+    return map;
+  }, [topics]);
+
+  // Derive canonical solved count across all DSA problems
+  const totalUserSolves = useMemo(() => {
+    let count = 0;
+    userProgressMap.forEach((p) => {
+      if (p.solved === true || p.status === "solved") count++;
+    });
+    return count;
+  }, [userProgressMap]);
+
+  // Compute analytics for each company
+  const companyAnalytics = useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        totalRelevant: number;
+        solvedCount: number;
+        inProgressCount: number;
+        remainingCount: number;
+        readinessScore: number | null;
+        coreTopics: string[];
+        weakTopics: string[];
+        relevantProblems: Problem[];
+      }
+    >();
+
+    companies.forEach((company) => {
+      const cNameLower = company.company_name.toLowerCase();
+      const companyTopics = [
+        ...(company.focus_topics ?? []),
+        ...(company.top_topics ?? []),
+      ].map((t) => t.toLowerCase());
+
+      // Filter relevant problems
+      const relevant = problems.filter((p) => {
+        const matchesCompanyTag = p.companies?.some(
+          (c) => c.toLowerCase() === cNameLower || c.toLowerCase().includes(cNameLower)
+        );
+        const tName = topicMap.get(p.topic_id)?.toLowerCase();
+        const matchesTopic = tName ? companyTopics.includes(tName) : false;
+        return matchesCompanyTag || matchesTopic;
+      });
+
+      let solved = 0;
+      let inProgress = 0;
+      const topicStats: Record<string, { total: number; solved: number }> = {};
+
+      relevant.forEach((p) => {
+        const prog = userProgressMap.get(p.id);
+        const isSol = Boolean(prog?.solved === true || prog?.status === "solved");
+        const isProg =
+          !isSol &&
+          Boolean(
+            prog?.status === "in_progress" ||
+              prog?.status === "attempted" ||
+              (prog?.run_count ?? 0) > 0 ||
+              (prog?.submission_count ?? 0) > 0
+          );
+
+        if (isSol) solved++;
+        else if (isProg) inProgress++;
+
+        const tName = topicMap.get(p.topic_id) ?? "Other";
+        if (!topicStats[tName]) topicStats[tName] = { total: 0, solved: 0 };
+        topicStats[tName].total++;
+        if (isSol) topicStats[tName].solved++;
+      });
+
+      const totalRel = relevant.length;
+      const remaining = Math.max(0, totalRel - solved);
+
+      // Deterministic readiness: null if user has 0 solves or 0 relevant problems
+      let score: number | null = null;
+      if (totalUserSolves > 0 && totalRel > 0) {
+        score = Math.round((solved / totalRel) * 100);
+      }
+
+      // Weak topics (<50% solved among relevant topics)
+      const weakTopics = Object.entries(topicStats)
+        .filter(([_, st]) => st.solved / Math.max(1, st.total) < 0.5)
+        .map(([t]) => t);
+
+      const coreTopics =
+        company.focus_topics && company.focus_topics.length > 0
+          ? company.focus_topics
+          : Object.keys(topicStats).slice(0, 4);
+
+      map.set(company.id, {
+        totalRelevant: totalRel,
+        solvedCount: solved,
+        inProgressCount: inProgress,
+        remainingCount: remaining,
+        readinessScore: score,
+        coreTopics,
+        weakTopics: weakTopics.slice(0, 3),
+        relevantProblems: relevant,
+      });
+    });
+
+    return map;
+  }, [companies, problems, topicMap, userProgressMap, totalUserSolves]);
+
+  // Overall KPI summaries
+  const targetCompanies = useMemo(() => {
+    return companies.filter((c) => userFocus.has(c.id));
+  }, [companies, userFocus]);
+
+  const readyCompaniesCount = useMemo(() => {
+    let count = 0;
+    targetCompanies.forEach((c) => {
+      const stats = companyAnalytics.get(c.id);
+      if (stats?.readinessScore !== null && stats.readinessScore! >= 60) {
+        count++;
+      }
+    });
+    return count;
+  }, [targetCompanies, companyAnalytics]);
+
+  const avgReadiness = useMemo(() => {
+    if (targetCompanies.length === 0) return null;
+    let sum = 0;
+    let validCount = 0;
+    targetCompanies.forEach((c) => {
+      const stats = companyAnalytics.get(c.id);
+      if (stats?.readinessScore !== null) {
+        sum += stats.readinessScore!;
+        validCount++;
+      }
+    });
+    if (validCount === 0) return null;
+    return Math.round(sum / validCount);
+  }, [targetCompanies, companyAnalytics]);
+
+  // Overlap topics across target companies
+  const targetOverlapTopics = useMemo(() => {
+    if (targetCompanies.length === 0) return [];
+    const topicCounts: Record<string, number> = {};
+    targetCompanies.forEach((c) => {
+      const stats = companyAnalytics.get(c.id);
+      const topics = stats?.coreTopics ?? [];
+      topics.forEach((t) => {
+        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
+      });
+    });
+    return Object.entries(topicCounts)
+      .filter(([_, cnt]) => cnt >= 2 || targetCompanies.length === 1)
+      .sort((a, b) => b[1] - a[1])
+      .map(([t]) => t);
+  }, [targetCompanies, companyAnalytics]);
+
+  // "Your Next Step" actionable recommendation
+  const nextStepRecommendation = useMemo(() => {
+    if (targetCompanies.length === 0) {
+      return {
+        title: "Select your target companies",
+        description: "Choose companies you want to prepare for to unlock target intelligence & strategy.",
+        actionText: "Browse Companies Below",
+        targetCompanyId: null,
+      };
+    }
+
+    if (totalUserSolves === 0) {
+      return {
+        title: "Start solving DSA problems to build company readiness",
+        description: "Your target companies are selected. Practice relevant problems to unlock readiness scores.",
+        actionText: "Explore Problem Library →",
+        targetCompanyId: null,
+      };
+    }
+
+    // Find target company with lowest readiness or weakest topic
+    let lowestTarget: Company | null = null;
+    let lowestScore = 999;
+    let weakestTopic = "";
+
+    targetCompanies.forEach((c) => {
+      const stats = companyAnalytics.get(c.id);
+      const score = stats?.readinessScore ?? 0;
+      if (score < lowestScore) {
+        lowestScore = score;
+        lowestTarget = c;
+        weakestTopic = stats?.weakTopics[0] ?? stats?.coreTopics[0] ?? "DSA";
+      }
+    });
+
+    if (lowestTarget) {
+      return {
+        title: `Strengthen ${weakestTopic} before interviewing at ${(lowestTarget as Company).company_name}`,
+        description: `Your preparation for ${(lowestTarget as Company).company_name} is lowest in ${weakestTopic}. Practice relevant problems to level up.`,
+        actionText: `View ${(lowestTarget as Company).company_name} Strategy →`,
+        targetCompanyId: (lowestTarget as Company).id,
+      };
+    }
+
+    return {
+      title: "Continue company-focused DSA practice",
+      description: "Maintain your consistency and tackle medium-difficulty problems.",
+      actionText: "Explore Problem Library →",
+      targetCompanyId: null,
+    };
+  }, [targetCompanies, totalUserSolves, companyAnalytics]);
+
   if (loading) {
     return (
-      <div className="grid place-items-center min-h-[60vh]">
-        <div className="h-8 w-8 rounded-full border-2 border-aurora border-t-transparent animate-spin" />
-      </div>
+      <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-8">
+        <div className="h-6 w-36 glass rounded animate-pulse" />
+        <div className="h-10 w-72 glass rounded animate-pulse" />
+        <div className="grid gap-4 md:grid-cols-4">
+          {[1, 2, 3, 4].map((i) => (
+            <div key={i} className="h-24 glass-strong rounded-3xl animate-pulse" />
+          ))}
+        </div>
+        <div className="grid md:grid-cols-3 gap-5">
+          {[1, 2, 3, 4, 5, 6].map((i) => (
+            <div key={i} className="h-64 glass-strong rounded-3xl animate-pulse" />
+          ))}
+        </div>
+      </main>
     );
   }
 
   return (
     <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-8">
+      {/* Back Link */}
       <Link
         to="/dashboard/dsa"
-        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
       >
-        <ArrowLeft className="h-3 w-3" /> Back to DSA Command Center
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
       </Link>
 
+      {/* Hero Header */}
       <div>
-        <h1 className="font-display text-4xl font-bold">Target Companies</h1>
-        <p className="text-sm text-muted-foreground mt-2">
-          Select companies to build a targeted preparation strategy and view specific analytics.
+        <h1 className="font-display text-3xl md:text-4xl font-bold tracking-tight text-foreground flex flex-wrap items-center gap-3">
+          <span>Target Companies</span>
+          <span className="text-xs font-mono font-medium text-aurora bg-aurora/10 border border-aurora/20 px-3 py-1 rounded-full inline-flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-aurora" /> Interview Intelligence
+          </span>
+        </h1>
+        <p className="text-xs md:text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
+          Choose your target companies and turn your DSA practice into a focused, company-specific interview preparation plan.
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {companies.map((company, idx) => {
-          const selected = userFocus.has(company.id);
-          
-          const getDifficultyColor = (diff: string | null) => {
-            if (!diff) return "text-muted-foreground";
-            const lower = diff.toLowerCase();
-            if (lower === 'hard') return "text-red-400";
-            if (lower === 'medium') return "text-yellow-400";
-            return "text-green-400";
-          };
-
-          return (
-            <motion.button
-              key={company.id}
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ delay: idx * 0.03 }}
-              onClick={() => toggleCompany(company.id)}
-              className={`relative rounded-3xl p-6 text-left transition-all duration-300 group overflow-hidden ${
-                selected 
-                  ? "bg-gradient-to-br from-aurora/10 to-aurora/5 border border-aurora/50 shadow-[0_0_20px_rgba(var(--aurora-rgb),0.15)]" 
-                  : "glass-strong hover:bg-white/10 hover:-translate-y-1"
-              }`}
-            >
-              {selected && (
-                <div className="absolute top-4 right-4 rounded-full bg-aurora p-1.5 shadow-lg shadow-aurora/20">
-                  <Check className="h-4 w-4 text-primary-foreground" />
-                </div>
-              )}
-              
-              <div className="flex items-start gap-4 mb-4">
-                <div className="h-12 w-12 rounded-2xl bg-black/40 border border-white/10 grid place-items-center mt-0.5 shadow-inner">
-                  <Briefcase className="h-6 w-6 text-aurora" />
-                </div>
-                <div className="flex-1 pr-6">
-                  <div className="font-display font-bold text-xl leading-tight">{company.company_name}</div>
-                  <div className="text-xs text-muted-foreground mt-1 line-clamp-1">
-                    {company.description ?? "Target company prep"}
-                  </div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 mb-4">
-                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-1">
-                    <Code2 className="w-3 h-3" /> OA Diff
-                  </div>
-                  <div className={`text-sm font-medium capitalize ${getDifficultyColor(company.oa_difficulty)}`}>
-                    {company.oa_difficulty || 'Unknown'}
-                  </div>
-                </div>
-                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-1">
-                    <Users className="w-3 h-3" /> Interview Diff
-                  </div>
-                  <div className={`text-sm font-medium capitalize ${getDifficultyColor(company.interview_difficulty)}`}>
-                    {company.interview_difficulty || 'Unknown'}
-                  </div>
-                </div>
-                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-1">
-                    <Activity className="w-3 h-3" /> Hiring Freq
-                  </div>
-                  <div className="text-sm font-medium text-foreground capitalize">
-                    {company.hiring_frequency || 'Unknown'}
-                  </div>
-                </div>
-                <div className="bg-black/20 rounded-xl p-3 border border-white/5">
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground flex items-center gap-1 mb-1">
-                    <Layers className="w-3 h-3" /> Questions
-                  </div>
-                  <div className="text-sm font-medium text-foreground">
-                    {company.question_count || 0}+
-                  </div>
-                </div>
-              </div>
-
-              {company.focus_topics?.length ? (
-                <div>
-                  <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Core Focus</div>
-                  <div className="flex flex-wrap gap-1.5">
-                    {company.focus_topics.slice(0,4).map((topic) => (
-                      <span key={topic} className="rounded-md bg-white/5 px-2 py-1 text-[10px] border border-white/5 text-primary/80">
-                        {topic}
-                      </span>
-                    ))}
-                    {company.focus_topics.length > 4 && (
-                      <span className="rounded-md bg-white/5 px-2 py-1 text-[10px] border border-white/5 text-muted-foreground">
-                        +{company.focus_topics.length - 4}
-                      </span>
-                    )}
-                  </div>
-                </div>
-              ) : null}
-            </motion.button>
-          );
-        })}
-      </div>
-
-      {userFocus.size > 0 && (
-        <div className="glass-strong rounded-3xl p-6 border border-aurora/20">
-          <h3 className="font-display font-bold flex items-center gap-2">
-            Selected Targets <span className="bg-aurora text-primary-foreground text-xs px-2 py-0.5 rounded-full">{userFocus.size}</span>
-          </h3>
-          <p className="text-sm text-muted-foreground mt-1 mb-4">Your AI Mentor will bias recommendations towards these companies.</p>
-          <div className="flex flex-wrap gap-2">
-            {companies
-              .filter((c) => userFocus.has(c.id))
-              .map((c) => (
-                <span
-                  key={c.id}
-                  className="inline-flex items-center gap-2 rounded-full bg-aurora/10 border border-aurora/30 px-4 py-1.5 text-sm text-aurora font-medium group hover:bg-aurora/20 transition-colors cursor-default"
-                >
-                  {c.company_name}{" "}
-                  <button
-                    onClick={(e) => { e.stopPropagation(); toggleCompany(c.id); }}
-                    className="text-aurora/60 hover:text-aurora transition-colors cursor-pointer"
-                  >
-                    ×
-                  </button>
-                </span>
-              ))}
+      {/* KPI Overview Bar */}
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="glass-strong rounded-3xl p-5 border border-white/5 space-y-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            Target Companies
+          </div>
+          <div className="font-display text-2xl md:text-3xl font-bold text-foreground">
+            {companies.length}
           </div>
         </div>
+        <div className="glass-strong rounded-3xl p-5 border border-white/5 space-y-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            Your Targets
+          </div>
+          <div className="font-display text-2xl md:text-3xl font-bold text-aurora">
+            {userFocus.size}
+          </div>
+        </div>
+        <div className="glass-strong rounded-3xl p-5 border border-white/5 space-y-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            Companies Ready
+          </div>
+          <div className="font-display text-2xl md:text-3xl font-bold text-green-400">
+            {readyCompaniesCount}
+          </div>
+        </div>
+        <div className="glass-strong rounded-3xl p-5 border border-white/5 space-y-1">
+          <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            Average Readiness
+          </div>
+          <div className="font-display text-2xl md:text-3xl font-bold text-accent">
+            {avgReadiness !== null ? `${avgReadiness}%` : "Not enough data"}
+          </div>
+        </div>
+      </div>
+
+      {/* Why Target A Company Section */}
+      <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-4">
+        <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground font-mono">
+          <Compass className="h-4 w-4 text-aurora" />
+          <span>Why Target A Company?</span>
+        </div>
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1.5">
+            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+              <Target className="w-3.5 h-3.5 text-aurora" /> Company Preparation
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Know which DSA topics and interview patterns matter most for your specific target role.
+            </p>
+          </div>
+          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1.5">
+            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+              <Activity className="w-3.5 h-3.5 text-accent" /> Personalized Readiness
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Compare your current verified DSA solves directly against company requirements.
+            </p>
+          </div>
+          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1.5">
+            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+              <Code2 className="w-3.5 h-3.5 text-green-400" /> Focused Practice
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Practice high-frequency company problems instead of randomly solving questions.
+            </p>
+          </div>
+          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1.5">
+            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
+              <TrendingUp className="w-3.5 h-3.5 text-yellow-400" /> Progress Tracking
+            </div>
+            <p className="text-[11px] text-muted-foreground leading-relaxed">
+              Watch your readiness score improve dynamically as you solve and verify solutions.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      {/* Your Next Step Banner */}
+      <div className="glass-strong rounded-3xl p-6 border border-aurora/30 bg-aurora/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div className="space-y-1">
+          <div className="text-[10px] uppercase tracking-widest text-aurora font-mono font-semibold flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-aurora" /> Your Next Step
+          </div>
+          <h3 className="font-display font-bold text-lg text-white">
+            {nextStepRecommendation.title}
+          </h3>
+          <p className="text-xs text-muted-foreground max-w-xl">
+            {nextStepRecommendation.description}
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            if (nextStepRecommendation.targetCompanyId) {
+              const comp = companies.find((c) => c.id === nextStepRecommendation.targetCompanyId);
+              if (comp) setActiveStrategyCompany(comp);
+            } else {
+              navigate({ to: "/dsa-problems" });
+            }
+          }}
+          className="glass rounded-full px-5 py-2.5 text-xs font-semibold text-aurora hover:bg-white/10 transition-colors border border-aurora/30 shrink-0 flex items-center gap-2"
+        >
+          <span>{nextStepRecommendation.actionText}</span>
+          <ChevronRight className="w-4 h-4" />
+        </button>
+      </div>
+
+      {/* Target Overlap Banner (if targets selected) */}
+      {targetCompanies.length > 0 && (
+        <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-3">
+          <div className="flex items-center justify-between">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono font-medium flex items-center gap-2">
+              <Layers className="w-4 h-4 text-aurora" />
+              <span>Target Preparation Overlap ({targetCompanies.length} Selected)</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap gap-2 pt-1">
+            {targetOverlapTopics.map((topic) => (
+              <span
+                key={topic}
+                className="bg-aurora/10 text-aurora border border-aurora/20 px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5"
+              >
+                <Check className="w-3.5 h-3.5" />
+                <span>{topic}</span>
+              </span>
+            ))}
+          </div>
+          <p className="text-xs text-muted-foreground">
+            These topics overlap across your selected target companies. Mastering them maximizes your interview coverage.
+          </p>
+        </div>
       )}
+
+      {/* All Company Cards Grid */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-display font-semibold text-lg text-white">All Companies</h2>
+          <span className="text-xs text-muted-foreground font-mono">
+            {companies.length} Available
+          </span>
+        </div>
+
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {companies.map((company, idx) => {
+            const selected = userFocus.has(company.id);
+            const stats = companyAnalytics.get(company.id);
+
+            const totalRel = stats?.totalRelevant ?? 0;
+            const solvedCnt = stats?.solvedCount ?? 0;
+            const readiness = stats?.readinessScore ?? null;
+            const coreTopics = stats?.coreTopics ?? company.focus_topics ?? [];
+            const weakTopics = stats?.weakTopics ?? [];
+
+            return (
+              <motion.div
+                key={company.id}
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.02 }}
+                className={`relative rounded-3xl p-6 text-left transition-all duration-300 group flex flex-col justify-between border ${
+                  selected
+                    ? "bg-gradient-to-br from-aurora/10 to-aurora/5 border-aurora/50 shadow-[0_0_20px_rgba(168,85,247,0.15)]"
+                    : "glass-strong border-white/5 hover:border-white/10 hover:-translate-y-1"
+                }`}
+              >
+                <div className="space-y-4">
+                  {/* Top row: Logo, Name, Target Toggle */}
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="h-12 w-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
+                        <CompanyLogo name={company.company_name} className="w-7 h-7" />
+                      </div>
+                      <div className="min-w-0">
+                        <h3 className="font-display font-bold text-lg text-white truncate leading-tight">
+                          {company.company_name}
+                        </h3>
+                        <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                          {company.description ?? "Interview Preparation"}
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* Target Toggle Button */}
+                    <button
+                      onClick={() => toggleCompany(company.id)}
+                      className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${
+                        selected
+                          ? "bg-aurora text-primary-foreground font-semibold shadow-md"
+                          : "glass text-muted-foreground hover:text-white border border-white/10 hover:border-white/20"
+                      }`}
+                    >
+                      {selected ? (
+                        <>
+                          <Check className="w-3.5 h-3.5" /> Target
+                        </>
+                      ) : (
+                        <>
+                          <Plus className="w-3.5 h-3.5" /> Add Target
+                        </>
+                      )}
+                    </button>
+                  </div>
+
+                  {/* Readiness & Solved Stats */}
+                  <div className="grid grid-cols-2 gap-3 pt-1">
+                    <div className="bg-black/20 rounded-2xl p-3 border border-white/5 space-y-0.5">
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                        Readiness
+                      </div>
+                      <div className="text-sm font-bold text-aurora">
+                        {readiness !== null ? `${readiness}%` : "Not enough data"}
+                      </div>
+                    </div>
+                    <div className="bg-black/20 rounded-2xl p-3 border border-white/5 space-y-0.5">
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                        Relevant Solved
+                      </div>
+                      <div className="text-sm font-bold text-green-400">
+                        {solvedCnt} {totalRel > 0 ? `/ ${totalRel}` : "solved"}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Core Topics */}
+                  {coreTopics.length > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                        Core Topics
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {coreTopics.slice(0, 4).map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-md bg-white/5 px-2 py-0.5 text-[10px] border border-white/5 text-primary/80 font-medium"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Weak Areas (if target & weak topics exist) */}
+                  {selected && weakTopics.length > 0 && (
+                    <div className="space-y-1.5">
+                      <div className="text-[10px] uppercase tracking-widest text-yellow-400/90 font-mono font-medium">
+                        Weak Areas
+                      </div>
+                      <div className="flex flex-wrap gap-1.5">
+                        {weakTopics.map((t) => (
+                          <span
+                            key={t}
+                            className="rounded-md bg-yellow-500/10 text-yellow-400 px-2 py-0.5 text-[10px] border border-yellow-500/20 font-medium"
+                          >
+                            {t}
+                          </span>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                {/* Primary CTA */}
+                <div className="pt-4 mt-4 border-t border-white/5">
+                  <button
+                    onClick={() => setActiveStrategyCompany(company)}
+                    className="w-full glass rounded-xl py-2 px-4 text-xs font-semibold text-aurora hover:bg-white/10 transition-colors flex items-center justify-center gap-1.5 border border-white/10"
+                  >
+                    <span>{selected ? "Continue Preparation →" : "View Strategy →"}</span>
+                  </button>
+                </div>
+              </motion.div>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Company Strategy Modal */}
+      <AnimatePresence>
+        {activeStrategyCompany && (
+          <CompanyStrategyModal
+            company={activeStrategyCompany}
+            stats={companyAnalytics.get(activeStrategyCompany.id)}
+            isSelected={userFocus.has(activeStrategyCompany.id)}
+            onToggleTarget={() => toggleCompany(activeStrategyCompany.id)}
+            onClose={() => setActiveStrategyCompany(null)}
+            userProgressMap={userProgressMap}
+            topicMap={topicMap}
+          />
+        )}
+      </AnimatePresence>
     </main>
+  );
+}
+
+// ----------------------------------------------------------------
+// Company Strategy Modal Component
+// ----------------------------------------------------------------
+
+interface StrategyModalProps {
+  company: Company;
+  stats: any;
+  isSelected: boolean;
+  onToggleTarget: () => void;
+  onClose: () => void;
+  userProgressMap: Map<string, UserProgress>;
+  topicMap: Map<string, string>;
+}
+
+function CompanyStrategyModal({
+  company,
+  stats,
+  isSelected,
+  onToggleTarget,
+  onClose,
+  userProgressMap,
+  topicMap,
+}: StrategyModalProps) {
+  const navigate = useNavigate();
+
+  const totalRel = stats?.totalRelevant ?? 0;
+  const solvedCnt = stats?.solvedCount ?? 0;
+  const inProgressCnt = stats?.inProgressCount ?? 0;
+  const remainingCnt = stats?.remainingCount ?? 0;
+  const readiness = stats?.readinessScore ?? null;
+  const relevantProblems: Problem[] = stats?.relevantProblems ?? [];
+
+  // Categorize & recommend next problems
+  const recommendedProblems = useMemo(() => {
+    // Filter out already solved problems
+    const unsolved = relevantProblems.filter((p) => {
+      const prog = userProgressMap.get(p.id);
+      return !(prog?.solved === true || prog?.status === "solved");
+    });
+
+    // Sort: 1) in progress first, 2) weak topics first, 3) easy/medium first
+    unsolved.sort((a, b) => {
+      const progA = userProgressMap.get(a.id);
+      const progB = userProgressMap.get(b.id);
+      const inProgA = progA?.status === "in_progress" || progA?.status === "attempted";
+      const inProgB = progB?.status === "in_progress" || progB?.status === "attempted";
+      if (inProgA && !inProgB) return -1;
+      if (!inProgA && inProgB) return 1;
+
+      const diffOrder: Record<string, number> = { easy: 1, medium: 2, hard: 3 };
+      const dA = diffOrder[a.difficulty?.toLowerCase()] ?? 2;
+      const dB = diffOrder[b.difficulty?.toLowerCase()] ?? 2;
+      return dA - dB;
+    });
+
+    return unsolved.slice(0, 5);
+  }, [relevantProblems, userProgressMap]);
+
+  return (
+    <div className="fixed inset-0 z-50 grid place-items-center p-4 bg-black/80 backdrop-blur-md overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.95 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.95 }}
+        className="w-full max-w-3xl glass-strong rounded-3xl p-6 md:p-8 border border-white/10 space-y-6 my-8 shadow-2xl relative"
+      >
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-6 right-6 p-2 rounded-full glass text-muted-foreground hover:text-white transition-colors"
+          aria-label="Close strategy modal"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Modal Header */}
+        <div className="flex items-start gap-4">
+          <div className="h-14 w-14 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
+            <CompanyLogo name={company.company_name} className="w-8 h-8" />
+          </div>
+          <div className="flex-1 min-w-0 pr-8">
+            <div className="flex items-center gap-2">
+              <h2 className="font-display text-2xl font-bold text-white truncate">
+                {company.company_name} Strategy
+              </h2>
+              {isSelected && (
+                <span className="text-[10px] bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-0.5 rounded-full font-medium shrink-0">
+                  Target Company
+                </span>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground mt-1">
+              {company.description ?? "Interview Preparation & Practice Roadmap"}
+            </p>
+          </div>
+        </div>
+
+        {/* Target Action Button */}
+        <div className="flex items-center justify-between glass rounded-2xl p-4 border border-white/5">
+          <div className="text-xs text-muted-foreground">
+            {isSelected
+              ? "This company is in your active target list."
+              : "Add to target list to bias recommendations & track readiness."}
+          </div>
+          <button
+            onClick={onToggleTarget}
+            className={`text-xs px-4 py-2 rounded-full font-semibold transition-all flex items-center gap-1.5 ${
+              isSelected
+                ? "bg-aurora text-primary-foreground"
+                : "glass border border-white/10 hover:border-aurora/40 text-aurora"
+            }`}
+          >
+            {isSelected ? (
+              <>
+                <Check className="w-3.5 h-3.5" /> Target Company
+              </>
+            ) : (
+              <>
+                <Plus className="w-3.5 h-3.5" /> Add Target Company
+              </>
+            )}
+          </button>
+        </div>
+
+        {/* Readiness Bar & Stats */}
+        <div className="grid sm:grid-cols-3 gap-4">
+          <div className="sm:col-span-1 glass rounded-2xl p-4 border border-white/5 flex flex-col justify-between space-y-2">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+              Overall Readiness
+            </div>
+            <div className="font-display text-3xl font-bold text-aurora">
+              {readiness !== null ? `${readiness}%` : "Not enough data"}
+            </div>
+            <div className="text-[11px] text-muted-foreground leading-tight">
+              {readiness !== null
+                ? `${solvedCnt} of ${totalRel} relevant problems solved`
+                : "Solve company problems to unlock score"}
+            </div>
+          </div>
+
+          <div className="sm:col-span-2 glass rounded-2xl p-4 border border-white/5 space-y-3">
+            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+              Preparation Progress Breakdown
+            </div>
+            <div className="grid grid-cols-3 gap-2 text-center font-mono">
+              <div className="glass rounded-xl p-2">
+                <div className="text-sm font-bold text-green-400">{solvedCnt}</div>
+                <div className="text-[9px] text-muted-foreground">Solved</div>
+              </div>
+              <div className="glass rounded-xl p-2">
+                <div className="text-sm font-bold text-yellow-400">{inProgressCnt}</div>
+                <div className="text-[9px] text-muted-foreground">In Progress</div>
+              </div>
+              <div className="glass rounded-xl p-2">
+                <div className="text-sm font-bold text-muted-foreground">{remainingCnt}</div>
+                <div className="text-[9px] text-muted-foreground">Remaining</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Core Topics Breakdown */}
+        <div className="space-y-3">
+          <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono font-medium">
+            Core Topics & Coverage
+          </div>
+          <div className="grid sm:grid-cols-2 gap-2.5">
+            {(company.focus_topics ?? ["Arrays", "Strings", "Trees", "Graphs"]).map((t) => (
+              <div
+                key={t}
+                className="glass rounded-xl p-3 border border-white/5 flex items-center justify-between text-xs"
+              >
+                <span className="font-medium text-white">{t}</span>
+                <span className="text-[10px] bg-white/5 px-2 py-0.5 rounded text-muted-foreground font-mono">
+                  High Priority
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Recommended Next Problems */}
+        <div className="space-y-3 pt-2">
+          <div className="flex items-center justify-between">
+            <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono font-medium flex items-center gap-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-aurora" />
+              <span>What Should I Practice Next?</span>
+            </div>
+            <span className="text-[10px] text-muted-foreground font-mono">
+              {recommendedProblems.length} Recommended
+            </span>
+          </div>
+
+          {recommendedProblems.length === 0 ? (
+            <div className="text-center py-6 glass rounded-2xl border border-white/5 space-y-2">
+              <p className="text-xs text-muted-foreground">
+                You have completed all current relevant problems for this company!
+              </p>
+              <button
+                onClick={() => navigate({ to: "/dsa-problems" })}
+                className="glass px-4 py-2 rounded-full text-xs text-aurora hover:bg-white/10 transition-colors"
+              >
+                Explore Problem Library →
+              </button>
+            </div>
+          ) : (
+            <div className="space-y-2">
+              {recommendedProblems.map((prob) => {
+                const prog = userProgressMap.get(prob.id);
+                const inProg = prog?.status === "in_progress" || prog?.status === "attempted";
+
+                return (
+                  <div
+                    key={prob.id}
+                    className="glass rounded-2xl p-3.5 flex items-center justify-between gap-3 border border-white/5 hover:border-white/10 transition-colors"
+                  >
+                    <div className="min-w-0 flex-1 space-y-1">
+                      <div className="flex items-center gap-2">
+                        <span
+                          className={`text-[9px] uppercase tracking-widest px-1.5 py-0.5 rounded font-mono font-semibold ${
+                            prob.difficulty?.toLowerCase() === "easy"
+                              ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                              : prob.difficulty?.toLowerCase() === "medium"
+                              ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
+                              : "bg-red-500/10 text-red-400 border border-red-500/20"
+                          }`}
+                        >
+                          {prob.difficulty}
+                        </span>
+                        <span className="text-xs font-semibold text-white truncate">
+                          {prob.title}
+                        </span>
+                      </div>
+                      <div className="text-[10px] text-muted-foreground flex items-center gap-2">
+                        <span>{topicMap.get(prob.topic_id) ?? "Algorithm"}</span>
+                        {inProg && (
+                          <span className="text-aurora font-medium">In Progress</span>
+                        )}
+                      </div>
+                    </div>
+
+                    <Link
+                      to="/dsa-workspace/$problemId"
+                      params={{ problemId: prob.id }}
+                      className="glass rounded-xl px-3 py-1.5 text-xs font-semibold text-aurora hover:bg-white/10 transition-colors border border-aurora/30 shrink-0 flex items-center gap-1"
+                    >
+                      <span>Practice</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </Link>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+
+        {/* Modal Footer */}
+        <div className="pt-4 border-t border-white/5 flex justify-end">
+          <button
+            onClick={onClose}
+            className="glass rounded-full px-6 py-2 text-xs font-medium text-muted-foreground hover:text-white transition-colors border border-white/10"
+          >
+            Close Strategy
+          </button>
+        </div>
+      </motion.div>
+    </div>
   );
 }
