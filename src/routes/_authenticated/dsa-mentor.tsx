@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -60,15 +60,6 @@ export const Route = createFileRoute("/_authenticated/dsa-mentor")({
   component: DSAMentorPage,
   head: () => ({ meta: [{ title: "Coding Intelligence — SyncRole" }] }),
 });
-
-const BOOT_SEQUENCE = [
-  "Analyzing Coding Journey...",
-  "Evaluating topic mastery...",
-  "Checking coding patterns...",
-  "Generating personalized roadmap...",
-  "Preparing interview insights...",
-  "Analysis Complete",
-];
 
 // Known company logo URLs with white filter for dark mode
 const COMPANY_LOGOS: Record<string, string> = {
@@ -150,9 +141,6 @@ function getTopicPatternIcon(name: string) {
 
 function DSAMentorPage() {
   const navigate = useNavigate();
-  const [booting, setBooting] = useState(true);
-  const [bootStep, setBootStep] = useState(0);
-  const [dataReady, setDataReady] = useState(false);
 
   const [insights, setInsights] = useState<TopicInsight[]>([]);
   const [strengths, setStrengths] = useState<StrengthWeakness[]>([]);
@@ -203,27 +191,6 @@ function DSAMentorPage() {
   }, [chatBusy]);
 
   useEffect(() => {
-    let currentStep = 0;
-    const interval = setInterval(() => {
-      currentStep++;
-      if (currentStep < BOOT_SEQUENCE.length) {
-        setBootStep(currentStep);
-      } else {
-        clearInterval(interval);
-        if (dataReady) setTimeout(() => setBooting(false), 450);
-      }
-    }, 400);
-    return () => clearInterval(interval);
-  }, [dataReady]);
-
-  useEffect(() => {
-    if (bootStep === BOOT_SEQUENCE.length - 1 && dataReady) {
-      const t = setTimeout(() => setBooting(false), 450);
-      return () => clearTimeout(t);
-    }
-  }, [bootStep, dataReady]);
-
-  useEffect(() => {
     if (chatContainerRef.current) {
       chatContainerRef.current.scrollTo({
         top: chatContainerRef.current.scrollHeight,
@@ -252,11 +219,9 @@ function DSAMentorPage() {
           setPredictions(analytics.predictions);
           setRoadmap(analytics.roadmap);
           setStats(analytics.stats);
-          setDataReady(true);
         }
       } catch (err) {
         console.error("Error loading DSA Mentor data:", err);
-        if (!cancelled) setDataReady(true);
       }
     }
     loadData();
@@ -292,54 +257,6 @@ function DSAMentorPage() {
     } finally {
       setChatBusy(false);
     }
-  }
-
-  // Boot animation screen
-  if (booting) {
-    return (
-      <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-br from-aurora/10 via-background to-background" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-96 h-96 bg-aurora/20 blur-[100px] rounded-full" />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.9 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="relative z-10 flex flex-col items-center"
-        >
-          <div className="relative w-20 h-20 mb-6">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 rounded-full border-2 border-aurora/30 border-t-aurora border-r-aurora"
-            />
-            <Cpu className="absolute inset-0 m-auto w-8 h-8 text-aurora" />
-          </div>
-          <div className="h-8 relative overflow-hidden w-64 text-center">
-            <AnimatePresence mode="popLayout">
-              <motion.div
-                key={bootStep}
-                initial={{ y: 15, opacity: 0 }}
-                animate={{ y: 0, opacity: 1 }}
-                exit={{ y: -15, opacity: 0 }}
-                transition={{ duration: 0.25 }}
-                className="text-base font-display font-medium text-foreground absolute inset-0 flex items-center justify-center"
-              >
-                {BOOT_SEQUENCE[bootStep]}
-              </motion.div>
-            </AnimatePresence>
-          </div>
-          <div className="w-56 h-1 bg-white/10 rounded-full mt-4 overflow-hidden">
-            <motion.div
-              className="h-full bg-aurora"
-              initial={{ width: 0 }}
-              animate={{
-                width: `${((bootStep + 1) / BOOT_SEQUENCE.length) * 100}%`,
-              }}
-              transition={{ duration: 0.4 }}
-            />
-          </div>
-        </motion.div>
-      </div>
-    );
   }
 
   // Pre-formatted DNA dimensions fallback matching reference image
@@ -395,7 +312,7 @@ function DSAMentorPage() {
         </Link>
       </div>
 
-      {/* Hero Header & High Confidence Badge */}
+      {/* Hero Header & High Confidence Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
@@ -451,7 +368,7 @@ function DSAMentorPage() {
                 <div key={d.name} className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium flex items-center gap-2">
-                      <div className="p-1 rounded bg-white/5 border border-white/10 shrink-0">
+                      <div className="p-1 rounded bg-aurora/10 border border-aurora/20 shrink-0 text-aurora">
                         <IconComp className="w-3.5 h-3.5 text-aurora" />
                       </div>
                       <span>{d.name}</span>
@@ -570,7 +487,7 @@ function DSAMentorPage() {
                     <div className="space-y-0.5">
                       <div className="font-semibold text-white flex items-center gap-2">
                         <div className="p-1 rounded bg-aurora/10 text-aurora">
-                          <PatternIconComp className="w-3.5 h-3.5" />
+                          <PatternIconComp className="w-3.5 h-3.5 text-aurora" />
                         </div>
                         <span>{p.name}</span>
                       </div>
@@ -916,7 +833,7 @@ function DSAMentorPage() {
               <div className="lg:col-span-7 space-y-4">
                 <div className="flex items-center gap-3">
                   <div className="h-14 w-14 rounded-2xl bg-aurora/20 border border-aurora/30 flex items-center justify-center text-aurora shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0">
-                    <Bot className="w-8 h-8" />
+                    <Bot className="w-8 h-8 text-aurora" />
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-xl md:text-2xl text-white">
