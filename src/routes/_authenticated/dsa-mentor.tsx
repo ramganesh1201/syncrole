@@ -41,6 +41,14 @@ import {
   GitBranch,
   Network,
   Hash,
+  Copy,
+  Check,
+  CheckCheck,
+  ThumbsUp,
+  ThumbsDown,
+  Paperclip,
+  Lock,
+  ArrowLeftRight,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnalyticsEngine } from "@/lib/analytics";
@@ -167,8 +175,23 @@ function DSAMentorPage() {
   const [chatBusy, setChatBusy] = useState(false);
   const [thinkingMessageIndex, setThinkingMessageIndex] = useState(0);
   const [chatMessages, setChatMessages] = useState<
-    Array<{ role: "user" | "assistant"; content: string; id: string }>
+    Array<{ role: "user" | "assistant"; content: string; id: string; timestamp?: string }>
   >([]);
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [feedbackMap, setFeedbackMap] = useState<Record<string, "like" | "dislike">>({});
+
+  const handleCopy = (id: string, content: string) => {
+    void navigator.clipboard.writeText(content);
+    setCopiedId(id);
+    setTimeout(() => setCopiedId(null), 2000);
+  };
+
+  const handleFeedback = (id: string, type: "like" | "dislike") => {
+    setFeedbackMap((prev) => ({
+      ...prev,
+      [id]: prev[id] === type ? (undefined as any) : type,
+    }));
+  };
 
   const THINKING_MESSAGES = [
     "Analyzing your code structure...",
@@ -233,18 +256,21 @@ function DSAMentorPage() {
   async function handleSend(textToSend?: string) {
     const q = (textToSend ?? chatInput).trim();
     if (!q) return;
+    const timeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
     setChatInput("");
-    setChatMessages((m) => [...m, { role: "user", content: q, id: Date.now().toString() }]);
+    setChatMessages((m) => [...m, { role: "user", content: q, id: Date.now().toString(), timestamp: timeStr }]);
     setChatBusy(true);
 
     try {
       const { reply } = await OpenRouterService.invokeChat(q, fullAnalytics);
+      const replyTimeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       setChatMessages((m) => [
         ...m,
-        { role: "assistant", content: reply, id: (Date.now() + 1).toString() },
+        { role: "assistant", content: reply, id: (Date.now() + 1).toString(), timestamp: replyTimeStr },
       ]);
     } catch (err) {
       console.error(err);
+      const errTimeStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
       setChatMessages((m) => [
         ...m,
         {
@@ -252,6 +278,7 @@ function DSAMentorPage() {
           content:
             "I encountered an error connecting to my neural core. Please try again.",
           id: Date.now().toString(),
+          timestamp: errTimeStr,
         },
       ]);
     } finally {
@@ -799,109 +826,89 @@ function DSAMentorPage() {
       {/* ---------------------------------------------------------------- */}
       {/* SECTION 6: AI CODE COACH WORKSPACE */}
       {/* ---------------------------------------------------------------- */}
-      <div className="glass-strong rounded-3xl border border-aurora/40 shadow-[0_0_50px_rgba(168,85,247,0.15)] relative overflow-hidden flex flex-col mt-8 bg-black/40">
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-36 bg-aurora/10 blur-[100px] rounded-full pointer-events-none" />
+      <div className="rounded-2xl border border-[#1e202e] bg-[#0b0c10] shadow-2xl relative overflow-hidden flex flex-col mt-8 text-slate-100">
+        {/* Subtle top glow accent line */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/30 to-transparent pointer-events-none" />
 
         {/* Chat Header */}
-        <div className="flex items-center gap-4 p-5 md:p-6 border-b border-white/5 bg-black/40 relative z-10">
-          <div className="p-3 bg-gradient-to-br from-aurora to-aurora/80 rounded-2xl text-primary-foreground shadow-lg shadow-aurora/20">
-            <Bot className="w-6 h-6" />
+        <div className="flex items-center justify-between p-4 md:p-5 border-b border-[#1a1c29] bg-[#0b0c10]">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-[#171527] border border-[#2a2444] flex items-center justify-center text-purple-400 shrink-0">
+              <Bot className="w-5 h-5 text-purple-400" />
+            </div>
+            <div className="space-y-0.5">
+              <h2 className="font-display text-lg font-bold text-white tracking-tight flex items-center gap-2">
+                <span>AI Code Coach</span>
+              </h2>
+              <p className="text-xs text-slate-400">
+                Always here to help you solve, understand and master DSA.
+              </p>
+            </div>
           </div>
-          <div className="flex-1 min-w-0">
-            <h2 className="font-display text-xl font-bold tracking-tight text-white truncate flex items-center gap-2">
-              <span>AI Code Coach</span>
-            </h2>
-            <p className="text-xs text-muted-foreground truncate">
-              Always here to help you solve, understand and master DSA.
-            </p>
-          </div>
-          <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-green-500/10 border border-green-500/20 shrink-0">
-            <div className="w-2 h-2 rounded-full bg-green-500 animate-pulse" />
-            <span className="text-xs font-mono font-medium text-green-400">System Online</span>
+          <div className="flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span className="text-xs font-mono font-medium">System Online</span>
           </div>
         </div>
 
         {/* Messages / Hero Empty State Workspace Container */}
         <div
           ref={chatContainerRef}
-          className="p-6 overflow-y-auto flex flex-col gap-6 relative z-10 min-h-[380px] max-h-[600px] custom-scrollbar scroll-smooth"
+          className="p-4 md:p-6 overflow-y-auto flex flex-col gap-5 min-h-[360px] max-h-[580px] custom-scrollbar scroll-smooth"
         >
           {chatMessages.length === 0 ? (
             /* Prominent AI Hero Welcome & Feature Grid when no messages exist */
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-center py-4">
               {/* Left Hero Prompting Column */}
               <div className="lg:col-span-7 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-14 w-14 rounded-2xl bg-aurora/20 border border-aurora/30 flex items-center justify-center text-aurora shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0">
-                    <Bot className="w-8 h-8 text-aurora" />
+                <div className="flex items-start gap-3.5">
+                  <div className="w-11 h-11 rounded-xl bg-[#171527] border border-[#2a2444] flex items-center justify-center text-purple-400 shrink-0">
+                    <Bot className="w-6 h-6 text-purple-400" />
                   </div>
-                  <div>
-                    <h3 className="font-display font-bold text-xl md:text-2xl text-white">
+                  <div className="space-y-1">
+                    <h3 className="font-display font-bold text-lg md:text-xl text-white">
                       Ask anything. Solve better. Level up faster.
                     </h3>
-                    <p className="text-xs text-muted-foreground mt-0.5">
+                    <p className="text-xs text-slate-400 leading-relaxed max-w-lg">
                       Explain a concept, debug your code, understand why your solution fails, optimize your approach, or prepare for an interview.
                     </p>
-                  </div>
-                </div>
-
-                {/* Suggestion Chips */}
-                <div className="space-y-1.5 pt-2">
-                  <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                    TRY ASKING:
-                  </div>
-                  <div className="flex flex-wrap gap-2">
-                    {[
-                      "Explain Binary Search with steps",
-                      "Why is my solution failing?",
-                      "Optimize this code",
-                      "Help with dynamic programming",
-                    ].map((chipText) => (
-                      <button
-                        key={chipText}
-                        onClick={() => void handleSend(chipText)}
-                        className="glass px-3.5 py-1.5 rounded-full text-xs font-medium text-aurora hover:bg-aurora/10 transition-colors border border-aurora/20 text-left"
-                      >
-                        {chipText}
-                      </button>
-                    ))}
                   </div>
                 </div>
               </div>
 
               {/* Right Feature Highlights Column */}
-              <div className="lg:col-span-5 bg-white/5 rounded-2xl p-4 border border-white/5 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-semibold text-white pb-1 border-b border-white/5 font-mono">
-                  <FileText className="w-4 h-4 text-aurora" />
+              <div className="lg:col-span-5 bg-[#12131c] rounded-xl p-4 border border-[#20222f] space-y-3">
+                <div className="flex items-center gap-2 text-xs font-semibold text-white pb-2 border-b border-white/5 font-mono">
+                  <FileText className="w-4 h-4 text-purple-400" />
                   <span>Coach Capabilities</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                   <div className="flex items-start gap-2">
-                    <BookOpen className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <BookOpen className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Explain concepts clearly</div>
-                      <div className="text-[10px] text-muted-foreground">Step-by-step guidance</div>
+                      <div className="text-[10px] text-slate-400">Step-by-step guidance</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Bug className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <Bug className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Review & debug code</div>
-                      <div className="text-[10px] text-muted-foreground">Find issues & optimize</div>
+                      <div className="text-[10px] text-slate-400">Find issues & optimize</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Lightbulb className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <Lightbulb className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Practice smarter</div>
-                      <div className="text-[10px] text-muted-foreground">Curated problems & hints</div>
+                      <div className="text-[10px] text-slate-400">Curated problems & hints</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <MessageSquareCode className="w-3.5 h-3.5 text-aurora shrink-0 mt-0.5" />
+                    <MessageSquareCode className="w-3.5 h-3.5 text-purple-400 shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-white">Interview prep</div>
-                      <div className="text-[10px] text-muted-foreground">Real-world insights</div>
+                      <div className="text-[10px] text-slate-400">Real-world insights</div>
                     </div>
                   </div>
                 </div>
@@ -913,72 +920,109 @@ function DSAMentorPage() {
               {chatMessages.map((m) => (
                 <motion.div
                   key={m.id}
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.3, ease: [0.23, 1, 0.32, 1] }}
+                  transition={{ duration: 0.25 }}
                   className={cn(
                     "flex w-full",
                     m.role === "user" ? "justify-end" : "justify-start"
                   )}
                 >
-                  <div
-                    className={cn(
-                      "max-w-[95%] md:max-w-[85%] rounded-2xl p-5",
-                      m.role === "user"
-                        ? "bg-gradient-to-br from-aurora/90 to-aurora text-white rounded-tr-sm shadow-[0_4px_20px_rgba(168,85,247,0.3)] border border-aurora/50"
-                        : "bg-[#1E293B]/60 backdrop-blur-xl border border-white/10 rounded-tl-sm shadow-xl shadow-black/40"
-                    )}
-                  >
-                    {m.role === "assistant" ? (
-                      <MarkdownRenderer content={m.content} />
-                    ) : (
-                      <div className="text-[15px] leading-relaxed whitespace-pre-wrap">
+                  {m.role === "user" ? (
+                    /* User Message Bubble */
+                    <div className="max-w-[85%] md:max-w-[70%] bg-[#1c162e] border border-[#30254c] text-white rounded-2xl rounded-tr-xs p-4 shadow-sm space-y-1.5">
+                      <div className="text-sm leading-relaxed whitespace-pre-wrap">
                         {m.content}
                       </div>
-                    )}
-                  </div>
+                      <div className="flex items-center justify-end gap-1.5 text-[10px] text-slate-400 font-mono">
+                        <span>{m.timestamp || "11:47 AM"}</span>
+                        <CheckCheck className="w-3.5 h-3.5 text-purple-400" />
+                      </div>
+                    </div>
+                  ) : (
+                    /* Assistant Message Bubble */
+                    <div className="flex items-start gap-3 max-w-[95%] md:max-w-[85%]">
+                      <div className="w-9 h-9 rounded-xl bg-[#171527] border border-[#2a2444] flex items-center justify-center text-purple-400 shrink-0 mt-1">
+                        <Bot className="w-5 h-5 text-purple-400" />
+                      </div>
+                      <div className="bg-[#12131c] border border-[#20222f] text-slate-200 rounded-2xl rounded-tl-xs p-4 md:p-5 space-y-3 shadow-sm flex-1 min-w-0">
+                        <MarkdownRenderer content={m.content} />
+                        <div className="flex items-center justify-between pt-3 border-t border-white/5 text-[11px] text-slate-400 font-mono">
+                          <span>{m.timestamp || "11:47 AM"}</span>
+                          <div className="flex items-center gap-1">
+                            <button
+                              onClick={() => handleCopy(m.id, m.content)}
+                              title="Copy response"
+                              className="p-1.5 hover:bg-white/5 rounded-md hover:text-white transition-colors"
+                            >
+                              {copiedId === m.id ? (
+                                <Check className="w-3.5 h-3.5 text-emerald-400" />
+                              ) : (
+                                <Copy className="w-3.5 h-3.5" />
+                              )}
+                            </button>
+                            <button
+                              onClick={() => handleFeedback(m.id, "like")}
+                              title="Helpful"
+                              className={cn(
+                                "p-1.5 hover:bg-white/5 rounded-md hover:text-white transition-colors",
+                                feedbackMap[m.id] === "like" && "text-purple-400"
+                              )}
+                            >
+                              <ThumbsUp className="w-3.5 h-3.5" />
+                            </button>
+                            <button
+                              onClick={() => handleFeedback(m.id, "dislike")}
+                              title="Not helpful"
+                              className={cn(
+                                "p-1.5 hover:bg-white/5 rounded-md hover:text-white transition-colors",
+                                feedbackMap[m.id] === "dislike" && "text-red-400"
+                              )}
+                            >
+                              <ThumbsDown className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </motion.div>
               ))}
 
               {chatBusy && (
                 <motion.div
                   key="thinking"
-                  initial={{ opacity: 0, y: 15 }}
+                  initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95, transition: { duration: 0.2 } }}
-                  className="flex justify-start w-full"
+                  exit={{ opacity: 0, transition: { duration: 0.15 } }}
+                  className="flex items-start gap-3 max-w-[85%]"
                 >
-                  <div className="max-w-[85%] rounded-2xl rounded-tl-sm bg-[#1E293B]/60 backdrop-blur-xl border border-white/10 p-5 flex items-start gap-4 shadow-xl shadow-black/40 relative overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent w-[200%] animate-[shimmer_2s_infinite]" />
-
-                    <div className="p-2.5 bg-aurora/10 rounded-xl border border-aurora/20 relative z-10 shrink-0">
-                      <Loader2 className="w-5 h-5 text-aurora animate-spin" />
-                    </div>
-
-                    <div className="flex flex-col gap-1.5 relative z-10 pt-1">
-                      <AnimatePresence mode="wait">
-                        <motion.div
-                          key={thinkingMessageIndex}
-                          initial={{ opacity: 0, y: 5 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -5 }}
-                          transition={{ duration: 0.3 }}
-                          className="text-sm font-medium text-aurora"
-                        >
-                          {THINKING_MESSAGES[thinkingMessageIndex]}
-                        </motion.div>
-                      </AnimatePresence>
-                      <div className="flex items-center gap-1.5">
-                        <div className="w-1.5 h-1.5 bg-aurora/40 rounded-full animate-bounce" />
-                        <div
-                          className="w-1.5 h-1.5 bg-aurora/40 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.2s" }}
-                        />
-                        <div
-                          className="w-1.5 h-1.5 bg-aurora/40 rounded-full animate-bounce"
-                          style={{ animationDelay: "0.4s" }}
-                        />
-                      </div>
+                  <div className="w-9 h-9 rounded-xl bg-[#171527] border border-[#2a2444] flex items-center justify-center text-purple-400 shrink-0 mt-1">
+                    <Bot className="w-5 h-5 text-purple-400 animate-pulse" />
+                  </div>
+                  <div className="bg-[#12131c] border border-[#20222f] text-slate-300 rounded-2xl rounded-tl-xs p-4 flex items-center gap-3 shadow-sm">
+                    <AnimatePresence mode="wait">
+                      <motion.div
+                        key={thinkingMessageIndex}
+                        initial={{ opacity: 0, y: 4 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -4 }}
+                        transition={{ duration: 0.25 }}
+                        className="text-xs font-medium text-purple-300"
+                      >
+                        {THINKING_MESSAGES[thinkingMessageIndex]}
+                      </motion.div>
+                    </AnimatePresence>
+                    <div className="flex items-center gap-1">
+                      <div className="w-1.5 h-1.5 bg-purple-400/60 rounded-full animate-bounce" />
+                      <div
+                        className="w-1.5 h-1.5 bg-purple-400/60 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.15s" }}
+                      />
+                      <div
+                        className="w-1.5 h-1.5 bg-purple-400/60 rounded-full animate-bounce"
+                        style={{ animationDelay: "0.3s" }}
+                      />
                     </div>
                   </div>
                 </motion.div>
@@ -987,10 +1031,59 @@ function DSAMentorPage() {
           )}
         </div>
 
+        {/* Try asking: Quick Prompts Row */}
+        <div className="px-4 md:px-6 pt-3 pb-2 border-t border-[#1a1c29] bg-[#0b0c10] space-y-2">
+          <div className="text-[11px] font-mono text-slate-400 font-medium">
+            Try asking:
+          </div>
+          <div className="flex flex-wrap items-center gap-2">
+            {[
+              {
+                text: "Explain DP with an example",
+                icon: Lightbulb,
+                iconColor: "text-amber-400",
+              },
+              {
+                text: "Solve 0/1 Knapsack",
+                icon: Lock,
+                iconColor: "text-amber-400",
+              },
+              {
+                text: "Why does my DP code fail?",
+                icon: HelpCircle,
+                iconColor: "text-purple-400",
+              },
+              {
+                text: "Memoization vs Tabulation",
+                icon: ArrowLeftRight,
+                iconColor: "text-cyan-400",
+              },
+              {
+                text: "Optimize this DP solution",
+                icon: Zap,
+                iconColor: "text-purple-400",
+              },
+            ].map((qp) => {
+              const IconComponent = qp.icon;
+              return (
+                <button
+                  key={qp.text}
+                  onClick={() => void handleSend(qp.text)}
+                  disabled={chatBusy}
+                  className="bg-[#12131c] hover:bg-[#1c1d2c] disabled:opacity-50 text-slate-300 hover:text-white border border-[#222436] px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer flex items-center gap-2"
+                >
+                  <IconComponent className={cn("w-3.5 h-3.5 shrink-0", qp.iconColor)} />
+                  <span>{qp.text}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
         {/* Chat Input Bar */}
-        <div className="p-5 md:p-6 border-t border-white/5 bg-black/40 backdrop-blur-xl relative z-10">
-          <div className="flex gap-3 max-w-5xl mx-auto relative group">
-            <div className="absolute -inset-0.5 bg-gradient-to-r from-aurora/0 via-aurora/20 to-aurora/0 rounded-2xl blur opacity-0 group-focus-within:opacity-100 transition-opacity duration-500" />
+        <div className="p-4 md:p-5 border-t border-[#1a1c29] bg-[#0b0c10]">
+          <div className="flex items-center gap-2 bg-[#0e0f17] border border-[#20222e] rounded-full p-1.5 pl-4 focus-within:border-purple-500/40 transition-colors">
+            <Paperclip className="w-4 h-4 text-slate-400 shrink-0 cursor-pointer hover:text-white transition-colors" />
             <input
               value={chatInput}
               onChange={(e) => setChatInput(e.target.value)}
@@ -1001,19 +1094,20 @@ function DSAMentorPage() {
                 }
               }}
               placeholder="Ask your AI Coding Coach anything — paste code, explain an error, or ask about DSA..."
-              className="flex-1 bg-[#0F172A]/80 border border-white/10 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-aurora/50 focus:ring-1 focus:ring-aurora/50 transition-all placeholder:text-slate-500 text-white relative z-10 shadow-inner"
+              className="flex-1 bg-transparent border-none text-xs md:text-sm text-white placeholder:text-slate-500 focus:outline-none px-2"
             />
             <button
               onClick={() => void handleSend()}
               disabled={chatBusy || !chatInput.trim()}
-              className="bg-aurora hover:bg-aurora/90 text-white px-6 rounded-2xl transition-all disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_15px_rgba(168,85,247,0.3)] hover:shadow-[0_0_25px_rgba(168,85,247,0.5)] flex items-center justify-center relative z-10 shrink-0 font-semibold text-xs"
+              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-90 disabled:opacity-40 text-white px-5 py-2 rounded-full font-medium text-xs flex items-center gap-2 transition-all shrink-0 cursor-pointer"
             >
-              <Send className="w-4 h-4 mr-1.5" />
+              <Send className="w-3.5 h-3.5" />
               <span>Send</span>
             </button>
           </div>
-          <div className="text-center mt-3 text-[11px] font-medium text-slate-500">
-            The Enterprise Code Coach adapts its explanations based on your precise SyncRole analytics.
+          <div className="text-center mt-3 text-[11px] font-medium text-slate-500 flex items-center justify-center gap-1.5">
+            <Sparkles className="w-3 h-3 text-slate-400" />
+            <span>The AI Code Coach adapts its explanations based on your precise SyncRole analytics.</span>
           </div>
         </div>
       </div>
@@ -1022,3 +1116,4 @@ function DSAMentorPage() {
 }
 
 export default DSAMentorPage;
+
