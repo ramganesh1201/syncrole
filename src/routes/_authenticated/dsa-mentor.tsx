@@ -21,6 +21,7 @@ import {
   Cpu,
   Loader2,
   CheckCircle2,
+  Shield,
   ShieldCheck,
   Flame,
   Trophy,
@@ -288,11 +289,11 @@ function DSAMentorPage() {
 
   // Pre-formatted DNA dimensions fallback matching reference image
   const defaultDnaDimensions = [
-    { name: "Problem Solving", score: 41, icon: Brain, delta: "↑ 2%" },
-    { name: "Logical Thinking", score: 54, icon: Code2, delta: "↑ 3%" },
-    { name: "Pattern Recognition", score: 11, icon: Layers, delta: "↑ 0%" },
-    { name: "Optimization Skills", score: 30, icon: Zap, delta: "↑ 2%" },
-    { name: "Debugging", score: 60, icon: Bug, delta: "↑ 4%" },
+    { name: "Problem Solving", score: 41, icon: Brain, delta: "↑ 2%", box: "bg-pink-500/10 border-pink-500/20", iconColor: "text-pink-400" },
+    { name: "Logical Thinking", score: 54, icon: Code2, delta: "↑ 3%", box: "bg-cyan-500/10 border-cyan-500/20", iconColor: "text-cyan-400" },
+    { name: "Pattern Recognition", score: 11, icon: Grid, delta: "↑ 0%", box: "bg-blue-500/10 border-blue-500/20", iconColor: "text-blue-400" },
+    { name: "Optimization Skills", score: 30, icon: Zap, delta: "↑ 2%", box: "bg-sky-500/10 border-sky-500/20", iconColor: "text-sky-400" },
+    { name: "Debugging", score: 60, icon: Bug, delta: "↑ 4%", box: "bg-amber-500/10 border-amber-500/20", iconColor: "text-amber-400" },
   ];
   const displayDna =
     dna.length > 0
@@ -300,6 +301,8 @@ function DSAMentorPage() {
           ...d,
           icon: defaultDnaDimensions[idx]?.icon ?? Brain,
           delta: defaultDnaDimensions[idx]?.delta ?? "↑ 2%",
+          box: defaultDnaDimensions[idx]?.box ?? "bg-purple-500/10 border-purple-500/20",
+          iconColor: defaultDnaDimensions[idx]?.iconColor ?? "text-purple-400",
         }))
       : defaultDnaDimensions;
 
@@ -333,7 +336,7 @@ function DSAMentorPage() {
       <div>
         <Link
           to="/dashboard/dsa"
-          className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs text-slate-400 hover:text-white transition-colors"
         >
           <ArrowLeft className="h-3.5 w-3.5" /> Exit Coach
         </Link>
@@ -345,24 +348,24 @@ function DSAMentorPage() {
           <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
             Coding Intelligence
           </h1>
-          <p className="text-xs md:text-sm font-medium text-foreground/90">
+          <p className="text-xs md:text-sm font-medium text-slate-300">
             Understand how you solve problems — and what to improve next.
           </p>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-xs text-slate-400 leading-relaxed">
             SyncRole analyzes your verified DSA activity, problem-solving patterns, consistency, and interview readiness.
           </p>
         </div>
 
         {/* Top Right High Confidence Shield Card matching Reference */}
-        <div className="glass rounded-2xl p-3.5 px-4 border border-aurora/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] shrink-0 flex items-center gap-3 bg-black/40 select-none">
-          <div className="p-2.5 rounded-xl bg-aurora/15 text-aurora border border-aurora/30 shadow-inner">
-            <ShieldCheck className="w-5 h-5 text-aurora" />
+        <div className="bg-[#0c0d17] border border-[#2b2149] rounded-xl p-3.5 px-4 shrink-0 flex items-center gap-3.5 shadow-lg select-none">
+          <div className="w-9 h-9 rounded-xl bg-[#1a1435] border border-[#39296b] flex items-center justify-center text-purple-400 shrink-0">
+            <Shield className="w-5 h-5 text-purple-400" />
           </div>
           <div className="space-y-0.5">
-            <div className="text-[11px] font-mono uppercase tracking-wider text-white font-bold">
+            <div className="text-xs font-mono uppercase tracking-wider text-white font-bold">
               HIGH CONFIDENCE
             </div>
-            <div className="text-[10px] text-muted-foreground">
+            <div className="text-[10px] text-slate-400">
               Analysis based on verified activity
             </div>
           </div>
@@ -374,13 +377,12 @@ function DSAMentorPage() {
       {/* ---------------------------------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* CODING DNA Card */}
-        <div className="glass-strong rounded-2xl p-5 border border-white/5 space-y-4">
+        <div className="bg-[#0b0c10] border border-[#1e202e] rounded-xl p-5 space-y-4 shadow-xl">
           <div className="flex items-center justify-between">
-            <div className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground font-semibold flex items-center gap-2">
-              <Brain className="w-4 h-4 text-aurora" />
+            <div className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold flex items-center gap-2">
               <span>CODING DNA</span>
             </div>
-            <span className="text-[9px] uppercase font-mono font-semibold tracking-wider text-aurora bg-aurora/10 border border-aurora/20 px-2 py-0.5 rounded">
+            <span className="text-[10px] font-mono font-medium text-slate-400 bg-[#12131f] border border-[#222436] px-2 py-0.5 rounded">
               HIGH CONFIDENCE
             </span>
           </div>
@@ -392,28 +394,28 @@ function DSAMentorPage() {
               const barWidthPercent = Math.min(Math.max(numericValue, 0), 100);
 
               return (
-                <div key={d.name} className="space-y-1.5 text-xs">
+                <div key={d.name} className="space-y-2 text-xs">
                   <div className="flex items-center justify-between">
-                    <span className="text-white font-medium flex items-center gap-2">
-                      <div className="p-1 rounded bg-aurora/10 border border-aurora/20 shrink-0 text-aurora">
-                        <IconComp className="w-3.5 h-3.5 text-aurora" />
+                    <div className="flex items-center gap-2.5">
+                      <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center border shrink-0", d.box)}>
+                        <IconComp className={cn("w-4 h-4", d.iconColor)} />
                       </div>
-                      <span>{d.name}</span>
-                    </span>
+                      <span className="text-white font-medium text-xs">{d.name}</span>
+                    </div>
                     <div className="flex items-center gap-2 font-mono">
-                      <span className="text-white font-bold">
+                      <span className="text-white font-bold text-xs">
                         <AnimatedNumber value={numericValue} />%
                       </span>
                       {d.delta && (
-                        <span className="text-[10px] text-green-400 font-semibold">
+                        <span className="text-[11px] text-emerald-400 font-semibold">
                           {d.delta}
                         </span>
                       )}
                     </div>
                   </div>
-                  <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
+                  <div className="h-1.5 bg-[#141624] rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-cyan-400 via-aurora to-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.4)] transition-all duration-500"
+                      className="h-full bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500 rounded-full transition-all duration-500"
                       style={{ width: `${barWidthPercent}%` }}
                     />
                   </div>
@@ -424,57 +426,56 @@ function DSAMentorPage() {
         </div>
 
         {/* CONSISTENCY SNAPSHOT Card */}
-        <div className="glass-strong rounded-2xl p-5 border border-white/5 space-y-5 flex flex-col justify-between">
+        <div className="bg-[#0b0c10] border border-[#1e202e] rounded-xl p-5 space-y-5 flex flex-col justify-between shadow-xl">
           <div>
             <div className="flex items-center justify-between mb-4">
-              <div className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground font-semibold flex items-center gap-2">
-                <Flame className="w-4 h-4 text-orange-400" />
+              <div className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold flex items-center gap-2">
                 <span>CONSISTENCY SNAPSHOT</span>
               </div>
-              <span className="text-[9px] font-mono bg-white/5 px-2 py-0.5 rounded text-muted-foreground uppercase">
+              <span className="text-[10px] font-mono font-medium text-slate-400 bg-[#12131f] border border-[#222436] px-2 py-0.5 rounded">
                 UPDATED
               </span>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 py-2 text-center">
-              <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Flame className="w-5 h-5 text-orange-400 mx-auto" />
-                <div className="font-display text-2xl font-bold text-white">
+            <div className="grid grid-cols-3 gap-3 py-1">
+              <div className="bg-[#12131c] border border-[#20222f] rounded-xl p-3.5 text-center space-y-1">
+                <Flame className="w-5 h-5 text-amber-500 mx-auto" />
+                <div className="font-display text-xl md:text-2xl font-bold text-white">
                   <AnimatedNumber value={stats.current_streak} />
                 </div>
-                <div className="text-[10px] text-muted-foreground font-mono">
+                <div className="text-[10px] text-slate-400 font-mono">
                   Current Streak
                 </div>
-                <div className="text-[9px] text-muted-foreground font-mono">days</div>
+                <div className="text-[9px] text-slate-500 font-mono">days</div>
               </div>
 
-              <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Trophy className="w-5 h-5 text-yellow-400 mx-auto" />
-                <div className="font-display text-2xl font-bold text-white">
+              <div className="bg-[#12131c] border border-[#20222f] rounded-xl p-3.5 text-center space-y-1">
+                <Trophy className="w-5 h-5 text-amber-400 mx-auto" />
+                <div className="font-display text-xl md:text-2xl font-bold text-white">
                   <AnimatedNumber value={stats.longest_streak} />
                 </div>
-                <div className="text-[10px] text-muted-foreground font-mono">
+                <div className="text-[10px] text-slate-400 font-mono">
                   Longest Streak
                 </div>
-                <div className="text-[9px] text-muted-foreground font-mono">days</div>
+                <div className="text-[9px] text-slate-500 font-mono">days</div>
               </div>
 
-              <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <TrendingUp className="w-5 h-5 text-cyan-400 mx-auto" />
-                <div className="font-display text-2xl font-bold text-white">
-                  92<span className="text-xs text-muted-foreground font-normal">/100</span>
+              <div className="bg-[#12131c] border border-[#20222f] rounded-xl p-3.5 text-center space-y-1">
+                <Activity className="w-5 h-5 text-cyan-400 mx-auto" />
+                <div className="font-display text-xl md:text-2xl font-bold text-white">
+                  92<span className="text-xs text-slate-400 font-normal">/100</span>
                 </div>
-                <div className="text-[10px] text-muted-foreground font-mono">
+                <div className="text-[10px] text-slate-400 font-mono">
                   Productivity Score
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="bg-aurora/5 rounded-xl p-3 border border-aurora/15 text-xs text-muted-foreground flex items-center gap-2.5">
-            <Sparkles className="w-4 h-4 text-aurora shrink-0" />
+          <div className="bg-[#12131c] border border-[#20222f] rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-slate-300">
+            <Sparkles className="w-4 h-4 text-purple-400 shrink-0 mt-0.5" />
             <span>
-              <span className="text-aurora font-medium">Insight:</span> Your strongest practice pattern currently comes from consistent problem-solving sessions.
+              <strong className="text-white font-semibold">Insight:</strong> Your strongest practice pattern currently comes from consistent problem-solving sessions.
             </span>
           </div>
         </div>
@@ -485,19 +486,18 @@ function DSAMentorPage() {
       {/* ---------------------------------------------------------------- */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* PATTERN INTELLIGENCE */}
-        <div className="glass-strong rounded-2xl p-5 border border-white/5 space-y-4 flex flex-col justify-between">
+        <div className="bg-[#0b0c10] border border-[#1e202e] rounded-xl p-5 space-y-4 flex flex-col justify-between shadow-xl">
           <div className="space-y-3">
             <div className="flex items-center justify-between">
-              <div className="text-[11px] font-mono uppercase tracking-widest text-muted-foreground font-semibold flex items-center gap-2">
-                <Workflow className="w-4 h-4 text-aurora" />
+              <div className="text-xs font-mono uppercase tracking-widest text-slate-400 font-semibold flex items-center gap-2">
                 <span>PATTERN INTELLIGENCE</span>
               </div>
-              <span className="text-[10px] font-mono text-muted-foreground">
+              <span className="text-[10px] font-mono text-slate-400">
                 {patterns.length > 0 ? `${patterns.length} DETECTED` : "1 DETECTED"}
               </span>
             </div>
 
-            <div className="space-y-2 pt-1">
+            <div className="space-y-2.5 pt-1">
               {(patterns.length > 0
                 ? patterns.slice(0, 2)
                 : [
@@ -509,22 +509,24 @@ function DSAMentorPage() {
                 return (
                   <div
                     key={i}
-                    className="bg-white/5 p-3 rounded-xl border border-white/5 flex items-center justify-between text-xs"
+                    className="bg-[#12131c] border border-[#20222f] p-3.5 rounded-xl flex items-center justify-between text-xs"
                   >
-                    <div className="space-y-0.5">
-                      <div className="font-semibold text-white flex items-center gap-2">
-                        <div className="p-1 rounded bg-aurora/10 text-aurora">
-                          <PatternIconComp className="w-3.5 h-3.5 text-aurora" />
-                        </div>
-                        <span>{p.name}</span>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-lg bg-[#191a27] border border-[#2a2c40] flex items-center justify-center text-emerald-400 shrink-0">
+                        <PatternIconComp className="w-4 h-4 text-emerald-400" />
                       </div>
-                      <div className="text-[10px] text-muted-foreground">
-                        {p.level ?? (p.mastery > 50 ? "Intermediate • High Confidence" : "Beginner • Developing")}
+                      <div className="space-y-0.5">
+                        <div className="font-semibold text-white">{p.name}</div>
+                        <div className="text-[10px] text-slate-400">
+                          {p.level ?? (p.mastery > 50 ? "Intermediate • High Confidence" : "Beginner • Developing")}
+                        </div>
                       </div>
                     </div>
-                    <div className="text-right font-mono">
-                      <div className="font-bold text-aurora">{p.mastery}%</div>
-                      <div className="text-[9px] text-green-400">{p.trend ?? "↑ Trending"}</div>
+                    <div className="text-right font-mono space-y-0.5">
+                      <div className="font-bold text-white text-xs">{p.mastery}%</div>
+                      <div className={cn("text-[10px] font-medium", (p.trend ?? "↑ Trending").includes("↑") ? "text-emerald-400" : "text-slate-400")}>
+                        {p.trend ?? "↑ Trending"}
+                      </div>
                     </div>
                   </div>
                 );
@@ -535,7 +537,7 @@ function DSAMentorPage() {
           <div>
             <Link
               to="/dsa-problems"
-              className="inline-flex items-center gap-1 text-xs text-aurora hover:underline font-medium"
+              className="inline-flex items-center gap-1 text-xs text-purple-400 hover:text-purple-300 font-medium transition-colors"
             >
               View all patterns →
             </Link>
@@ -543,32 +545,46 @@ function DSAMentorPage() {
         </div>
 
         {/* NEXT ACTION Card with Target Graphic */}
-        <div className="glass-strong rounded-2xl p-5 border border-aurora/30 space-y-4 relative overflow-hidden flex flex-col justify-between bg-gradient-to-br from-aurora/10 via-black/40 to-black/60">
-          <div className="relative z-10 space-y-2">
-            <div className="text-[11px] font-mono uppercase tracking-widest text-aurora font-semibold flex items-center gap-1.5">
-              <Target className="w-4 h-4 text-aurora" />
+        <div className="bg-[#0b0c10] border border-[#1e202e] rounded-xl p-5 space-y-4 relative overflow-hidden flex flex-col justify-between shadow-xl bg-gradient-to-br from-[#151228] via-[#0b0c10] to-[#0b0c10]">
+          <div className="relative z-10 space-y-2 max-w-sm">
+            <div className="text-xs font-mono uppercase tracking-widest text-purple-400 font-semibold flex items-center gap-2">
+              <Target className="w-4 h-4 text-purple-400" />
               <span>NEXT ACTION</span>
             </div>
-            <h3 className="font-display font-bold text-lg text-white">
+            <h3 className="font-display font-bold text-base md:text-lg text-white leading-snug">
               {roadmap.d7 || "Master Binary Search basics"}
             </h3>
-            <p className="text-xs text-muted-foreground max-w-sm">
+            <p className="text-xs text-slate-400 leading-relaxed">
               Complete 2 verified problems in your targeted weak topics.
             </p>
           </div>
 
-          {/* Target Illustration on Right */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-30 pointer-events-none hidden sm:block">
-            <Target className="w-28 h-28 text-aurora" />
+          {/* Target Illustration on Right matching Reference Image */}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none hidden sm:block">
+            <svg width="130" height="130" viewBox="0 0 130 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="65" cy="65" r="50" stroke="#7E22CE" strokeWidth="2.5" strokeOpacity="0.3" />
+              <circle cx="65" cy="65" r="36" stroke="#9333EA" strokeWidth="3" strokeOpacity="0.6" />
+              <circle cx="65" cy="65" r="22" stroke="#A855F7" strokeWidth="3.5" strokeOpacity="0.9" />
+              <circle cx="65" cy="65" r="8" fill="#C084FC" />
+              <circle cx="65" cy="65" r="3" fill="#FFFFFF" />
+              <path d="M102 28 L68 62" stroke="#C084FC" strokeWidth="4" strokeLinecap="round" />
+              <polygon points="68,62 77,63 66,74 64,65" fill="#E9D5FF" />
+              <path d="M102 28 L110 20" stroke="#A855F7" strokeWidth="3" strokeLinecap="round" />
+              <path d="M99 31 L105 25" stroke="#A855F7" strokeWidth="2" strokeLinecap="round" />
+              <path d="M105 25 L111 19" stroke="#A855F7" strokeWidth="2" strokeLinecap="round" />
+              <path d="M28 32 L30 37 L35 39 L30 41 L28 46 L26 41 L21 39 L26 37 Z" fill="#C084FC" opacity="0.8" />
+              <path d="M96 90 L97 93 L100 94 L97 95 L96 98 L95 95 L92 94 L95 93 Z" fill="#E9D5FF" opacity="0.9" />
+              <path d="M42 98 L43 100 L45 101 L43 102 L42 104 L41 102 L39 101 L41 100 Z" fill="#A855F7" opacity="0.6" />
+            </svg>
           </div>
 
           <div className="relative z-10 pt-2">
             <button
               onClick={() => navigate({ to: "/dsa-problems" })}
-              className="bg-gradient-to-r from-aurora to-blue-500 hover:from-aurora/90 hover:to-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(168,85,247,0.35)] inline-flex items-center gap-2"
+              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 hover:opacity-90 text-white font-medium px-4 py-2 rounded-lg text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-sm"
             >
               <span>Start Practice</span>
-              <ArrowRight className="w-4 h-4" />
+              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>
