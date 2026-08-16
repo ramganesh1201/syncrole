@@ -138,7 +138,10 @@ function DSAPage() {
 
     const progData = progRes.data ?? [];
     const attemptedCount = progData.filter((p: any) => p.status && p.status !== "not_started").length;
-    const solvedCount = progData.filter((p: any) => p.solved || p.status === "solved").length;
+    const canonicalSolvedIds = new Set(
+      progData.filter((p: any) => p.solved === true || p.status === "solved").map((p: any) => p.problem_id)
+    );
+    const solvedCount = canonicalSolvedIds.size;
 
     const runtimes = progData
       .map((p: any) => p.best_execution_time_ms)
@@ -172,6 +175,12 @@ function DSAPage() {
   
   useEffect(() => {
     load();
+
+    function handleFocus() {
+      load();
+    }
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
   }, []);
 
   const solvedTotals = solvedProblems.reduce((a, p) => {
@@ -182,7 +191,7 @@ function DSAPage() {
     return a;
   }, { e: 0, m: 0, h: 0 });
 
-  const totalSolved = Math.max(analytics.solvedCount, solvedTotals.e + solvedTotals.m + solvedTotals.h);
+  const totalSolved = analytics.solvedCount;
 
   const last30 = Array.from({ length: 30 }).map((_, i) => {
     const d = new Date();

@@ -167,15 +167,23 @@ Deno.serve(async (req: Request) => {
     });
 
     // Post-judge server-side operations
+    let solveData: any = null;
     if (!is_run_only) {
       if (finalStatus === "accepted") {
-        await serviceClient.rpc("verify_dsa_solve", {
+        const { data: sData, error: solveErr } = await serviceClient.rpc("verify_dsa_solve", {
           _user: user.id,
           _problem_id: submission.problem_id,
           _submission_id: submission_id,
           _execution_time_ms: execResult.executionTimeMs ?? null,
           _memory_kb: null,
         });
+
+        if (solveErr) {
+          console.error("[dsa-execute] verify_dsa_solve RPC error:", solveErr);
+        } else {
+          solveData = sData;
+        }
+
         if (submission.practice_session_id) {
           await serviceClient
             .from("dsa_practice_sessions")
@@ -186,20 +194,26 @@ Deno.serve(async (req: Request) => {
             .eq("id", submission.practice_session_id);
         }
       } else if (finalStatus !== "system_error") {
-        await serviceClient.rpc("record_dsa_attempt", {
+        const { error: attErr } = await serviceClient.rpc("record_dsa_attempt", {
           _user: user.id,
           _problem_id: submission.problem_id,
           _is_run_only: false,
         });
+        if (attErr) {
+          console.error("[dsa-execute] record_dsa_attempt error:", attErr);
+        }
       }
       // system_error → no user penalty, no XP, no attempt record
     } else {
       if (finalStatus !== "system_error") {
-        await serviceClient.rpc("record_dsa_attempt", {
+        const { error: attErr } = await serviceClient.rpc("record_dsa_attempt", {
           _user: user.id,
           _problem_id: submission.problem_id,
           _is_run_only: true,
         });
+        if (attErr) {
+          console.error("[dsa-execute] record_dsa_attempt run error:", attErr);
+        }
       }
     }
 
@@ -207,6 +221,9 @@ Deno.serve(async (req: Request) => {
       status: finalStatus,
       passed_tests: passedCount,
       total_tests: totalCount,
+      solved: finalStatus === "accepted",
+      first_solve: solveData?.first_solve ?? false,
+      xp_awarded: solveData?.xp_awarded ?? 0,
     });
   } catch (err: unknown) {
     console.error("[dsa-execute] Unhandled error:", err instanceof Error ? err.message : err);

@@ -204,6 +204,10 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
                           className={`h-3.5 w-3.5 rounded-[3px] border transition-all cursor-pointer hover:scale-125 hover:z-10 ${
                             levelColors[lvl]
                           } ${
+                            solves > 0
+                              ? "border-green-400/80 shadow-[0_0_6px_rgba(74,222,128,0.4)]"
+                              : ""
+                          } ${
                             cell.isToday
                               ? "ring-1 ring-aurora ring-offset-1 ring-offset-black"
                               : ""

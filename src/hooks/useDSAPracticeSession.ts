@@ -248,11 +248,43 @@ export function useDSAPracticeSession({
     setState((s) => ({ ...s, isIdle: true }));
   }, []);
 
+  const startNewSession = useCallback(async () => {
+    if (!userId || !problemId) return;
+    isFinalizedRef.current = false;
+    try {
+      const session = await DSASessionService.startOrResumeSession(userId, problemId, true);
+      sessionIdRef.current = session.id;
+      activeSecondsRef.current = session.active_seconds ?? 0;
+      wallSecondsRef.current = session.wall_seconds ?? 0;
+      lastFlushedActiveRef.current = session.active_seconds ?? 0;
+      lastFlushedWallRef.current = session.wall_seconds ?? 0;
+      runCountRef.current = session.run_count ?? 0;
+      submissionCountRef.current = session.submission_count ?? 0;
+
+      setState({
+        sessionId: session.id,
+        activeSeconds: session.active_seconds ?? 0,
+        isIdle: false,
+        runCount: session.run_count ?? 0,
+        submissionCount: session.submission_count ?? 0,
+        isResumed: false,
+        error: null,
+      });
+
+      if (heartbeatIntervalRef.current) clearInterval(heartbeatIntervalRef.current);
+      heartbeatIntervalRef.current = setInterval(tick, 1000);
+      markActive();
+    } catch (err: any) {
+      setState((s) => ({ ...s, error: err.message ?? "Failed to start new session" }));
+    }
+  }, [userId, problemId, tick, markActive]);
+
   return {
     ...state,
     sessionId: sessionIdRef.current,
     onRunCode,
     onSubmit,
     finalizeSession,
+    startNewSession,
   };
 }

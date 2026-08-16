@@ -118,11 +118,11 @@ export class DSAService {
     const { data, error } = await supabase
       .from("user_problem_progress")
       .select(`
-        id, last_solved_at, updated_at,
+        id, last_solved_at, first_solved_at, updated_at, status, solved,
         dsa_problems!inner(difficulty)
       `)
       .eq("user_id", userId)
-      .eq("solved", true);
+      .or("solved.eq.true,status.eq.solved");
       
     if (error) throw error;
     return data || [];

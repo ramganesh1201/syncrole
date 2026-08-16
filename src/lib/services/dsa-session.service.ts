@@ -24,7 +24,8 @@ export class DSASessionService {
    */
   static async startOrResumeSession(
     userId: string,
-    problemId: string
+    problemId: string,
+    forceNew = false
   ): Promise<PracticeSession> {
     const oneDayAgo = new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString();
 
@@ -48,20 +49,22 @@ export class DSASessionService {
       }
     }
 
-    // Look for an existing active in-progress session for this problem
-    const { data: existing } = await supabase
-      .from("dsa_practice_sessions")
-      .select("*")
-      .eq("user_id", userId)
-      .eq("problem_id", problemId)
-      .eq("final_status", "in_progress")
-      .gte("created_at", oneDayAgo)
-      .order("created_at", { ascending: false })
-      .limit(1)
-      .maybeSingle();
+    if (!forceNew) {
+      // Look for an existing active in-progress session for this problem
+      const { data: existing } = await supabase
+        .from("dsa_practice_sessions")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("problem_id", problemId)
+        .eq("final_status", "in_progress")
+        .gte("created_at", oneDayAgo)
+        .order("created_at", { ascending: false })
+        .limit(1)
+        .maybeSingle();
 
-    if (existing) {
-      return existing as PracticeSession;
+      if (existing) {
+        return existing as PracticeSession;
+      }
     }
 
     // Create new session
