@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, useRef, useMemo } from "react";
+import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
@@ -11,20 +11,16 @@ import {
   CalendarDays,
   Activity,
   Briefcase,
-  TrendingUp,
   Sparkles,
   Send,
-  ShieldAlert,
   Clock,
   Compass,
   Database,
   Workflow,
   Cpu,
-  ChevronRight,
-  PlayCircle,
   Loader2,
   CheckCircle2,
-  Shield,
+  ShieldCheck,
   Flame,
   Trophy,
   Star,
@@ -35,6 +31,9 @@ import {
   FileText,
   HelpCircle,
   Lightbulb,
+  Layers,
+  Bug,
+  Grid,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { AnalyticsEngine } from "@/lib/analytics";
@@ -81,7 +80,7 @@ const COMPANY_LOGOS: Record<string, string> = {
   LinkedIn: "https://cdn.jsdelivr.net/npm/simple-icons@v11/icons/linkedin.svg",
 };
 
-// Company Logo Component with Avatar Fallback
+// Company Logo Component with Initial Avatar Fallback
 function CompanyLogo({ name, className = "w-5 h-5" }: { name: string; className?: string }) {
   const [failed, setFailed] = useState(false);
   const logoUrl = COMPANY_LOGOS[name];
@@ -90,7 +89,7 @@ function CompanyLogo({ name, className = "w-5 h-5" }: { name: string; className?
   if (!logoUrl || failed) {
     return (
       <div
-        className={`${className} rounded-md bg-aurora/20 border border-aurora/30 flex items-center justify-center font-display font-bold text-aurora text-[10px] shrink-0 select-none`}
+        className={`${className} rounded-md bg-aurora/20 border border-aurora/30 flex items-center justify-center font-display font-bold text-aurora text-[11px] shrink-0 select-none`}
       >
         {initial}
       </div>
@@ -191,15 +190,15 @@ function DSAMentorPage() {
         setBootStep(currentStep);
       } else {
         clearInterval(interval);
-        if (dataReady) setTimeout(() => setBooting(false), 500);
+        if (dataReady) setTimeout(() => setBooting(false), 450);
       }
-    }, 450);
+    }, 400);
     return () => clearInterval(interval);
   }, [dataReady]);
 
   useEffect(() => {
     if (bootStep === BOOT_SEQUENCE.length - 1 && dataReady) {
-      const t = setTimeout(() => setBooting(false), 500);
+      const t = setTimeout(() => setBooting(false), 450);
       return () => clearTimeout(t);
     }
   }, [bootStep, dataReady]);
@@ -275,7 +274,7 @@ function DSAMentorPage() {
     }
   }
 
-  // Boot sequence screen
+  // Boot sequence animation
   if (booting) {
     return (
       <div className="fixed inset-0 z-50 bg-background/95 backdrop-blur-xl flex flex-col items-center justify-center overflow-hidden">
@@ -323,24 +322,24 @@ function DSAMentorPage() {
     );
   }
 
-  // Pre-formatted DNA dimensions fallback if empty
+  // Pre-formatted DNA dimensions fallback matching reference image
   const defaultDnaDimensions = [
-    { name: "Problem Solving", score: 41, icon: Brain, delta: "+ 2%" },
-    { name: "Logical Thinking", score: 54, icon: Code, delta: "+ 3%" },
-    { name: "Pattern Recognition", score: 11, icon: Workflow, delta: "+ 0%" },
-    { name: "Optimization Skills", score: 30, icon: Zap, delta: "+ 2%" },
-    { name: "Debugging", score: 60, icon: Cpu, delta: "+ 4%" },
+    { name: "Problem Solving", score: 41, icon: Brain, delta: "↑ 2%" },
+    { name: "Logical Thinking", score: 54, icon: Code, delta: "↑ 3%" },
+    { name: "Pattern Recognition", score: 11, icon: Layers, delta: "↑ 0%" },
+    { name: "Optimization Skills", score: 30, icon: Zap, delta: "↑ 2%" },
+    { name: "Debugging", score: 60, icon: Bug, delta: "↑ 4%" },
   ];
   const displayDna =
     dna.length > 0
       ? dna.slice(0, 5).map((d, idx) => ({
           ...d,
           icon: defaultDnaDimensions[idx]?.icon ?? Brain,
-          delta: defaultDnaDimensions[idx]?.delta ?? "+ 2%",
+          delta: defaultDnaDimensions[idx]?.delta ?? "↑ 2%",
         }))
       : defaultDnaDimensions;
 
-  // Companies fallback list matching reference design if company profiles empty
+  // Companies fallback list matching reference design
   const defaultCompanies: CompanyProfile[] = [
     { name: "Google", readiness: 10, strong: [], missing: ["Graphs"], confidence: "High" },
     { name: "Amazon", readiness: 10, strong: [], missing: ["Trees"], confidence: "High" },
@@ -349,7 +348,7 @@ function DSAMentorPage() {
   ];
   const displayCompanies = companies.length > 0 ? companies.slice(0, 4) : defaultCompanies;
 
-  // Topic mastery default items matching reference design if empty
+  // Topic mastery default items matching reference design
   const defaultTopics: TopicInsight[] = [
     { topic: "Binary Search", mastery: 11, problems_solved: 1, status: "weak", skillLevel: "BEGINNER", explanation: "Focus on foundational search bounds." },
     { topic: "Arrays", mastery: 24, problems_solved: 2, status: "progressing", skillLevel: "BEGINNER", explanation: "Developing solid two-pointer technique." },
@@ -376,7 +375,7 @@ function DSAMentorPage() {
         </Link>
       </div>
 
-      {/* Header Row with Title and High Confidence Badge */}
+      {/* Hero Header & High Confidence Card */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="space-y-1">
           <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
@@ -390,13 +389,13 @@ function DSAMentorPage() {
           </p>
         </div>
 
-        {/* Top Right High Confidence Badge Card */}
-        <div className="glass rounded-2xl p-3 px-4 border border-aurora/30 shadow-[0_0_20px_rgba(168,85,247,0.12)] shrink-0 flex items-center gap-3 bg-black/40">
-          <div className="p-2 rounded-xl bg-aurora/10 text-aurora border border-aurora/20">
-            <Shield className="w-4 h-4 text-aurora" />
+        {/* Top Right High Confidence Shield Card matching Reference */}
+        <div className="glass rounded-2xl p-3.5 px-4 border border-aurora/40 shadow-[0_0_25px_rgba(168,85,247,0.15)] shrink-0 flex items-center gap-3 bg-black/40">
+          <div className="p-2.5 rounded-xl bg-aurora/15 text-aurora border border-aurora/30 shadow-inner">
+            <ShieldCheck className="w-5 h-5 text-aurora" />
           </div>
           <div className="space-y-0.5">
-            <div className="text-[10px] font-mono uppercase tracking-wider text-aurora font-bold">
+            <div className="text-[11px] font-mono uppercase tracking-wider text-white font-bold">
               HIGH CONFIDENCE
             </div>
             <div className="text-[10px] text-muted-foreground">
@@ -426,7 +425,7 @@ function DSAMentorPage() {
             {displayDna.map((d) => {
               const IconComp = d.icon ?? Brain;
               return (
-                <div key={d.name} className="space-y-1 text-xs">
+                <div key={d.name} className="space-y-1.5 text-xs">
                   <div className="flex items-center justify-between">
                     <span className="text-white font-medium flex items-center gap-2">
                       <IconComp className="w-3.5 h-3.5 text-aurora" />
@@ -436,14 +435,14 @@ function DSAMentorPage() {
                       <span className="text-white font-bold">
                         <AnimatedNumber value={d.score} />%
                       </span>
-                      <span className="text-[10px] text-green-400">
+                      <span className="text-[10px] text-green-400 font-semibold">
                         {d.delta ?? "↑ 2%"}
                       </span>
                     </div>
                   </div>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-aurora/60 to-aurora rounded-full"
+                      className="h-full bg-gradient-to-r from-cyan-400 via-aurora to-purple-500 rounded-full shadow-[0_0_8px_rgba(168,85,247,0.4)]"
                       style={{ width: `${d.score}%` }}
                     />
                   </div>
@@ -468,7 +467,7 @@ function DSAMentorPage() {
 
             <div className="grid grid-cols-3 gap-3 py-2 text-center">
               <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Flame className="w-4 h-4 text-orange-400 mx-auto" />
+                <Flame className="w-5 h-5 text-orange-400 mx-auto" />
                 <div className="font-display text-2xl font-bold text-white">
                   <AnimatedNumber value={stats.current_streak} />
                 </div>
@@ -479,7 +478,7 @@ function DSAMentorPage() {
               </div>
 
               <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Trophy className="w-4 h-4 text-yellow-400 mx-auto" />
+                <Trophy className="w-5 h-5 text-yellow-400 mx-auto" />
                 <div className="font-display text-2xl font-bold text-white">
                   <AnimatedNumber value={stats.longest_streak} />
                 </div>
@@ -490,8 +489,8 @@ function DSAMentorPage() {
               </div>
 
               <div className="bg-white/5 rounded-xl p-3 border border-white/5 space-y-1">
-                <Activity className="w-4 h-4 text-aurora mx-auto" />
-                <div className="font-display text-2xl font-bold text-aurora">
+                <Activity className="w-5 h-5 text-cyan-400 mx-auto" />
+                <div className="font-display text-2xl font-bold text-white">
                   92<span className="text-xs text-muted-foreground font-normal">/100</span>
                 </div>
                 <div className="text-[10px] text-muted-foreground font-mono">
@@ -582,15 +581,15 @@ function DSAMentorPage() {
             </p>
           </div>
 
-          {/* Decorative Target Illustration on Right */}
-          <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-20 pointer-events-none hidden sm:block">
+          {/* Target Illustration on Right */}
+          <div className="absolute right-4 top-1/2 -translate-y-1/2 opacity-30 pointer-events-none hidden sm:block">
             <Target className="w-28 h-28 text-aurora" />
           </div>
 
           <div className="relative z-10 pt-2">
             <button
               onClick={() => navigate({ to: "/dsa-problems" })}
-              className="bg-aurora hover:bg-aurora/90 text-primary-foreground font-semibold px-5 py-2.5 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(168,85,247,0.3)] inline-flex items-center gap-2"
+              className="bg-gradient-to-r from-aurora to-blue-500 hover:from-aurora/90 hover:to-blue-600 text-white font-semibold px-5 py-2.5 rounded-xl text-xs transition-all shadow-[0_0_20px_rgba(168,85,247,0.35)] inline-flex items-center gap-2"
             >
               <span>Start Practice</span>
               <ArrowRight className="w-4 h-4" />
@@ -600,7 +599,7 @@ function DSAMentorPage() {
       </div>
 
       {/* ---------------------------------------------------------------- */}
-      {/* SECTION 3: COMPANY READINESS (Compact Table / List) */}
+      {/* SECTION 3: COMPANY READINESS (Wide Table Format) */}
       {/* ---------------------------------------------------------------- */}
       <div className="glass-strong rounded-2xl p-5 border border-white/5 space-y-4">
         <div>
@@ -623,7 +622,7 @@ function DSAMentorPage() {
 
         {/* Table Rows */}
         <div className="space-y-1.5">
-          {displayCompanies.map((c, idx) => {
+          {displayCompanies.map((c) => {
             const coverageTotal = (c.strong?.length ?? 0) + (c.missing?.length ?? 3);
             const coverageSolved = c.strong?.length ?? 0;
             const priorityTopic = c.missing?.[0] || c.strong?.[0] || "Graphs";
@@ -640,12 +639,12 @@ function DSAMentorPage() {
                 </div>
 
                 <div className="col-span-4 flex items-center gap-3 pr-4">
-                  <span className="font-mono font-bold text-aurora w-8 text-right shrink-0">
+                  <span className="font-mono font-bold text-white w-8 text-right shrink-0">
                     {c.readiness}%
                   </span>
                   <div className="flex-1 h-1.5 bg-white/5 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-aurora rounded-full"
+                      className="h-full bg-gradient-to-r from-aurora to-cyan-400 rounded-full"
                       style={{ width: `${c.readiness}%` }}
                     />
                   </div>
@@ -656,7 +655,7 @@ function DSAMentorPage() {
                 </div>
 
                 <div className="col-span-3 text-right">
-                  <span className="text-[10px] font-mono bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded font-medium inline-block truncate max-w-full">
+                  <span className="text-[10px] font-mono bg-aurora/15 text-aurora border border-aurora/30 px-2.5 py-0.5 rounded font-medium inline-block truncate max-w-full">
                     {priorityTopic}
                   </span>
                 </div>
@@ -724,7 +723,7 @@ function DSAMentorPage() {
             </div>
 
             {/* VERIFIED STRENGTHS */}
-            <div className="bg-green-500/5 rounded-xl p-3 border border-green-500/20 space-y-1 text-xs">
+            <div className="bg-green-950/30 rounded-xl p-3 border border-green-500/30 space-y-1 text-xs">
               <div className="font-semibold text-green-400 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <CheckCircle2 className="w-3.5 h-3.5 text-green-400" />
@@ -741,7 +740,7 @@ function DSAMentorPage() {
             </div>
 
             {/* CRITICAL WEAKNESSES */}
-            <div className="bg-red-500/5 rounded-xl p-3 border border-red-500/20 space-y-1 text-xs">
+            <div className="bg-red-950/30 rounded-xl p-3 border border-red-500/30 space-y-1 text-xs">
               <div className="font-semibold text-red-400 flex items-center justify-between">
                 <span className="flex items-center gap-1.5">
                   <AlertCircle className="w-3.5 h-3.5 text-red-400" />
@@ -779,14 +778,14 @@ function DSAMentorPage() {
                     <span className="font-mono font-bold text-white">{item.score}%</span>
                   </div>
                   <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                    <div className="h-full bg-aurora rounded-full" style={{ width: `${item.score}%` }} />
+                    <div className="h-full bg-gradient-to-r from-aurora to-purple-500 rounded-full" style={{ width: `${item.score}%` }} />
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="bg-aurora/5 rounded-xl p-3 border border-aurora/15 space-y-1">
+          <div className="bg-aurora/10 rounded-xl p-3 border border-aurora/20 space-y-1">
             <div className="text-[10px] font-mono font-bold text-aurora uppercase flex items-center gap-1">
               <Star className="w-3 h-3 text-aurora" /> AI VERDICT
             </div>
@@ -828,8 +827,9 @@ function DSAMentorPage() {
               className="bg-white/5 rounded-xl p-3.5 border border-white/5 flex items-center justify-between gap-3 text-xs"
             >
               <div className="min-w-0 space-y-0.5">
-                <div className="text-[9px] font-mono uppercase font-bold text-aurora">
-                  {dayItem.day}
+                <div className="text-[9px] font-mono uppercase font-bold text-aurora flex items-center gap-1">
+                  <CalendarDays className="w-3 h-3 text-aurora" />
+                  <span>{dayItem.day}</span>
                 </div>
                 <div className="font-semibold text-white truncate">{dayItem.focus}</div>
                 <div className="text-[10px] text-muted-foreground truncate">{dayItem.tasks[0]}</div>
@@ -837,7 +837,7 @@ function DSAMentorPage() {
 
               <button
                 onClick={() => navigate({ to: "/dsa-problems" })}
-                className="bg-white/10 hover:bg-aurora text-foreground hover:text-primary-foreground font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1"
+                className="bg-white/10 hover:bg-aurora text-foreground hover:text-primary-foreground font-semibold px-3.5 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1"
               >
                 <span>Start</span>
                 <ArrowRight className="w-3 h-3" />
@@ -875,7 +875,7 @@ function DSAMentorPage() {
         {/* Messages / Hero Empty State Workspace Container */}
         <div
           ref={chatContainerRef}
-          className="p-6 overflow-y-auto flex flex-col gap-6 relative z-10 min-h-[400px] max-h-[600px] custom-scrollbar scroll-smooth"
+          className="p-6 overflow-y-auto flex flex-col gap-6 relative z-10 min-h-[380px] max-h-[600px] custom-scrollbar scroll-smooth"
         >
           {chatMessages.length === 0 ? (
             /* Prominent AI Hero Welcome & Feature Grid when no messages exist */
@@ -883,8 +883,8 @@ function DSAMentorPage() {
               {/* Left Hero Prompting Column */}
               <div className="lg:col-span-7 space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="h-12 w-12 rounded-2xl bg-aurora/20 border border-aurora/30 flex items-center justify-center text-aurora shadow-inner shrink-0">
-                    <Bot className="w-7 h-7" />
+                  <div className="h-14 w-14 rounded-2xl bg-aurora/20 border border-aurora/30 flex items-center justify-center text-aurora shadow-[0_0_20px_rgba(168,85,247,0.3)] shrink-0">
+                    <Bot className="w-8 h-8" />
                   </div>
                   <div>
                     <h3 className="font-display font-bold text-xl md:text-2xl text-white">
@@ -899,7 +899,7 @@ function DSAMentorPage() {
                 {/* Suggestion Chips */}
                 <div className="space-y-1.5 pt-2">
                   <div className="text-[10px] font-mono uppercase tracking-widest text-muted-foreground">
-                    Try asking:
+                    TRY ASKING:
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {[
@@ -911,7 +911,7 @@ function DSAMentorPage() {
                       <button
                         key={chipText}
                         onClick={() => void handleSend(chipText)}
-                        className="glass px-3 py-1.5 rounded-full text-xs font-medium text-aurora hover:bg-aurora/10 transition-colors border border-aurora/20 text-left"
+                        className="glass px-3.5 py-1.5 rounded-full text-xs font-medium text-aurora hover:bg-aurora/10 transition-colors border border-aurora/20 text-left"
                       >
                         {chipText}
                       </button>
@@ -922,7 +922,7 @@ function DSAMentorPage() {
 
               {/* Right Feature Highlights Column */}
               <div className="lg:col-span-5 bg-white/5 rounded-2xl p-4 border border-white/5 space-y-3">
-                <div className="flex items-center gap-2 text-xs font-semibold text-white pb-1 border-b border-white/5">
+                <div className="flex items-center gap-2 text-xs font-semibold text-white pb-1 border-b border-white/5 font-mono">
                   <FileText className="w-4 h-4 text-aurora" />
                   <span>Coach Capabilities</span>
                 </div>
