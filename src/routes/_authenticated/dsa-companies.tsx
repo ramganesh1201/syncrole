@@ -4,25 +4,11 @@ import { motion, AnimatePresence } from "framer-motion";
 import {
   ArrowLeft,
   Check,
-  Briefcase,
-  Activity,
-  Code2,
-  Users,
-  Layers,
   Plus,
   Target,
   Sparkles,
-  TrendingUp,
-  AlertCircle,
   X,
   ChevronRight,
-  Clock,
-  Play,
-  RotateCcw,
-  Building2,
-  Compass,
-  Lock,
-  Zap,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -314,226 +300,17 @@ function DSACompaniesPage() {
     return map;
   }, [companies, problems, topicMap, userProgressMap, totalUserSolves]);
 
-  // Overall KPI summaries
+  // Selected target companies
   const targetCompanies = useMemo(() => {
     return companies.filter((c) => userFocus.has(c.id));
   }, [companies, userFocus]);
 
-  // Relevant problem set across all selected target companies
-  const targetRelevantProblems = useMemo(() => {
-    const set = new Set<string>();
-    targetCompanies.forEach((c) => {
-      const stats = companyAnalytics.get(c.id);
-      stats?.relevantProblems.forEach((p) => set.add(p.id));
-    });
-    return set;
-  }, [targetCompanies, companyAnalytics]);
-
-  // Count solved relevant problems across targets
-  const solvedTargetRelevantCount = useMemo(() => {
-    let count = 0;
-    targetRelevantProblems.forEach((pid) => {
-      const prog = userProgressMap.get(pid);
-      if (prog?.solved === true || prog?.status === "solved") count++;
-    });
-    return count;
-  }, [targetRelevantProblems, userProgressMap]);
-
-  // Relevant coverage percentage across target companies
-  const relevantCoveragePct = useMemo(() => {
-    if (targetCompanies.length === 0 || totalUserSolves === 0 || targetRelevantProblems.size === 0) {
-      return null;
-    }
-    return Math.round((solvedTargetRelevantCount / targetRelevantProblems.size) * 100);
-  }, [targetCompanies, totalUserSolves, targetRelevantProblems, solvedTargetRelevantCount]);
-
-  // Next Priority Topic across targets
-  const nextPriorityArea = useMemo(() => {
-    if (targetCompanies.length === 0) {
-      return { topic: "Choose a target", detail: "Select companies below to evaluate priority topic gaps." };
-    }
-    if (totalUserSolves === 0) {
-      return { topic: "Start DSA Practice", detail: "Solve verified DSA problems to build your preparation coverage." };
-    }
-
-    // Evaluate weak topics across targets
-    const topicStats: Record<string, { total: number; solved: number }> = {};
-    targetCompanies.forEach((c) => {
-      const stats = companyAnalytics.get(c.id);
-      stats?.relevantProblems.forEach((p) => {
-        const tName = topicMap.get(p.topic_id) ?? "Algorithm";
-        if (!topicStats[tName]) topicStats[tName] = { total: 0, solved: 0 };
-        topicStats[tName].total++;
-        const prog = userProgressMap.get(p.id);
-        if (prog?.solved === true || prog?.status === "solved") topicStats[tName].solved++;
-      });
-    });
-
-    let weakestTopic = "";
-    let lowestPct = 999;
-    let weakestSolved = 0;
-    let weakestTotal = 0;
-
-    Object.entries(topicStats).forEach(([tName, st]) => {
-      const pct = st.solved / Math.max(1, st.total);
-      if (pct < lowestPct) {
-        lowestPct = pct;
-        weakestTopic = tName;
-        weakestSolved = st.solved;
-        weakestTotal = st.total;
-      }
-    });
-
-    if (weakestTopic) {
-      return {
-        topic: weakestTopic,
-        detail: `${weakestSolved} of ${weakestTotal} company-relevant problems solved`,
-        solved: weakestSolved,
-        total: weakestTotal,
-      };
-    }
-
-    return { topic: "Maintain Consistency", detail: "Coverage is strong across target topics." };
-  }, [targetCompanies, totalUserSolves, companyAnalytics, topicMap, userProgressMap]);
-
-  // Hero preparation signal status
-  const heroSignal = useMemo(() => {
-    if (userFocus.size === 0) {
-      return {
-        title: "Choose your target companies",
-        subtitle: "Start by selecting the companies you're preparing for below.",
-        status: "Setup Required",
-      };
-    }
-    if (totalUserSolves === 0) {
-      return {
-        title: "Readiness is building",
-        subtitle: `${userFocus.size} target company selected. Keep solving verified problems to unlock readiness.`,
-        status: "Data Building",
-      };
-    }
-    return {
-      title: "Preparation active",
-      subtitle: `Your progress is being compared against ${userFocus.size} target company requirement pools.`,
-      status: "Active Tracking",
-    };
-  }, [userFocus.size, totalUserSolves]);
-
-  // Overlap topics across target companies with company counts
-  const targetOverlapTopicsWithCounts = useMemo(() => {
-    if (targetCompanies.length === 0) return [];
-    const topicCounts: Record<string, number> = {};
-    targetCompanies.forEach((c) => {
-      const stats = companyAnalytics.get(c.id);
-      const topics = stats?.coreTopics ?? [];
-      topics.forEach((t) => {
-        topicCounts[t] = (topicCounts[t] ?? 0) + 1;
-      });
-    });
-    return Object.entries(topicCounts)
-      .sort((a, b) => b[1] - a[1])
-      .map(([topic, count]) => ({ topic, count }));
-  }, [targetCompanies, companyAnalytics]);
-
-  // "Recommended Next Step" Actionable Content
-  const nextStepRecommendation = useMemo(() => {
-    if (targetCompanies.length === 0) {
-      return {
-        headline: "Choose your first target company",
-        text: "Select the companies below to build a focused interview preparation plan.",
-        actionText: "Choose Target Companies ↓",
-        type: "scroll",
-        targetCompany: null,
-        targetProblem: null,
-      };
-    }
-
-    if (totalUserSolves === 0) {
-      const companyNames = targetCompanies.map((c) => c.company_name).join(", ");
-      return {
-        headline: "Start building your interview coverage",
-        text: `You're targeting ${companyNames}. Begin with high-frequency topics relevant to your selected companies.`,
-        actionText: "Start Practicing →",
-        type: "navigate_problems",
-        targetCompany: targetCompanies[0],
-        targetProblem: null,
-      };
-    }
-
-    // Find target company & unsolved problem in priority weak topic
-    let selectedTarget: Company | null = null;
-    let weakestTopic = nextPriorityArea.topic;
-    let recommendedProblem: Problem | null = null;
-
-    for (const c of targetCompanies) {
-      const stats = companyAnalytics.get(c.id);
-      const unsolvedInCompany = (stats?.relevantProblems ?? []).filter((p) => {
-        const prog = userProgressMap.get(p.id);
-        return !(prog?.solved === true || prog?.status === "solved");
-      });
-
-      if (unsolvedInCompany.length > 0) {
-        selectedTarget = c;
-        // Find problem in weakest topic if available
-        const inWeak = unsolvedInCompany.find(
-          (p) => (topicMap.get(p.topic_id) ?? "") === weakestTopic
-        );
-        recommendedProblem = inWeak ?? unsolvedInCompany[0];
-        break;
-      }
-    }
-
-    if (relevantCoveragePct !== null && relevantCoveragePct >= 60) {
-      return {
-        headline: "Your preparation is on track",
-        text: "Your verified DSA coverage is strong across your current targets. Keep practicing weak areas to improve consistency.",
-        actionText: "Review Strategy →",
-        type: "open_strategy",
-        targetCompany: targetCompanies[0],
-        targetProblem: null,
-      };
-    }
-
-    if (recommendedProblem && selectedTarget) {
-      return {
-        headline: `Strengthen ${weakestTopic}`,
-        text: `${weakestTopic} is currently one of your highest-priority gaps across your selected companies (${nextPriorityArea.detail}).`,
-        actionText: "Practice Recommended Problem →",
-        type: "practice_problem",
-        targetCompany: selectedTarget,
-        targetProblem: recommendedProblem,
-      };
-    }
-
-    return {
-      headline: "Continue company-focused DSA practice",
-      text: "Maintain your practice streak and tackle medium-difficulty problems.",
-      actionText: "Explore Problem Library →",
-      type: "navigate_problems",
-      targetCompany: null,
-      targetProblem: null,
-    };
-  }, [
-    targetCompanies,
-    totalUserSolves,
-    nextPriorityArea,
-    companyAnalytics,
-    userProgressMap,
-    topicMap,
-    relevantCoveragePct,
-  ]);
-
   if (loading) {
     return (
-      <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-8">
+      <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
         <div className="h-6 w-36 glass rounded animate-pulse" />
-        <div className="h-10 w-72 glass rounded animate-pulse" />
-        <div className="grid gap-4 md:grid-cols-4">
-          {[1, 2, 3, 4].map((i) => (
-            <div key={i} className="h-24 glass-strong rounded-3xl animate-pulse" />
-          ))}
-        </div>
-        <div className="grid md:grid-cols-3 gap-5">
+        <div className="h-8 w-64 glass rounded animate-pulse" />
+        <div className="grid md:grid-cols-3 gap-5 pt-4">
           {[1, 2, 3, 4, 5, 6].map((i) => (
             <div key={i} className="h-64 glass-strong rounded-3xl animate-pulse" />
           ))}
@@ -543,8 +320,8 @@ function DSACompaniesPage() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-8">
-      {/* Back Link */}
+    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
+      {/* Top navigation */}
       <Link
         to="/dashboard/dsa"
         className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
@@ -552,330 +329,47 @@ function DSACompaniesPage() {
         <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
       </Link>
 
-      {/* 1. HERO — INTERVIEW INTELLIGENCE CENTER */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-2 border-b border-white/5">
-        <div className="space-y-2 max-w-2xl">
-          <div className="flex items-center gap-2 flex-wrap">
-            <span className="text-[10px] font-mono uppercase tracking-widest text-aurora font-semibold bg-aurora/10 border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-aurora" /> INTERVIEW INTELLIGENCE
-            </span>
-            <span className="text-[10px] font-mono text-muted-foreground bg-white/5 border border-white/5 px-2.5 py-0.5 rounded-full">
-              Target Company Preparation
-            </span>
-          </div>
-          <h1 className="font-display text-2xl md:text-3xl lg:text-4xl font-bold tracking-tight text-white leading-tight">
-            Turn your DSA practice into a company-specific interview plan.
-          </h1>
-          <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
-            Select the companies you're targeting. SyncRole compares your verified DSA progress with company-relevant topics and shows exactly where to focus next.
-          </p>
+      {/* Compact Header */}
+      <div className="space-y-1.5">
+        <div className="text-[10px] font-mono uppercase tracking-widest text-aurora font-semibold">
+          TARGET COMPANY PREPARATION
         </div>
-
-        {/* Real-data Preparation Signal Panel */}
-        <div className="glass-strong rounded-2xl p-4 border border-white/10 shrink-0 w-full lg:w-80 space-y-2 bg-black/40 shadow-inner">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] uppercase font-mono tracking-widest text-muted-foreground flex items-center gap-1.5">
-              <Activity className="w-3.5 h-3.5 text-aurora" /> Preparation Signal
-            </span>
-            <span className={`h-2 w-2 rounded-full ${userFocus.size > 0 ? "bg-aurora animate-pulse" : "bg-muted-foreground"}`} />
-          </div>
-          <div>
-            <div className="font-display font-semibold text-sm text-white">
-              {heroSignal.title}
-            </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5 leading-normal">
-              {heroSignal.subtitle}
-            </p>
-          </div>
-        </div>
+        <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
+          Target Companies
+        </h1>
+        <p className="text-xs md:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+          Choose the companies you're preparing for and practice the DSA topics that matter most for their interviews.
+        </p>
       </div>
 
-      {/* 2. YOUR PREPARATION SNAPSHOT (Replacing generic KPI cards) */}
-      <div className="space-y-3">
-        <div>
-          <h2 className="font-display font-semibold text-base text-white">
-            Your Preparation Snapshot
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            Based on your verified DSA progress and selected targets.
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="glass-strong rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
-              1. TARGETS
-            </div>
-            <div className="font-display text-2xl font-bold text-aurora">
-              {userFocus.size}
-            </div>
-            <div className="text-[10px] text-muted-foreground">
-              {userFocus.size === 1 ? "1 company targeted" : `${userFocus.size} companies targeted`}
-            </div>
-          </div>
-
-          <div className="glass-strong rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
-              2. VERIFIED SOLVES
-            </div>
-            <div className="font-display text-2xl font-bold text-green-400">
-              {totalUserSolves}
-            </div>
-            <div className="text-[10px] text-muted-foreground">
-              Canonical solved problems
-            </div>
-          </div>
-
-          <div className="glass-strong rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
-              3. RELEVANT COVERAGE
-            </div>
-            <div className="font-display text-2xl font-bold text-accent">
-              {relevantCoveragePct !== null ? `${relevantCoveragePct}%` : "Not enough data"}
-            </div>
-            <div className="text-[10px] text-muted-foreground">
-              {relevantCoveragePct !== null
-                ? `${solvedTargetRelevantCount} / ${targetRelevantProblems.size} target problems`
-                : "Requires target & solves"}
-            </div>
-          </div>
-
-          <div className="glass-strong rounded-2xl p-4 border border-white/5 space-y-1 min-w-0">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
-              4. NEXT PRIORITY
-            </div>
-            <div className="font-display text-lg font-bold text-yellow-400 truncate">
-              {nextPriorityArea.topic}
-            </div>
-            <div className="text-[10px] text-muted-foreground truncate">
-              {nextPriorityArea.detail}
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* 3. YOUR PREPARATION JOURNEY (3-Step Horizontal Workflow) */}
-      <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-4">
-        <div>
-          <h2 className="font-display font-semibold text-base text-white">
-            Your Preparation Journey
-          </h2>
-          <p className="text-xs text-muted-foreground">
-            Dynamic stage progress derived from real target selections & verified solves.
-          </p>
-        </div>
-
-        <div className="grid md:grid-cols-3 gap-4">
-          {/* Step 01 */}
-          <div
-            className={`glass rounded-2xl p-4 border space-y-2 transition-all ${
-              userFocus.size > 0
-                ? "border-aurora/40 bg-aurora/5"
-                : "border-white/10"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-bold text-aurora">01</span>
-              {userFocus.size > 0 ? (
-                <span className="text-[10px] font-mono bg-aurora/20 text-aurora border border-aurora/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold">
-                  <Check className="w-3 h-3" /> COMPLETED
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded-full font-semibold">
-                  ACTIVE
-                </span>
-              )}
-            </div>
-            <div className="font-display font-bold text-sm text-white">
-              Choose Targets
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Select companies you want to prepare for.
-            </p>
-          </div>
-
-          {/* Step 02 */}
-          <div
-            className={`glass rounded-2xl p-4 border space-y-2 transition-all ${
-              userFocus.size === 0
-                ? "border-white/5 opacity-60"
-                : totalUserSolves > 0
-                ? "border-aurora/40 bg-aurora/5"
-                : "border-white/10"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-bold text-aurora">02</span>
-              {userFocus.size === 0 ? (
-                <span className="text-[10px] font-mono bg-white/5 text-muted-foreground border border-white/5 px-2 py-0.5 rounded-full">
-                  WAITING
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded-full font-semibold">
-                  ACTIVE
-                </span>
-              )}
-            </div>
-            <div className="font-display font-bold text-sm text-white">
-              Build Coverage
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Solve the DSA topics most relevant to those companies.
-            </p>
-          </div>
-
-          {/* Step 03 */}
-          <div
-            className={`glass rounded-2xl p-4 border space-y-2 transition-all ${
-              userFocus.size === 0 || totalUserSolves === 0
-                ? "border-white/5 opacity-60"
-                : relevantCoveragePct !== null && relevantCoveragePct >= 60
-                ? "border-green-400/40 bg-green-500/5"
-                : "border-white/10"
-            }`}
-          >
-            <div className="flex items-center justify-between">
-              <span className="font-mono text-xs font-bold text-aurora">03</span>
-              {userFocus.size === 0 || totalUserSolves === 0 ? (
-                <span className="text-[10px] font-mono bg-white/5 text-muted-foreground border border-white/5 px-2 py-0.5 rounded-full">
-                  WAITING
-                </span>
-              ) : relevantCoveragePct !== null && relevantCoveragePct >= 60 ? (
-                <span className="text-[10px] font-mono bg-green-500/20 text-green-400 border border-green-500/30 px-2 py-0.5 rounded-full flex items-center gap-1 font-semibold">
-                  <Check className="w-3 h-3" /> READY
-                </span>
-              ) : (
-                <span className="text-[10px] font-mono bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded-full font-semibold">
-                  ACTIVE
-                </span>
-              )}
-            </div>
-            <div className="font-display font-bold text-sm text-white">
-              Verify Readiness
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Use verified solves to measure how prepared you actually are.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* 4. WHY COMPANY-SPECIFIC PREPARATION? (Integrated explanation row) */}
-      <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-4">
-        <div className="text-xs font-mono uppercase tracking-widest text-muted-foreground flex items-center gap-2">
-          <Compass className="h-4 w-4 text-aurora" />
-          <span>Why company-specific preparation?</span>
-        </div>
-        <div className="grid md:grid-cols-3 gap-4">
-          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-              <Building2 className="w-3.5 h-3.5 text-aurora" /> COMPANY SIGNAL
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Different companies emphasize different DSA patterns. Targeting lets SyncRole prioritize the right topics.
-            </p>
-          </div>
-          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-              <Target className="w-3.5 h-3.5 text-accent" /> YOUR GAP
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Compare your verified solves against the relevant problem pool to identify what you're missing.
-            </p>
-          </div>
-          <div className="glass rounded-2xl p-4 border border-white/5 space-y-1">
-            <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-              <Zap className="w-3.5 h-3.5 text-yellow-400" /> NEXT ACTION
-            </div>
-            <p className="text-[11px] text-muted-foreground leading-relaxed">
-              Stop guessing what to practice. Get a concrete next problem based on your target and current progress.
-            </p>
-          </div>
-        </div>
-      </div>
-
-      {/* 5. RECOMMENDED NEXT STEP (Dynamic & Actionable) */}
-      <div className="glass-strong rounded-3xl p-6 border border-aurora/30 bg-aurora/5 flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="space-y-1">
-          <div className="text-[10px] uppercase tracking-widest text-aurora font-mono font-semibold flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-aurora" /> Recommended Next Step
-          </div>
-          <h3 className="font-display font-bold text-lg text-white">
-            {nextStepRecommendation.headline}
-          </h3>
-          <p className="text-xs text-muted-foreground max-w-xl">
-            {nextStepRecommendation.text}
-          </p>
-        </div>
-
-        <button
-          onClick={() => {
-            if (nextStepRecommendation.type === "scroll") {
-              const el = document.getElementById("all-companies-section");
-              el?.scrollIntoView({ behavior: "smooth" });
-            } else if (nextStepRecommendation.type === "practice_problem" && nextStepRecommendation.targetProblem) {
-              navigate({
-                to: "/dsa-workspace/$problemId",
-                params: { problemId: nextStepRecommendation.targetProblem.id },
-              });
-            } else if (nextStepRecommendation.type === "open_strategy" && nextStepRecommendation.targetCompany) {
-              setActiveStrategyCompany(nextStepRecommendation.targetCompany);
-            } else {
-              navigate({ to: "/dsa-problems" });
-            }
-          }}
-          className="glass rounded-full px-5 py-2.5 text-xs font-semibold text-aurora hover:bg-white/10 transition-colors border border-aurora/30 shrink-0 flex items-center gap-2"
-        >
-          <span>{nextStepRecommendation.actionText}</span>
-          <ChevronRight className="w-4 h-4" />
-        </button>
-      </div>
-
-      {/* 6. TARGET OVERLAP INSIGHT */}
-      <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-3">
-        <div className="flex items-center justify-between">
-          <div className="text-xs uppercase tracking-widest text-muted-foreground font-mono font-medium flex items-center gap-2">
-            <Layers className="w-4 h-4 text-aurora" />
-            <span>Target Overlap</span>
-          </div>
-        </div>
-
-        {targetCompanies.length > 1 && targetOverlapTopicsWithCounts.length > 0 ? (
-          <>
-            <div className="text-xs font-semibold text-white">
-              Your targets share {targetOverlapTopicsWithCounts.length} major DSA areas
-            </div>
-            <div className="flex flex-wrap gap-2 pt-1">
-              {targetOverlapTopicsWithCounts.map(({ topic, count }) => (
-                <span
-                  key={topic}
-                  className="bg-aurora/10 text-aurora border border-aurora/20 px-3 py-1 rounded-full text-xs font-medium inline-flex items-center gap-1.5"
-                >
-                  <Check className="w-3.5 h-3.5" />
-                  <span>{topic}</span>
-                  <span className="text-[10px] bg-aurora/20 px-1.5 py-0.2 rounded-full font-mono">
-                    {count} targets
-                  </span>
-                </span>
-              ))}
-            </div>
-            <p className="text-xs text-muted-foreground">
-              These topics appear across multiple selected companies, making them high-leverage preparation areas.
-            </p>
-          </>
-        ) : (
-          <p className="text-xs text-muted-foreground">
-            Target overlap will appear after you select multiple companies.
-          </p>
-        )}
+      {/* Small Target Status Row */}
+      <div className="flex flex-wrap items-center gap-2 pt-1 pb-1 text-xs font-mono">
+        <span className="inline-flex items-center gap-1.5 bg-aurora/10 text-aurora border border-aurora/20 px-3 py-1 rounded-full font-medium">
+          <Target className="w-3.5 h-3.5 text-aurora" />
+          <span>{userFocus.size} Target {userFocus.size === 1 ? "Company" : "Companies"}</span>
+        </span>
+        <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full font-medium">
+          <Check className="w-3.5 h-3.5 text-green-400" />
+          <span>{totalUserSolves} Verified {totalUserSolves === 1 ? "Solve" : "Solves"}</span>
+        </span>
+        <span className="text-muted-foreground text-[11px] px-2 py-0.5">
+          {userFocus.size === 0
+            ? "Select companies below to start targeted preparation."
+            : `Preparing for ${targetCompanies.map((c) => c.company_name).join(", ")}`}
+        </span>
       </div>
 
       {/* ---------------------------------------------------------------- */}
       {/* All Company Cards Grid (UNTOUCHED / PRESERVED BELOW) */}
       {/* ---------------------------------------------------------------- */}
-      <div id="all-companies-section" className="space-y-4">
+      <div id="all-companies-section" className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
-          <h2 className="font-display font-semibold text-lg text-white">All Companies</h2>
+          <div>
+            <h2 className="font-display font-semibold text-lg text-white">All Companies</h2>
+            <p className="text-xs text-muted-foreground">
+              Choose a company to start focused interview preparation.
+            </p>
+          </div>
           <span className="text-xs text-muted-foreground font-mono">
             {companies.length} Available
           </span>
