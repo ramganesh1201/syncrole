@@ -80,6 +80,18 @@ function SyncPilotLauncherInner() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [panelState]);
 
+  // Lock body scroll when SyncPilot is open
+  useEffect(() => {
+    if (panelState !== "closed" && typeof window !== "undefined") {
+      document.body.style.overflow = "hidden";
+    } else if (typeof window !== "undefined") {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      if (typeof window !== "undefined") document.body.style.overflow = "";
+    };
+  }, [panelState]);
+
   const dims = PANEL_DIMS[(mode as SyncPilotMode) || "career_twin"] || PANEL_DIMS.career_twin;
   const isInterview = mode === "interview";
 
@@ -94,7 +106,7 @@ function SyncPilotLauncherInner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[9990] bg-black/60 backdrop-blur-xs md:bg-transparent"
+              className="fixed inset-0 z-[9990] bg-black/80 backdrop-blur-sm md:bg-transparent"
               onClick={handleClose}
             />
 
@@ -104,16 +116,17 @@ function SyncPilotLauncherInner() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 40, scale: 0.94 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="fixed z-[9999] glass-strong rounded-3xl overflow-hidden border border-white/12 shadow-2xl"
+              className="fixed z-[9999] glass-strong rounded-none md:rounded-3xl overflow-hidden border-0 md:border md:border-white/12 shadow-2xl bg-[#07090e]"
               style={
                 isMobile
                   ? {
-                      bottom: "76px",
-                      left: "0.5rem",
-                      right: "0.5rem",
-                      width: "calc(100vw - 1rem)",
-                      height: "calc(100dvh - 86px)",
-                      boxShadow: "0 0 60px -15px oklch(0.75 0.2 200 / 40%), 0 30px 80px -20px black",
+                      position: "fixed",
+                      top: 0,
+                      left: 0,
+                      right: 0,
+                      bottom: 0,
+                      width: "100vw",
+                      height: "100dvh",
                     }
                   : {
                       width: dims.width,
