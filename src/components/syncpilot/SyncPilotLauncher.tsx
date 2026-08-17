@@ -31,29 +31,38 @@ function LoadingFallback() {
 }
 
 function SyncPilotLauncherInner() {
-  const [panelState, setPanelState] = useState<PanelState>("closed");
-  const { mode, switchMode, userData, loadConversations, loadConversation, conversationId } = useSyncPilot();
+  const {
+    panelState,
+    setPanelState,
+    openSyncPilot,
+    closeSyncPilot,
+    mode,
+    switchMode,
+    userData,
+    loadConversations,
+    loadConversation,
+    conversationId,
+  } = useSyncPilot();
   const { user } = useAuth();
 
+  const [isMobile, setIsMobile] = useState(false);
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const handleOpen = () => {
-    setPanelState("booting");
-    // Boot duration 1.9s
-    setTimeout(async () => {
-      setPanelState("open");
-      const convs = await loadConversations();
-      if (convs && convs.length > 0 && !conversationId) {
-         loadConversation(convs[0].id);
-      }
-    }, 1900);
+    openSyncPilot();
   };
 
   const handleClose = () => {
-    setPanelState("closed");
+    closeSyncPilot();
   };
 
   const handleSwitchMode = (newMode: SyncPilotMode) => {
     switchMode(newMode);
-    // Brief re-boot when switching to interview (full-screen takeover)
     if (newMode === "interview") {
       setPanelState("booting");
       setTimeout(() => setPanelState("open"), 800);
@@ -72,7 +81,6 @@ function SyncPilotLauncherInner() {
   }, [panelState]);
 
   const dims = PANEL_DIMS[(mode as SyncPilotMode) || "career_twin"] || PANEL_DIMS.career_twin;
-
   const isInterview = mode === "interview";
 
   const panelContent = (
@@ -86,7 +94,7 @@ function SyncPilotLauncherInner() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[9990] bg-transparent"
+              className="fixed inset-0 z-[9990] bg-black/60 backdrop-blur-xs md:bg-transparent"
               onClick={handleClose}
             />
 
@@ -97,15 +105,27 @@ function SyncPilotLauncherInner() {
               exit={{ opacity: 0, y: 40, scale: 0.94 }}
               transition={{ type: "spring", stiffness: 300, damping: 28 }}
               className="fixed z-[9999] glass-strong rounded-3xl overflow-hidden border border-white/12 shadow-2xl"
-              style={{
-                width: dims.width,
-                height: dims.height,
-                bottom: dims.bottom,
-                right: dims.right,
-                boxShadow: mode === "recruiter"
-                  ? "0 0 80px -20px oklch(0.72 0.22 295 / 50%), 0 40px 100px -20px black"
-                  : "0 0 60px -15px oklch(0.75 0.2 200 / 40%), 0 30px 80px -20px black",
-              }}
+              style={
+                isMobile
+                  ? {
+                      bottom: "76px",
+                      left: "0.5rem",
+                      right: "0.5rem",
+                      width: "calc(100vw - 1rem)",
+                      height: "calc(100dvh - 86px)",
+                      boxShadow: "0 0 60px -15px oklch(0.75 0.2 200 / 40%), 0 30px 80px -20px black",
+                    }
+                  : {
+                      width: dims.width,
+                      height: dims.height,
+                      bottom: dims.bottom,
+                      right: dims.right,
+                      boxShadow:
+                        mode === "recruiter"
+                          ? "0 0 80px -20px oklch(0.72 0.22 295 / 50%), 0 40px 100px -20px black"
+                          : "0 0 60px -15px oklch(0.75 0.2 200 / 40%), 0 30px 80px -20px black",
+                    }
+              }
             >
               {panelState === "booting" ? (
                 <SyncPilotLoading userName={userData?.profile?.full_name ?? undefined} />
@@ -161,10 +181,16 @@ function SyncPilotLauncherInner() {
 
   return (
     <>
-      {/* FAB - only visible when panel is closed */}
+      {/* FAB - only visible on desktop (>=768px) when panel is closed */}
       <AnimatePresence>
         {panelState === "closed" && (
-          <motion.div key="fab" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="fixed z-[9998] bottom-[2rem] right-[2rem]">
+          <motion.div
+            key="fab"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed z-[9998] bottom-[2rem] right-[2rem] hidden md:block"
+          >
             <SyncPilotButton onClick={handleOpen} />
           </motion.div>
         )}
@@ -177,9 +203,5 @@ function SyncPilotLauncherInner() {
 }
 
 export function SyncPilotLauncher() {
-  return (
-    <SyncPilotProvider>
-      <SyncPilotLauncherInner />
-    </SyncPilotProvider>
-  );
+  return <SyncPilotLauncherInner />;
 }

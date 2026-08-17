@@ -13,6 +13,7 @@ import { Toaster } from "sonner";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { AuthProvider } from "@/hooks/use-auth";
+import { SyncPilotProvider } from "@/hooks/useSyncPilot";
 // Step 4: Import the SyncPilot launcher component
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
 
@@ -130,11 +131,13 @@ function RootComponent() {
   return (
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <Outlet />
-        <Toaster theme="dark" position="top-right" richColors closeButton />
-        
-        {/* Step 4: Rendered globally here inside Auth context */}
-        <SyncPilotLauncher />
+        <SyncPilotProvider>
+          <Outlet />
+          <Toaster theme="dark" position="top-right" richColors closeButton />
+          
+          {/* Rendered globally here inside Auth & SyncPilot context */}
+          <SyncPilotLauncher />
+        </SyncPilotProvider>
       </AuthProvider>
     </QueryClientProvider>
   );

@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
+import { useSyncPilot } from "@/hooks/useSyncPilot";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
 
 interface MobileHomepageProps {
@@ -64,6 +65,7 @@ const GUEST_DEMO = {
 export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps) {
   const { user } = useAuth();
   const nav = useNavigate();
+  const { openSyncPilot, isOpen: isSyncPilotOpen } = useSyncPilot();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"strengths" | "weaknesses" | "growth">("strengths");
 
@@ -608,7 +610,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         {[
           { label: "Home", href: "/", icon: Home },
           { label: "Progress", href: "/dashboard", icon: TrendingUp },
-          { label: "AI Action", href: "/dsa-daily", icon: Sparkles, isCenter: true },
+          { label: "AI SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
           { label: "Insights", href: "/resume-intelligence", icon: FileText },
           { label: "Profile", href: "/career-identity", icon: User },
         ].map((tab) => {
@@ -616,11 +618,17 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             return (
               <button
                 key={tab.label}
-                onClick={() => nav({ to: tab.href })}
-                className="relative -top-3 h-12 w-12 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 p-px shadow-lg shadow-purple-500/40 active:scale-95 transition"
-                aria-label="AI Action"
+                onClick={() => tab.action?.()}
+                className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-lg transition active:scale-95 ${
+                  isSyncPilotOpen
+                    ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/60 ring-2 ring-purple-400/60"
+                    : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/40 hover:brightness-110"
+                }`}
+                aria-label="Open SyncPilot AI Assistant"
               >
-                <div className="h-full w-full rounded-full bg-slate-950 grid place-items-center text-purple-300">
+                <div className={`h-full w-full rounded-full grid place-items-center transition ${
+                  isSyncPilotOpen ? "bg-purple-950 text-cyan-300" : "bg-slate-950 text-purple-300"
+                }`}>
                   <tab.icon className="h-5 w-5" />
                 </div>
               </button>

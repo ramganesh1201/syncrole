@@ -6,6 +6,7 @@ import { GapAnalysisService } from "@/lib/services/gap-analysis.service";
 
 
 export type SyncPilotMode = "career_twin" | "recruiter" | "interview";
+export type PanelState = "closed" | "booting" | "open";
 
 export type ChatMessage = {
   id?: string;
@@ -28,6 +29,7 @@ export type UserData = {
 
 function useSyncPilotInternal() {
   const [loading, setLoading] = useState(false);
+  const [panelState, setPanelState] = useState<PanelState>("closed");
   const [mode, setMode] = useState<SyncPilotMode>("career_twin");
   const [conversationId, setConversationId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -217,10 +219,27 @@ function useSyncPilotInternal() {
     }
   }, [mode, conversationId, messages, loadConversations]);
 
+  const openSyncPilot = useCallback(() => {
+    setPanelState("booting");
+    setTimeout(async () => {
+      setPanelState("open");
+      const convs = await loadConversations();
+      if (convs && convs.length > 0 && !conversationId) {
+        loadConversation(convs[0].id);
+      }
+    }, 1900);
+  }, [loadConversations, loadConversation, conversationId]);
+
+  const closeSyncPilot = useCallback(() => {
+    setPanelState("closed");
+  }, []);
+
   return useMemo(
     () => ({
       loading,
       userDataLoading,
+      panelState,
+      isOpen: panelState !== "closed",
       mode,
       conversationId,
       messages,
@@ -228,6 +247,9 @@ function useSyncPilotInternal() {
       conversations,
 
       // Actions
+      openSyncPilot,
+      closeSyncPilot,
+      setPanelState,
       sendMessage,
       switchMode,
       startNewConversation,
@@ -239,11 +261,14 @@ function useSyncPilotInternal() {
     [
       loading,
       userDataLoading,
+      panelState,
       mode,
       conversationId,
       messages,
       userData,
       conversations,
+      openSyncPilot,
+      closeSyncPilot,
       sendMessage,
       switchMode,
       startNewConversation,
