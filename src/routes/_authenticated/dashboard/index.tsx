@@ -35,6 +35,7 @@ import { WeeklyProgressCard } from "@/components/dashboard-v2/WeeklyProgressCard
 import { RecentActivityCard } from "@/components/dashboard-v2/RecentActivityCard";
 import { FeaturedAchievements } from "@/components/dashboard-v2/FeaturedAchievements";
 import { DashboardFooterCTA } from "@/components/dashboard-v2/DashboardFooterCTA";
+import { MobileDashboard } from "@/components/dashboard-v2/MobileDashboard";
 
 export const Route = createFileRoute("/_authenticated/dashboard/")({
   component: Dashboard,
@@ -544,52 +545,71 @@ function Dashboard() {
   const expectedTimeline = latest.total_score >= 75 ? "1-2 months" : latest.total_score >= 50 ? "3-5 months" : "6+ months";
 
   return (
-    <div className="relative mx-auto max-w-7xl px-4 md:px-6 py-8 min-h-screen">
-      <DashboardHero 
-        userContext={userContext}
-        userName={profile?.full_name || ""}
-        orchestration={orchestration}
-        onContinueJourney={scrollToWorkspace}
-        xp={xp}
-        streak={streak}
-      />
-      
-      <div ref={workspaceRef}>
-        <TodayWorkspace 
+    <>
+      {/* Mobile Dashboard Experience (< 768px) */}
+      <div className="block md:hidden">
+        <MobileDashboard
+          userContext={userContext}
+          profile={profile}
+          userName={profile?.full_name || ""}
+          orchestration={orchestration}
+          onContinueJourney={scrollToWorkspace}
+          xp={xp}
+          streak={streak}
           missions={missions}
-          onComplete={completeMission}
+          onCompleteMission={completeMission}
+          latestScore={latest}
         />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-        <div className="lg:col-span-1">
-          <DreamCompanyProgressCard userContext={userContext} />
-        </div>
-        <div className="lg:col-span-1">
-          <CareerJourneyCard userContext={userContext} />
-        </div>
-        <div className="lg:col-span-1">
-          <CareerHealthCard scores={latest} />
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-        <div className="h-[360px]">
-          <WeeklyProgressCard 
-            scores={scores} 
-            currentXp={xp.total_xp} 
-            currentStreak={streak.current_streak} 
+      {/* Desktop Dashboard View (>= 768px) - UNCHANGED */}
+      <div className="hidden md:block relative mx-auto max-w-7xl px-4 md:px-6 py-8 min-h-screen">
+        <DashboardHero 
+          userContext={userContext}
+          userName={profile?.full_name || ""}
+          orchestration={orchestration}
+          onContinueJourney={scrollToWorkspace}
+          xp={xp}
+          streak={streak}
+        />
+        
+        <div ref={workspaceRef}>
+          <TodayWorkspace 
+            missions={missions}
+            onComplete={completeMission}
           />
         </div>
-        <div className="h-[360px]">
-          <RecentActivityCard recentConversations={recentConversations} />
-        </div>
-      </div>
 
-      <FeaturedAchievements unlockedCodes={achs} />
-      
-      <DashboardFooterCTA />
-    </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+          <div className="lg:col-span-1">
+            <DreamCompanyProgressCard userContext={userContext} />
+          </div>
+          <div className="lg:col-span-1">
+            <CareerJourneyCard userContext={userContext} />
+          </div>
+          <div className="lg:col-span-1">
+            <CareerHealthCard scores={latest} />
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+          <div className="h-[360px]">
+            <WeeklyProgressCard 
+              scores={scores} 
+              currentXp={xp.total_xp} 
+              currentStreak={streak.current_streak} 
+            />
+          </div>
+          <div className="h-[360px]">
+            <RecentActivityCard recentConversations={recentConversations} />
+          </div>
+        </div>
+
+        <FeaturedAchievements unlockedCodes={achs} />
+        
+        <DashboardFooterCTA />
+      </div>
+    </>
   );
 }
 
