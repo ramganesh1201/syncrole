@@ -612,7 +612,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
           { label: "Progress", href: "/dashboard", icon: TrendingUp },
           { label: "AI SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
           { label: "Insights", href: "/resume-intelligence", icon: FileText },
-          { label: "Profile", href: "/career-identity", icon: User },
+          { label: "Profile", href: "/profile", icon: User },
         ].map((tab) => {
           if (tab.isCenter) {
             return (

@@ -16,6 +16,7 @@ import { GithubSummary } from "@/components/profile-v2/GithubSummary";
 import { AchievementsSection } from "@/components/profile-v2/AchievementsSection";
 import { ActivityTimeline } from "@/components/profile-v2/ActivityTimeline";
 import { EditProfileForm } from "@/components/profile-v2/EditProfileForm";
+import { MobileProfile } from "@/components/profile-v2/MobileProfile";
 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -263,62 +264,82 @@ function ProfilePage() {
   const completionPct = Math.round((filledFields.length / fields.length) * 100);
 
   return (
-    <div className="max-w-7xl mx-auto px-4 md:px-6 py-8 pb-32">
-      <ProfileHero 
-        profile={profile}
-        placementStats={placementStats}
-        completionPct={completionPct}
-        xpLevel={xpLevel}
-        streak={streak}
-        uploading={uploading}
-        onEditClick={handleEditClick}
-        onUploadClick={() => scrollToSection("edit-profile")}
-      />
-      
-      <ProfileMobileNav />
-      
-      <div className="flex flex-col md:flex-row gap-8 relative mt-8">
-        <ProfileSidebarNav />
+    <>
+      {/* Mobile Profile Experience (< 768px) */}
+      <div className="block md:hidden">
+        <MobileProfile
+          user={user}
+          profile={profile}
+          placementStats={placementStats}
+          xpLevel={xpLevel}
+          streak={streak}
+          resumeAnalysis={resumeAnalysis}
+          githubAnalysis={githubAnalysis}
+          uploading={uploading}
+          onEditClick={handleEditClick}
+          onUploadClick={() => scrollToSection("edit-profile")}
+          handleResumeUpload={handleResumeUpload}
+        />
+      </div>
+
+      {/* Desktop Profile View (>= 768px) - UNCHANGED */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 py-8 pb-32">
+        <ProfileHero 
+          profile={profile}
+          placementStats={placementStats}
+          completionPct={completionPct}
+          xpLevel={xpLevel}
+          streak={streak}
+          uploading={uploading}
+          onEditClick={handleEditClick}
+          onUploadClick={() => scrollToSection("edit-profile")}
+        />
         
-        <div className="flex-1 space-y-16 min-w-0">
+        <ProfileMobileNav />
+        
+        <div className="flex flex-col md:flex-row gap-8 relative mt-8">
+          <ProfileSidebarNav />
           
-          <section id="career-group" className="space-y-10 scroll-mt-24">
-            <CareerOverview profile={profile} />
-            <SkillsSection profile={profile} onEditClick={handleEditClick} />
-            <ProjectsSection profile={profile} onEditClick={handleEditClick} />
-          </section>
+          <div className="flex-1 space-y-16 min-w-0">
+            
+            <section id="career-group" className="space-y-10 scroll-mt-24">
+              <CareerOverview profile={profile} />
+              <SkillsSection profile={profile} onEditClick={handleEditClick} />
+              <ProjectsSection profile={profile} onEditClick={handleEditClick} />
+            </section>
 
-          <section id="professional-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
-            <CodingProfilesSection profile={profile} onEditClick={handleEditClick} />
-            <div id="resume-github" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
-              <ResumeSummary placementStats={placementStats} resumeAnalysis={resumeAnalysis} uploading={uploading} onUpload={handleResumeUpload} />
-              <GithubSummary profile={profile} placementStats={placementStats} githubAnalysis={githubAnalysis} />
-            </div>
-          </section>
-          
-          <section id="growth-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
-            <AchievementsSection onViewAllClick={() => console.log("Open achievement modal")} />
-            <ActivityTimeline placementStats={placementStats} />
-          </section>
+            <section id="professional-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
+              <CodingProfilesSection profile={profile} onEditClick={handleEditClick} />
+              <div id="resume-github" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
+                <ResumeSummary placementStats={placementStats} resumeAnalysis={resumeAnalysis} uploading={uploading} onUpload={handleResumeUpload} />
+                <GithubSummary profile={profile} placementStats={placementStats} githubAnalysis={githubAnalysis} />
+              </div>
+            </section>
+            
+            <section id="growth-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
+              <AchievementsSection onViewAllClick={() => console.log("Open achievement modal")} />
+              <ActivityTimeline placementStats={placementStats} />
+            </section>
 
-          <section id="settings-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
-            <EditProfileForm 
-              user={user}
-              profile={profile}
-              handleChange={handleChange}
-              handleSelectChange={handleSelectChange}
-              handleArrayChange={handleArrayChange}
-              handleSave={handleSave}
-              saving={saving}
-              uploading={uploading}
-              handleResumeUpload={handleResumeUpload}
-              isExpanded={isEditExpanded}
-              onToggle={() => setIsEditExpanded(!isEditExpanded)}
-            />
-          </section>
+            <section id="settings-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
+              <EditProfileForm 
+                user={user}
+                profile={profile}
+                handleChange={handleChange}
+                handleSelectChange={handleSelectChange}
+                handleArrayChange={handleArrayChange}
+                handleSave={handleSave}
+                saving={saving}
+                uploading={uploading}
+                handleResumeUpload={handleResumeUpload}
+                isExpanded={isEditExpanded}
+                onToggle={() => setIsEditExpanded(!isEditExpanded)}
+              />
+            </section>
 
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
