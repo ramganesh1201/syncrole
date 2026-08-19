@@ -189,94 +189,7 @@ export function MobileDashboard({
       {/* Ambient background glow */}
       <div className="absolute top-0 inset-x-0 h-80 bg-gradient-to-b from-purple-900/20 via-blue-900/10 to-transparent pointer-events-none blur-3xl" />
 
-      {/* ── 1. MOBILE HEADER ── */}
-      <header className="sticky top-0 z-40 bg-[#07090e]/90 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="p-2 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition"
-            aria-label="Open navigation menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
-
-          <BrandLogo size="sm" />
-        </div>
-
-        <div className="flex items-center gap-2">
-          <NotificationCenter>
-            <button className="relative p-2 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition">
-              <Bell className="h-4.5 w-4.5" />
-              <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-purple-400 animate-pulse" />
-            </button>
-          </NotificationCenter>
-
-          <button
-            onClick={() => nav({ to: "/profile" })}
-            className="h-9 w-9 rounded-full bg-gradient-to-tr from-purple-600 to-blue-600 p-px overflow-hidden shadow-sm"
-          >
-            <div className="h-full w-full rounded-full bg-slate-950 flex items-center justify-center text-xs font-bold text-purple-300">
-              {firstName.charAt(0)}
-            </div>
-          </button>
-        </div>
-      </header>
-
-      {/* ── HAMBURGER DRAWER ── */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-between p-6"
-          >
-            <div>
-              <div className="flex items-center justify-between pb-6 border-b border-white/10">
-                <BrandLogo size="md" />
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-2 rounded-full bg-slate-800 text-slate-300 hover:text-white"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
-
-              <nav className="mt-8 space-y-3">
-                {[
-                  { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
-                  { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
-                  { label: "Today Workspace", href: "/dashboard/workspace", icon: Clock },
-                  { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
-                  { label: "Role Explorer", href: "/role-explorer", icon: Compass },
-                  { label: "Profile & Settings", href: "/profile", icon: User },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    to={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-slate-900/60 border border-white/5 text-slate-200 text-sm font-medium hover:bg-slate-800 transition"
-                  >
-                    <item.icon className="h-4 w-4 text-purple-400" />
-                    <span>{item.label}</span>
-                    <ChevronRight className="h-4 w-4 ml-auto text-slate-600" />
-                  </Link>
-                ))}
-              </nav>
-            </div>
-
-            <button
-              onClick={() => {
-                setIsMenuOpen(false);
-                nav({ to: "/profile" });
-              }}
-              className="w-full py-3.5 rounded-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm shadow-lg shadow-purple-500/20 active:scale-98 transition"
-            >
-              View My Profile
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {/* Main Content */}
 
       <main className="px-4 pt-4 space-y-4">
         {/* ── 2. GREETING / HERO SECTION ── */}
@@ -672,7 +585,7 @@ export function MobileDashboard({
       </main>
 
       {/* ── 9. FIXED MOBILE BOTTOM NAVIGATION BAR ── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#07090e]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe">
+      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#07090e]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe md:hidden">
         {[
           { label: "Dashboard", href: "/dashboard", icon: TrendingUp, isActive: true },
           { label: "Workspace", href: "/dashboard/workspace", icon: Clock },

@@ -171,43 +171,7 @@ function DashboardWorkspaceLayout() {
 
         {/* Main column */}
         <div className="flex-1 flex flex-col">
-          {/* Topbar */}
-          <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-white/5">
-            <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
-              <Link to="/dashboard" className="flex items-center gap-2">
-                <div className="relative h-8 w-8">
-                  <div className="absolute inset-0 rounded-lg bg-aurora" />
-                  <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-                    <Sparkles className="h-3.5 w-3.5 text-aurora" />
-                  </div>
-                </div>
-                <span className="font-display text-lg font-semibold">SyncRole</span>
-              </Link>
 
-              <div className="flex items-center gap-2">
-                <button
-                  className="relative h-9 w-9 grid place-items-center rounded-full glass hover:bg-white/10"
-                  aria-label="Notifications"
-                >
-                  <Bell className="h-4 w-4" />
-                  {unread > 0 && (
-                    <span className="absolute -top-0.5 -right-0.5 h-4 min-w-4 px-1 rounded-full bg-aurora text-[10px] font-bold grid place-items-center">
-                      {unread}
-                    </span>
-                  )}
-                </button>
-
-                <div className="hidden md:flex items-center gap-2 rounded-full glass px-3 py-1.5">
-                  <User className="h-4 w-4 text-muted-foreground" />
-                  <div className="text-xs text-muted-foreground">
-                    {profile?.full_name ?? "User"}
-                  </div>
-                </div>
-
-                <LogoutButton />
-              </div>
-            </div>
-          </header>
 
           {/* Content area */}
           <div className="flex-1">
