@@ -12,66 +12,130 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
   const [items, setItems] = useState<any[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
 
+  const userId = user?.id;
+
   useEffect(() => {
-    if (!user) return;
-    load();
-    const chNotif = supabase
-      .channel("notif-bell-center")
-      .on("postgres_changes", { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` }, load)
-      .on("postgres_changes", { event: "*", schema: "public", table: "activity_logs", filter: `user_id=eq.${user.id}` }, load)
-      .subscribe();
-    return () => {
-      supabase.removeChannel(chNotif);
+    if (!userId) return;
+
+    let isMounted = true;
+
+    const handleLoad = () => {
+      if (isMounted) {
+        void load();
+      }
     };
-  }, [user]);
+
+    // Load initial notification data
+    handleLoad();
+
+    const channelName = `notif-bell-center-${userId}`;
+
+    // Clean up any pre-existing channel for this topic from Supabase client to prevent duplicate subscriptions or post-subscribe listener additions
+    const existingChannels = supabase.getChannels();
+    const preExisting = existingChannels.find(
+      (c: any) =>
+        c.topic === `realtime:${channelName}` ||
+        c.topic === channelName ||
+        c.topic === "realtime:notif-bell-center" ||
+        c.topic === "notif-bell-center"
+    );
+    if (preExisting) {
+      supabase.removeChannel(preExisting);
+    }
+
+    // Always attach .on("postgres_changes", ...) listeners BEFORE calling .subscribe()
+    const channel = supabase
+      .channel(channelName)
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "notifications", filter: `user_id=eq.${userId}` },
+        handleLoad
+      )
+      .on(
+        "postgres_changes",
+        { event: "*", schema: "public", table: "activity_logs", filter: `user_id=eq.${userId}` },
+        handleLoad
+      );
+
+    channel.subscribe((status) => {
+      if (status === "CHANNEL_ERROR") {
+        console.warn("[NotificationCenter] Realtime subscription error. Notifications loaded from database.");
+      }
+    });
+
+    return () => {
+      isMounted = false;
+      supabase.removeChannel(channel);
+    };
+  }, [userId]);
 
   async function load() {
-    if (!user) return;
-    // Fetch notifications
-    const { data: notifs } = await supabase
-      .from("notifications")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(20);
+    if (!userId) return;
+    try {
+      // Fetch notifications
+      const { data: notifs, error: notifErr } = await supabase
+        .from("notifications")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-    // Fetch activity logs as adapter
-    const { data: logs } = await supabase
-      .from("activity_logs")
-      .select("*")
-      .eq("user_id", user.id)
-      .order("created_at", { ascending: false })
-      .limit(20);
+      if (notifErr) {
+        console.error("[NotificationCenter] Error loading notifications:", notifErr);
+      }
 
-    const adaptedLogs = (logs || []).map((log: { id: string; type: string; xp_delta: number; created_at: string }) => ({
-      id: log.id,
-      title: mapLogTypeToTitle(log.type),
-      body: `You earned ${log.xp_delta} XP for completing a ${log.type.replace(/_/g, ' ')}.`,
-      type: log.type,
-      created_at: log.created_at,
-      read: true, // Activity logs are considered read for now, or we can use local storage
-      isAdapter: true
-    }));
+      // Fetch activity logs as adapter
+      const { data: logs, error: logErr } = await supabase
+        .from("activity_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
 
-    const all = [...(notifs || []), ...adaptedLogs]
-      .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
-      .slice(0, 30);
+      if (logErr) {
+        console.error("[NotificationCenter] Error loading activity logs:", logErr);
+      }
 
-    setItems(all);
-    setUnreadCount(all.filter(i => !i.read && !i.isAdapter).length);
+      const adaptedLogs = (logs || []).map((log: { id: string; type: string; xp_delta: number; created_at: string }) => ({
+        id: log.id,
+        title: mapLogTypeToTitle(log.type),
+        body: `You earned ${log.xp_delta} XP for completing a ${log.type.replace(/_/g, ' ')}.`,
+        type: log.type,
+        created_at: log.created_at,
+        read: true,
+        isAdapter: true
+      }));
+
+      const all = [...(notifs || []), ...adaptedLogs]
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 30);
+
+      setItems(all);
+      setUnreadCount(all.filter(i => !i.read && !i.isAdapter).length);
+    } catch (err) {
+      console.error("[NotificationCenter] Failed to load notifications:", err);
+    }
   }
 
   async function markAsRead(id: string) {
-    await supabase.from("notifications").update({ read: true }).eq("id", id);
-    setItems(prev => prev.map(i => i.id === id ? { ...i, read: true } : i));
-    setUnreadCount(prev => Math.max(0, prev - 1));
+    try {
+      await supabase.from("notifications").update({ read: true }).eq("id", id);
+      setItems(prev => prev.map(i => i.id === id ? { ...i, read: true } : i));
+      setUnreadCount(prev => Math.max(0, prev - 1));
+    } catch (err) {
+      console.error("[NotificationCenter] Failed to mark notification as read:", err);
+    }
   }
 
   async function markAllAsRead() {
-    if (!user) return;
-    await supabase.from("notifications").update({ read: true }).eq("user_id", user.id).eq("read", false);
-    setItems(prev => prev.map(i => ({ ...i, read: true })));
-    setUnreadCount(0);
+    if (!userId) return;
+    try {
+      await supabase.from("notifications").update({ read: true }).eq("user_id", userId).eq("read", false);
+      setItems(prev => prev.map(i => ({ ...i, read: true })));
+      setUnreadCount(0);
+    } catch (err) {
+      console.error("[NotificationCenter] Failed to mark all notifications as read:", err);
+    }
   }
 
   const mapLogTypeToTitle = (type: string) => {
