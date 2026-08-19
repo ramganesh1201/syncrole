@@ -48,9 +48,11 @@ function NodesAndLines() {
     [linePairs]
   );
 
-  useFrame((state) => {
+  const elapsedTime = useRef(0);
+  useFrame((_, delta) => {
     if (!group.current) return;
-    const t = state.clock.getElapsedTime();
+    elapsedTime.current += delta;
+    const t = elapsedTime.current;
     group.current.rotation.y = t * 0.12;
     group.current.rotation.x = Math.sin(t * 0.2) * 0.15;
   });
@@ -110,8 +112,12 @@ function Particles() {
     for (let i = 0; i < arr.length; i++) arr[i] = (Math.random() - 0.5) * 14;
     return arr;
   }, []);
-  useFrame((s) => {
-    if (ref.current) ref.current.rotation.y = s.clock.getElapsedTime() * 0.02;
+  const elapsedTime = useRef(0);
+  useFrame((_, delta) => {
+    if (ref.current) {
+      elapsedTime.current += delta;
+      ref.current.rotation.y = elapsedTime.current * 0.02;
+    }
   });
   return (
     <Points ref={ref} positions={positions} stride={3}>

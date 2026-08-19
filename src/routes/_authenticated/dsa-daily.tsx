@@ -52,9 +52,11 @@ type UserDailyProgress = {
   created_at: string;
   claimed: boolean;
   claimed_at: string | null;
-  started_at: string | null;
-  status: DailyProgressStatus;
+  started_at?: string | null;
+  status?: DailyProgressStatus;
 };
+
+const SELECT_USER_PROGRESS = "id, user_id, challenge_id, completed, completed_at, claimed, claimed_at, xp_earned, created_at";
 
 type PastDayHistory = {
   dateStr: string;
@@ -255,7 +257,7 @@ function DSADailyPage() {
       if (challenge.id) {
         const progRes = await supabase
           .from("user_daily_challenge_progress")
-          .select("id, user_id, challenge_id, completed, completed_at, xp_earned, claimed, claimed_at, created_at, started_at, status")
+          .select(SELECT_USER_PROGRESS)
           .eq("user_id", uid)
           .eq("challenge_id", challenge.id)
           .maybeSingle();
@@ -273,14 +275,12 @@ function DSADailyPage() {
               {
                 user_id: uid,
                 challenge_id: challenge.id,
-                status: userProgRow?.claimed ? "claimed" : "completed",
                 completed: true,
                 completed_at: userProgRow?.completed_at ?? nowIso,
-                started_at: userProgRow?.started_at ?? nowIso,
               },
               { onConflict: "user_id,challenge_id" }
             )
-            .select("id, user_id, challenge_id, completed, completed_at, xp_earned, claimed, claimed_at, created_at, started_at, status")
+            .select(SELECT_USER_PROGRESS)
             .maybeSingle();
 
           if (syncRes.data) {
@@ -291,40 +291,42 @@ function DSADailyPage() {
 
       setProgress(userProgRow);
 
-      // 5. Load Past 7 Days History
-      const historyList: PastDayHistory[] = [];
-      for (let offset = 0; offset < 7; offset++) {
-        const dStr = getTodayChallengeDate(-offset);
-        const pastCh = offset === 0 ? challenge : await resolveDailyChallengeForDate(dStr);
+      // 5. Load Past 7 Days History (Optimized Batch Fetching)
+      const historyDates = Array.from({ length: 7 }, (_, i) => getTodayChallengeDate(-i));
+      const pastChallenges = await Promise.all(
+        historyDates.map((dStr, idx) => (idx === 0 ? Promise.resolve(challenge) : resolveDailyChallengeForDate(dStr)))
+      );
 
+      const challengeIds = pastChallenges.map((c) => c?.id).filter((id): id is string => Boolean(id));
+      const problemIds = pastChallenges.map((c) => c?.problem?.id).filter((id): id is string => Boolean(id));
+
+      const [allProblemProgRes, allChallengeProgRes] = await Promise.all([
+        problemIds.length > 0
+          ? supabase.from("user_problem_progress").select("problem_id, solved, status").eq("user_id", uid).in("problem_id", problemIds)
+          : Promise.resolve({ data: [] }),
+        challengeIds.length > 0
+          ? supabase.from("user_daily_challenge_progress").select(SELECT_USER_PROGRESS).eq("user_id", uid).in("challenge_id", challengeIds)
+          : Promise.resolve({ data: [] }),
+      ]);
+
+      const problemProgMap = new Map((allProblemProgRes.data || []).map((p: any) => [p.problem_id, p]));
+      const challengeProgMap = new Map((allChallengeProgRes.data || []).map((c: any) => [c.challenge_id, c]));
+
+      const historyList: PastDayHistory[] = pastChallenges.map((pastCh, offset) => {
+        const dStr = historyDates[offset];
         let pStatus: "completed" | "in_progress" | "missed" | "not_started" = "not_started";
 
         if (pastCh?.problem) {
-          // Check canonical solve
-          const pastCanon = await supabase
-            .from("user_problem_progress")
-            .select("solved, status")
-            .eq("user_id", uid)
-            .eq("problem_id", pastCh.problem.id)
-            .maybeSingle();
-
-          const isPastSol = Boolean(
-            pastCanon.data?.solved === true || pastCanon.data?.status === "solved"
-          );
+          const pastCanon = problemProgMap.get(pastCh.problem.id);
+          const isPastSol = Boolean(pastCanon?.solved === true || pastCanon?.status === "solved");
 
           if (isPastSol) {
             pStatus = "completed";
           } else if (pastCh.id) {
-            const pastProg = await supabase
-              .from("user_daily_challenge_progress")
-              .select("completed, status, started_at")
-              .eq("user_id", uid)
-              .eq("challenge_id", pastCh.id)
-              .maybeSingle();
-
-            if (pastProg.data?.completed || pastProg.data?.status === "completed" || pastProg.data?.status === "claimed") {
+            const pastProg = challengeProgMap.get(pastCh.id);
+            if (pastProg?.completed || pastProg?.claimed) {
               pStatus = "completed";
-            } else if (pastProg.data?.started_at || pastProg.data?.status === "in_progress") {
+            } else if (pastProg) {
               pStatus = "in_progress";
             } else if (offset > 0) {
               pStatus = "missed";
@@ -334,14 +336,14 @@ function DSADailyPage() {
           }
         }
 
-        historyList.push({
+        return {
           dateStr: dStr,
           formattedDate: formatHistoryDate(dStr),
           challenge: pastCh,
           status: pStatus,
           isToday: offset === 0,
-        });
-      }
+        };
+      });
 
       setHistory(historyList);
     } catch (err: any) {
@@ -361,7 +363,7 @@ function DSADailyPage() {
   const status: DailyProgressStatus = useMemo(() => {
     if (progress?.claimed || progress?.status === "claimed") return "claimed";
     if (canonicalSolved || progress?.completed || progress?.status === "completed") return "completed";
-    if (progress?.status === "in_progress" || progress?.started_at) return "in_progress";
+    if (progress?.status === "in_progress" || progress) return "in_progress";
     return "not_started";
   }, [progress, canonicalSolved]);
 
@@ -377,22 +379,19 @@ function DSADailyPage() {
     if (!progress && today.id) {
       setBusy(true);
       try {
-        const nowIso = new Date().toISOString();
         const insertRes = await supabase
           .from("user_daily_challenge_progress")
           .upsert(
             {
               user_id: auth.user.id,
               challenge_id: today.id,
-              status: "in_progress",
-              started_at: nowIso,
               completed: false,
               xp_earned: 0,
               claimed: false,
             },
             { onConflict: "user_id,challenge_id" }
           )
-          .select("id, user_id, challenge_id, completed, completed_at, xp_earned, claimed, claimed_at, created_at, started_at, status")
+          .select(SELECT_USER_PROGRESS)
           .maybeSingle();
 
         if (insertRes.data) {
@@ -437,7 +436,6 @@ function DSADailyPage() {
           {
             user_id: auth.user.id,
             challenge_id: today.id,
-            status: "claimed",
             claimed: true,
             claimed_at: nowIso,
             completed: true,
@@ -446,8 +444,12 @@ function DSADailyPage() {
           },
           { onConflict: "user_id,challenge_id" }
         )
-        .select("id, user_id, challenge_id, completed, completed_at, xp_earned, claimed, claimed_at, created_at, started_at, status")
+        .select(SELECT_USER_PROGRESS)
         .maybeSingle();
+
+      if (upsertRes.data) {
+        setProgress(upsertRes.data as UserDailyProgress);
+      }
 
       if (upsertRes.data) {
         setProgress(upsertRes.data as UserDailyProgress);

@@ -43,38 +43,43 @@ function ResumeIntelligence() {
   const [showCompare, setShowCompare] = useState(false);
   const [compareWithId, setCompareWithId] = useState<string | null>(null);
 
-  const loadData = async () => {
-    console.trace("resume query: fetch resumes from resume_analysis");
-    const { data: vData } = await supabase
-      .from("resume_analysis")
-      .select("*")
-      .order("created_at", { ascending: false });
-      
-    if (vData && vData.length > 0) {
-      setResumes(vData);
-      if (!activeResume) setActiveResume(vData[0]);
-    } else {
-      // Fallback to old resume_analysis table
-      console.trace("resume query: fetch single resume from resume_analysis");
-      const { data: oldData } = await supabase
+  const loadData = useCallback(async () => {
+    try {
+      const { data: u } = await supabase.auth.getUser();
+      if (!u.user) {
+        setResumes([]);
+        setActiveResume(null);
+        setLoading(false);
+        return;
+      }
+
+      const { data: vData, error } = await supabase
         .from("resume_analysis")
         .select("*")
+        .eq("user_id", u.user.id)
         .order("created_at", { ascending: false });
-        
-      if (oldData && oldData.length > 0) {
-        setResumes(oldData);
-        if (!activeResume) setActiveResume(oldData[0]);
+
+      if (error) {
+        console.error("Failed to load resume analysis:", error);
+      }
+
+      if (vData && vData.length > 0) {
+        setResumes(vData);
+        setActiveResume((prev: any) => prev || vData[0]);
       } else {
         setResumes([]);
         setActiveResume(null);
       }
+    } catch (err) {
+      console.error("Error in loadData:", err);
+    } finally {
+      setLoading(false);
     }
-    setLoading(false);
-  };
+  }, []);
 
   useEffect(() => {
-    loadData();
-  }, []);
+    void loadData();
+  }, [loadData]);
 
   const handleUpload = async (e: any) => {
     const file = e.target.files?.[0];

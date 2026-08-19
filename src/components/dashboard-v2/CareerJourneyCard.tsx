@@ -8,7 +8,7 @@ interface CareerJourneyCardProps {
 
 export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
   const currentScore = userContext.placementScore || 36;
-  
+
   const steps = [
     { id: "current", label: "Current", icon: Home, score: currentScore, active: true },
     { id: "foundation", label: "Foundation", icon: User, score: 50, active: currentScore >= 50 },
@@ -21,24 +21,23 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
     <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-6 flex flex-col justify-between h-full backdrop-blur-xl relative overflow-hidden">
       <div>
         <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-8">Career Journey</h3>
-        
+
         <div className="relative mb-12 mt-6">
           {/* Connecting Line */}
           <div className="absolute top-1/2 left-6 right-6 h-0.5 bg-white/10 -translate-y-1/2 z-0" />
-          
+
           {/* Steps */}
           <div className="flex justify-between relative z-10">
             {steps.map((step, index) => {
               const Icon = step.icon;
               return (
                 <div key={step.id} className="flex flex-col items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${
-                    step.active && step.id === "current" 
-                      ? "bg-slate-900 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]" 
-                      : step.active 
-                        ? "bg-indigo-500 border-indigo-500 text-white" 
+                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${step.active && step.id === "current"
+                      ? "bg-slate-900 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                      : step.active
+                        ? "bg-indigo-500 border-indigo-500 text-white"
                         : "bg-slate-800 border-white/10 text-muted-foreground"
-                  }`}>
+                    }`}>
                     <Icon className={`w-5 h-5 ${step.active && step.id === "current" ? "text-indigo-400" : ""}`} />
                   </div>
                   <div className="text-center">
