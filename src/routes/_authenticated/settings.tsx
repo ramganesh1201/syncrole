@@ -308,7 +308,7 @@ function SettingsPage() {
         initial={{ y: 100 }} 
         animate={{ y: 0 }} 
         transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-slate-950/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center justify-between gap-6 shadow-2xl z-50 min-w-[320px] sm:min-w-[400px]"
+        className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 bg-slate-950/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center justify-between gap-6 shadow-2xl z-50 w-[calc(100%-2rem)] sm:w-auto min-w-0 sm:min-w-[400px]"
       >
         <p className="text-sm font-semibold text-slate-400 hidden sm:block">Unsaved changes will be lost</p>
         <Button 

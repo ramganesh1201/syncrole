@@ -499,7 +499,7 @@ export function MobileDashboard({
 
           {/* Horizontal Stepper */}
           <div className="overflow-x-auto no-scrollbar pb-2">
-            <div className="flex items-center min-w-[340px] justify-between relative px-2">
+            <div className="flex items-center min-w-[280px] w-full justify-between relative px-2">
               <div className="absolute top-4 left-6 right-6 h-0.5 bg-slate-800 z-0" />
 
               {journeySteps.map((step) => {
@@ -583,55 +583,6 @@ export function MobileDashboard({
           </div>
         </section>
       </main>
-
-      {/* ── 9. FIXED MOBILE BOTTOM NAVIGATION BAR ── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#07090e]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe md:hidden">
-        {[
-          { label: "Dashboard", href: "/dashboard", icon: TrendingUp, isActive: true },
-          { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
-          { label: "AI SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
-          { label: "Analytics", href: "/resume-intelligence", icon: BarChart3 },
-          { label: "Profile", href: "/profile", icon: User },
-        ].map((tab) => {
-          if (tab.isCenter) {
-            return (
-              <button
-                key={tab.label}
-                onClick={() => tab.action?.()}
-                className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-lg transition active:scale-95 ${
-                  isSyncPilotOpen
-                    ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/60 ring-2 ring-purple-400/60"
-                    : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/40 hover:brightness-110"
-                }`}
-                aria-label="Open SyncPilot AI Assistant"
-              >
-                <div
-                  className={`h-full w-full rounded-full grid place-items-center transition ${
-                    isSyncPilotOpen ? "bg-purple-950 text-cyan-300" : "bg-slate-950 text-purple-300"
-                  }`}
-                >
-                  <tab.icon className="h-5 w-5" />
-                </div>
-              </button>
-            );
-          }
-
-          return (
-            <Link
-              key={tab.label}
-              to={tab.href}
-              className={`flex flex-col items-center gap-0.5 transition px-3 py-1 ${
-                tab.isActive
-                  ? "text-purple-400 font-bold"
-                  : "text-slate-400 hover:text-purple-400"
-              }`}
-            >
-              <tab.icon className="h-4 w-4" />
-              <span className="text-[10px] font-medium">{tab.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
     </div>
   );
 }

@@ -107,35 +107,10 @@ function DashboardWorkspaceLayout() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile drawer */}
-      {isMobile && (
-        <div className="fixed top-4 right-4 z-50">
-          <button
-            className="h-10 w-10 rounded-full glass grid place-items-center"
-            onClick={() => setDrawerOpen((v) => !v)}
-            aria-label="Open navigation"
-          >
-            {drawerOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
-        </div>
-      )}
-
-      <AnimatePresence>
-        {isMobile && drawerOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-black/40 z-40"
-            onClick={() => setDrawerOpen(false)}
-          />
-        )}
-      </AnimatePresence>
-
       <div className="flex min-h-screen">
-        {/* Sidebar */}
+        {/* Desktop Sidebar (hidden on mobile) */}
         {!isMobile && (
-          <aside className="w-[280px] shrink-0 border-r border-white/5 bg-background/70 backdrop-blur-xl sticky top-0 h-screen">
+          <aside className="w-[280px] shrink-0 border-r border-white/5 bg-background/70 backdrop-blur-xl sticky top-0 h-screen hidden md:block">
             <Sidebar
               navItems={navItems}
               activePath={activePath}
@@ -145,28 +120,6 @@ function DashboardWorkspaceLayout() {
               onNavigate={(to) => router.navigate({ to })}
             />
           </aside>
-        )}
-
-        {isMobile && drawerOpen && (
-          <motion.aside
-            initial={{ x: "-100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "-100%" }}
-            transition={{ type: "spring", stiffness: 260, damping: 26 }}
-            className="fixed left-0 top-0 bottom-0 w-[280px] z-50 border-r border-white/5 bg-background/90 backdrop-blur-xl"
-          >
-            <Sidebar
-              navItems={navItems}
-              activePath={activePath}
-              isActive={isActive}
-              profile={profile}
-              unread={unread}
-              onNavigate={(to) => {
-                setDrawerOpen(false);
-                router.navigate({ to });
-              }}
-            />
-          </motion.aside>
         )}
 
         {/* Main column */}
