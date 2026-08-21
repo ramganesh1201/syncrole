@@ -26,22 +26,22 @@ export function SceneCoach({ isActive }: { isActive: boolean }) {
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
-      className="h-full flex gap-4 p-6"
+      className="h-full flex flex-col md:flex-row gap-3 md:gap-4 p-3 md:p-6 overflow-y-auto md:overflow-visible"
     >
       {/* Editor Side */}
-      <div className="flex-1 flex flex-col rounded-2xl bg-black/40 border border-white/5 overflow-hidden font-mono text-sm relative">
-        <div className="h-10 border-b border-white/5 flex items-center px-4 gap-2 bg-white/5">
-          <Code2 className="w-4 h-4 text-aurora" />
+      <div className="flex-1 min-h-[220px] flex flex-col rounded-2xl bg-black/40 border border-white/5 overflow-hidden font-mono text-xs md:text-sm relative">
+        <div className="h-9 md:h-10 border-b border-white/5 flex items-center px-3 md:px-4 gap-2 bg-white/5">
+          <Code2 className="w-3.5 h-3.5 md:w-4 md:h-4 text-aurora" />
           <span className="text-white/70">twoSum.ts</span>
         </div>
-        <div className="p-4 flex-1">
+        <div className="p-3 md:p-4 flex-1">
           <div className="text-white/40 mb-2">{'function twoSum(nums: number[], target: number): number[] {'}</div>
           <AnimatePresence>
             {phase >= 2 && (
               <motion.div
                 initial={{ opacity: 0, height: 0 }}
                 animate={{ opacity: 1, height: "auto" }}
-                className="pl-4 text-emerald-300 space-y-1 overflow-hidden"
+                className="pl-3 md:pl-4 text-emerald-300 space-y-1 overflow-hidden"
               >
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.1 }}>
                   const map = new Map&lt;number, number&gt;();
@@ -49,13 +49,13 @@ export function SceneCoach({ isActive }: { isActive: boolean }) {
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.3 }}>
                   for (let i = 0; i &lt; nums.length; i++) {'{'}
                 </motion.div>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="pl-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="pl-3 md:pl-4">
                   const complement = target - nums[i];
                 </motion.div>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="pl-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.7 }} className="pl-3 md:pl-4">
                   if (map.has(complement)) return [map.get(complement)!, i];
                 </motion.div>
-                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="pl-4">
+                <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.9 }} className="pl-3 md:pl-4">
                   map.set(nums[i], i);
                 </motion.div>
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1.1 }}>
@@ -76,19 +76,19 @@ export function SceneCoach({ isActive }: { isActive: boolean }) {
             <motion.div
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center flex-col gap-4"
+              className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center flex-col gap-3 md:gap-4"
             >
               <motion.div
                 initial={{ scale: 0, rotate: -180 }}
                 animate={{ scale: 1, rotate: 0 }}
                 transition={{ type: "spring", bounce: 0.5 }}
-                className="w-24 h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center"
+                className="w-16 h-16 md:w-24 md:h-24 rounded-full bg-emerald-500/20 border-2 border-emerald-400 flex items-center justify-center"
               >
-                <Medal className="w-12 h-12 text-emerald-400" />
+                <Medal className="w-8 h-8 md:w-12 md:h-12 text-emerald-400" />
               </motion.div>
               <div className="text-center">
-                <div className="text-2xl font-bold text-white mb-1">Optimal Solution!</div>
-                <div className="text-aurora font-mono">+120 XP</div>
+                <div className="text-lg md:text-2xl font-bold text-white mb-0.5 md:mb-1">Optimal Solution!</div>
+                <div className="text-aurora font-mono text-xs md:text-sm">+120 XP</div>
               </div>
             </motion.div>
           )}
@@ -96,12 +96,12 @@ export function SceneCoach({ isActive }: { isActive: boolean }) {
       </div>
 
       {/* Chat Side */}
-      <div className="w-80 flex flex-col rounded-2xl bg-black/40 border border-white/5 overflow-hidden">
-        <div className="h-10 border-b border-white/5 flex items-center px-4 gap-2 bg-white/5">
-          <Brain className="w-4 h-4 text-[#e879f9]" />
-          <span className="text-white/70 text-sm font-semibold">AI Coach</span>
+      <div className="w-full md:w-80 flex flex-col rounded-2xl bg-black/40 border border-white/5 overflow-hidden">
+        <div className="h-9 md:h-10 border-b border-white/5 flex items-center px-3 md:px-4 gap-2 bg-white/5">
+          <Brain className="w-3.5 h-3.5 md:w-4 md:h-4 text-[#e879f9]" />
+          <span className="text-white/70 text-xs md:text-sm font-semibold">AI Coach</span>
         </div>
-        <div className="p-4 flex-1 flex flex-col gap-4 overflow-y-auto">
+        <div className="p-3 md:p-4 flex-1 flex flex-col gap-3 md:gap-4 overflow-y-auto">
           {/* User Message */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}

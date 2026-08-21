@@ -170,13 +170,14 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute right-6 top-6 z-[110] rounded-full p-3 bg-white/5 border border-white/10 text-white/70 transition-colors hover:bg-white/10 hover:text-white backdrop-blur-md"
+          className="absolute right-3 top-3 md:right-6 md:top-6 z-[110] rounded-full p-2.5 md:p-3 bg-[#0d1322]/90 md:bg-white/5 border border-white/15 text-white/90 transition-all hover:bg-white/10 hover:text-white active:scale-95 backdrop-blur-md min-h-[44px] min-w-[44px] flex items-center justify-center shadow-lg"
+          aria-label="Close demo"
         >
           <X className="h-5 w-5" />
         </button>
 
         {/* Main Content Area */}
-        <div className="relative z-10 w-full px-6 md:px-12 pt-8 pb-32 h-full flex flex-col items-center justify-center">
+        <div className="relative z-10 w-full px-2 sm:px-4 md:px-12 pt-3 pb-24 md:pt-8 md:pb-32 h-[100dvh] flex flex-col items-center justify-center overflow-hidden">
           <AnimatePresence mode="wait">
             {!isEnding ? (
               <FakeAppWindow key="app">
