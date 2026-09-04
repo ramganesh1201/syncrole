@@ -45,7 +45,6 @@ function DashboardWorkspaceLayout() {
 
   const [unread, setUnread] = useState(0);
   const [profile, setProfile] = useState<any>(null);
-  const [drawerOpen, setDrawerOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;

@@ -37,7 +37,6 @@ import {
   Settings
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
-import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
 import {
   UserCareerContext,
@@ -73,7 +72,6 @@ export function MobileDashboard({
 }: MobileDashboardProps) {
   const nav = useNavigate();
   const { openSyncPilot, isOpen: isSyncPilotOpen } = useSyncPilot();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Evaluate dream company readiness
   const selectedCompanyId = userContext?.dream_companies?.[0] || "google";

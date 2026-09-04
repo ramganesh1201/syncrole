@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell, TrendingUp, Clock } from "lucide-react";
+import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell, TrendingUp, Clock, Building2 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
@@ -185,22 +185,34 @@ function AuthedLayout() {
               { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
               { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
               { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
+              { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
               { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
               { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
               { label: "My Profile", href: "/profile", icon: User },
               { label: "Settings", href: "/settings", icon: Settings },
               { label: "Help & Support", href: "/help", icon: HelpCircle },
-            ].map((item) => (
-              <Link
-                key={item.label}
-                to={item.href}
-                onClick={() => setIsMenuOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 rounded-xl bg-slate-900/60 border border-white/5 text-slate-200 text-sm font-medium hover:bg-slate-800 transition"
-              >
-                <item.icon className="h-4 w-4 text-purple-400" />
-                <span>{item.label}</span>
-              </Link>
-            ))}
+            ].map((item) => {
+              const isItemActive =
+                item.href === "/dashboard"
+                  ? pathname === "/dashboard" || pathname === "/dashboard/"
+                  : pathname.startsWith(item.href);
+
+              return (
+                <Link
+                  key={item.label}
+                  to={item.href}
+                  onClick={() => setIsMenuOpen(false)}
+                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium transition ${
+                    isItemActive
+                      ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold"
+                      : "bg-slate-900/60 border-white/5 text-slate-200 hover:bg-slate-800"
+                  }`}
+                >
+                  <item.icon className={`h-4 w-4 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
+                  <span>{item.label}</span>
+                </Link>
+              );
+            })}
           </nav>
         </div>
 

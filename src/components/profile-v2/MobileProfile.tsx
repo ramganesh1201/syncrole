@@ -45,7 +45,6 @@ import {
   Database
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
-import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
 
 interface MobileProfileProps {
@@ -94,7 +93,6 @@ export function MobileProfile({
 }: MobileProfileProps) {
   const nav = useNavigate();
   const { openSyncPilot, isOpen: isSyncPilotOpen } = useSyncPilot();
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   // Derived real data
   const readiness = placementStats?.total_score || 84;
