@@ -31,6 +31,7 @@ import {
   HelpCircle,
   Building2,
   LayoutDashboard,
+  Play,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
@@ -288,9 +289,10 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             {onOpenDemo && (
               <button
                 onClick={onOpenDemo}
-                className="text-xs font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500/20 active:scale-95 transition-all"
+                className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500/20 active:scale-95 transition-all"
               >
-                Try Demo
+                <Play className="h-3 w-3 fill-amber-300 text-amber-300 flex-shrink-0" />
+                <span>Try Demo</span>
               </button>
             )}
           </div>
