@@ -184,15 +184,6 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         </div>
 
         <div className="flex items-center gap-2">
-          <NotificationCenter>
-            <button
-              className="relative h-9 w-9 grid place-items-center rounded-full glass hover:bg-white/10 transition-colors"
-              aria-label="Notifications"
-            >
-              <Bell className="h-4 w-4" />
-            </button>
-          </NotificationCenter>
-
           <button
             onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
             className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm hover:brightness-110 active:scale-95 transition-all"
@@ -297,9 +288,9 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             {onOpenDemo && (
               <button
                 onClick={onOpenDemo}
-                className="text-[10px] uppercase font-semibold tracking-wider text-amber-400 bg-amber-500/10 border border-amber-500/30 px-2.5 py-1 rounded-full"
+                className="text-xs font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500/20 active:scale-95 transition-all"
               >
-                Demo Preview
+                Try Demo
               </button>
             )}
           </div>
