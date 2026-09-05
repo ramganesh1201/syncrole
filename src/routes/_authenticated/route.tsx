@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell, TrendingUp, Clock, Building2 } from "lucide-react";
+import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
@@ -51,11 +51,14 @@ function AuthedLayout() {
   useEffect(() => {
     if (isMenuOpen) {
       document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
     } else {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     }
     return () => {
       document.body.style.overflow = "";
+      document.body.style.touchAction = "";
     };
   }, [isMenuOpen]);
 
@@ -75,7 +78,7 @@ function AuthedLayout() {
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition"
+              className="md:hidden p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition flex items-center justify-center min-w-[44px] min-h-[44px]"
               aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" />
@@ -156,7 +159,7 @@ function AuthedLayout() {
 
       {/* MOBILE LEFT-SLIDING DRAWER OVERLAY */}
       <div
-        className={`fixed inset-0 z-50 bg-black/70 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
@@ -164,65 +167,69 @@ function AuthedLayout() {
 
       {/* MOBILE LEFT-SLIDING DRAWER CONTAINER */}
       <div
-        className={`fixed inset-y-0 left-0 z-50 w-72 max-w-[85vw] bg-[#090d16] border-r border-white/10 p-6 flex flex-col justify-between transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-[#090d16] border-r border-white/10 p-5 flex flex-col justify-between transition-transform duration-300 ease-out md:hidden ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="overflow-y-auto">
-          <div className="flex items-center justify-between pb-6 border-b border-white/10">
-            <BrandLogo size="md" />
-            <button
-              onClick={() => setIsMenuOpen(false)}
-              className="p-2 rounded-full bg-slate-800 text-slate-300 hover:text-white transition active:scale-95"
-              aria-label="Close menu"
-            >
-              <X className="h-5 w-5" />
-            </button>
-          </div>
-
-          <nav className="mt-6 space-y-2">
-            {[
-              { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-              { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
-              { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
-              { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
-              { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
-              { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
-              { label: "My Profile", href: "/profile", icon: User },
-              { label: "Settings", href: "/settings", icon: Settings },
-              { label: "Help & Support", href: "/help", icon: HelpCircle },
-            ].map((item) => {
-              const isItemActive =
-                item.href === "/dashboard"
-                  ? pathname === "/dashboard" || pathname === "/dashboard/"
-                  : pathname.startsWith(item.href);
-
-              return (
-                <Link
-                  key={item.label}
-                  to={item.href}
-                  onClick={() => setIsMenuOpen(false)}
-                  className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium transition ${
-                    isItemActive
-                      ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold"
-                      : "bg-slate-900/60 border-white/5 text-slate-200 hover:bg-slate-800"
-                  }`}
-                >
-                  <item.icon className={`h-4 w-4 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
-                  <span>{item.label}</span>
-                </Link>
-              );
-            })}
-          </nav>
+        {/* FIXED HEADER */}
+        <div className="flex-none flex items-center justify-between pb-4 border-b border-white/10">
+          <BrandLogo size="md" />
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="p-2.5 rounded-full bg-slate-800/80 text-slate-300 hover:text-white transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            aria-label="Close menu"
+          >
+            <X className="h-5 w-5" />
+          </button>
         </div>
 
-        <div className="pt-4 border-t border-white/10 flex-none">
+        {/* INDEPENDENT SCROLLABLE MIDDLE NAVIGATION */}
+        <nav className="flex-1 overflow-y-auto min-h-0 py-4 space-y-1.5">
+          {[
+            { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+            { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
+            { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
+            { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
+            { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
+            { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
+            { label: "My Profile", href: "/profile", icon: User },
+            { label: "Settings", href: "/settings", icon: Settings },
+            { label: "Help & Support", href: "/help", icon: HelpCircle },
+          ].map((item) => {
+            const isItemActive =
+              item.href === "/dashboard"
+                ? pathname === "/dashboard" || pathname === "/dashboard/"
+                : pathname.startsWith(item.href);
+
+            return (
+              <Link
+                key={item.label}
+                to={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition text-sm font-medium ${
+                  isItemActive
+                    ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold shadow-sm"
+                    : "bg-slate-900/40 border-white/5 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
+                  <span>{item.label}</span>
+                </div>
+                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-slate-500"}`} />
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* FIXED FOOTER WITH SAFE AREA BOTTOM PADDING */}
+        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-white/10">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               signOut();
             }}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium text-sm hover:bg-red-500/20 transition"
+            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium text-sm hover:bg-red-500/20 active:scale-[0.98] transition"
           >
             <LogOut className="h-4 w-4" />
             <span>Sign Out</span>
