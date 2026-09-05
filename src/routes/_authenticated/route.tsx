@@ -191,6 +191,7 @@ function AuthedLayout() {
             { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
             { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
             { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
+            { label: "Role Explorer", href: "/role-explorer", icon: Target },
             { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
             { label: "My Profile", href: "/profile", icon: User },
             { label: "Settings", href: "/settings", icon: Settings },
