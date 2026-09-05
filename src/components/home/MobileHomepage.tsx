@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Link, useNavigate } from "@tanstack/react-router";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -24,11 +24,19 @@ import {
   BarChart3,
   Layers,
   Compass,
+  Bell,
+  Calendar,
+  Fingerprint,
+  Settings,
+  HelpCircle,
+  Building2,
+  LayoutDashboard,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
+import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 
 interface MobileHomepageProps {
   data: any;
@@ -65,9 +73,33 @@ const GUEST_DEMO = {
 export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps) {
   const { user } = useAuth();
   const nav = useNavigate();
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
   const { openSyncPilot, isOpen: isSyncPilotOpen } = useSyncPilot();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<"strengths" | "weaknesses" | "growth">("strengths");
+
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if (e.key === "Escape") setIsMenuOpen(false);
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
+
+  useEffect(() => {
+    if (isMenuOpen) {
+      document.body.style.overflow = "hidden";
+      document.body.style.touchAction = "none";
+    } else {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+      document.body.style.touchAction = "";
+    };
+  }, [isMenuOpen]);
 
   // Real data extraction with graceful fallbacks
   const isAuthed = !!user && !!data?.profile;
@@ -140,83 +172,118 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
       {/* ── MOBILE HEADER ── */}
       <header className="sticky top-0 z-40 bg-[#07090e]/85 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center justify-between">
-        <BrandLogo size="sm" />
+        <div className="flex items-center gap-2.5">
+          <button
+            onClick={() => setIsMenuOpen(true)}
+            className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition flex items-center justify-center min-w-[44px] min-h-[44px]"
+            aria-label="Open menu"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+          <BrandLogo size="sm" />
+        </div>
 
         <div className="flex items-center gap-2">
+          <NotificationCenter>
+            <button
+              className="relative h-9 w-9 grid place-items-center rounded-full glass hover:bg-white/10 transition-colors"
+              aria-label="Notifications"
+            >
+              <Bell className="h-4 w-4" />
+            </button>
+          </NotificationCenter>
+
           <button
             onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
             className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm hover:brightness-110 active:scale-95 transition-all"
           >
             {isAuthed ? "Dashboard" : "Get Started"}
           </button>
-
-          <button
-            onClick={() => setIsMenuOpen(true)}
-            className="p-2 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition-all"
-            aria-label="Open menu"
-          >
-            <Menu className="h-5 w-5" />
-          </button>
         </div>
       </header>
 
-      {/* ── HAMBURGER NAVIGATION DRAWER ── */}
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex flex-col justify-between p-6"
+      {/* MOBILE LEFT-SLIDING DRAWER OVERLAY */}
+      <div
+        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
+        onClick={() => setIsMenuOpen(false)}
+      />
+
+      {/* MOBILE LEFT-SLIDING DRAWER CONTAINER */}
+      <div
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-[#090d16] border-r border-white/10 p-5 flex flex-col justify-between transition-transform duration-300 ease-out ${
+          isMenuOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        {/* FIXED HEADER */}
+        <div className="flex-none flex items-center justify-between pb-4 border-b border-white/10">
+          <BrandLogo size="md" />
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            className="p-2.5 rounded-full bg-slate-800/80 text-slate-300 hover:text-white transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            aria-label="Close menu"
           >
-            <div>
-              <div className="flex items-center justify-between pb-6 border-b border-white/10">
-                <BrandLogo size="md" />
-                <button
-                  onClick={() => setIsMenuOpen(false)}
-                  className="p-2 rounded-full bg-slate-800 text-slate-300 hover:text-white"
-                >
-                  <X className="h-5 w-5" />
-                </button>
-              </div>
+            <X className="h-5 w-5" />
+          </button>
+        </div>
 
-              <nav className="mt-8 space-y-3">
-                {[
-                  { label: "Home", href: "/", icon: Home },
-                  { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
-                  { label: "DSA Mentor & Daily", href: "/dsa-daily", icon: Code2 },
-                  { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
-                  { label: "Role Explorer", href: "/role-explorer", icon: Compass },
-                  { label: "Profile & Identity", href: "/career-identity", icon: User },
-                ].map((item) => (
-                  <Link
-                    key={item.label}
-                    to={item.href}
-                    onClick={() => setIsMenuOpen(false)}
-                    className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-slate-900/60 border border-white/5 text-slate-200 text-sm font-medium hover:bg-slate-800 transition"
-                  >
-                    <item.icon className="h-4 w-4 text-purple-400" />
-                    <span>{item.label}</span>
-                    <ChevronRight className="h-4 w-4 ml-auto text-slate-600" />
-                  </Link>
-                ))}
-              </nav>
-            </div>
+        {/* INDEPENDENT SCROLLABLE MIDDLE NAVIGATION */}
+        <nav className="flex-1 overflow-y-auto min-h-0 py-4 space-y-1.5">
+          {[
+            { label: "Home", href: "/", icon: Home },
+            { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+            { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
+            { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
+            { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
+            { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
+            { label: "Role Explorer", href: "/role-explorer", icon: Target },
+            { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
+            { label: "My Profile", href: "/profile", icon: User },
+            { label: "Settings", href: "/settings", icon: Settings },
+            { label: "Help & Support", href: "/help", icon: HelpCircle },
+          ].map((item) => {
+            const isItemActive =
+              item.href === "/"
+                ? pathname === "/"
+                : item.href === "/dashboard"
+                ? pathname === "/dashboard" || pathname === "/dashboard/"
+                : pathname.startsWith(item.href);
 
-            <div className="space-y-3">
-              <button
-                onClick={() => {
-                  setIsMenuOpen(false);
-                  nav({ to: isAuthed ? "/dashboard" : "/auth" });
-                }}
-                className="w-full py-3.5 rounded-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white text-sm shadow-lg shadow-purple-500/20 active:scale-98 transition"
+            return (
+              <Link
+                key={item.label}
+                to={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition text-sm font-medium ${
+                  isItemActive
+                    ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold shadow-sm"
+                    : "bg-slate-900/40 border-white/5 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+                }`}
               >
-                {isAuthed ? "Go to Dashboard" : "Get Started Now"}
-              </button>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                <div className="flex items-center gap-3">
+                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
+                  <span>{item.label}</span>
+                </div>
+                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-slate-500"}`} />
+              </Link>
+            );
+          })}
+        </nav>
+
+        {/* FIXED FOOTER WITH SAFE AREA BOTTOM PADDING */}
+        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-white/10">
+          <button
+            onClick={() => {
+              setIsMenuOpen(false);
+              nav({ to: isAuthed ? "/dashboard" : "/auth" });
+            }}
+            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium text-sm shadow-lg shadow-purple-500/20 active:scale-[0.98] transition"
+          >
+            <span>{isAuthed ? "Go to Dashboard" : "Get Started Now"}</span>
+          </button>
+        </div>
+      </div>
 
       <main className="px-4 pt-4 space-y-5">
         {/* ── HERO SECTION ── */}
