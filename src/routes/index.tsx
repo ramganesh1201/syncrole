@@ -297,8 +297,8 @@ function Nav() {
         <div
           className={`flex items-center justify-between rounded-full px-5 py-2.5 transition-all ${scrolled ? "glass-strong" : ""}`}
         >
-          <BrandLogo size="md" />
-          <div className="hidden md:flex items-center gap-8 text-sm text-muted-foreground">
+          <BrandLogo size="md" className="shrink-0" />
+          <div className="hidden lg:flex items-center gap-5 xl:gap-8 text-sm text-muted-foreground">
             <a href="#journey" className="hover:text-foreground transition">
               Journey
             </a>
@@ -318,7 +318,9 @@ function Nav() {
               Success
             </a>
           </div>
-          <GetStartedCTA className="!px-5 !py-2 !text-xs" />
+          <div className="flex items-center gap-2 shrink-0">
+            <GetStartedCTA className="!px-5 !py-2 !text-xs shrink-0 whitespace-nowrap" />
+          </div>
         </div>
       </div>
     </motion.nav>

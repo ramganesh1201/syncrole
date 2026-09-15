@@ -1131,5 +1131,3 @@ function DSAMentorPage() {
   );
 }
 
-export default DSAMentorPage;
-

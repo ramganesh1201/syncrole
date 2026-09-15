@@ -744,5 +744,3 @@ function DSADailyPage() {
     </main>
   );
 }
-
-export default DSADailyPage;

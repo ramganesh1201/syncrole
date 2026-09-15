@@ -74,10 +74,11 @@ export function MobileDashboard({
   const { openSyncPilot, isOpen: isSyncPilotOpen } = useSyncPilot();
 
   // Evaluate dream company readiness
-  const selectedCompanyId = userContext?.dream_companies?.[0] || "google";
+  const selectedCompanyId = userContext?.dream_companies?.[0] || "";
+  const hasTarget = Boolean(selectedCompanyId);
   const readiness: CompanyReadinessResult = careerEngine.evaluateCompanyReadiness(
     userContext,
-    selectedCompanyId
+    selectedCompanyId || "google"
   );
 
   const greetingTime =
@@ -202,15 +203,27 @@ export function MobileDashboard({
           </div>
 
           <div className="flex items-center gap-2 flex-wrap">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200">
-              <Building2 className="h-3.5 w-3.5 text-blue-400" />
-              <span className="capitalize">{readiness.companyName}</span>
-            </div>
+            {hasTarget ? (
+              <>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200">
+                  <Building2 className="h-3.5 w-3.5 text-blue-400" />
+                  <span className="capitalize">{readiness.companyName}</span>
+                </div>
 
-            <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200">
-              <Smartphone className="h-3.5 w-3.5 text-purple-400" />
-              <span>{readiness.roleTitle}</span>
-            </div>
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-900 border border-white/10 text-xs font-semibold text-slate-200">
+                  <Target className="h-3.5 w-3.5 text-purple-400" />
+                  <span>{readiness.roleTitle}</span>
+                </div>
+              </>
+            ) : (
+              <Link
+                to="/career-identity"
+                className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-xs font-semibold text-purple-300 hover:bg-purple-500/20 transition"
+              >
+                <Target className="h-3.5 w-3.5 text-purple-400" />
+                <span>Set your dream target</span>
+              </Link>
+            )}
           </div>
         </section>
 

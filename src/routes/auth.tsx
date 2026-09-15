@@ -7,12 +7,9 @@ import { toast } from "sonner";
 import AuroraBackground from "@/components/AuroraBackground";
 import { BrandLogo } from "@/components/ui/brand-logo";
 
+import { useAuth } from "@/hooks/use-auth";
+
 export const Route = createFileRoute("/auth")({
-  ssr: false,
-  beforeLoad: async () => {
-    const { data } = await supabase.auth.getSession();
-    if (data.session) throw redirect({ to: "/dashboard" });
-  },
   component: AuthPage,
   head: () => ({ meta: [{ title: "Sign in — SyncRole" }] }),
 });
@@ -21,6 +18,7 @@ type AuthMode = "signin" | "signup" | "forgot";
 
 function AuthPage() {
   const nav = useNavigate();
+  const { user, loading } = useAuth();
   const [mode, setMode] = useState<AuthMode>("signin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -28,13 +26,10 @@ function AuthPage() {
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    const { data: sub } = supabase.auth.onAuthStateChange((event: string, session: any) => {
-      if (session && event !== "PASSWORD_RECOVERY") {
-        nav({ to: "/dashboard" });
-      }
-    });
-    return () => sub.subscription.unsubscribe();
-  }, [nav]);
+    if (!loading && user) {
+      nav({ to: "/dashboard", replace: true });
+    }
+  }, [user, loading, nav]);
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();

@@ -1,0 +1,3 @@
+- generic [active] [ref=f2e1]:
+  - region "Notifications alt+T"
+  - button "Open SyncPilot AI Career OS" [ref=f2e5] [cursor=pointer]

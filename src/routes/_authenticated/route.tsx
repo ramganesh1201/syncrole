@@ -16,29 +16,32 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { useAuth } from "@/hooks/use-auth";
+
 export const Route = createFileRoute("/_authenticated")({
-  ssr: false,
-  beforeLoad: async () => {
-    const { data, error } = await supabase.auth.getUser();
-    if (error || !data.user) throw redirect({ to: "/auth" });
-    return { user: data.user };
-  },
   component: AuthedLayout,
 });
 
 function AuthedLayout() {
   const router = useRouter();
-  const { user } = Route.useRouteContext();
+  const { user, loading } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   useEffect(() => {
+    if (!loading && !user) {
+      router.navigate({ to: "/auth", replace: true });
+    }
+  }, [loading, user, router]);
+
+  useEffect(() => {
     async function loadProfile() {
+      if (!user) return;
       const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
       if (data) setProfile(data);
     }
     loadProfile();
-  }, [user.id]);
+  }, [user]);
 
   useEffect(() => {
     function handleKeyDown(e: KeyboardEvent) {
@@ -69,6 +72,14 @@ function AuthedLayout() {
 
   const pathname = router.state.location.pathname;
   const isFullScreenRoute = pathname.startsWith("/dsa-workspace/") || pathname.startsWith("/onboarding");
+
+  if (loading || !user) {
+    return (
+      <div className="min-h-screen bg-background grid place-items-center">
+        <div className="h-8 w-8 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen relative">

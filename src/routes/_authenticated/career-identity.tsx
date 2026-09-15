@@ -497,5 +497,3 @@ function CareerIdentityPage() {
   );
 }
 
-export default CareerIdentityPage;
-

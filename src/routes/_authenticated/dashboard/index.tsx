@@ -194,7 +194,7 @@ function Dashboard() {
     return {
       user_id: profile?.user_id || "",
       target_role: (profile?.target_role as CareerRole) || (profile?.career_goal as CareerRole) || "fullstack",
-      dream_companies: profile?.dream_companies && profile.dream_companies.length > 0 ? profile.dream_companies : ["google"],
+      dream_companies: profile?.dream_companies || [],
       preferred_location: profile?.preferred_location || "Remote",
       graduation_year: profile?.graduation_year,
       placementScore: latest.total_score,
