@@ -69,6 +69,8 @@ import CareerTransformationsSection from "@/components/home/CareerTransformation
 import FinalCTA from "@/components/home/FinalCTA";
 import MobileHomepage from "@/components/home/MobileHomepage";
 
+import CurrentlyRelevantGateSection from "@/components/home/CurrentlyRelevantGateSection";
+
 const CareerSphere = lazy(() => import("../components/CareerSphere"));
 
 export const Route = createFileRoute("/")({
@@ -1829,6 +1831,9 @@ function Landing() {
 
         {/* SECTION 1 — Hero (globe preserved) */}
         <HeroSection data={homeData} isAuthed={!!user} onOpenDemo={() => setIsDemoOpen(true)} />
+
+        {/* SECTION — GATE 2027 Contextual Highlight */}
+        <CurrentlyRelevantGateSection />
 
         {/* SECTION 2 — Career Journey + Future Prediction (merged) */}
         <CareerJourneyTimeline data={homeData} />

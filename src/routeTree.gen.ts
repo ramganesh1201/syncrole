@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as GateRouteImport } from './routes/gate'
 import { Route as CareerTransformationsRouteImport } from './routes/career-transformations'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
@@ -32,6 +33,11 @@ import { Route as AuthenticatedDsaWorkspaceProblemIdRouteImport } from './routes
 import { Route as AuthenticatedDashboardWorkspaceRouteImport } from './routes/_authenticated/dashboard.workspace'
 import { Route as AuthenticatedDashboardDsaRouteImport } from './routes/_authenticated/dashboard/dsa'
 
+const GateRoute = GateRouteImport.update({
+  id: '/gate',
+  path: '/gate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const CareerTransformationsRoute = CareerTransformationsRouteImport.update({
   id: '/career-transformations',
   path: '/career-transformations',
@@ -157,6 +163,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/career-transformations': typeof CareerTransformationsRoute
+  '/gate': typeof GateRoute
   '/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
   '/career-identity': typeof AuthenticatedCareerIdentityRoute
   '/dsa-companies': typeof AuthenticatedDsaCompaniesRoute
@@ -180,6 +187,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/career-transformations': typeof CareerTransformationsRoute
+  '/gate': typeof GateRoute
   '/career-identity': typeof AuthenticatedCareerIdentityRoute
   '/dsa-companies': typeof AuthenticatedDsaCompaniesRoute
   '/dsa-daily': typeof AuthenticatedDsaDailyRoute
@@ -204,6 +212,7 @@ export interface FileRoutesById {
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
   '/career-transformations': typeof CareerTransformationsRoute
+  '/gate': typeof GateRoute
   '/_authenticated/dashboard': typeof AuthenticatedDashboardRouteRouteWithChildren
   '/_authenticated/career-identity': typeof AuthenticatedCareerIdentityRoute
   '/_authenticated/dsa-companies': typeof AuthenticatedDsaCompaniesRoute
@@ -229,6 +238,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/career-transformations'
+    | '/gate'
     | '/dashboard'
     | '/career-identity'
     | '/dsa-companies'
@@ -252,6 +262,7 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/career-transformations'
+    | '/gate'
     | '/career-identity'
     | '/dsa-companies'
     | '/dsa-daily'
@@ -275,6 +286,7 @@ export interface FileRouteTypes {
     | '/_authenticated'
     | '/auth'
     | '/career-transformations'
+    | '/gate'
     | '/_authenticated/dashboard'
     | '/_authenticated/career-identity'
     | '/_authenticated/dsa-companies'
@@ -300,10 +312,18 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   CareerTransformationsRoute: typeof CareerTransformationsRoute
+  GateRoute: typeof GateRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/gate': {
+      id: '/gate'
+      path: '/gate'
+      fullPath: '/gate'
+      preLoaderRoute: typeof GateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/career-transformations': {
       id: '/career-transformations'
       path: '/career-transformations'
@@ -525,6 +545,7 @@ const rootRouteChildren: RootRouteChildren = {
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   CareerTransformationsRoute: CareerTransformationsRoute,
+  GateRoute: GateRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

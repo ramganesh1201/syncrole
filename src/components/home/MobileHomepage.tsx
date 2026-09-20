@@ -39,6 +39,8 @@ import { useSyncPilot } from "@/hooks/useSyncPilot";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 
+import CurrentlyRelevantGateSection from "@/components/home/CurrentlyRelevantGateSection";
+
 interface MobileHomepageProps {
   data: any;
   onOpenDemo?: () => void;
@@ -338,6 +340,9 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             </button>
           </div>
         </section>
+
+        {/* ── GATE 2027 Contextual Highlight ── */}
+        <CurrentlyRelevantGateSection />
 
         {/* ── QUICK ACTIONS ROW (Horizontal / 4 Cards Grid) ── */}
         <section className="grid grid-cols-4 gap-2">
