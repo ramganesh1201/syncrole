@@ -1,0 +1,690 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - navigation [ref=e4]:
+        - generic [ref=e6]:
+          - link "SyncRole Logo SyncRole" [ref=e7] [cursor=pointer]:
+            - /url: /
+            - img "SyncRole Logo" [ref=e9]
+            - generic [ref=e10]: SyncRole
+          - button "Get Started" [ref=e12] [cursor=pointer]
+      - generic [ref=e23]:
+        - generic [ref=e24]: AI Career Operating System · Now in Beta
+        - heading "Your Career. Quantified." [level=1] [ref=e29]:
+          - generic [ref=e30]: Your Career.
+          - generic [ref=e31]: Quantified.
+        - paragraph [ref=e32]: An AI Career Operating System that continuously analyzes your journey toward employability — resume, GitHub, DSA, interviews, and everything in between.
+        - generic [ref=e33]:
+          - generic [ref=e40]:
+            - generic [ref=e41]: "72"
+            - generic [ref=e42]: Readiness
+            - generic [ref=e43]: Demo
+          - generic [ref=e47]: Sample Career Readiness Score — yours updates live
+        - generic [ref=e48]:
+          - button "Generate My Placement Score" [ref=e49] [cursor=pointer]
+          - button "Watch Live Demo" [ref=e58] [cursor=pointer]
+        - generic [ref=e61]:
+          - generic [ref=e64]:
+            - generic [ref=e65]: Placement
+            - generic [ref=e73]: 72%
+            - generic [ref=e74]: Career Readiness
+          - generic [ref=e77]:
+            - generic [ref=e78]: XP & Level
+            - generic [ref=e84]: 1,240
+            - generic [ref=e85]: Lvl 3 · Growth Seeker
+          - generic [ref=e88]:
+            - generic [ref=e89]: DSA Solved
+            - generic [ref=e97]: "48"
+            - generic [ref=e98]: Problems Conquered
+          - generic [ref=e101]:
+            - generic [ref=e102]: Streak
+            - generic [ref=e108]: "12"
+            - generic [ref=e109]: Day Active Streak
+        - generic [ref=e110]:
+          - generic [ref=e111]:
+            - generic [ref=e112]: 0+
+            - generic [ref=e113]: Students
+          - generic [ref=e114]:
+            - generic [ref=e115]: 0M+
+            - generic [ref=e116]: Skills Analyzed
+          - generic [ref=e117]:
+            - generic [ref=e118]: 0+
+            - generic [ref=e119]: Interviews
+      - generic [ref=e122]:
+        - generic [ref=e123]:
+          - generic [ref=e124]: Currently Relevant Opportunities
+          - heading "GATE 2027 Discovery Hub" [level=2] [ref=e127]
+          - paragraph [ref=e128]: A clearer way to understand the exam structure, explore the official syllabus, and find contextual preparation resources — organized around what you need to learn next.
+          - generic [ref=e129]:
+            - generic [ref=e130]: Official Info
+            - generic [ref=e131]: •
+            - generic [ref=e132]: Syllabus Explorer
+            - generic [ref=e133]: •
+            - generic [ref=e134]: Curated Materials
+            - generic [ref=e135]: •
+            - generic [ref=e136]: Verified Updates
+        - link "Explore GATE" [ref=e138] [cursor=pointer]:
+          - /url: /gate
+      - generic [ref=e143]:
+        - generic [ref=e144]:
+          - generic [ref=e145]:
+            - generic [ref=e146]: Career Journey + Future Prediction
+            - generic [ref=e151]: Demo Preview
+          - heading "Where you are. Where you'll be." [level=2] [ref=e155]
+          - paragraph [ref=e156]: An intelligent timeline that maps your past, present, and future — recalculated daily from your activity.
+        - generic [ref=e159]:
+          - generic [ref=e165]:
+            - generic [ref=e166]: Started
+            - generic [ref=e167]: Profile Created
+          - generic [ref=e172]:
+            - generic [ref=e173]: Current
+            - generic [ref=e174]: Growth Seeker
+          - generic [ref=e178]:
+            - generic [ref=e179]: Interview Ready
+            - generic [ref=e180]: Est. 6 weeks
+          - generic [ref=e184]:
+            - generic [ref=e185]: Target Role
+            - generic [ref=e186]: SDE @ Product Company
+        - generic [ref=e187]:
+          - generic [ref=e188]:
+            - generic [ref=e194]:
+              - generic [ref=e195]: Current State
+              - generic [ref=e196]: Active Learner
+            - generic [ref=e197]:
+              - generic [ref=e198]:
+                - generic [ref=e199]: 72%
+                - generic [ref=e200]: Readiness
+              - generic [ref=e201]:
+                - generic [ref=e202]: "48"
+                - generic [ref=e203]: DSA Solved
+              - generic [ref=e204]:
+                - generic [ref=e205]: "12"
+                - generic [ref=e206]: Day Streak
+          - generic [ref=e207]:
+            - generic [ref=e208]:
+              - generic [ref=e214]:
+                - generic [ref=e215]: Next Milestone
+                - generic [ref=e216]: Interview Ready
+              - generic [ref=e217]: 6 weeks
+            - generic [ref=e221]:
+              - generic [ref=e222]: Solve 27 more DSA
+              - generic [ref=e226]: Complete 3 mock interviews
+              - generic [ref=e230]: Push 2 real projects to GitHub
+        - generic [ref=e234]:
+          - generic [ref=e238]:
+            - generic [ref=e239]: Target Role & Company
+            - generic [ref=e240]: SDE @ Product Company
+            - generic [ref=e241]: Flipkart / Swiggy / Razorpay
+          - generic [ref=e242]:
+            - generic [ref=e243]: Required Score
+            - generic [ref=e244]: 88%
+        - generic [ref=e245]:
+          - heading "Future Simulation" [level=3] [ref=e248]
+          - generic [ref=e249]: Based on demo progress
+        - generic [ref=e250]:
+          - generic [ref=e253]:
+            - generic [ref=e254]:
+              - generic [ref=e255]: 30 Days
+              - generic [ref=e256]: Resume Polished
+            - generic [ref=e257]:
+              - generic [ref=e259]:
+                - generic [ref=e260]: Readiness
+                - generic [ref=e261]: 77%
+              - generic [ref=e263]:
+                - generic [ref=e264]: DSA Solved
+                - generic [ref=e265]: 62 problems
+              - generic [ref=e266]:
+                - generic [ref=e267]: Level
+                - generic [ref=e268]: Placement Ready
+          - generic [ref=e271]:
+            - generic [ref=e272]:
+              - generic [ref=e273]: 90 Days
+              - generic [ref=e274]: Mock Interview Ace
+            - generic [ref=e275]:
+              - generic [ref=e277]:
+                - generic [ref=e278]: Readiness
+                - generic [ref=e279]: 84%
+              - generic [ref=e281]:
+                - generic [ref=e282]: DSA Solved
+                - generic [ref=e283]: 90 problems
+              - generic [ref=e284]:
+                - generic [ref=e285]: Level
+                - generic [ref=e286]: Interview Pro
+          - generic [ref=e289]:
+            - generic [ref=e290]:
+              - generic [ref=e291]: 180 Days
+              - generic [ref=e292]: Dream Offer Stage
+            - generic [ref=e293]:
+              - generic [ref=e295]:
+                - generic [ref=e296]: Readiness
+                - generic [ref=e297]: 91%
+              - generic [ref=e299]:
+                - generic [ref=e300]: DSA Solved
+                - generic [ref=e301]: 120 problems
+              - generic [ref=e302]:
+                - generic [ref=e303]: Level
+                - generic [ref=e304]: Offer Hunter
+      - generic [ref=e306]:
+        - generic [ref=e307]:
+          - generic [ref=e308]:
+            - generic [ref=e309]: AI CAREER TWIN
+            - generic [ref=e313]: Demo Preview
+          - heading "Your digital career twin." [level=2] [ref=e317]
+          - paragraph [ref=e318]: A living simulation of you — updated from resume, GitHub, DSA, XP, and interview history.
+        - generic [ref=e319]:
+          - generic [ref=e320]:
+            - generic [ref=e321]:
+              - heading "Skill Builder" [level=3] [ref=e326]
+              - generic [ref=e327]: Active
+            - generic [ref=e330]:
+              - generic [ref=e331]: Current Level
+              - generic [ref=e332]: Level 78
+              - generic [ref=e333]: Keep building. You're leveling up!
+            - generic [ref=e337]: 78%
+            - generic [ref=e340]:
+              - generic [ref=e341]:
+                - generic [ref=e342]:
+                  - generic [ref=e343]: </>
+                  - generic [ref=e344]: "82"
+                - generic [ref=e345]: Coding
+              - generic [ref=e348]:
+                - generic [ref=e349]: "78"
+                - generic [ref=e361]: Problem Solving
+              - generic [ref=e364]:
+                - generic [ref=e365]: "88"
+                - generic [ref=e370]: Consistency
+            - generic [ref=e378]:
+              - generic [ref=e379]: 12 Day Streak
+              - generic [ref=e380]: Keep the momentum going!
+          - generic [ref=e384]:
+            - generic [ref=e385]:
+              - generic [ref=e386]: STRENGTHS
+              - generic [ref=e391]:
+                - generic [ref=e392]: Project Building
+                - generic [ref=e400]: Resume Writing
+                - generic [ref=e409]: GitHub Activity
+            - generic [ref=e418]:
+              - generic [ref=e419]: WEAKNESSES
+              - generic [ref=e423]:
+                - generic [ref=e424]: Consistency
+                - generic [ref=e430]: DSA / Problem Solving
+            - generic [ref=e437]:
+              - generic [ref=e438]: GROWTH AREAS
+              - generic [ref=e443]:
+                - generic [ref=e444]: Advanced DSA
+                - generic [ref=e453]: System Design
+                - generic [ref=e462]: Cloud & DevOps
+          - generic [ref=e469]:
+            - generic [ref=e470]:
+              - generic [ref=e471]: TODAY'S MISSION
+              - heading "Update Your Skills" [level=4] [ref=e480]
+              - generic [ref=e481]: 75%
+              - generic [ref=e485]: +30 XP on completion
+            - generic [ref=e489]:
+              - generic [ref=e490]: CAREER MEMORY
+              - generic [ref=e502]:
+                - generic [ref=e503]:
+                  - generic [ref=e504]: Activity recorded
+                  - generic [ref=e508]:
+                    - generic [ref=e509]: +10 XP
+                    - generic [ref=e510]: 2h ago
+                - generic [ref=e511]:
+                  - generic [ref=e512]: Activity recorded
+                  - generic [ref=e516]:
+                    - generic [ref=e517]: +10 XP
+                    - generic [ref=e518]: 1d ago
+                - generic [ref=e519]:
+                  - generic [ref=e520]: Activity recorded
+                  - generic [ref=e524]:
+                    - generic [ref=e525]: +10 XP
+                    - generic [ref=e526]: 3d ago
+              - link "View all activity" [ref=e528] [cursor=pointer]:
+                - /url: /dashboard
+            - generic [ref=e532]:
+              - generic [ref=e533]:
+                - generic [ref=e534]: SYNC SUMMARY
+                - generic [ref=e538]: LIVE
+              - paragraph [ref=e540]: Based on your recent activity, your strongest signal is project building. Your main gap is consistency — I recommend focused practice over the next 30 days.
+      - generic [ref=e542]:
+        - generic [ref=e544]:
+          - button "Student View" [ref=e545]
+          - button "Recruiter View" [ref=e553]
+        - generic [ref=e560]:
+          - heading "You're doing great!" [level=3] [ref=e567]
+          - paragraph [ref=e568]: Keep solving problems and building your streak. Every small step compounds into massive career growth.
+      - generic [ref=e570]:
+        - generic [ref=e571]:
+          - generic [ref=e572]:
+            - generic [ref=e573]: AI Intelligence Center
+            - generic [ref=e577]: Demo Preview
+          - heading "Every file. Every commit. Decoded." [level=2] [ref=e581]
+          - paragraph [ref=e582]: Resume, GitHub, and placement intelligence — unified into one command center.
+        - generic [ref=e583]:
+          - generic [ref=e586]:
+            - generic [ref=e587]:
+              - generic [ref=e592]:
+                - generic [ref=e593]: Resume Analyzer
+                - generic [ref=e594]: Upload Your Resume
+              - generic [ref=e595]: Demo
+            - generic [ref=e599]:
+              - generic [ref=e604]: Upload to unlock AI analysis
+              - generic [ref=e605]: PDF, DOCX · Max 5MB
+            - generic [ref=e606]:
+              - generic [ref=e607]: ATS compatibility analysis
+              - generic [ref=e611]: Recruiter-grade quality rating
+              - generic [ref=e614]: Keyword match for target JDs
+              - generic [ref=e617]: Dream company skill alignment
+          - generic [ref=e624]:
+            - generic [ref=e630]:
+              - generic [ref=e631]: GitHub Intelligence
+              - generic [ref=e632]: Connect GitHub
+            - generic [ref=e633]:
+              - generic [ref=e634]: → dsa-tracker
+              - generic [ref=e635]: → portfolio-v3
+              - generic [ref=e636]: → ml-classifier
+              - generic [ref=e637]: → chat-app
+              - generic [ref=e638]: → redux-store
+              - generic [ref=e639]: → next-blog
+            - generic [ref=e640]:
+              - generic [ref=e641]:
+                - generic [ref=e642]: "14"
+                - generic [ref=e643]: Repos
+              - generic [ref=e644]:
+                - generic [ref=e645]: "82"
+                - generic [ref=e646]: Health
+              - generic [ref=e647]:
+                - generic [ref=e648]:
+                  - generic [ref=e649]: TypeScript
+                  - generic [ref=e650]: JavaScript
+                - generic [ref=e651]: Top Langs
+            - generic [ref=e652]:
+              - generic [ref=e653]:
+                - generic [ref=e654]: Strengths
+                - generic [ref=e655]: React · TS
+              - generic [ref=e656]:
+                - generic [ref=e657]: Weak
+                - generic [ref=e658]: Testing
+              - generic [ref=e659]:
+                - generic [ref=e660]: Missing
+                - generic [ref=e661]: DevOps
+            - generic [ref=e662]: +12% contributions this month
+          - generic [ref=e668]:
+            - generic [ref=e675]:
+              - generic [ref=e676]: Placement Intelligence
+              - generic [ref=e677]: Career Readiness
+            - generic [ref=e678]:
+              - generic [ref=e680]:
+                - generic [ref=e681]: Placement Readiness
+                - generic [ref=e682]: 72%
+              - generic [ref=e685]:
+                - generic [ref=e686]: Interview Readiness
+                - generic [ref=e687]: 68%
+              - generic [ref=e690]:
+                - generic [ref=e691]: Offer Probability
+                - generic [ref=e692]: 61%
+            - generic [ref=e694]:
+              - generic [ref=e697]: "Growth Trend:"
+              - generic [ref=e698]: +4.2% this month
+      - generic [ref=e700]:
+        - generic [ref=e701]:
+          - generic [ref=e702]:
+            - generic [ref=e703]: DREAM PATH
+            - generic [ref=e709]: Preview
+          - heading "Your goal. Your gap. Your next move." [level=2] [ref=e713]
+          - paragraph [ref=e714]: SyncRole compares your current readiness with your configured target and builds your next steps.
+        - generic [ref=e715]:
+          - generic [ref=e716]: EXPLORE POPULAR TARGETS
+          - generic [ref=e717]:
+            - button "🔵Google" [ref=e718] [cursor=pointer]
+            - button "🪟Microsoft" [ref=e719] [cursor=pointer]
+            - button "🟠Amazon" [ref=e720] [cursor=pointer]
+            - button "🔷Atlassian" [ref=e721] [cursor=pointer]
+            - button "🟢NVIDIA" [ref=e722] [cursor=pointer]
+            - button "🔴Adobe" [ref=e723] [cursor=pointer]
+            - button "🟨Zoho" [ref=e724] [cursor=pointer]
+            - button "🚀High-Growth Startup" [ref=e725] [cursor=pointer]
+        - generic [ref=e726]:
+          - generic [ref=e727]:
+            - generic [ref=e728]:
+              - generic [ref=e729]:
+                - generic [ref=e730]: TARGET READINESS
+                - generic [ref=e731]: Tier 1
+              - generic [ref=e738]:
+                - heading "Google" [level=3] [ref=e739]
+                - paragraph [ref=e740]: Software Engineer
+              - generic [ref=e747]:
+                - generic [ref=e748]: 68 / 100
+                - generic [ref=e749]: Readiness
+              - generic [ref=e750]:
+                - generic [ref=e751]: 32 points to close gap
+                - paragraph [ref=e752]: Based on your current SyncRole profile signals
+            - button "Sign in to Set as Target" [ref=e753]
+          - generic [ref=e757]:
+            - generic [ref=e758]:
+              - generic [ref=e759]: What's Between You & Target?
+              - generic [ref=e765]:
+                - generic [ref=e767]:
+                  - generic [ref=e768]: DSA & Problem Solving
+                  - generic [ref=e769]:
+                    - text: "62"
+                    - generic [ref=e770]: / 85
+                - generic [ref=e773]:
+                  - generic [ref=e774]: Resume & ATS Score
+                  - generic [ref=e775]:
+                    - text: "68"
+                    - generic [ref=e776]: / 80
+                - generic [ref=e779]:
+                  - generic [ref=e780]: Projects & Engineering Depth
+                  - generic [ref=e781]:
+                    - text: "72"
+                    - generic [ref=e782]: / 75
+                - generic [ref=e785]:
+                  - generic [ref=e786]: System Design & Architecture
+                  - generic [ref=e787]:
+                    - text: "45"
+                    - generic [ref=e788]: / 80
+            - generic [ref=e790]: SyncRole ranks your readiness bottlenecks from real activity
+          - generic [ref=e794]:
+            - generic [ref=e795]:
+              - generic [ref=e796]: Your Next Move
+              - generic [ref=e801]:
+                - generic [ref=e802]: LARGEST CURRENT GAP
+                - generic [ref=e803]: System Design & Architecture
+                - paragraph [ref=e804]: "Current score: 45 (Target: 80). Improving this area provides the largest leverage for your target."
+              - generic [ref=e805]:
+                - generic [ref=e806]: CAREER PROGRESSION
+                - paragraph [ref=e812]: Improve primary leverage areas → Build verified capability → Approach application-ready territory.
+            - link "Get Started on Dream Path" [ref=e813] [cursor=pointer]:
+              - /url: /auth
+      - generic [ref=e818]:
+        - generic [ref=e819]:
+          - generic [ref=e820]: CAREER PROGRESS FEED
+          - heading "Every step. Every win." [level=2] [ref=e824]
+          - paragraph [ref=e825]: A chronological record of your career growth — XP earned, problems solved, milestones unlocked.
+        - generic [ref=e826]:
+          - generic [ref=e827]:
+            - generic [ref=e828]:
+              - heading "Recent Activity" [level=3] [ref=e832]
+              - generic [ref=e833]: Demo data
+            - generic [ref=e834]:
+              - generic [ref=e844]:
+                - generic [ref=e845]:
+                  - 'heading "Unlocked: First Steps" [level=4] [ref=e846]'
+                  - paragraph [ref=e847]: Welcome to SyncRole! You've taken your first step.
+                - generic [ref=e848]:
+                  - generic [ref=e849]: +50 XP
+                  - generic [ref=e850]: 2h ago
+              - generic [ref=e856]:
+                - generic [ref=e857]:
+                  - 'heading "Unlocked: Profile Complete" [level=4] [ref=e858]'
+                  - paragraph [ref=e859]: 100% profile setup completed.
+                - generic [ref=e860]:
+                  - generic [ref=e861]: +50 XP
+                  - generic [ref=e862]: 1d ago
+              - generic [ref=e869]:
+                - generic [ref=e870]:
+                  - heading "Solved 5 DSA Problems" [level=4] [ref=e871]
+                  - paragraph [ref=e872]: You solved 5 problems on LeetCode.
+                - generic [ref=e873]:
+                  - generic [ref=e874]: +75 XP
+                  - generic [ref=e875]: 2d ago
+              - generic [ref=e880]:
+                - generic [ref=e881]:
+                  - heading "7 Day Streak" [level=4] [ref=e882]
+                  - paragraph [ref=e883]: Consistency level increased. Keep it up!
+                - generic [ref=e884]:
+                  - generic [ref=e885]: +30 XP
+                  - generic [ref=e886]: 2d ago
+              - generic [ref=e891]:
+                - generic [ref=e892]:
+                  - 'heading "Milestone: Skill Explorer" [level=4] [ref=e893]'
+                  - paragraph [ref=e894]: Explored 10+ new skills.
+                - generic [ref=e895]:
+                  - generic [ref=e896]: +60 XP
+                  - generic [ref=e897]: 3d ago
+              - generic [ref=e902]:
+                - generic [ref=e903]:
+                  - heading "Completed Mock Interview" [level=4] [ref=e904]
+                  - paragraph [ref=e905]: Great job! You're interview ready.
+                - generic [ref=e906]:
+                  - generic [ref=e907]: +40 XP
+                  - generic [ref=e908]: 4d ago
+              - link "View Full Activity" [ref=e910] [cursor=pointer]:
+                - /url: /dashboard
+          - generic [ref=e914]:
+            - generic [ref=e915]:
+              - heading "This Week" [level=3] [ref=e920]
+              - generic [ref=e921]:
+                - generic [ref=e922]:
+                  - generic [ref=e923]:
+                    - generic [ref=e924]: XP EARNED
+                    - generic [ref=e925]: "430"
+                  - generic [ref=e926]:
+                    - generic [ref=e927]: ↑ 15%
+                    - generic [ref=e931]: vs last week
+                - generic [ref=e933]:
+                  - generic [ref=e934]:
+                    - generic [ref=e935]: PROBLEMS SOLVED
+                    - generic [ref=e936]: "12"
+                  - generic [ref=e937]:
+                    - generic [ref=e938]: ↑ 3
+                    - generic [ref=e942]: vs last week
+                - generic [ref=e944]:
+                  - generic [ref=e945]:
+                    - generic [ref=e946]: PLACEMENT GROWTH
+                    - generic [ref=e947]: +8.4%
+                  - generic [ref=e948]:
+                    - generic [ref=e949]: ↑ 2.1%
+                    - generic [ref=e953]: vs last week
+                - generic [ref=e955]:
+                  - generic [ref=e956]:
+                    - generic [ref=e957]: DAILY AVG. ACTIVE TIME
+                    - generic [ref=e958]: 45m
+                  - generic [ref=e959]:
+                    - generic [ref=e960]: ↑ 10m
+                    - generic [ref=e964]: vs last week
+            - generic [ref=e965]:
+              - generic [ref=e966]:
+                - heading "Achievements" [level=3] [ref=e971]
+                - link "View All" [ref=e972] [cursor=pointer]:
+                  - /url: /career-identity
+              - generic [ref=e976]:
+                - generic [ref=e977]:
+                  - generic [ref=e981]: First Steps
+                  - generic [ref=e982]: Unlocked
+                - generic [ref=e983]:
+                  - generic [ref=e988]: Profile Complete
+                  - generic [ref=e989]: Unlocked
+                - generic [ref=e990]:
+                  - generic [ref=e996]: Skill Explorer
+                  - generic [ref=e997]: Level 1
+                - generic [ref=e998]:
+                  - generic [ref=e1003]: Portfolio Ready
+                  - generic [ref=e1004]: Locked
+                - generic [ref=e1005]:
+                  - generic [ref=e1009]: Warming Up
+                  - generic [ref=e1010]: 5 Day Streak
+                - generic [ref=e1011]:
+                  - generic [ref=e1017]: Consistent Performer
+                  - generic [ref=e1018]: Locked
+        - generic [ref=e1019]:
+          - generic [ref=e1024]:
+            - heading "Keep going, Ram!" [level=3] [ref=e1025]
+            - paragraph [ref=e1026]: Level 12 · 2,850 Total XP earned. Keep building your streak!
+          - generic [ref=e1027]:
+            - generic [ref=e1028]:
+              - generic [ref=e1029]: Total XP
+              - generic [ref=e1030]: 2,850
+            - generic [ref=e1031]:
+              - generic [ref=e1032]: Level
+              - generic [ref=e1033]: "12"
+            - generic [ref=e1034]:
+              - generic [ref=e1035]:
+                - generic [ref=e1036]: To next level
+                - generic [ref=e1037]: 1150 XP
+              - generic [ref=e1039]: 2,850 / 4,000 XP
+            - link "View Dashboard" [ref=e1041] [cursor=pointer]:
+              - /url: /dashboard
+      - generic [ref=e1045]:
+        - generic [ref=e1047]:
+          - generic [ref=e1048]:
+            - generic [ref=e1049]: Career Transformations
+            - heading "Real students. Real offers." [level=2] [ref=e1053]
+            - paragraph [ref=e1054]: Every story verified against real platform activity. No fabrications, no hype.
+          - link "See All Transformations" [ref=e1056] [cursor=pointer]:
+            - /url: /career-transformations
+        - generic [ref=e1060]:
+          - generic [ref=e1061]:
+            - generic [ref=e1062]:
+              - generic [ref=e1063]:
+                - generic [ref=e1064]: A
+                - generic [ref=e1065]:
+                  - generic [ref=e1066]: Aarav S.
+                  - generic [ref=e1067]: SWE @ Razorpay
+              - generic [ref=e1068]: Verified
+            - generic [ref=e1075]:
+              - generic [ref=e1076]: +3,200 XP
+              - generic [ref=e1077]: +60 DSA
+              - generic [ref=e1078]: +38% Readiness
+            - paragraph [ref=e1079]: "\"Landed SWE role at Razorpay — 3x my previous offer. 4 interview calls in 2 weeks.\""
+            - generic [ref=e1080]: "Advice: \"Stop optimizing in a vacuum. Let the data tell you what recruiters care about.\""
+          - generic [ref=e1092]:
+            - generic [ref=e1093]:
+              - generic [ref=e1094]:
+                - generic [ref=e1095]: P
+                - generic [ref=e1096]:
+                  - generic [ref=e1097]: Priya K.
+                  - generic [ref=e1098]: Intern @ Atlassian
+              - generic [ref=e1099]: Verified
+            - generic [ref=e1106]:
+              - generic [ref=e1107]: +2,800 XP
+              - generic [ref=e1108]: +45 DSA
+              - generic [ref=e1109]: +42% Readiness
+            - paragraph [ref=e1110]: "\"First internship from Atlassian in 45 days. Same company that rejected me 6 months ago.\""
+            - generic [ref=e1111]: "Advice: \"Your GitHub is your new resume. Ship real projects that solve real problems.\""
+          - generic [ref=e1123]:
+            - generic [ref=e1124]:
+              - generic [ref=e1125]:
+                - generic [ref=e1126]: R
+                - generic [ref=e1127]:
+                  - generic [ref=e1128]: Rohit M.
+                  - generic [ref=e1129]: SDE-1 @ Flipkart
+              - generic [ref=e1130]: Verified
+            - generic [ref=e1137]:
+              - generic [ref=e1138]: +4,100 XP
+              - generic [ref=e1139]: +100 DSA
+              - generic [ref=e1140]: +51% Readiness
+            - paragraph [ref=e1141]: "\"SDE-1 at Flipkart. Turned down 2 other product company offers.\""
+            - generic [ref=e1142]: "Advice: \"Consistency beats brilliance. SyncRole keeps you accountable when motivation fades.\""
+          - generic [ref=e1154]:
+            - generic [ref=e1155]:
+              - generic [ref=e1156]:
+                - generic [ref=e1157]: A
+                - generic [ref=e1158]:
+                  - generic [ref=e1159]: Aarav S.
+                  - generic [ref=e1160]: SWE @ Razorpay
+              - generic [ref=e1161]: Verified
+            - generic [ref=e1168]:
+              - generic [ref=e1169]: +3,200 XP
+              - generic [ref=e1170]: +60 DSA
+              - generic [ref=e1171]: +38% Readiness
+            - paragraph [ref=e1172]: "\"Landed SWE role at Razorpay — 3x my previous offer. 4 interview calls in 2 weeks.\""
+            - generic [ref=e1173]: "Advice: \"Stop optimizing in a vacuum. Let the data tell you what recruiters care about.\""
+          - generic [ref=e1185]:
+            - generic [ref=e1186]:
+              - generic [ref=e1187]:
+                - generic [ref=e1188]: P
+                - generic [ref=e1189]:
+                  - generic [ref=e1190]: Priya K.
+                  - generic [ref=e1191]: Intern @ Atlassian
+              - generic [ref=e1192]: Verified
+            - generic [ref=e1199]:
+              - generic [ref=e1200]: +2,800 XP
+              - generic [ref=e1201]: +45 DSA
+              - generic [ref=e1202]: +42% Readiness
+            - paragraph [ref=e1203]: "\"First internship from Atlassian in 45 days. Same company that rejected me 6 months ago.\""
+            - generic [ref=e1204]: "Advice: \"Your GitHub is your new resume. Ship real projects that solve real problems.\""
+          - generic [ref=e1216]:
+            - generic [ref=e1217]:
+              - generic [ref=e1218]:
+                - generic [ref=e1219]: R
+                - generic [ref=e1220]:
+                  - generic [ref=e1221]: Rohit M.
+                  - generic [ref=e1222]: SDE-1 @ Flipkart
+              - generic [ref=e1223]: Verified
+            - generic [ref=e1230]:
+              - generic [ref=e1231]: +4,100 XP
+              - generic [ref=e1232]: +100 DSA
+              - generic [ref=e1233]: +51% Readiness
+            - paragraph [ref=e1234]: "\"SDE-1 at Flipkart. Turned down 2 other product company offers.\""
+            - generic [ref=e1235]: "Advice: \"Consistency beats brilliance. SyncRole keeps you accountable when motivation fades.\""
+        - link "3+ Verified Transformations" [ref=e1248] [cursor=pointer]:
+          - /url: /career-transformations
+      - generic [ref=e1259]:
+        - generic [ref=e1260]: 50,000+ Students. Real Outcomes.
+        - heading "Stop Guessing. Know Exactly What Gets You Hired." [level=2] [ref=e1265]
+        - paragraph [ref=e1266]: Join students who replaced guesswork with intelligence. SyncRole gives you the exact data, path, and tools to get hired faster.
+        - generic [ref=e1267]:
+          - button "Launch SyncPilot" [ref=e1268] [cursor=pointer]
+          - button "Start Free" [ref=e1273] [cursor=pointer]
+          - button "Talk To Sales" [ref=e1283] [cursor=pointer]
+        - generic [ref=e1286]:
+          - generic [ref=e1287]: ✓ Free to start
+          - generic [ref=e1288]: ✓ No credit card required
+          - generic [ref=e1289]: ✓ Real AI analysis
+          - generic [ref=e1290]: ✓ Cancel anytime
+      - generic [ref=e1291]:
+        - generic [ref=e1292]:
+          - generic [ref=e1293]:
+            - link "SyncRole Logo SyncRole" [ref=e1294] [cursor=pointer]:
+              - /url: /
+              - img "SyncRole Logo" [ref=e1296]
+              - generic [ref=e1297]: SyncRole
+            - paragraph [ref=e1298]: The Career Operating System for the next generation of builders. AI-powered placement intelligence, gamified growth, real outcomes.
+            - generic [ref=e1299]:
+              - textbox "your@email.com" [ref=e1301]
+              - button "Subscribe" [ref=e1302]
+          - generic [ref=e1303]:
+            - generic [ref=e1304]: Product
+            - list [ref=e1305]:
+              - listitem [ref=e1306]:
+                - link "Dashboard" [ref=e1307] [cursor=pointer]:
+                  - /url: /dashboard
+              - listitem [ref=e1308]:
+                - link "DSA Tracker" [ref=e1309] [cursor=pointer]:
+                  - /url: /dashboard/dsa
+              - listitem [ref=e1310]:
+                - link "Sign In" [ref=e1311] [cursor=pointer]:
+                  - /url: /auth
+              - listitem [ref=e1312]:
+                - link "Placement Score" [ref=e1313] [cursor=pointer]:
+                  - /url: "#score"
+          - generic [ref=e1314]:
+            - generic [ref=e1315]: Community
+            - list [ref=e1316]:
+              - listitem [ref=e1317]:
+                - link "GitHub" [ref=e1318] [cursor=pointer]:
+                  - /url: https://github.com/ramganesh1201
+              - listitem [ref=e1322]:
+                - link "LinkedIn" [ref=e1323] [cursor=pointer]:
+                  - /url: https://www.linkedin.com/in/vemula-ram-ganesh/
+              - listitem [ref=e1328]:
+                - link "Instagram" [ref=e1329] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1333]:
+                - link "Twitter / X" [ref=e1334] [cursor=pointer]:
+                  - /url: "#"
+              - listitem [ref=e1337]:
+                - link "Telegram" [ref=e1338] [cursor=pointer]:
+                  - /url: "#"
+        - generic [ref=e1343]:
+          - generic [ref=e1344]: © 2026 SyncRole — The Career Operating System
+          - generic [ref=e1345]:
+            - link "Privacy" [ref=e1346] [cursor=pointer]:
+              - /url: "#"
+            - link "Terms" [ref=e1347] [cursor=pointer]:
+              - /url: "#"
+            - link "Contact" [ref=e1348] [cursor=pointer]:
+              - /url: mailto:hello@syncrole.app
+  - region "Notifications alt+T"
+  - button "Open SyncPilot AI Career OS" [ref=e1350] [cursor=pointer]

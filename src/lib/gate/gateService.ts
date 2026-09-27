@@ -70,8 +70,8 @@ export class GateService {
           isFallback: false,
           lastVerifiedAt: latestVerified,
           verificationStatus: 'verified',
-          officialUrl: 'https://gate2025.iitr.ac.in/',
-          sourceName: 'Official GATE Organizing Portal (IIT Roorkee)',
+          officialUrl: 'https://gate2027.iitm.ac.in/',
+          sourceName: 'Official GATE 2027 Portal (IIT Madras)',
         };
       }
     } catch (e) {
@@ -83,8 +83,8 @@ export class GateService {
       isFallback: true,
       lastVerifiedAt: GATE_EVENTS[0].lastVerifiedAt,
       verificationStatus: 'verified',
-      officialUrl: GATE_EVENTS[0].officialUrl,
-      sourceName: 'Official GATE Organizing Portal (IIT Roorkee)',
+      officialUrl: 'https://gate2027.iitm.ac.in/',
+      sourceName: 'Official GATE 2027 Portal (IIT Madras)',
     };
   }
 

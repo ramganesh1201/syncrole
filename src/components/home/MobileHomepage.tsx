@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   ArrowRight,
@@ -23,21 +22,18 @@ import {
   Zap,
   BarChart3,
   Layers,
-  Compass,
-  Bell,
-  Calendar,
-  Fingerprint,
   Settings,
   HelpCircle,
   Building2,
   LayoutDashboard,
   Play,
+  Calendar,
+  Fingerprint,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useAuth } from "@/hooks/use-auth";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
-import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 
 import CurrentlyRelevantGateSection from "@/components/home/CurrentlyRelevantGateSection";
 
@@ -46,31 +42,30 @@ interface MobileHomepageProps {
   onOpenDemo?: () => void;
 }
 
-// Fallback demo dataset for guest users matching reference design values
 const GUEST_DEMO = {
-  name: "Ram",
-  level: 78,
-  levelName: "Level 78",
-  overallProgress: 78,
-  codingScore: 82,
-  problemSolvingScore: 78,
-  consistencyScore: 88,
+  name: "Alex",
+  level: 3,
+  levelName: "Growth Seeker",
+  overallProgress: 72,
+  codingScore: 75,
+  problemSolvingScore: 68,
+  consistencyScore: 80,
   streak: 12,
   mission: {
     title: "Complete Resume Review",
     progress: 75,
     xp: 30,
   },
-  strengths: ["Project Building", "Resume Writing", "GitHub Activity"],
-  weaknesses: ["Consistency", "DSA / Problem Solving"],
-  growthAreas: ["System Design", "Cloud & DevOps", "Advanced DSA"],
+  strengths: ["Project Building", "Resume Fundamentals", "GitHub Rhythm"],
+  weaknesses: ["Consistency", "DSA Problem Solving"],
+  growthAreas: ["System Design", "Cloud Architecture", "Advanced DSA"],
   memory: [
-    { text: "Pushed 3 commits to portfolio-website", time: "2h ago", icon: "commit" },
-    { text: "Solved 5 DSA problems on LeetCode", time: "5h ago", icon: "dsa" },
-    { text: "Resume updated v2.1", time: "1d ago", icon: "resume" },
+    { text: "Pushed 3 commits to portfolio project", time: "2h ago" },
+    { text: "Solved 3 DSA problems on LeetCode", time: "5h ago" },
+    { text: "Updated resume to v2.1", time: "1d ago" },
   ],
   syncSummary:
-    "Based on your recent activity, your strongest signal is project building. Your main gap is consistency.",
+    "Based on your recent activity, your strongest signal is project building. Main focus area is DSA consistency.",
 };
 
 export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps) {
@@ -104,7 +99,6 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
     };
   }, [isMenuOpen]);
 
-  // Real data extraction with graceful fallbacks
   const isAuthed = !!user && !!data?.profile;
   const firstName = isAuthed
     ? data?.profile?.full_name?.split(" ")[0] || "User"
@@ -118,17 +112,15 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
   const consistencyScore = Math.min(100, streakDays * 5 + 28) || (isAuthed ? 0 : GUEST_DEMO.consistencyScore);
   const level = data?.xp?.level ?? (isAuthed ? 1 : GUEST_DEMO.level);
 
-  // Daily Mission calculation
   const activeMission = data?.missions?.find((m: any) => !m.completed) || (
     isAuthed ? null : GUEST_DEMO.mission
   );
 
-  // Strengths & Weaknesses calculation
   const signalMap: Record<string, number> = {
     "Project Building": bdScore.projects_score || 70,
     "Resume Writing": data?.resume?.total_score || 68,
-    "GitHub Activity": bdScore.github_score || 72,
-    "DSA / Problem Solving": bdScore.dsa_score || 60,
+    "GitHub Rhythm": bdScore.github_score || 72,
+    "DSA Problem Solving": bdScore.dsa_score || 60,
     "Consistency": consistencyScore,
   };
 
@@ -140,14 +132,13 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
     ? sortedSignals.slice(-2).map(([k]) => k)
     : GUEST_DEMO.weaknesses;
   const realGrowth = isAuthed
-    ? ["System Design", "Cloud & DevOps", "Advanced DSA"]
+    ? ["System Design", "Cloud Architecture", "Advanced DSA"]
     : GUEST_DEMO.growthAreas;
 
-  // Recent Activity / Career Memory
   const realMemory = isAuthed && data?.activityLogs?.length > 0
     ? data.activityLogs.slice(0, 3).map((log: any) => {
         let text = "Activity logged";
-        if (log.type === "resume_upload") text = "Uploaded resume — ATS analysis complete";
+        if (log.type === "resume_upload") text = "Uploaded resume — analysis complete";
         else if (log.type === "dsa_solve") text = `Solved DSA problem · +${log.xp_delta || 10} XP`;
         else if (log.type === "mock_interview") text = "Completed mock interview session";
         else if (log.type === "achievement") {
@@ -159,29 +150,25 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         const diffHours = Math.round((Date.now() - date.getTime()) / (1000 * 60 * 60));
         const timeAgo = diffHours < 1 ? "Just now" : diffHours < 24 ? `${diffHours}h ago` : `${Math.floor(diffHours / 24)}d ago`;
 
-        return { text, time: timeAgo, icon: log.type || "activity" };
+        return { text, time: timeAgo };
       })
     : GUEST_DEMO.memory;
 
-  // AI Sync Summary
   const syncSummary = isAuthed
-    ? `Based on your recent activity, your strongest signal is ${realStrengths[0]?.toLowerCase() || "learning"}. Your primary focus area is ${realWeaknesses[0]?.toLowerCase() || "consistency"}.`
+    ? `Based on your recent activity, your strongest signal is ${realStrengths[0]?.toLowerCase() || "learning"}. Focus area: ${realWeaknesses[0]?.toLowerCase() || "consistency"}.`
     : GUEST_DEMO.syncSummary;
 
   return (
-    <div className="min-h-screen bg-[#07090e] text-slate-100 font-sans pb-28 relative overflow-x-hidden selection:bg-purple-500/30 selection:text-purple-200">
-      {/* Background ambient lighting */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-purple-900/20 via-blue-900/10 to-transparent pointer-events-none blur-3xl" />
-
-      {/* ── MOBILE HEADER ── */}
-      <header className="sticky top-0 z-40 bg-[#07090e]/85 backdrop-blur-xl border-b border-white/10 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2.5">
+    <div className="min-h-screen bg-[#0e1217] text-foreground font-sans pb-24 relative overflow-x-hidden selection:bg-violet-500/30">
+      {/* Header */}
+      <header className="sticky top-0 z-40 bg-[#0e1217]/90 backdrop-blur-md border-b border-white/10 px-4 py-3 flex items-center justify-between">
+        <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition flex items-center justify-center min-w-[44px] min-h-[44px]"
+            className="p-2 rounded-lg bg-white/5 border border-white/10 text-foreground hover:bg-white/10 active:scale-95 transition min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
             aria-label="Open menu"
           >
-            <Menu className="h-5 w-5" />
+            <Menu className="h-4 w-4" />
           </button>
           <BrandLogo size="sm" />
         </div>
@@ -189,41 +176,39 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <div className="flex items-center gap-2">
           <button
             onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
-            className="px-3.5 py-1.5 rounded-full text-xs font-semibold bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-sm hover:brightness-110 active:scale-95 transition-all"
+            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-sm transition-all cursor-pointer"
           >
-            {isAuthed ? "Dashboard" : "Get Started"}
+            {isAuthed ? "Dashboard" : "Sign In"}
           </button>
         </div>
       </header>
 
-      {/* MOBILE LEFT-SLIDING DRAWER OVERLAY */}
+      {/* Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 ${
+        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-xs transition-opacity duration-200 ${
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* MOBILE LEFT-SLIDING DRAWER CONTAINER */}
+      {/* Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-[#090d16] border-r border-white/10 p-5 flex flex-col justify-between transition-transform duration-300 ease-out ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,320px)] bg-[#161b22] border-r border-white/10 p-4 flex flex-col justify-between transition-transform duration-200 ease-out ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* FIXED HEADER */}
-        <div className="flex-none flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-white/10">
           <BrandLogo size="md" />
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2.5 rounded-full bg-slate-800/80 text-slate-300 hover:text-white transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            className="p-2 rounded-lg bg-white/5 text-muted-foreground hover:text-foreground transition active:scale-95 min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
             aria-label="Close menu"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* INDEPENDENT SCROLLABLE MIDDLE NAVIGATION */}
-        <nav className="flex-1 overflow-y-auto min-h-0 py-4 space-y-1.5">
+        <nav className="flex-1 overflow-y-auto min-h-0 py-3 space-y-1">
           {[
             { label: "Home", href: "/", icon: Home },
             { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -249,264 +234,180 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
                 key={item.label}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition text-sm font-medium ${
+                className={`min-h-[40px] px-3 py-2 rounded-lg border flex items-center justify-between transition text-xs font-medium ${
                   isItemActive
-                    ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold shadow-sm"
-                    : "bg-slate-900/40 border-white/5 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+                    ? "bg-violet-600/20 border-violet-500/40 text-violet-300 font-semibold"
+                    : "bg-white/5 border-transparent text-muted-foreground hover:text-foreground hover:bg-white/10"
                 }`}
               >
-                <div className="flex items-center gap-3">
-                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
+                <div className="flex items-center gap-2.5">
+                  <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-violet-400" />
                   <span>{item.label}</span>
                 </div>
-                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-slate-500"}`} />
+                <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-50" />
               </Link>
             );
           })}
         </nav>
 
-        {/* FIXED FOOTER WITH SAFE AREA BOTTOM PADDING */}
-        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-white/10">
+        <div className="pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] border-t border-white/10">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               nav({ to: isAuthed ? "/dashboard" : "/auth" });
             }}
-            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white font-medium text-sm shadow-lg shadow-purple-500/20 active:scale-[0.98] transition"
+            className="w-full min-h-[40px] flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium text-xs shadow-md transition cursor-pointer"
           >
             <span>{isAuthed ? "Go to Dashboard" : "Get Started Now"}</span>
           </button>
         </div>
       </div>
 
-      <main className="px-4 pt-4 space-y-5">
-        {/* ── HERO SECTION ── */}
-        <section className="relative rounded-3xl bg-gradient-to-b from-slate-900/90 to-slate-950/80 border border-white/10 p-5 shadow-2xl overflow-hidden">
+      <main className="px-4 pt-4 space-y-4">
+        {/* Hero Card */}
+        <section className="surface-primary rounded-2xl border border-white/10 p-5 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-[11px] font-medium">
-              <Sparkles className="h-3 w-3 text-purple-400" />
-              <span>AI-Powered Career Companion</span>
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[11px] font-semibold">
+              <Sparkles className="h-3 w-3" />
+              <span>AI Career OS</span>
             </div>
 
             {onOpenDemo && (
               <button
                 onClick={onOpenDemo}
-                className="inline-flex items-center gap-1.5 text-xs font-medium text-amber-300 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full hover:bg-amber-500/20 active:scale-95 transition-all"
+                className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-md hover:bg-amber-400/20 transition cursor-pointer"
               >
-                <Play className="h-3 w-3 fill-amber-300 text-amber-300 flex-shrink-0" />
+                <Play className="h-3 w-3 fill-amber-400" />
                 <span>Try Demo</span>
               </button>
             )}
           </div>
 
-          <div className="mt-4 flex items-start justify-between">
-            <div className="space-y-1 max-w-[65%]">
-              <p className="text-sm font-medium text-slate-300">
-                Good morning, {firstName}! 👋
-              </p>
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
-                Your digital <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-blue-400 to-cyan-300">
-                  career twin.
-                </span>
-              </h1>
-            </div>
-
-            {/* Orbit graphic illustration matching reference design */}
-            <div className="relative h-20 w-20 shrink-0 grid place-items-center">
-              <div className="absolute inset-0 rounded-full border border-purple-500/30 animate-spin-slow opacity-60" />
-              <div className="absolute inset-2 rounded-full border border-cyan-500/30 opacity-40" />
-              <div className="h-12 w-12 rounded-2xl bg-gradient-to-tr from-purple-700 to-blue-600 p-px shadow-lg shadow-purple-500/30 grid place-items-center">
-                <div className="h-full w-full rounded-[15px] bg-slate-950 grid place-items-center">
-                  <BrandLogo size="sm" showText={false} />
-                </div>
-              </div>
-              <div className="absolute top-0 right-1 h-2 w-2 rounded-full bg-purple-400 animate-pulse" />
-              <div className="absolute bottom-1 left-0 h-2 w-2 rounded-full bg-cyan-400" />
-            </div>
+          <div className="space-y-1">
+            <p className="text-xs text-muted-foreground">Welcome, {firstName}</p>
+            <h1 className="text-2xl font-bold tracking-tight text-foreground">
+              Your digital <span className="text-cyan-400">career twin.</span>
+            </h1>
           </div>
 
-          <p className="mt-3 text-xs text-slate-400 leading-relaxed max-w-xs">
-            A living simulation of you — updated from resume, GitHub, DSA, XP, and interviews.
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            A continuous simulation of your readiness — built from resume analysis, GitHub contributions, DSA progress, and skill gaps.
           </p>
 
-          <div className="mt-5">
-            <button
-              onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-3 rounded-2xl text-xs font-bold bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-lg shadow-purple-500/25 hover:brightness-110 active:scale-98 transition"
-            >
-              <span>{isAuthed ? "Explore Dashboard" : "Get Started Free"}</span>
-              <ArrowRight className="h-4 w-4" />
-            </button>
-          </div>
+          <button
+            onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition shadow-sm cursor-pointer"
+          >
+            <span>{isAuthed ? "Explore Workspace" : "Get Started Free"}</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </button>
         </section>
 
-        {/* ── GATE 2027 Contextual Highlight ── */}
+        {/* GATE Highlight */}
         <CurrentlyRelevantGateSection />
 
-        {/* ── QUICK ACTIONS ROW (Horizontal / 4 Cards Grid) ── */}
+        {/* Quick Actions Grid */}
         <section className="grid grid-cols-4 gap-2">
           {[
-            { title: "Track Progress", desc: "Visualize growth", icon: Code2, color: "text-purple-400", href: "/dashboard" },
-            { title: "Smart Missions", desc: "Daily goals", icon: Target, color: "text-emerald-400", href: "/dsa-daily" },
-            { title: "Data Insights", desc: "Know stats", icon: BarChart3, color: "text-blue-400", href: "/resume-intelligence" },
-            { title: "Career Memory", desc: "All in one", icon: Layers, color: "text-amber-400", href: "/career-identity" },
+            { title: "Progress", desc: "Track growth", icon: Code2, href: "/dashboard" },
+            { title: "Missions", desc: "Daily goals", icon: Target, href: "/dsa-daily" },
+            { title: "Insights", desc: "View stats", icon: BarChart3, href: "/resume-intelligence" },
+            { title: "Memory", desc: "Activities", icon: Layers, href: "/career-identity" },
           ].map((action) => (
             <button
               key={action.title}
               onClick={() => nav({ to: action.href })}
-              className="rounded-2xl bg-slate-900/70 border border-white/5 p-2.5 text-center flex flex-col items-center hover:bg-slate-800/80 active:scale-95 transition"
+              className="surface-primary rounded-xl border border-white/8 p-2.5 text-center flex flex-col items-center hover:bg-white/10 active:scale-95 transition cursor-pointer"
             >
-              <div className={`h-8 w-8 rounded-xl bg-slate-800/90 grid place-items-center mb-1.5 ${action.color}`}>
-                <action.icon className="h-4 w-4" />
+              <div className="h-7 w-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-1 text-violet-400">
+                <action.icon className="h-3.5 w-3.5" />
               </div>
-              <span className="text-[11px] font-semibold text-slate-200 line-clamp-1 leading-tight">{action.title}</span>
-              <span className="text-[9px] text-slate-500 line-clamp-1 mt-0.5">{action.desc}</span>
+              <span className="text-[11px] font-semibold text-foreground line-clamp-1">{action.title}</span>
+              <span className="text-[9px] text-muted-foreground line-clamp-1">{action.desc}</span>
             </button>
           ))}
         </section>
 
-        {/* ── METRICS OVERVIEW BANNER ── */}
-        <section className="rounded-2xl bg-slate-900/80 border border-white/10 p-3.5 grid grid-cols-4 gap-2 text-center divide-x divide-white/5">
+        {/* Metrics Banner */}
+        <section className="surface-primary rounded-xl border border-white/10 p-3 grid grid-cols-4 gap-2 text-center divide-x divide-white/10">
           <div className="px-1">
-            <div className="text-base font-extrabold text-purple-300">{score}%</div>
-            <div className="text-[9px] font-medium text-slate-400 mt-0.5">Overall Progress</div>
-            <div className="mt-1.5 h-1 w-full bg-slate-800 rounded-full overflow-hidden">
-              <div className="h-full bg-purple-500 rounded-full" style={{ width: `${Math.min(100, score)}%` }} />
-            </div>
+            <div className="text-sm font-bold text-violet-400">{score}%</div>
+            <div className="text-[9px] text-muted-foreground">Readiness</div>
           </div>
-
           <div className="px-1">
-            <div className="text-base font-extrabold text-blue-400">{codingScore}</div>
-            <div className="text-[9px] font-medium text-slate-400 mt-0.5">Coding Score</div>
+            <div className="text-sm font-bold text-cyan-400">{codingScore}</div>
+            <div className="text-[9px] text-muted-foreground">Coding</div>
           </div>
-
           <div className="px-1">
-            <div className="text-base font-extrabold text-emerald-400">{dsaScore}</div>
-            <div className="text-[9px] font-medium text-slate-400 mt-0.5">Problem Solving</div>
+            <div className="text-sm font-bold text-emerald-400">{dsaScore}</div>
+            <div className="text-[9px] text-muted-foreground">DSA</div>
           </div>
-
           <div className="px-1">
-            <div className="text-base font-extrabold text-purple-400">{consistencyScore}</div>
-            <div className="text-[9px] font-medium text-slate-400 mt-0.5">Consistency</div>
+            <div className="text-sm font-bold text-foreground">{consistencyScore}</div>
+            <div className="text-[9px] text-muted-foreground">Rhythm</div>
           </div>
         </section>
 
-        {/* ── SKILL BUILDER — PRIMARY MOBILE CARD ── */}
-        <section className="rounded-3xl bg-slate-900/90 border border-purple-500/20 p-5 shadow-xl space-y-4">
+        {/* Skill Builder Card */}
+        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-gradient-to-tr from-purple-600 to-blue-600 p-px">
-                <div className="h-full w-full rounded-[14px] bg-slate-950 grid place-items-center">
-                  <BrandLogo size="sm" showText={false} />
-                </div>
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-lg bg-violet-600/20 text-violet-400 border border-violet-500/30 flex items-center justify-center font-bold text-xs">
+                L{level}
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-widest text-purple-400">SKILL BUILDER</div>
-                <div className="text-xl font-extrabold text-white leading-tight">Level {level}</div>
+                <div className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Level {level}</div>
+                <div className="text-sm font-bold text-foreground">Career Growth Index</div>
               </div>
             </div>
 
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-[10px] font-semibold">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>ACTIVE</span>
-            </div>
+            <span className="px-2 py-0.5 rounded-md bg-emerald-400/10 text-emerald-400 text-[10px] font-semibold border border-emerald-400/20">
+              Active
+            </span>
           </div>
 
-          <p className="text-xs text-slate-400">Keep building. You&apos;re leveling up!</p>
-
-          <div className="space-y-1.5">
-            <div className="flex justify-between text-xs font-semibold text-slate-300">
-              <span>Overall Progress</span>
-              <span className="text-purple-400">{score}%</span>
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs font-semibold">
+              <span className="text-muted-foreground">Career Readiness</span>
+              <span className="text-violet-400">{score}%</span>
             </div>
-            <div className="h-2 w-full bg-slate-800 rounded-full overflow-hidden p-0.5">
+            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
               <div
-                className="h-full bg-gradient-to-r from-purple-500 to-blue-500 rounded-full transition-all duration-700"
+                className="h-full bg-violet-500 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, Math.max(5, score))}%` }}
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-3 gap-2 pt-2 border-t border-white/5">
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-950/50 border border-white/5">
-              <Code2 className="h-4 w-4 text-blue-400 shrink-0" />
-              <div>
-                <div className="text-xs font-bold text-white">{codingScore}</div>
-                <div className="text-[9px] text-slate-400">Coding</div>
-              </div>
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/8 text-xs">
+            <div className="flex items-center gap-2">
+              <Flame className="h-4 w-4 text-amber-400" />
+              <span className="font-semibold text-amber-400">{streakDays} Day Practice Streak</span>
             </div>
-
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-950/50 border border-white/5">
-              <Brain className="h-4 w-4 text-purple-400 shrink-0" />
-              <div>
-                <div className="text-xs font-bold text-white">{dsaScore}</div>
-                <div className="text-[9px] text-slate-400 text-ellipsis overflow-hidden whitespace-nowrap">Problem Solving</div>
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 p-2 rounded-xl bg-slate-950/50 border border-white/5">
-              <TrendingUp className="h-4 w-4 text-emerald-400 shrink-0" />
-              <div>
-                <div className="text-xs font-bold text-white">{consistencyScore}</div>
-                <div className="text-[9px] text-slate-400">Consistency</div>
-              </div>
-            </div>
-          </div>
-
-          {/* Streak strip */}
-          <div className="flex items-center justify-between p-3 rounded-2xl bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/20 text-xs">
-            <div className="flex items-center gap-2.5">
-              <Flame className="h-5 w-5 text-amber-400 shrink-0 animate-bounce" />
-              <div>
-                <div className="font-bold text-amber-300">{streakDays} Day Streak</div>
-                <div className="text-[10px] text-amber-400/80">Keep the momentum going!</div>
-              </div>
-            </div>
-            <Award className="h-5 w-5 text-amber-400 opacity-80" />
+            <Award className="h-4 w-4 text-muted-foreground" />
           </div>
         </section>
 
-        {/* ── TODAY'S MISSION & STRENGTHS/WEAKNESSES GRID ── */}
+        {/* Today's Mission & Tabs */}
         <section className="space-y-3">
-          {/* Mission Card */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-5 space-y-4">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-amber-400 flex items-center gap-1.5">
-              <Target className="h-3.5 w-3.5" />
-              <span>TODAY&apos;S MISSION</span>
+          <div className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Target className="h-3.5 w-3.5 text-violet-400" />
+              <span>Today&apos;s Priority Mission</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-white">
+                <h3 className="text-sm font-bold text-foreground">
                   {activeMission?.title || "Complete Resume Review"}
                 </h3>
-                <p className="text-xs text-amber-400 font-medium mt-1">
-                  ⚡ +{activeMission?.xp || activeMission?.xp_reward || 30} XP on completion
+                <p className="text-xs text-violet-400 font-medium mt-0.5">
+                  +{activeMission?.xp || activeMission?.xp_reward || 30} XP reward
                 </p>
               </div>
 
-              {/* Radial gauge */}
-              <div className="relative h-14 w-14 shrink-0 grid place-items-center">
-                <svg className="h-full w-full -rotate-90" viewBox="0 0 36 36">
-                  <path
-                    className="text-slate-800"
-                    strokeWidth="3"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                  <path
-                    className="text-amber-400"
-                    strokeDasharray={`${activeMission?.progress || 75}, 100`}
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                    stroke="currentColor"
-                    fill="none"
-                    d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                  />
-                </svg>
-                <span className="absolute text-xs font-bold text-amber-300">
+              <div className="text-right">
+                <span className="text-xs font-bold text-cyan-400">
                   {activeMission?.progress || 75}%
                 </span>
               </div>
@@ -514,69 +415,68 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
             <button
               onClick={() => nav({ to: isAuthed ? "/dsa-daily" : "/auth" })}
-              className="w-full py-2.5 rounded-xl bg-slate-800 border border-white/10 text-xs font-semibold text-slate-200 hover:bg-slate-700 flex items-center justify-center gap-2 active:scale-98 transition"
+              className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-foreground hover:bg-white/10 flex items-center justify-center gap-1.5 transition cursor-pointer"
             >
               <span>Continue Mission</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
 
-          {/* Interactive Strengths / Weaknesses Tabs */}
-          <div className="rounded-3xl bg-slate-900/80 border border-white/10 p-4 space-y-3">
-            <div className="flex rounded-xl bg-slate-950 p-1 border border-white/5">
+          <div className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
+            <div className="flex rounded-lg bg-white/5 p-1 border border-white/5">
               <button
                 onClick={() => setActiveTab("strengths")}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
                   activeTab === "strengths"
-                    ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Strengths ({realStrengths.length})
+                Strengths
               </button>
               <button
                 onClick={() => setActiveTab("weaknesses")}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
                   activeTab === "weaknesses"
-                    ? "bg-purple-500/20 text-purple-300 border border-purple-500/30"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-violet-500/20 text-violet-400 border border-violet-500/30"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Weaknesses ({realWeaknesses.length})
+                Gaps
               </button>
               <button
                 onClick={() => setActiveTab("growth")}
-                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition ${
+                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
                   activeTab === "growth"
-                    ? "bg-blue-500/20 text-blue-300 border border-blue-500/30"
-                    : "text-slate-400 hover:text-slate-200"
+                    ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
+                    : "text-muted-foreground hover:text-foreground"
                 }`}
               >
-                Growth ({realGrowth.length})
+                Growth
               </button>
             </div>
 
-            <div className="space-y-2 pt-1">
+            <div className="space-y-1.5 pt-1">
               {activeTab === "strengths" &&
                 realStrengths.map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-white/5 text-xs text-slate-200">
-                    <CheckCircle className="h-4 w-4 text-emerald-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
 
               {activeTab === "weaknesses" &&
                 realWeaknesses.map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-white/5 text-xs text-slate-200">
-                    <AlertCircle className="h-4 w-4 text-purple-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
+                    <AlertCircle className="h-3.5 w-3.5 text-violet-400 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
 
               {activeTab === "growth" &&
                 realGrowth.map((item) => (
-                  <div key={item} className="flex items-center gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-white/5 text-xs text-slate-200">
-                    <TrendingUp className="h-4 w-4 text-blue-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
+                    <TrendingUp className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -584,98 +484,74 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
           </div>
         </section>
 
-        {/* ── CAREER MEMORY CARD ── */}
-        <section className="rounded-3xl bg-slate-900/80 border border-white/10 p-5 space-y-3">
+        {/* Career Memory */}
+        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-2.5">
           <div className="flex items-center justify-between">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-blue-400 flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5" />
-              <span>CAREER MEMORY</span>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Layers className="h-3.5 w-3.5 text-violet-400" />
+              <span>Career Activity Log</span>
             </div>
             <button
               onClick={() => nav({ to: "/career-identity" })}
-              className="text-[11px] text-blue-400 font-semibold flex items-center gap-1 hover:underline"
+              className="text-[11px] text-cyan-400 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
             >
               <span>View all</span>
               <ArrowRight className="h-3 w-3" />
             </button>
           </div>
 
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             {realMemory.map((mem: any, i: number) => (
-              <div key={i} className="flex items-center justify-between p-3 rounded-2xl bg-slate-950/60 border border-white/5 text-xs">
-                <div className="flex items-center gap-2.5 pr-2">
-                  <Activity className="h-4 w-4 text-purple-400 shrink-0" />
-                  <span className="text-slate-300 font-medium line-clamp-1">{mem.text}</span>
+              <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 text-xs">
+                <div className="flex items-center gap-2 pr-2">
+                  <Activity className="h-3.5 w-3.5 text-violet-400 shrink-0" />
+                  <span className="text-foreground font-medium line-clamp-1">{mem.text}</span>
                 </div>
-                <span className="text-[10px] text-slate-500 shrink-0">{mem.time}</span>
+                <span className="text-[10px] text-muted-foreground shrink-0">{mem.time}</span>
               </div>
             ))}
           </div>
         </section>
 
-        {/* ── SYNC SUMMARY / AI INSIGHT CARD ── */}
-        <section className="rounded-3xl bg-gradient-to-r from-purple-900/30 via-slate-900 to-blue-900/30 border border-purple-500/30 p-5 space-y-3">
+        {/* Sync Summary */}
+        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-2">
           <div className="flex items-center justify-between">
-            <div className="text-[10px] font-bold uppercase tracking-widest text-purple-300 flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-purple-400" />
-              <span>SYNC SUMMARY</span>
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-emerald-400 font-bold uppercase tracking-wider">
-              <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>LIVE</span>
+            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
+              <Zap className="h-3.5 w-3.5 text-violet-400" />
+              <span>Career Synthesis</span>
             </div>
           </div>
 
-          <p className="text-xs text-slate-300 leading-relaxed italic">
+          <p className="text-xs text-muted-foreground leading-relaxed italic">
             &ldquo;{syncSummary}&rdquo;
           </p>
         </section>
 
-        {/* ── LEVEL UP CALLOUT BANNER ── */}
-        <section className="rounded-3xl bg-gradient-to-r from-purple-900/50 to-blue-900/50 border border-purple-500/30 p-5 flex items-center justify-between gap-4">
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <Rocket className="h-5 w-5 text-purple-400" />
-              <h3 className="text-sm font-bold text-white">Level up your career</h3>
-            </div>
-            <p className="text-[11px] text-slate-300 leading-tight">
-              Track, improve and achieve your goals with SyncRole.
-            </p>
-          </div>
-
-          <button
-            onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
-            className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-blue-600 text-white text-xs font-bold shadow-md shrink-0 active:scale-95 transition"
-          >
-            {isAuthed ? "Dashboard" : "Get Started"}
-          </button>
-        </section>
-
-        {/* ── MOBILE FOOTER ── */}
-        <footer className="pt-6 pb-4 border-t border-white/10 space-y-4 text-center">
+        {/* Footer */}
+        <footer className="pt-4 pb-2 border-t border-white/10 space-y-3 text-center">
           <div className="flex justify-center">
             <BrandLogo size="md" />
           </div>
-          <p className="text-xs text-slate-500 max-w-xs mx-auto">
-            Your AI-powered career companion that grows with you.
+          <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+            Your intelligent career operating system.
           </p>
-          <div className="flex justify-center gap-4 text-xs text-slate-400">
-            <Link to="/help" className="hover:text-white">Help</Link>
-            <Link to="/career-transformations" className="hover:text-white">Stories</Link>
-            <Link to="/auth" className="hover:text-white">Account</Link>
+          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
+            <Link to="/help" className="hover:text-foreground">Help</Link>
+            <Link to="/career-transformations" className="hover:text-foreground">Stories</Link>
+            <Link to="/auth" className="hover:text-foreground">Account</Link>
           </div>
-          <div className="text-[10px] text-slate-600">
+          <div className="text-[10px] text-muted-foreground/60">
             © {new Date().getFullYear()} SyncRole. All rights reserved.
           </div>
         </footer>
       </main>
 
-      {/* ── FIXED MOBILE BOTTOM NAVIGATION BAR ── */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#07090e]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe">
+      {/* Bottom Nav */}
+      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#0e1217]/95 backdrop-blur-md border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe">
         {[
           { label: "Home", href: "/", icon: Home },
           { label: "Progress", href: "/dashboard", icon: TrendingUp },
-          { label: "AI SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
+          { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
           { label: "Insights", href: "/resume-intelligence", icon: FileText },
           { label: "Profile", href: "/profile", icon: User },
         ].map((tab) => {
@@ -684,18 +560,10 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
               <button
                 key={tab.label}
                 onClick={() => tab.action?.()}
-                className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-lg transition active:scale-95 ${
-                  isSyncPilotOpen
-                    ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/60 ring-2 ring-purple-400/60"
-                    : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/40 hover:brightness-110"
-                }`}
+                className="surface-primary hover:bg-white/10 text-foreground border border-white/15 rounded-full p-2.5 shadow-md flex items-center justify-center cursor-pointer -top-2 relative"
                 aria-label="Open SyncPilot AI Assistant"
               >
-                <div className={`h-full w-full rounded-full grid place-items-center transition ${
-                  isSyncPilotOpen ? "bg-purple-950 text-cyan-300" : "bg-slate-950 text-purple-300"
-                }`}>
-                  <tab.icon className="h-5 w-5" />
-                </div>
+                <tab.icon className="h-4 w-4 text-violet-400" />
               </button>
             );
           }
@@ -704,7 +572,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             <Link
               key={tab.label}
               to={tab.href}
-              className="flex flex-col items-center gap-0.5 text-slate-400 hover:text-purple-400 active:scale-95 transition px-3 py-1"
+              className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground active:scale-95 transition px-3 py-1"
             >
               <tab.icon className="h-4 w-4" />
               <span className="text-[10px] font-medium">{tab.label}</span>

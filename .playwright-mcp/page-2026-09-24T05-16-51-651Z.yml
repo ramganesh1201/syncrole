@@ -1,0 +1,77 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - generic [ref=e6]:
+            - link "SyncRole" [ref=e7] [cursor=pointer]:
+              - /url: /
+            - generic [ref=e12]:
+              - generic [ref=e13]: GATE
+              - generic [ref=e14]: Public Discovery Hub
+          - generic [ref=e15]:
+            - combobox [ref=e17] [cursor=pointer]:
+              - option "GATE CSE" [selected]
+              - option "GATE DA"
+              - option "GATE ECE (Structure)"
+              - option "GATE EE (Structure)"
+              - option "GATE ME (Structure)"
+              - option "GATE CE (Structure)"
+            - button "Toggle navigation menu" [ref=e18]
+      - main [ref=e20]:
+        - generic [ref=e21]: Loading verified GATE data...
+    - contentinfo [ref=e25]:
+      - generic [ref=e26]:
+        - generic [ref=e27]:
+          - link "SyncRole Logo SyncRole" [ref=e28] [cursor=pointer]:
+            - /url: /
+            - img "SyncRole Logo" [ref=e30]
+            - generic [ref=e31]: SyncRole
+          - paragraph [ref=e32]: The Career Operating System for the next generation of builders. AI-powered placement intelligence, gamified growth, real outcomes.
+          - generic [ref=e33]:
+            - textbox "your@email.com" [ref=e35]
+            - button "Subscribe" [ref=e36]
+        - generic [ref=e37]:
+          - generic [ref=e38]: Product
+          - list [ref=e39]:
+            - listitem [ref=e40]:
+              - link "Dashboard" [ref=e41] [cursor=pointer]:
+                - /url: /dashboard
+            - listitem [ref=e42]:
+              - link "DSA Tracker" [ref=e43] [cursor=pointer]:
+                - /url: /dashboard/dsa
+            - listitem [ref=e44]:
+              - link "Sign In" [ref=e45] [cursor=pointer]:
+                - /url: /auth
+            - listitem [ref=e46]:
+              - link "Placement Score" [ref=e47] [cursor=pointer]:
+                - /url: "#score"
+        - generic [ref=e48]:
+          - generic [ref=e49]: Community
+          - list [ref=e50]:
+            - listitem [ref=e51]:
+              - link "GitHub" [ref=e52] [cursor=pointer]:
+                - /url: https://github.com/ramganesh1201
+            - listitem [ref=e56]:
+              - link "LinkedIn" [ref=e57] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/vemula-ram-ganesh/
+            - listitem [ref=e62]:
+              - link "Instagram" [ref=e63] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e67]:
+              - link "Twitter / X" [ref=e68] [cursor=pointer]:
+                - /url: "#"
+            - listitem [ref=e71]:
+              - link "Telegram" [ref=e72] [cursor=pointer]:
+                - /url: "#"
+      - generic [ref=e77]:
+        - generic [ref=e78]: © 2026 SyncRole — The Career Operating System
+        - generic [ref=e79]:
+          - link "Privacy" [ref=e80] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms" [ref=e81] [cursor=pointer]:
+            - /url: "#"
+          - link "Contact" [ref=e82] [cursor=pointer]:
+            - /url: mailto:hello@syncrole.app
+  - region "Notifications alt+T"
+  - button "Open SyncPilot AI Career OS" [ref=e84] [cursor=pointer]

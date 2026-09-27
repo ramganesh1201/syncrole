@@ -2,12 +2,9 @@ import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   FileText, Github, Target, Upload, Zap, Lock, TrendingUp,
-  CheckCircle, AlertCircle, History, ExternalLink, ChevronRight,
-  Star, Activity,
+  CheckCircle, AlertCircle, History, ExternalLink, Star, Activity, Code2, Building2
 } from "lucide-react";
 import { Link } from "@tanstack/react-router";
-
-/* ─── Demo data ─────────────────────────────────────────────── */
 
 const DEMO_RESUME = {
   atsScore: 92,
@@ -27,10 +24,14 @@ const DEMO_RESUME = {
 const DEMO_GITHUB = {
   repos: 14,
   activity: 82,
-  languages: ["TypeScript", "JavaScript", "Python"],
-  strengths: "React · TS",
-  weak: "Testing",
-  missing: "DevOps",
+  languages: [
+    { name: "TypeScript", pct: 55, color: "bg-violet-400" },
+    { name: "Python", pct: 30, color: "bg-cyan-400" },
+    { name: "Go / SQL", pct: 15, color: "bg-emerald-400" }
+  ],
+  strengths: "React · TS · Node",
+  weak: "Integration Testing",
+  missing: "CI/CD Pipeline",
   trend: "+12% contributions this month",
 };
 
@@ -41,41 +42,36 @@ const DEMO_PLACEMENT = {
   trend: "+4.2% this month",
 };
 
-/* ─── Score ring ─────────────────────────────────────────────── */
-
 function ScoreRing({ value, label, color, delay = 0 }: { value: number; label: string; color: string; delay?: number }) {
   const ref = useRef<HTMLDivElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.5 });
-  const circ = 2 * Math.PI * 32;
+  const circ = 2 * Math.PI * 28;
 
   return (
-    <div ref={ref} className="flex flex-col items-center gap-2">
-      <div className="relative h-20 w-20">
-        <svg viewBox="0 0 72 72" className="h-full w-full -rotate-90">
-          <circle cx="36" cy="36" r="32" fill="none" stroke="oklch(1 0 0 / 0.05)" strokeWidth="6" />
+    <div ref={ref} className="flex flex-col items-center gap-1.5">
+      <div className="relative h-16 w-16">
+        <svg viewBox="0 0 64 64" className="h-full w-full -rotate-90">
+          <circle cx="32" cy="32" r="28" fill="none" stroke="rgba(255,255,255,0.08)" strokeWidth="5" />
           <motion.circle
-            cx="36" cy="36" r="32"
+            cx="32" cy="32" r="28"
             fill="none"
             stroke={color}
-            strokeWidth="6"
+            strokeWidth="5"
             strokeLinecap="round"
             strokeDasharray={circ}
             initial={{ strokeDashoffset: circ }}
             animate={inView ? { strokeDashoffset: circ - (circ * value) / 100 } : {}}
-            transition={{ duration: 1.2, ease: "easeOut", delay }}
-            style={{ filter: `drop-shadow(0 0 6px ${color})` }}
+            transition={{ duration: 1, ease: "easeOut", delay }}
           />
         </svg>
         <div className="absolute inset-0 grid place-items-center">
-          <div className="font-display text-lg font-bold" style={{ color }}>{value}</div>
+          <div className="text-sm font-bold text-foreground">{value}</div>
         </div>
       </div>
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground text-center">{label}</div>
+      <div className="text-[10px] font-medium text-muted-foreground uppercase tracking-wider text-center">{label}</div>
     </div>
   );
 }
-
-/* ─── Resume intelligence sub-section ───────────────────────── */
 
 function ResumeIntelligence({ data }: { data: any }) {
   const isAuthed = !!data?.profile;
@@ -83,7 +79,6 @@ function ResumeIntelligence({ data }: { data: any }) {
   const hasResume = isAuthed && resumeVersions.length > 0;
   const [showHistory, setShowHistory] = useState(false);
 
-  // Use real data or demo
   const r = hasResume ? {
     atsScore: resumeVersions[0]?.ats_score || DEMO_RESUME.atsScore,
     recruiterRating: resumeVersions[0]?.recruiter_rating || DEMO_RESUME.recruiterRating,
@@ -101,56 +96,45 @@ function ResumeIntelligence({ data }: { data: any }) {
   } : DEMO_RESUME;
 
   if (!isAuthed || !hasResume) {
-    // Upload prompt
     return (
       <div>
-        <div className="flex items-center gap-3 mb-6">
-          <div className="h-11 w-11 rounded-xl glass grid place-items-center">
-            <FileText className="h-5 w-5 text-accent" />
+        <div className="flex items-center gap-3 mb-5">
+          <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-violet-400">
+            <FileText className="h-5 w-5" />
           </div>
           <div>
-            <div className="text-xs uppercase tracking-widest text-muted-foreground">Resume Analyzer</div>
-            <div className="font-display text-lg font-semibold">Upload Your Resume</div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Resume Analyzer</div>
+            <div className="text-base font-bold text-foreground">Upload Your Resume</div>
           </div>
           {!isAuthed && (
-            <div className="ml-auto inline-flex items-center gap-1 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold text-amber-300">
-              <Lock className="h-3 w-3" /> Demo
+            <div className="ml-auto inline-flex items-center gap-1 rounded-md border border-amber-400/20 bg-amber-400/10 px-2 py-0.5 text-[10px] font-semibold text-amber-400">
+              <Lock className="h-3 w-3" /> Sample
             </div>
           )}
         </div>
 
-        {/* Drop zone */}
-        <div
-          className="border-2 border-dashed border-white/15 rounded-2xl p-10 text-center relative overflow-hidden mb-6 hover:border-accent/40 transition-colors"
-        >
-          <motion.div
-            animate={{ y: [-100, 100] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent"
-          />
-          <Upload className="h-10 w-10 mx-auto text-accent mb-4" />
-          <div className="font-medium mb-1">
-            {isAuthed ? "Drop your resume here" : "Upload to unlock AI analysis"}
+        <div className="border border-dashed border-white/15 rounded-xl p-8 text-center relative overflow-hidden mb-5 bg-white/5 hover:border-violet-500/40 transition-colors">
+          <Upload className="h-8 w-8 mx-auto text-violet-400 mb-3" />
+          <div className="font-medium text-sm text-foreground mb-0.5">
+            {isAuthed ? "Drop your resume here" : "Upload to unlock ATS analysis"}
           </div>
-          <div className="text-sm text-muted-foreground">PDF, DOCX · Max 5MB</div>
+          <div className="text-xs text-muted-foreground">PDF or DOCX · Max 5MB</div>
           {isAuthed && (
-            <Link to="/resume-intelligence" className="mt-5 inline-flex items-center gap-2 rounded-full bg-aurora px-6 py-2.5 text-sm font-semibold text-primary-foreground">
-              <Upload className="h-4 w-4" /> Upload & Analyze
+            <Link to="/resume-intelligence" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-violet-600 hover:bg-violet-500 px-4 py-2 text-xs font-semibold text-white transition shadow-sm">
+              <Upload className="h-3.5 w-3.5" /> Upload & Analyze
             </Link>
           )}
         </div>
 
-        {/* Benefits list */}
-        <div className="space-y-2">
+        <div className="space-y-1.5">
           {[
-            { icon: CheckCircle, text: "ATS compatibility analysis", color: "oklch(0.88 0.18 145)" },
-            { icon: Star, text: "Recruiter-grade quality rating", color: "oklch(0.72 0.22 295)" },
-            { icon: Zap, text: "Keyword match for target JDs", color: "oklch(0.75 0.2 200)" },
-            { icon: Target, text: "Dream company skill alignment", color: "oklch(0.85 0.18 70)" },
+            { icon: CheckCircle, text: "ATS compatibility scoring" },
+            { icon: Star, text: "Recruiter-grade impact evaluation" },
+            { icon: Zap, text: "Keyword alignment with target SDE roles" },
           ].map((b) => (
-            <div key={b.text} className="flex items-center gap-3 text-sm text-muted-foreground">
-              <b.icon className="h-4 w-4 shrink-0" style={{ color: b.color }} />
-              {b.text}
+            <div key={b.text} className="flex items-center gap-2.5 text-xs text-muted-foreground">
+              <b.icon className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span>{b.text}</span>
             </div>
           ))}
         </div>
@@ -158,80 +142,69 @@ function ResumeIntelligence({ data }: { data: any }) {
     );
   }
 
-  // Resume Intelligence Center
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="h-11 w-11 rounded-xl glass grid place-items-center">
-          <FileText className="h-5 w-5 text-accent" />
+      <div className="flex items-center gap-3 mb-5">
+        <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-violet-400">
+          <FileText className="h-5 w-5" />
         </div>
         <div>
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">Resume Intelligence Center</div>
-          <div className="font-display text-lg font-semibold">v{r.versions[r.versions.length - 1]?.version || 1} · Active</div>
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Resume Intelligence</div>
+          <div className="text-base font-bold text-foreground">v{r.versions[r.versions.length - 1]?.version || 1} · Active Analysis</div>
         </div>
       </div>
 
-      {/* Score rings */}
-      <div className="flex justify-around mb-6">
-        <ScoreRing value={r.atsScore} label="ATS Score" color="oklch(0.88 0.18 145)" delay={0} />
-        <ScoreRing value={r.recruiterRating} label="Recruiter" color="oklch(0.72 0.22 295)" delay={0.1} />
-        <ScoreRing value={r.keywordMatch} label="Keywords" color="oklch(0.75 0.2 200)" delay={0.2} />
-        <ScoreRing value={r.health} label="Health" color="oklch(0.85 0.18 70)" delay={0.3} />
+      <div className="flex justify-around mb-5">
+        <ScoreRing value={r.atsScore} label="ATS Score" color="#a78bfa" delay={0} />
+        <ScoreRing value={r.recruiterRating} label="Recruiter" color="#22d3ee" delay={0.1} />
+        <ScoreRing value={r.keywordMatch} label="Keywords" color="#34d399" delay={0.2} />
+        <ScoreRing value={r.health} label="Overall" color="#f59e0b" delay={0.3} />
       </div>
 
-      {/* Insights */}
-      <div className="grid grid-cols-2 gap-3 mb-5">
-        <div className="glass rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <CheckCircle className="h-4 w-4 text-[oklch(0.88_0.18_145)]" />
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Top Strength</span>
+      <div className="grid grid-cols-2 gap-2.5 mb-4">
+        <div className="surface-secondary rounded-xl p-3 border border-white/8">
+          <div className="flex items-center gap-1.5 mb-1 text-[10px] uppercase font-semibold text-emerald-400">
+            <CheckCircle className="h-3 w-3" /> Top Strength
           </div>
-          <div className="text-xs font-medium">{r.topStrength}</div>
+          <div className="text-xs font-medium text-foreground">{r.topStrength}</div>
         </div>
-        <div className="glass rounded-xl p-4">
-          <div className="flex items-center gap-2 mb-2">
-            <AlertCircle className="h-4 w-4 text-[oklch(0.72_0.22_330)]" />
-            <span className="text-[10px] uppercase tracking-widest text-muted-foreground">Top Weakness</span>
+        <div className="surface-secondary rounded-xl p-3 border border-white/8">
+          <div className="flex items-center gap-1.5 mb-1 text-[10px] uppercase font-semibold text-violet-400">
+            <AlertCircle className="h-3 w-3" /> Primary Gap
           </div>
-          <div className="text-xs font-medium">{r.topWeakness}</div>
+          <div className="text-xs font-medium text-foreground">{r.topWeakness}</div>
         </div>
       </div>
 
-      {/* Missing skills */}
-      <div className="mb-5">
-        <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-2">Missing Skills</div>
-        <div className="flex flex-wrap gap-2">
+      <div className="mb-4">
+        <div className="text-[10px] uppercase tracking-wider text-muted-foreground font-semibold mb-1.5">Missing Technical Keywords</div>
+        <div className="flex flex-wrap gap-1.5">
           {(r.missingSkills || []).slice(0, 4).map((s: string) => (
-            <span key={s} className="glass rounded-full px-3 py-1 text-xs text-[oklch(0.72_0.22_330)]">{s}</span>
+            <span key={s} className="bg-white/5 border border-white/8 rounded-md px-2.5 py-0.5 text-xs text-muted-foreground font-medium">{s}</span>
           ))}
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex flex-wrap gap-2 mb-5">
-        <Link to="/resume-intelligence" className="flex items-center gap-1.5 glass rounded-full px-4 py-2 text-xs font-medium hover:bg-white/10 transition">
-          <Upload className="h-3.5 w-3.5 text-accent" /> Upload New Version
+      <div className="flex flex-wrap gap-2">
+        <Link to="/resume-intelligence" className="flex items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3 py-1.5 text-xs font-semibold text-foreground transition">
+          <Upload className="h-3.5 w-3.5 text-violet-400" /> New Version
         </Link>
-        <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-1.5 glass rounded-full px-4 py-2 text-xs font-medium hover:bg-white/10 transition">
-          <History className="h-3.5 w-3.5 text-accent" /> Version History
+        <button onClick={() => setShowHistory(!showHistory)} className="flex items-center gap-1.5 bg-white/5 hover:bg-white/10 border border-white/10 rounded-lg px-3 py-1.5 text-xs font-semibold text-foreground transition cursor-pointer">
+          <History className="h-3.5 w-3.5 text-cyan-400" /> History
         </button>
-        <Link to="/resume-intelligence" className="flex items-center gap-1.5 glass rounded-full px-4 py-2 text-xs font-medium hover:bg-white/10 transition">
-          <ExternalLink className="h-3.5 w-3.5 text-accent" /> Full Analysis
-        </Link>
       </div>
 
-      {/* Version history */}
       {showHistory && (
-        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="overflow-hidden">
-          <div className="border border-white/10 rounded-2xl overflow-hidden">
-            <div className="grid grid-cols-4 text-[10px] uppercase tracking-widest text-muted-foreground px-4 py-2 border-b border-white/5">
-              <span>Version</span><span>ATS</span><span>Recruiter</span><span>Date</span>
+        <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: "auto" }} className="overflow-hidden mt-3">
+          <div className="border border-white/10 rounded-xl overflow-hidden bg-white/5">
+            <div className="grid grid-cols-4 text-[10px] uppercase font-semibold text-muted-foreground px-3 py-2 border-b border-white/5">
+              <span>Ver</span><span>ATS</span><span>Rating</span><span>Date</span>
             </div>
             {r.versions.map((v: any) => (
-              <div key={v.version} className="grid grid-cols-4 text-xs px-4 py-3 border-b border-white/5 last:border-0 hover:bg-white/5 transition">
+              <div key={v.version} className="grid grid-cols-4 text-xs px-3 py-2 border-b border-white/5 last:border-0 hover:bg-white/5 transition">
                 <span className="font-mono text-muted-foreground">v{v.version}</span>
-                <span className="font-display font-semibold text-[oklch(0.88_0.18_145)]">{v.atsScore}</span>
-                <span className="font-display font-semibold text-[oklch(0.72_0.22_295)]">{v.recruiterRating}</span>
+                <span className="font-bold text-violet-400">{v.atsScore}</span>
+                <span className="font-bold text-cyan-400">{v.recruiterRating}</span>
                 <span className="text-muted-foreground">{v.date}</span>
               </div>
             ))}
@@ -241,8 +214,6 @@ function ResumeIntelligence({ data }: { data: any }) {
     </div>
   );
 }
-
-/* ─── GitHub intelligence sub-section ───────────────────────── */
 
 function GitHubIntelligence({ data }: { data: any }) {
   const isAuthed = !!data?.profile;
@@ -260,202 +231,204 @@ function GitHubIntelligence({ data }: { data: any }) {
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="h-11 w-11 rounded-xl glass grid place-items-center">
+      <div className="flex items-center gap-3 mb-5">
+        <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-foreground">
           <Github className="h-5 w-5" />
         </div>
         <div>
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">GitHub Intelligence</div>
-          <div className="font-display text-lg font-semibold">
-            {isAuthed && data?.profile?.github_username ? `@${data.profile.github_username}` : "Connect GitHub"}
+          <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">GitHub Intelligence</div>
+          <div className="text-base font-bold text-foreground">
+            {isAuthed && data?.profile?.github_username ? `@${data.profile.github_username}` : "Repository Health"}
           </div>
         </div>
       </div>
 
-      {/* Repo grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-6">
-        {repos.map((r, i) => (
-          <motion.div key={r} initial={{ opacity: 0, y: 10 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.06 }}
-            className="glass rounded-lg px-3 py-2 text-xs font-mono truncate">
-            <span className="text-accent">→</span> {r}
-          </motion.div>
+      {/* Language Breakdown Visual */}
+      <div className="mb-4 space-y-1.5">
+        <div className="flex justify-between text-[11px] font-semibold text-muted-foreground">
+          <span>Language Distribution</span>
+          <span className="text-cyan-400 font-mono">14 Active Repos</span>
+        </div>
+        <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden flex">
+          {gh.languages.map((l) => (
+            <div key={l.name} style={{ width: `${l.pct}%` }} className={`h-full ${l.color}`} title={`${l.name}: ${l.pct}%`} />
+          ))}
+        </div>
+        <div className="flex gap-3 text-[10px] text-muted-foreground">
+          {gh.languages.map((l) => (
+            <div key={l.name} className="flex items-center gap-1">
+              <span className={`w-2 h-2 rounded-full ${l.color}`} />
+              <span>{l.name} ({l.pct}%)</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
+        {repos.map((r) => (
+          <div key={r} className="surface-secondary rounded-lg px-2.5 py-1.5 text-[11px] font-mono text-muted-foreground truncate border border-white/5 hover:border-violet-500/20 transition-all cursor-pointer">
+            <span className="text-violet-400 mr-1">→</span>{r}
+          </div>
         ))}
       </div>
 
-      {/* Stats grid */}
-      <div className="grid grid-cols-3 gap-3 mb-4">
-        <div className="glass rounded-xl p-4 text-center">
-          <div className="font-display text-2xl font-bold text-aurora">{gh.repos}</div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Repos</div>
-        </div>
-        <div className="glass rounded-xl p-4 text-center">
-          <div className="font-display text-2xl font-bold" style={{ color: "oklch(0.88 0.18 145)" }}>{gh.activity}</div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Health</div>
-        </div>
-        <div className="glass rounded-xl p-4 text-center">
-          <div className="flex flex-wrap gap-1 justify-center">
-            {gh.languages.slice(0, 2).map((l: string) => (
-              <span key={l} className="text-[10px] text-[oklch(0.75_0.2_200)]">{l}</span>
-            ))}
-          </div>
-          <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">Top Langs</div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-3 gap-2">
+      <div className="grid grid-cols-3 gap-2 mb-4">
         {[
-          { label: "Strengths", value: gh.strengths, color: "oklch(0.88 0.18 145)" },
-          { label: "Weak", value: gh.weak, color: "oklch(0.85 0.18 70)" },
-          { label: "Missing", value: gh.missing, color: "oklch(0.72 0.22 330)" },
+          { label: "Strengths", value: gh.strengths, color: "text-emerald-400" },
+          { label: "Focus", value: gh.weak, color: "text-violet-400" },
+          { label: "Gap", value: gh.missing, color: "text-cyan-400" },
         ].map((s) => (
-          <div key={s.label} className="glass rounded-xl p-3">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{s.label}</div>
-            <div className="mt-1.5 text-xs font-medium" style={{ color: s.color }}>{s.value}</div>
+          <div key={s.label} className="surface-secondary rounded-xl p-2.5 border border-white/8">
+            <div className="text-[10px] uppercase font-semibold text-muted-foreground">{s.label}</div>
+            <div className={`mt-0.5 text-xs font-semibold ${s.color}`}>{s.value}</div>
           </div>
         ))}
       </div>
 
-      <div className="mt-4 flex items-center gap-2 text-sm text-[oklch(0.88_0.18_145)]">
-        <TrendingUp className="h-4 w-4" /> {gh.trend}
+      <div className="flex items-center gap-2 text-xs text-emerald-400 font-medium">
+        <TrendingUp className="h-3.5 w-3.5" /> {gh.trend}
       </div>
     </div>
   );
 }
 
-/* ─── Placement intelligence sub-section ────────────────────── */
-
 function PlacementIntelligence({ data }: { data: any }) {
   const isAuthed = !!data?.profile;
   const score = data?.scores?.[0]?.total_score || DEMO_PLACEMENT.readiness;
-  const interviewReady = isAuthed ? Math.round(score * 0.92) : DEMO_PLACEMENT.interviewReady;
-  const offerProb = isAuthed ? Math.round(score * 0.78) : DEMO_PLACEMENT.offerProb;
+  
+  const [selectedTier, setSelectedTier] = useState<"tier1" | "unicorn" | "product">("tier1");
+
+  const tierMultipliers = {
+    tier1: { label: "Tier 1 Product (Google/Amazon)", readiness: score, interview: Math.round(score * 0.88), offer: Math.round(score * 0.65) },
+    unicorn: { label: "High-Growth Unicorn", readiness: Math.min(100, score + 8), interview: Math.round(score * 0.95), offer: Math.round(score * 0.78) },
+    product: { label: "Product SaaS Companies", readiness: Math.min(100, score + 14), interview: Math.round(score * 0.98), offer: Math.round(score * 0.86) },
+  };
+
+  const activeMetrics = tierMultipliers[selectedTier];
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-6">
-        <div className="h-11 w-11 rounded-xl glass grid place-items-center">
-          <Target className="h-5 w-5 text-accent" />
-        </div>
-        <div>
-          <div className="text-xs uppercase tracking-widest text-muted-foreground">Placement Intelligence</div>
-          <div className="font-display text-lg font-semibold">Career Readiness</div>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center gap-3">
+          <div className="h-10 w-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-violet-400">
+            <Target className="h-5 w-5" />
+          </div>
+          <div>
+            <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Placement Intelligence</div>
+            <div className="text-base font-bold text-foreground">Company Tier Benchmarks</div>
+          </div>
         </div>
       </div>
 
-      <div className="space-y-4">
+      {/* Segmented Tier Switcher */}
+      <div className="flex gap-1 bg-white/5 rounded-xl p-1 border border-white/5 mb-4">
         {[
-          { label: "Placement Readiness", value: score, color: "oklch(0.75 0.2 200)" },
-          { label: "Interview Readiness", value: interviewReady, color: "oklch(0.72 0.22 295)" },
-          { label: "Offer Probability", value: offerProb, color: "oklch(0.88 0.18 145)" },
+          { id: "tier1", label: "Tier 1" },
+          { id: "unicorn", label: "Unicorns" },
+          { id: "product", label: "Product Cos" },
+        ].map((t) => (
+          <button
+            key={t.id}
+            onClick={() => setSelectedTier(t.id as any)}
+            className={`flex-1 rounded-lg py-1 text-[11px] font-semibold transition cursor-pointer ${
+              selectedTier === t.id
+                ? "bg-violet-600 text-white shadow-sm"
+                : "text-muted-foreground hover:text-foreground"
+            }`}
+          >
+            {t.label}
+          </button>
+        ))}
+      </div>
+
+      <div className="space-y-3">
+        {[
+          { label: "Placement Readiness", value: activeMetrics.readiness, color: "bg-violet-500" },
+          { label: "Interview Readiness", value: activeMetrics.interview, color: "bg-cyan-400" },
+          { label: "Offer Probability", value: activeMetrics.offer, color: "bg-emerald-400" },
         ].map((m, i) => (
           <div key={m.label}>
-            <div className="flex justify-between text-sm mb-2">
-              <span className="text-muted-foreground">{m.label}</span>
-              <span className="font-display font-semibold" style={{ color: m.color }}>{m.value}%</span>
+            <div className="flex justify-between text-xs mb-1.5">
+              <span className="text-muted-foreground font-medium">{m.label}</span>
+              <span className="font-bold text-foreground">{m.value}%</span>
             </div>
-            <div className="h-2 rounded-full bg-white/5 overflow-hidden">
+            <div className="h-1.5 rounded-full bg-white/5 overflow-hidden">
               <motion.div
-                className="h-full rounded-full"
-                style={{ background: m.color }}
+                className={`h-full rounded-full ${m.color}`}
                 initial={{ width: 0 }}
-                whileInView={{ width: `${m.value}%` }}
-                viewport={{ once: true }}
-                transition={{ duration: 1.2, ease: "easeOut", delay: i * 0.15 }}
+                animate={{ width: `${m.value}%` }}
+                transition={{ duration: 0.8, ease: "easeOut", delay: i * 0.1 }}
               />
             </div>
           </div>
         ))}
       </div>
 
-      <div className="mt-5 flex items-center gap-2 text-sm glass rounded-xl px-4 py-3">
-        <Activity className="h-4 w-4 text-[oklch(0.88_0.18_145)]" />
-        <span className="text-muted-foreground">Growth Trend:</span>
-        <span className="text-[oklch(0.88_0.18_145)] font-medium">
-          {isAuthed && data?.scores?.length > 1
-            ? `+${score - data.scores[1].total_score} pts from last scan`
-            : "+4.2% this month"}
+      <div className="mt-5 flex items-center gap-2 text-xs surface-secondary border border-white/8 rounded-xl px-3.5 py-2.5">
+        <Activity className="h-4 w-4 text-emerald-400 shrink-0" />
+        <span className="text-muted-foreground">Target Tier:</span>
+        <span className="text-emerald-400 font-semibold truncate">
+          {activeMetrics.label}
         </span>
       </div>
     </div>
   );
 }
 
-/* ─── Main ───────────────────────────────────────────────────── */
-
 export default function AIIntelligenceCenter({ data }: { data: any }) {
   const isAuthed = !!data?.profile;
 
   return (
-    <section id="ai-center" className="relative py-32 px-6">
-      <div className="mx-auto max-w-7xl">
-        {/* Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 mb-6">
-            <div className="inline-flex items-center gap-2 rounded-full glass px-3.5 py-1.5 text-xs font-medium text-muted-foreground">
-              <Zap className="h-3.5 w-3.5 text-accent" />
-              <span className="uppercase tracking-widest">AI Intelligence Center</span>
+    <section id="ai-center" className="relative py-20 md:py-28 px-4 md:px-6">
+      <div className="mx-auto max-w-6xl">
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <div className="inline-flex items-center gap-2 mb-4">
+            <div className="inline-flex items-center gap-2 rounded-full bg-white/5 border border-white/10 px-3 py-1 text-xs font-semibold text-muted-foreground">
+              <Zap className="h-3.5 w-3.5 text-violet-400" />
+              <span className="uppercase tracking-wider text-[11px]">AI Intelligence Center</span>
             </div>
             {!isAuthed && (
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-amber-300">
-                <Lock className="h-3 w-3" /> Demo Preview
+              <div className="inline-flex items-center gap-1.5 rounded-full border border-amber-400/20 bg-amber-400/10 px-2.5 py-0.5 text-[11px] font-semibold text-amber-400">
+                <Lock className="h-3 w-3" /> Sample Preview
               </div>
             )}
           </div>
-          <h2 className="font-display text-4xl md:text-6xl font-bold tracking-tight">
-            Every file. Every commit.{" "}
-            <br />
-            <span className="text-aurora">Decoded.</span>
+          <h2 className="text-3xl md:text-5xl font-bold tracking-tight text-foreground">
+            Every file. Every commit. <span className="text-cyan-400">Decoded.</span>
           </h2>
-          <p className="mt-5 text-muted-foreground">
-            Resume, GitHub, and placement intelligence — unified into one command center.
+          <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed">
+            Resume health, GitHub activity, and placement readiness — analyzed and presented in one clear workspace.
           </p>
         </div>
 
-        {/* Three-column intelligence grid */}
         <div className="grid lg:grid-cols-3 gap-6">
-          {/* Resume */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="glass-strong rounded-3xl p-8 relative overflow-hidden"
+            className="surface-primary rounded-2xl p-6 border border-white/10 shadow-xl hover:border-violet-500/30 transition-all"
           >
-            <div className="absolute -top-20 -right-20 h-60 w-60 rounded-full bg-aurora opacity-20 blur-3xl pointer-events-none" />
-            {/* Intel scan line */}
-            <div className="absolute inset-0 overflow-hidden rounded-3xl pointer-events-none">
-              <div className="intel-scan absolute inset-x-0 h-px bg-gradient-to-r from-transparent via-accent to-transparent" />
-            </div>
-            <div className="relative z-10">
-              <ResumeIntelligence data={data} />
-            </div>
+            <ResumeIntelligence data={data} />
           </motion.div>
 
-          {/* GitHub */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="glass-strong rounded-3xl p-8 relative overflow-hidden"
+            className="surface-primary rounded-2xl p-6 border border-white/10 shadow-xl hover:border-violet-500/30 transition-all"
           >
-            <div className="absolute -top-20 -left-20 h-60 w-60 rounded-full bg-accent opacity-15 blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <GitHubIntelligence data={data} />
-            </div>
+            <GitHubIntelligence data={data} />
           </motion.div>
 
-          {/* Placement */}
           <motion.div
-            initial={{ opacity: 0, y: 40 }}
+            initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.2 }}
-            className="glass-strong rounded-3xl p-8 relative overflow-hidden"
+            className="surface-primary rounded-2xl p-6 border border-white/10 shadow-xl hover:border-violet-500/30 transition-all"
           >
-            <div className="absolute -bottom-20 -right-20 h-60 w-60 rounded-full bg-[oklch(0.72_0.22_330)] opacity-15 blur-3xl pointer-events-none" />
-            <div className="relative z-10">
-              <PlacementIntelligence data={data} />
-            </div>
+            <PlacementIntelligence data={data} />
           </motion.div>
         </div>
       </div>

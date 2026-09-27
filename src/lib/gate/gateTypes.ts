@@ -14,6 +14,7 @@ export interface GateSource {
 
 export interface GateEvent {
   id: string;
+  examYear: number;
   title: string;
   eventType: 'registration' | 'correction' | 'admit_card' | 'exam' | 'answer_key' | 'result' | 'scorecard';
   startDate?: string;
@@ -29,9 +30,11 @@ export interface GateEvent {
 
 export interface GateUpdate {
   id: string;
+  examYear: number;
   title: string;
   summary: string;
-  updateType: 'official_announcement' | 'timeline_change' | 'syllabus_update';
+  whatItMeans?: string;
+  updateType: 'official_announcement' | 'timeline_change' | 'syllabus_update' | 'guidelines_update';
   sourceId?: string;
   officialUrl?: string;
   publishedAt: string;
@@ -44,6 +47,7 @@ export interface GateUpdate {
 
 export interface GateSyllabusTopic {
   id: string;
+  examYear: number;
   paperCode: string;
   paperName: string;
   subjectId: string;
@@ -64,13 +68,14 @@ export interface GateSyllabusTopic {
 
 export interface GateResource {
   id: string;
+  examYear: number;
   topicId: string;
   title: string;
   resourceType: 'video' | 'notes' | 'textbook' | 'pyq' | 'practice';
-  provider: string; // e.g. "NPTEL / IIT Madras", "Standard Author - Silberschatz", "Official GATE 2024 Question Paper"
+  provider: string;
   url: string;
   description: string;
-  isPrimary: boolean; // 1-3 primary resources shown first; others secondary (collapsed in "Explore More")
+  isPrimary: boolean;
   sourceClassification: SourceClassification;
   sourceId?: string;
   lastCheckedAt: string;
@@ -81,9 +86,13 @@ export interface GateResource {
 export interface GatePaperInfo {
   code: string;
   name: string;
+  category?: string;
   isFullySupported: boolean;
   description: string;
   totalMarks: number;
   totalQuestions: number;
   durationMinutes: number;
+  allowedSecondPapers?: string[];
+  officialSyllabusUrl?: string;
 }
+

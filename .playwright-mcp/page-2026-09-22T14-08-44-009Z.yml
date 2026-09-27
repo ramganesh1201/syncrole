@@ -1,0 +1,25 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - generic [ref=e3]:
+      - link "SyncRole Logo SyncRole" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - img "SyncRole Logo" [ref=e7]
+        - generic [ref=e8]: SyncRole
+      - generic [ref=e12]:
+        - heading "Welcome back" [level=1] [ref=e13]
+        - paragraph [ref=e14]: Sign in to your Career OS
+        - button "Continue with Google" [ref=e15]
+        - generic [ref=e18]: or email
+        - generic [ref=e21]:
+          - textbox "Enter your email address" [ref=e23]
+          - generic [ref=e24]:
+            - generic [ref=e25]:
+              - textbox "Password (8+ chars)" [ref=e26]
+              - button "Show password" [ref=e27]
+            - button "Forgot Password?" [ref=e32]
+          - button "Sign In" [ref=e34]
+        - generic [ref=e39]:
+          - text: New to SyncRole?
+          - button "Create one" [ref=e40]
+  - region "Notifications alt+T"
+  - button "Open SyncPilot AI Career OS" [ref=e42] [cursor=pointer]

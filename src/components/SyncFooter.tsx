@@ -3,128 +3,149 @@ import { Link } from "@tanstack/react-router";
 import {
   Github,
   Linkedin,
-  Instagram,
   Twitter,
-  Send,
-  MessageCircle,
-  Sparkles,
-  Mail,
+  Globe,
+  Heart,
+  ArrowUpRight,
 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
-import { toast } from "sonner";
 import { BrandLogo } from "@/components/ui/brand-logo";
 
 export default function SyncFooter() {
-  const [email, setEmail] = useState("");
-  const [busy, setBusy] = useState(false);
-
-  async function subscribe(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.includes("@")) return toast.error("Enter a valid email");
-    setBusy(true);
-    const { error } = await supabase.from("newsletter_subscribers").insert({ email });
-    setBusy(false);
-    if (error && !error.message.includes("duplicate")) return toast.error(error.message);
-    setEmail("");
-    toast.success("You're on the list 🚀");
-  }
-
   const social = [
     { i: Github, href: "https://github.com/ramganesh1201", label: "GitHub" },
     { i: Linkedin, href: "https://www.linkedin.com/in/vemula-ram-ganesh/", label: "LinkedIn" },
-    { i: Instagram, href: "#", label: "Instagram" },
-    { i: Twitter, href: "#", label: "Twitter / X" },
-    { i: Send, href: "#", label: "Telegram" },
+    { i: Twitter, href: "https://x.com", label: "X" },
+    { i: Globe, href: "#", label: "Website" },
   ];
 
   return (
-    <footer className="relative border-t border-white/5 mt-24">
-      <div className="mx-auto max-w-7xl px-6 py-16 grid gap-12 lg:grid-cols-4">
-        <div className="lg:col-span-2">
-          <BrandLogo size="md" />
-          <p className="mt-4 max-w-md text-sm text-muted-foreground">
-            The Career Operating System for the next generation of builders. AI-powered placement
-            intelligence, gamified growth, real outcomes.
-          </p>
-          <form onSubmit={subscribe} className="mt-6 flex max-w-md gap-2">
-            <div className="relative flex-1">
-              <Mail className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <input
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="your@email.com"
-                className="w-full glass rounded-full pl-10 pr-4 py-3 text-sm outline-none focus:ring-2 ring-accent/50"
-              />
-            </div>
-            <button
-              disabled={busy}
-              className="rounded-full bg-aurora px-5 py-3 text-sm font-semibold text-primary-foreground disabled:opacity-60"
-            >
-              Subscribe
-            </button>
-          </form>
-        </div>
-
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Product
-          </div>
-          <ul className="mt-4 space-y-2 text-sm">
-            <li>
-              <Link to="/dashboard" className="hover:text-foreground text-muted-foreground">
-                Dashboard
-              </Link>
-            </li>
-            <li>
-              <Link to="/dashboard/dsa" className="hover:text-foreground text-muted-foreground">
-                DSA Tracker
-              </Link>
-            </li>
-            <li>
-              <Link to="/auth" className="hover:text-foreground text-muted-foreground">
-                Sign In
-              </Link>
-            </li>
-            <li>
-              <a href="#score" className="hover:text-foreground text-muted-foreground">
-                Placement Score
-              </a>
-            </li>
-          </ul>
-        </div>
-
-        <div>
-          <div className="text-xs font-semibold uppercase tracking-widest text-muted-foreground">
-            Community
-          </div>
-          <ul className="mt-4 grid grid-cols-2 gap-2 text-sm">
-            {social.map(({ i: Icon, href, label }) => (
-              <li key={label}>
+    <footer className="w-full bg-white border-t border-slate-200/80 pt-14 pb-8 text-slate-600 font-sans">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-10 pb-12 border-b border-slate-100">
+          {/* Left Column: Brand Lockup & Statement */}
+          <div className="md:col-span-4 space-y-4 text-left">
+            <BrandLogo size="md" variant="dark" />
+            <p className="text-xs sm:text-sm text-slate-500 max-w-sm leading-relaxed font-normal">
+              Build your future. One step at a time. The AI Career Operating System helping students learn, practice DSA, build projects, and get recruiter-ready.
+            </p>
+            {/* Social Icons */}
+            <div className="flex items-center gap-2.5 pt-2">
+              {social.map(({ i: Icon, href, label }) => (
                 <a
+                  key={label}
                   href={href}
-                  className="inline-flex items-center gap-2 text-muted-foreground hover:text-foreground"
+                  target="_blank"
+                  rel="noreferrer"
+                  aria-label={label}
+                  className="h-8.5 w-8.5 rounded-full bg-slate-100 hover:bg-slate-200/80 text-slate-600 hover:text-slate-900 flex items-center justify-center transition-colors"
                 >
-                  <Icon className="h-4 w-4" /> {label}
+                  <Icon className="h-4 w-4" />
                 </a>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
+              ))}
+            </div>
+          </div>
 
-      <div className="border-t border-white/5">
-        <div className="mx-auto max-w-7xl px-6 py-6 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-muted-foreground">
-          <div>© {new Date().getFullYear()} SyncRole — The Career Operating System</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:text-foreground">
-              Privacy
-            </a>
-            <a href="#" className="hover:text-foreground">
-              Terms
-            </a>
-            <a href="mailto:hello@syncrole.app" className="hover:text-foreground">
-              Contact
-            </a>
+          {/* Right Columns: Useful Destinations */}
+          <div className="md:col-span-8 grid grid-cols-2 sm:grid-cols-3 gap-8 text-left">
+            {/* Product Column */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-display">
+                Product
+              </h4>
+              <ul className="space-y-2 text-xs sm:text-sm font-medium">
+                <li>
+                  <Link to="/dashboard" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Dashboard
+                  </Link>
+                </li>
+                <li>
+                  <a href="#journey" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Career Journey
+                  </a>
+                </li>
+                <li>
+                  <Link to="/dashboard/dsa" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    DSA Practice
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/dashboard" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Resume Intelligence
+                  </Link>
+                </li>
+                <li>
+                  <Link to="/dashboard" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    AI Career Twin
+                  </Link>
+                </li>
+              </ul>
+            </div>
+
+            {/* Explore Column */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-display">
+                Explore
+              </h4>
+              <ul className="space-y-2 text-xs sm:text-sm font-medium">
+                <li>
+                  <Link to="/gate" className="text-slate-600 hover:text-blue-600 transition-colors inline-flex items-center gap-1.5">
+                    <span>GATE Hub</span>
+                    <span className="bg-blue-100 text-blue-700 text-[10px] font-bold px-1.5 py-0.2 rounded-full">New</span>
+                  </Link>
+                </li>
+                <li>
+                  <a href="#journey" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Learning Paths
+                  </a>
+                </li>
+                <li>
+                  <a href="#journey" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Real Projects
+                  </a>
+                </li>
+                <li>
+                  <a href="#features" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Platform Features
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+            {/* Account & Company Column */}
+            <div className="space-y-3">
+              <h4 className="text-xs font-bold uppercase tracking-wider text-slate-900 font-display">
+                Account & Info
+              </h4>
+              <ul className="space-y-2 text-xs sm:text-sm font-medium">
+                <li>
+                  <Link to="/auth" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Sign In / Register
+                  </Link>
+                </li>
+                <li>
+                  <a href="#stories" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Student Stories
+                  </a>
+                </li>
+                <li>
+                  <a href="#home" className="text-slate-600 hover:text-blue-600 transition-colors">
+                    Overview
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Bar */}
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 font-medium">
+          <div>
+            © {new Date().getFullYear()} SyncRole. All rights reserved.
+          </div>
+
+          <div className="flex items-center gap-1 text-slate-500">
+            <span>I build ideas into digital products</span>
+            <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 inline ml-0.5" />
           </div>
         </div>
       </div>
