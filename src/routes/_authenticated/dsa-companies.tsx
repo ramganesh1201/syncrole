@@ -79,7 +79,7 @@ function CompanyLogo({ name, className = "w-7 h-7" }: { name: string; className?
   if (!logoUrl || failed) {
     return (
       <div
-        className={`${className} rounded-full bg-gradient-to-br from-aurora/30 to-aurora/10 border border-aurora/40 flex items-center justify-center font-display font-bold text-aurora text-xs shadow-sm select-none`}
+        className={`${className} rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center font-display font-bold text-purple-700 text-xs shadow-xs select-none`}
       >
         {initial}
       </div>
@@ -91,7 +91,7 @@ function CompanyLogo({ name, className = "w-7 h-7" }: { name: string; className?
       src={logoUrl}
       alt={`${name} logo`}
       onError={() => setFailed(true)}
-      className={`${className} object-contain filter invert brightness-200 opacity-90 transition-opacity group-hover:opacity-100`}
+      className={`${className} object-contain transition-opacity hover:opacity-90`}
     />
   );
 }
@@ -320,57 +320,55 @@ function DSACompaniesPage() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
+    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6 bg-[#F8FAFC]">
       {/* Top navigation */}
       <Link
         to="/dashboard/dsa"
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
       </Link>
 
       {/* Compact Header */}
       <div className="space-y-1.5">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-aurora font-semibold">
+        <div className="text-[10px] font-mono uppercase tracking-widest text-purple-700 font-bold">
           TARGET COMPANY PREPARATION
         </div>
-        <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-white">
+        <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
           Target Companies
         </h1>
-        <p className="text-xs md:text-sm text-muted-foreground max-w-2xl leading-relaxed">
+        <p className="text-xs md:text-sm text-slate-600 max-w-2xl leading-relaxed">
           Choose the companies you're preparing for and practice the DSA topics that matter most for their interviews.
         </p>
       </div>
 
       {/* Small Target Status Row */}
       <div className="flex flex-wrap items-center gap-2 pt-1 pb-1 text-xs font-mono">
-        <span className="inline-flex items-center gap-1.5 bg-aurora/10 text-aurora border border-aurora/20 px-3 py-1 rounded-full font-medium">
-          <Target className="w-3.5 h-3.5 text-aurora" />
+        <span className="inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 border border-purple-200 px-3 py-1 rounded-full font-bold shadow-xs">
+          <Target className="w-3.5 h-3.5 text-purple-600" />
           <span>{userFocus.size} Target {userFocus.size === 1 ? "Company" : "Companies"}</span>
         </span>
-        <span className="inline-flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/20 px-3 py-1 rounded-full font-medium">
-          <Check className="w-3.5 h-3.5 text-green-400" />
+        <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full font-bold shadow-xs">
+          <Check className="w-3.5 h-3.5 text-emerald-600" />
           <span>{totalUserSolves} Verified {totalUserSolves === 1 ? "Solve" : "Solves"}</span>
         </span>
-        <span className="text-muted-foreground text-[11px] px-2 py-0.5">
+        <span className="text-slate-500 text-[11px] font-sans font-medium px-2 py-0.5">
           {userFocus.size === 0
             ? "Select companies below to start targeted preparation."
             : `Preparing for ${targetCompanies.map((c) => c.company_name).join(", ")}`}
         </span>
       </div>
 
-      {/* ---------------------------------------------------------------- */}
-      {/* All Company Cards Grid (UNTOUCHED / PRESERVED BELOW) */}
-      {/* ---------------------------------------------------------------- */}
+      {/* All Company Cards Grid */}
       <div id="all-companies-section" className="space-y-4 pt-2">
         <div className="flex items-center justify-between">
           <div>
-            <h2 className="font-display font-semibold text-lg text-white">All Companies</h2>
-            <p className="text-xs text-muted-foreground">
+            <h2 className="font-display font-bold text-lg text-slate-900">All Companies</h2>
+            <p className="text-xs text-slate-500 font-medium">
               Choose a company to start focused interview preparation.
             </p>
           </div>
-          <span className="text-xs text-muted-foreground font-mono">
+          <span className="text-xs text-slate-500 font-mono font-semibold">
             {companies.length} Available
           </span>
         </div>
@@ -394,22 +392,22 @@ function DSACompaniesPage() {
                 transition={{ delay: idx * 0.02 }}
                 className={`relative rounded-3xl p-6 text-left transition-all duration-300 group flex flex-col justify-between border ${
                   selected
-                    ? "bg-gradient-to-br from-aurora/10 to-aurora/5 border-aurora/50 shadow-[0_0_20px_rgba(168,85,247,0.15)]"
-                    : "glass-strong border-white/5 hover:border-white/10 hover:-translate-y-1"
+                    ? "bg-purple-50/40 border-purple-300 shadow-md"
+                    : "bg-white border-slate-200/80 shadow-xs hover:shadow-sm hover:border-slate-300 hover:-translate-y-1"
                 }`}
               >
                 <div className="space-y-4">
                   {/* Top row: Logo, Name, Target Toggle */}
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-12 w-12 rounded-2xl bg-black/40 border border-white/10 flex items-center justify-center shrink-0 shadow-inner">
+                      <div className="h-12 w-12 rounded-2xl bg-slate-50 border border-slate-200 flex items-center justify-center shrink-0 shadow-xs">
                         <CompanyLogo name={company.company_name} className="w-7 h-7" />
                       </div>
                       <div className="min-w-0">
-                        <h3 className="font-display font-bold text-lg text-white truncate leading-tight">
+                        <h3 className="font-display font-bold text-lg text-slate-900 truncate leading-tight">
                           {company.company_name}
                         </h3>
-                        <p className="text-[11px] text-muted-foreground truncate mt-0.5">
+                        <p className="text-[11px] text-slate-500 truncate mt-0.5 font-medium">
                           {company.description ?? "Interview Preparation"}
                         </p>
                       </div>
@@ -418,10 +416,10 @@ function DSACompaniesPage() {
                     {/* Target Toggle Button */}
                     <button
                       onClick={() => toggleCompany(company.id)}
-                      className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-medium transition-all flex items-center gap-1.5 ${
+                      className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 ${
                         selected
-                          ? "bg-aurora text-primary-foreground font-semibold shadow-md"
-                          : "glass text-muted-foreground hover:text-white border border-white/10 hover:border-white/20"
+                          ? "bg-purple-600 text-white font-bold shadow-xs"
+                          : "bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200 border border-slate-200"
                       }`}
                     >
                       {selected ? (
@@ -438,15 +436,15 @@ function DSACompaniesPage() {
 
                   {/* Readiness & Solved Stats */}
                   <div className="grid grid-cols-2 gap-3 pt-1">
-                    <div className="bg-black/20 rounded-2xl p-3 border border-white/5 space-y-0.5">
-                      <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+                    <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 space-y-0.5">
+                      <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-semibold">
                         Readiness
                       </div>
-                      <div className="text-sm font-bold text-aurora">
+                      <div className="text-sm font-bold text-purple-700">
                         {readiness !== null ? `${readiness}%` : "Not enough data"}
                       </div>
                     </div>
-                    <div className="bg-black/20 rounded-2xl p-3 border border-white/5 space-y-0.5">
+                    <div className="bg-slate-50 rounded-2xl p-3 border border-slate-200/80 space-y-0.5">
                       <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
                         Relevant Solved
                       </div>

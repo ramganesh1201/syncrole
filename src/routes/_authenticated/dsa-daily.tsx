@@ -525,11 +525,11 @@ function DSADailyPage() {
   }
 
   return (
-    <main className="mx-auto max-w-5xl px-4 md:px-6 py-8 space-y-8">
+    <main className="mx-auto max-w-5xl px-4 md:px-6 py-8 space-y-8 bg-[#F8FAFC]">
       {/* Back Link */}
       <Link
         to="/dashboard/dsa"
-        className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
       >
         <ArrowLeft className="h-3.5 w-3.5" /> Back to DSA Command Center
       </Link>
@@ -537,17 +537,17 @@ function DSADailyPage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-aurora font-semibold bg-aurora/10 border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1">
-            <Calendar className="w-3 h-3 text-aurora" /> DAILY CHALLENGE
+          <span className="text-[10px] font-mono uppercase tracking-widest text-purple-700 font-bold bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shadow-xs">
+            <Calendar className="w-3 h-3 text-purple-600" /> DAILY CHALLENGE
           </span>
-          <span className="text-[10px] font-mono text-muted-foreground bg-white/5 border border-white/5 px-2.5 py-0.5 rounded-full">
+          <span className="text-[10px] font-mono text-slate-500 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full font-semibold shadow-xs">
             {todayStr}
           </span>
         </div>
-        <h1 className="font-display text-3xl font-bold tracking-tight text-white">
+        <h1 className="font-display text-3xl font-bold tracking-tight text-slate-900">
           Today's Challenge
         </h1>
-        <p className="text-xs text-muted-foreground mt-1">
+        <p className="text-xs text-slate-600 mt-1">
           Solve today's featured problem to maintain your streak and earn bonus XP.
         </p>
       </div>
@@ -556,9 +556,9 @@ function DSADailyPage() {
       <motion.div
         initial={{ opacity: 0, y: 10 }}
         animate={{ opacity: 1, y: 0 }}
-        className="relative glass-strong rounded-3xl p-6 md:p-8 border border-aurora/30 overflow-hidden shadow-xl"
+        className="relative bg-white rounded-3xl p-6 md:p-8 border border-slate-200/90 overflow-hidden shadow-sm hover:shadow-md transition-all"
       >
-        <div className="absolute inset-0 bg-gradient-to-br from-aurora/10 via-transparent to-transparent pointer-events-none" />
+        <div className="absolute inset-0 bg-gradient-to-br from-purple-50/50 via-transparent to-transparent pointer-events-none" />
 
         <div className="relative z-10 space-y-6">
           {/* Header row */}
@@ -566,30 +566,30 @@ function DSADailyPage() {
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <span
-                  className={`text-[9px] uppercase tracking-widest px-2 py-0.5 rounded font-mono font-semibold ${
+                  className={`text-[9px] uppercase tracking-widest px-2.5 py-0.5 rounded font-mono font-bold ${
                     today.problem.difficulty?.toLowerCase() === "easy"
-                      ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                      ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                       : today.problem.difficulty?.toLowerCase() === "medium"
-                      ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
-                      : "bg-red-500/10 text-red-400 border border-red-500/20"
+                      ? "bg-amber-50 text-amber-700 border border-amber-200"
+                      : "bg-rose-50 text-rose-700 border border-rose-200"
                   }`}
                 >
                   {today.problem.difficulty}
                 </span>
-                <span className="text-xs font-mono text-muted-foreground bg-white/5 border border-white/5 px-2 py-0.5 rounded">
+                <span className="text-xs font-mono text-slate-600 bg-slate-100 border border-slate-200 px-2.5 py-0.5 rounded font-semibold">
                   {today.problem.topic_name}
                 </span>
               </div>
-              <h2 className="font-display text-2xl md:text-3xl font-bold text-white">
+              <h2 className="font-display text-2xl md:text-3xl font-bold text-slate-900">
                 {today.problem.title}
               </h2>
             </div>
 
-            <div className="glass rounded-2xl p-3 border border-white/10 text-center shrink-0 min-w-28 bg-black/40">
-              <div className="font-display text-2xl font-bold text-aurora">
+            <div className="bg-purple-50/80 rounded-2xl p-3 border border-purple-200 text-center shrink-0 min-w-28 shadow-xs">
+              <div className="font-display text-2xl font-bold text-purple-700">
                 +{today.xp_reward}
               </div>
-              <div className="text-[10px] text-muted-foreground font-mono">
+              <div className="text-[10px] text-slate-500 font-mono font-semibold">
                 XP Bonus
               </div>
             </div>
@@ -597,44 +597,44 @@ function DSADailyPage() {
 
           {/* Quick Metrics */}
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-            <div className="glass rounded-2xl p-3 border border-white/5 space-y-0.5">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-semibold">
                 Estimated Time
               </div>
-              <div className="text-xs font-semibold text-white flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-aurora" />
+              <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <Clock className="w-3.5 h-3.5 text-purple-600" />
                 <span>{estimateTime(today.problem.difficulty)}</span>
               </div>
             </div>
 
-            <div className="glass rounded-2xl p-3 border border-white/5 space-y-0.5">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-200/80 space-y-0.5">
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-semibold">
                 Topic Area
               </div>
-              <div className="text-xs font-semibold text-white truncate">
+              <div className="text-xs font-bold text-slate-900 truncate">
                 {today.problem.topic_name}
               </div>
             </div>
 
-            <div className="glass rounded-2xl p-3 border border-white/5 space-y-0.5 col-span-2 md:col-span-1">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-mono">
+            <div className="bg-slate-50/80 rounded-2xl p-3 border border-slate-200/80 space-y-0.5 col-span-2 md:col-span-1">
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-semibold">
                 Challenge Status
               </div>
-              <div className="text-xs font-semibold">
+              <div className="text-xs font-bold">
                 {status === "claimed" ? (
-                  <span className="text-green-400 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Bonus Claimed
+                  <span className="text-emerald-700 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Bonus Claimed
                   </span>
                 ) : status === "completed" ? (
-                  <span className="text-green-400 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" /> Solved & Verified
+                  <span className="text-emerald-700 flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Solved & Verified
                   </span>
                 ) : status === "in_progress" ? (
-                  <span className="text-aurora flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5" /> In Progress
+                  <span className="text-purple-700 flex items-center gap-1">
+                    <Zap className="w-3.5 h-3.5 text-purple-600" /> In Progress
                   </span>
                 ) : (
-                  <span className="text-muted-foreground font-normal">
+                  <span className="text-slate-500 font-normal">
                     Not Started
                   </span>
                 )}
@@ -643,8 +643,8 @@ function DSADailyPage() {
           </div>
 
           {/* Action Row */}
-          <div className="pt-2 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between gap-4">
-            <div className="text-xs text-muted-foreground">
+          <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="text-xs text-slate-500 font-medium">
               {status === "claimed"
                 ? "You have completed today's challenge and claimed your XP!"
                 : status === "completed"
@@ -659,9 +659,9 @@ function DSADailyPage() {
                 <button
                   onClick={() => void claimBonusXP()}
                   disabled={busy}
-                  className="w-full sm:w-auto glass rounded-xl px-5 py-2.5 text-xs font-semibold text-green-400 hover:bg-green-500/10 transition-colors border border-green-500/30 flex items-center justify-center gap-1.5"
+                  className="w-full sm:w-auto bg-emerald-50 text-emerald-700 border border-emerald-200 hover:bg-emerald-100 rounded-xl px-5 py-2.5 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
                 >
-                  <Award className="w-4 h-4" />
+                  <Award className="w-4 h-4 text-emerald-600" />
                   <span>{busy ? "Claiming..." : "Claim +50 Bonus XP"}</span>
                 </button>
               )}
@@ -669,7 +669,7 @@ function DSADailyPage() {
               <button
                 onClick={() => void openDailyWorkspace()}
                 disabled={busy}
-                className="w-full sm:w-auto glass rounded-xl px-6 py-2.5 text-xs font-semibold text-aurora hover:bg-white/10 transition-colors border border-aurora/30 flex items-center justify-center gap-1.5"
+                className="w-full sm:w-auto bg-purple-600 text-white hover:bg-purple-700 rounded-xl px-6 py-2.5 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
               >
                 <span>{status === "not_started" ? "Start Challenge →" : "Open Workspace →"}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -680,15 +680,15 @@ function DSADailyPage() {
       </motion.div>
 
       {/* Past 7 Days History Section */}
-      <div className="glass-strong rounded-3xl p-6 border border-white/5 space-y-4">
+      <div className="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-4">
         <div className="flex items-center justify-between">
           <div>
-            <h3 className="font-display font-bold text-lg text-white">Past 7 Days History</h3>
-            <p className="text-xs text-muted-foreground">
+            <h3 className="font-display font-bold text-lg text-slate-900">Past 7 Days History</h3>
+            <p className="text-xs text-slate-500 font-medium">
               Your recent daily challenge activity and completion record.
             </p>
           </div>
-          <span className="text-xs font-mono text-muted-foreground">
+          <span className="text-xs font-mono text-slate-500 font-semibold">
             7 Days Record
           </span>
         </div>
@@ -697,42 +697,42 @@ function DSADailyPage() {
           {history.map((item) => (
             <div
               key={item.dateStr}
-              className={`glass rounded-2xl p-3 border text-left space-y-2 transition-all ${
+              className={`rounded-2xl p-3 border text-left space-y-2 transition-all ${
                 item.isToday
-                  ? "border-aurora/40 bg-aurora/5"
-                  : "border-white/5"
+                  ? "border-purple-300 bg-purple-50/40 shadow-xs"
+                  : "bg-slate-50/60 border-slate-200/80"
               }`}
             >
               <div className="flex items-center justify-between">
-                <span className="text-[10px] font-mono text-muted-foreground">
+                <span className="text-[10px] font-mono text-slate-500 font-semibold">
                   {item.formattedDate}
                 </span>
                 {item.isToday && (
-                  <span className="text-[9px] font-mono bg-aurora/20 text-aurora px-1.5 py-0.2 rounded font-semibold">
+                  <span className="text-[9px] font-mono bg-purple-100 text-purple-700 border border-purple-200 px-1.5 py-0.2 rounded font-bold">
                     Today
                   </span>
                 )}
               </div>
 
-              <div className="font-display font-semibold text-xs text-white truncate">
+              <div className="font-display font-bold text-xs text-slate-900 truncate">
                 {item.challenge?.problem?.title ?? "Daily Challenge"}
               </div>
 
               <div className="flex items-center justify-between pt-1">
                 {item.status === "completed" ? (
-                  <span className="text-[10px] text-green-400 font-mono flex items-center gap-1">
-                    <CheckCircle2 className="w-3 h-3" /> Solved
+                  <span className="text-[10px] text-emerald-700 font-mono font-bold flex items-center gap-1">
+                    <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Solved
                   </span>
                 ) : item.status === "in_progress" ? (
-                  <span className="text-[10px] text-aurora font-mono">
+                  <span className="text-[10px] text-purple-700 font-mono font-bold">
                     Active
                   </span>
                 ) : item.isToday ? (
-                  <span className="text-[10px] text-muted-foreground font-mono">
+                  <span className="text-[10px] text-slate-500 font-mono">
                     Pending
                   </span>
                 ) : (
-                  <span className="text-[10px] text-muted-foreground/60 font-mono">
+                  <span className="text-[10px] text-slate-400 font-mono">
                     Missed
                   </span>
                 )}
