@@ -165,15 +165,15 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
           )}
         </div>
       </SheetTrigger>
-      <SheetContent className="w-full sm:max-w-md border-white/10 bg-background/80 backdrop-blur-xl p-0 flex flex-col">
-        <SheetHeader className="p-6 border-b border-white/5 space-y-1">
+      <SheetContent className="w-full sm:max-w-md border-slate-200 bg-white/95 backdrop-blur-xl p-0 flex flex-col shadow-2xl">
+        <SheetHeader className="p-6 border-b border-slate-100 space-y-1">
           <div className="flex items-center justify-between">
-            <SheetTitle className="flex items-center gap-2">
-              <Bell className="w-5 h-5 text-aurora" />
+            <SheetTitle className="flex items-center gap-2 text-slate-900">
+              <Bell className="w-5 h-5 text-purple-600" />
               Notifications
             </SheetTitle>
             {unreadCount > 0 && (
-              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-8 text-xs text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" onClick={markAllAsRead} className="h-8 text-xs text-slate-500 hover:text-slate-900 hover:bg-slate-100">
                 <Check className="w-3 h-3 mr-1" />
                 Mark all read
               </Button>
@@ -186,13 +186,13 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
             {items.length === 0 ? (
               <motion.div 
                 initial={{ opacity: 0 }} animate={{ opacity: 1 }} 
-                className="flex flex-col items-center justify-center h-full text-center p-8 text-muted-foreground"
+                className="flex flex-col items-center justify-center h-full text-center p-8 text-slate-500"
               >
-                <div className="w-16 h-16 rounded-full glass flex items-center justify-center mb-4">
-                  <Bell className="w-8 h-8 opacity-20" />
+                <div className="w-16 h-16 rounded-full bg-slate-100 flex items-center justify-center mb-4 text-slate-400">
+                  <Bell className="w-8 h-8 opacity-40" />
                 </div>
-                <p>You're all caught up!</p>
-                <p className="text-sm opacity-60">No new notifications right now.</p>
+                <p className="font-semibold text-slate-800">You're all caught up!</p>
+                <p className="text-sm text-slate-500">No new notifications right now.</p>
               </motion.div>
             ) : (
               items.map((item, i) => (
@@ -201,31 +201,31 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
-                  className={`relative overflow-hidden rounded-xl border p-4 transition-all ${
-                    !item.read ? "bg-white/5 border-aurora/30 shadow-[0_0_15px_rgba(var(--aurora),0.1)]" : "bg-black/20 border-white/5"
+                  className={`relative overflow-hidden rounded-xl border p-4 transition-all cursor-pointer ${
+                    !item.read ? "bg-purple-50/50 border-purple-200/80 shadow-xs" : "bg-slate-50/60 border-slate-200/60 hover:bg-slate-100/60"
                   }`}
                   onClick={() => !item.read && markAsRead(item.id)}
                 >
                   <div className="flex gap-3">
                     <div className="mt-0.5 shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${!item.read ? 'glass' : 'bg-white/5'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${!item.read ? 'bg-purple-100 border border-purple-200' : 'bg-slate-200/70'}`}>
                         {getIcon(item.type || "")}
                       </div>
                     </div>
                     <div className="flex-1 space-y-1">
-                      <p className={`text-sm font-medium ${!item.read ? "text-foreground" : "text-foreground/80"}`}>
+                      <p className={`text-sm font-semibold ${!item.read ? "text-slate-900" : "text-slate-700"}`}>
                         {item.title}
                       </p>
-                      <p className="text-xs text-muted-foreground leading-relaxed">
+                      <p className="text-xs text-slate-600 leading-relaxed">
                         {item.body}
                       </p>
-                      <div className="flex items-center gap-1.5 pt-2 text-[10px] text-muted-foreground/60 font-medium uppercase tracking-wider">
-                        <Clock className="w-3 h-3" />
+                      <div className="flex items-center gap-1.5 pt-2 text-[10px] text-slate-400 font-medium uppercase tracking-wider">
+                        <Clock className="w-3 h-3 text-slate-400" />
                         {new Date(item.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
                       </div>
                     </div>
                     {!item.read && (
-                      <div className="w-2 h-2 rounded-full bg-aurora shrink-0 mt-1 shadow-[0_0_8px_rgba(var(--aurora),0.8)] animate-pulse" />
+                      <div className="w-2.5 h-2.5 rounded-full bg-purple-600 shrink-0 mt-1 shadow-xs animate-pulse" />
                     )}
                   </div>
                 </motion.div>

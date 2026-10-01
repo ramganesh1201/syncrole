@@ -82,14 +82,14 @@ function AuthedLayout() {
   }
 
   return (
-    <div className="min-h-screen relative">
+    <div className="min-h-screen relative bg-[#F8FAFC]">
       {/* DESKTOP & MOBILE HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-white/5">
+      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 border-b border-slate-200/80 shadow-xs transition-all">
         <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2.5 rounded-xl bg-slate-900/80 border border-white/10 text-slate-300 hover:text-white active:scale-95 transition flex items-center justify-center min-w-[44px] min-h-[44px]"
+              className="md:hidden p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 active:scale-95 transition-all duration-200 flex items-center justify-center min-w-[44px] min-h-[44px]"
               aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" />
@@ -98,7 +98,7 @@ function AuthedLayout() {
             <BrandLogo size="sm" className="md:hidden" />
           </div>
 
-          <nav className="hidden md:flex items-center gap-1 text-sm">
+          <nav className="hidden md:flex items-center gap-1.5 text-sm">
             <NavLink to="/dashboard" icon={LayoutDashboard}>
               Dashboard
             </NavLink>
@@ -109,7 +109,7 @@ function AuthedLayout() {
 
           <div className="flex items-center gap-2">
             <NotificationCenter>
-              <button className="relative h-9 w-9 grid place-items-center rounded-full glass hover:bg-white/10 transition-colors" aria-label="Notifications">
+              <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 shadow-xs" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
               </button>
             </NotificationCenter>
@@ -117,49 +117,49 @@ function AuthedLayout() {
             <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none ml-2">
-                  <Avatar className="h-9 w-9 border border-white/10 cursor-pointer hover:opacity-80 transition-opacity">
+                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition-all duration-200 transform hover:scale-105 hover:border-purple-300 shadow-xs">
                     <AvatarImage src={profile?.avatar_url || ""} />
-                    <AvatarFallback className="bg-white/5 text-xs text-aurora font-medium">
+                    <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-semibold">
                       {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-background/95 backdrop-blur-xl border-white/10">
-                  <DropdownMenuLabel className="font-normal">
+                <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-xl border-slate-200/90 text-slate-900 shadow-xl rounded-xl p-1.5">
+                  <DropdownMenuLabel className="font-normal px-2.5 py-2">
                     <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-medium leading-none text-foreground">{profile?.full_name || "User"}</p>
-                      <p className="text-xs leading-none text-muted-foreground">{user.email}</p>
+                      <p className="text-sm font-semibold leading-none text-slate-900">{profile?.full_name || "User"}</p>
+                      <p className="text-xs leading-none text-slate-500 truncate">{user.email}</p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-white/5" />
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">
+                  <DropdownMenuSeparator className="bg-slate-100 my-1" />
+                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/profile">
-                      <User className="mr-2 h-4 w-4" />
-                      <span>My Profile</span>
+                      <User className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span className="font-medium">My Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/career-identity">
-                      <Fingerprint className="mr-2 h-4 w-4" />
-                      <span>Career Identity</span>
+                      <Fingerprint className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span className="font-medium">Career Identity</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/settings">
-                      <Settings className="mr-2 h-4 w-4" />
-                      <span>Settings</span>
+                      <Settings className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span className="font-medium">Settings</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer hover:bg-white/5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/help">
-                      <HelpCircle className="mr-2 h-4 w-4" />
-                      <span>Help</span>
+                      <HelpCircle className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <span className="font-medium">Help</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-white/5" />
-                  <DropdownMenuItem onClick={signOut} className="text-red-400 focus:text-red-400 cursor-pointer hover:bg-white/5">
-                    <LogOut className="mr-2 h-4 w-4" />
-                    <span>Sign Out</span>
+                  <DropdownMenuSeparator className="bg-slate-100 my-1" />
+                  <DropdownMenuItem onClick={signOut} className="text-rose-600 focus:text-rose-600 cursor-pointer hover:bg-rose-50 focus:bg-rose-50 rounded-lg transition-colors py-2 px-2.5">
+                    <LogOut className="mr-2.5 h-4 w-4 text-rose-500" />
+                    <span className="font-medium">Sign Out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -170,7 +170,7 @@ function AuthedLayout() {
 
       {/* MOBILE LEFT-SLIDING DRAWER OVERLAY */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
@@ -178,16 +178,16 @@ function AuthedLayout() {
 
       {/* MOBILE LEFT-SLIDING DRAWER CONTAINER */}
       <div
-        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-[#090d16] border-r border-white/10 p-5 flex flex-col justify-between transition-transform duration-300 ease-out md:hidden ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-white border-r border-slate-200/90 p-5 flex flex-col justify-between transition-transform duration-300 ease-out shadow-2xl md:hidden ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* FIXED HEADER */}
-        <div className="flex-none flex items-center justify-between pb-4 border-b border-white/10">
+        <div className="flex-none flex items-center justify-between pb-4 border-b border-slate-100">
           <BrandLogo size="md" />
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2.5 rounded-full bg-slate-800/80 text-slate-300 hover:text-white transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            className="p-2.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
             aria-label="Close menu"
           >
             <X className="h-5 w-5" />
@@ -218,30 +218,30 @@ function AuthedLayout() {
                 key={item.label}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition text-sm font-medium ${
+                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition-all duration-200 text-sm font-medium ${
                   isItemActive
-                    ? "bg-purple-600/20 border-purple-500/40 text-purple-300 font-semibold shadow-sm"
-                    : "bg-slate-900/40 border-white/5 text-slate-200 hover:bg-slate-800/80 hover:text-white"
+                    ? "bg-purple-50 border-purple-200 text-purple-700 font-semibold shadow-xs"
+                    : "bg-slate-50/60 border-slate-200/60 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-purple-400"}`} />
+                  <item.icon className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
                   <span>{item.label}</span>
                 </div>
-                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-300" : "text-slate-500"}`} />
+                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
               </Link>
             );
           })}
         </nav>
 
         {/* FIXED FOOTER WITH SAFE AREA BOTTOM PADDING */}
-        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-white/10">
+        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-slate-100">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               signOut();
             }}
-            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 font-medium text-sm hover:bg-red-500/20 active:scale-[0.98] transition"
+            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 font-semibold text-sm hover:bg-rose-100 active:scale-[0.98] transition shadow-xs"
           >
             <LogOut className="h-4 w-4" />
             <span>Sign Out</span>
@@ -279,11 +279,13 @@ function NavLink({
         e.preventDefault();
         router.navigate({ to });
       }}
-      className={`px-3 py-1.5 rounded-full text-muted-foreground hover:text-foreground hover:bg-white/5 inline-flex items-center gap-2 ${
-        isActive ? "text-foreground bg-white/10" : ""
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 inline-flex items-center gap-2 ${
+        isActive
+          ? "text-purple-700 bg-purple-50 font-semibold border border-purple-200/80 shadow-xs"
+          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
       }`}
     >
-      <Icon className="h-4 w-4" /> {children}
+      <Icon className={`h-4 w-4 transition-transform duration-200 ${isActive ? "text-purple-600" : "text-slate-500"}`} /> {children}
     </Link>
   );
 }
@@ -301,23 +303,23 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#07090e]/95 backdrop-blur-2xl border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe md:hidden">
+    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-lg px-2 py-2 flex items-center justify-around pb-safe md:hidden">
       {tabs.map((tab) => {
         if (tab.isCenter) {
           return (
             <button
               key={tab.label}
               onClick={() => tab.action?.()}
-              className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-lg transition active:scale-95 ${
+              className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-md transition active:scale-95 ${
                 isSyncPilotOpen
-                  ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/60 ring-2 ring-purple-400/60"
-                  : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/40 hover:brightness-110"
+                  ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/40 ring-2 ring-purple-400/60"
+                  : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/30 hover:brightness-110"
               }`}
               aria-label="Open SyncPilot AI Assistant"
             >
               <div
                 className={`h-full w-full rounded-full grid place-items-center transition ${
-                  isSyncPilotOpen ? "bg-purple-950 text-cyan-300" : "bg-slate-950 text-purple-300"
+                  isSyncPilotOpen ? "bg-slate-900 text-cyan-300" : "bg-slate-900 text-purple-300"
                 }`}
               >
                 <tab.icon className="h-5 w-5" />
@@ -337,11 +339,11 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
           <Link
             key={tab.label}
             to={tab.href!}
-            className={`flex flex-col items-center gap-1 text-[10px] font-medium transition py-1 px-2 rounded-xl ${
-              isActive ? "text-purple-400 font-bold" : "text-slate-400 hover:text-slate-200"
+            className={`flex flex-col items-center gap-1 text-[10px] font-medium transition py-1 px-2 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
+              isActive ? "text-purple-600 font-bold" : "text-slate-500 hover:text-slate-800"
             }`}
           >
-            <Icon className={`h-4 w-4 ${isActive ? "text-purple-400 scale-110" : "text-slate-400"}`} />
+            <Icon className={`h-4 w-4 transition-transform duration-200 ${isActive ? "text-purple-600 scale-110" : "text-slate-500"}`} />
             <span>{tab.label}</span>
           </Link>
         );
