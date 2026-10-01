@@ -18,33 +18,34 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
   ];
 
   return (
-    <div className="bg-slate-900/60 border border-white/10 rounded-3xl p-6 flex flex-col justify-between h-full backdrop-blur-xl relative overflow-hidden">
+    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs">
       <div>
-        <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-8">Career Journey</h3>
+        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 font-mono">Career Journey</h3>
 
-        <div className="relative mb-12 mt-6">
+        <div className="relative mb-8 mt-4">
           {/* Connecting Line */}
-          <div className="absolute top-1/2 left-6 right-6 h-0.5 bg-white/10 -translate-y-1/2 z-0" />
+          <div className="absolute top-1/2 left-6 right-6 h-0.5 bg-slate-200 -translate-y-1/2 z-0" />
 
           {/* Steps */}
           <div className="flex justify-between relative z-10">
-            {steps.map((step, index) => {
+            {steps.map((step) => {
               const Icon = step.icon;
               return (
-                <div key={step.id} className="flex flex-col items-center gap-3">
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all ${step.active && step.id === "current"
-                      ? "bg-slate-900 border-indigo-500 shadow-[0_0_15px_rgba(99,102,241,0.5)]"
+                <div key={step.id} className="flex flex-col items-center gap-2">
+                  <div className={`w-10 h-10 rounded-full flex items-center justify-center border-2 transition-all ${
+                    step.active && step.id === "current"
+                      ? "bg-white border-blue-600 shadow-md text-blue-600"
                       : step.active
-                        ? "bg-indigo-500 border-indigo-500 text-white"
-                        : "bg-slate-800 border-white/10 text-muted-foreground"
-                    }`}>
-                    <Icon className={`w-5 h-5 ${step.active && step.id === "current" ? "text-indigo-400" : ""}`} />
+                      ? "bg-blue-600 border-blue-600 text-white"
+                      : "bg-slate-100 border-slate-300 text-slate-400"
+                  }`}>
+                    <Icon className="w-4 h-4" />
                   </div>
                   <div className="text-center">
-                    <div className={`text-xs font-semibold ${step.id === "current" ? "text-white" : "text-muted-foreground"}`}>
+                    <div className={`text-[11px] font-bold ${step.id === "current" ? "text-slate-900" : "text-slate-500"}`}>
                       {step.label}
                     </div>
-                    <div className="text-[10px] text-muted-foreground mt-0.5">{step.score}%</div>
+                    <div className="text-[10px] text-slate-400 font-mono mt-0.5">{step.score}%</div>
                   </div>
                 </div>
               );
@@ -52,15 +53,15 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
           </div>
         </div>
 
-        <div className="text-center mb-6">
-          <p className="text-sm font-medium text-white mb-1">You are here</p>
-          <p className="text-xs text-muted-foreground">Keep building to reach your dream offer!</p>
+        <div className="text-center mb-5 bg-slate-50 border border-slate-100 p-3 rounded-xl">
+          <p className="text-xs font-bold text-slate-900">You are currently at Step 1 ({currentScore}% Readiness)</p>
+          <p className="text-[11px] text-slate-500">Keep building skills to reach your target offer!</p>
         </div>
       </div>
 
-      <Link to="/role-explorer" className="w-full bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl py-3 text-sm font-semibold transition-all hover:scale-[1.02] active:scale-[0.98] flex items-center justify-center gap-2">
-        View Full Journey
-        <ArrowRight className="w-4 h-4" />
+      <Link to="/role-explorer" className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-xs">
+        <span>View Full Journey</span>
+        <ArrowRight className="w-3.5 h-3.5" />
       </Link>
     </div>
   );
