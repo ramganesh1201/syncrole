@@ -273,17 +273,17 @@ function DSAPage() {
   }
 
   return (
-    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
+    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6 bg-[#F8FAFC]">
       <Link
         to="/dashboard"
-        className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground"
+        className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors"
       >
-        <ArrowLeft className="h-3 w-3" /> Back to dashboard
+        <ArrowLeft className="h-3.5 w-3.5" /> Back to dashboard
       </Link>
       <div className="flex flex-col md:flex-row md:items-end md:justify-between gap-4">
         <div>
-          <h1 className="font-display text-4xl font-bold">DSA Command Center</h1>
-          <p className="text-sm text-muted-foreground mt-2">
+          <h1 className="font-display text-4xl font-bold text-slate-900 tracking-tight">DSA Command Center</h1>
+          <p className="text-sm text-slate-600 mt-2">
             Track real practice time, master topics, prepare for technical interviews.
           </p>
         </div>
@@ -294,41 +294,56 @@ function DSAPage() {
       </div>
 
       {/* Quick Navigation */}
-      <div className="grid gap-2 md:grid-cols-4 lg:grid-cols-5">
+      <div className="grid gap-2.5 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <Link
           to="/dsa-roadmap"
-          className="glass-strong rounded-xl px-4 py-3 text-sm font-medium text-aurora hover:bg-white/10 transition flex items-center justify-between"
+          className="bg-white border border-slate-200/90 text-slate-800 hover:text-purple-700 hover:bg-purple-50/70 shadow-xs hover:shadow-sm font-semibold rounded-2xl transition-all duration-200 flex items-center justify-between px-4 py-3.5 group transform hover:scale-[1.02] hover:-translate-y-0.5"
         >
-          Topic Roadmap <ArrowLeft className="h-3 w-3 rotate-180" />
+          <span className="flex items-center gap-2">
+            <Target className="h-4 w-4 text-purple-600" /> Topic Roadmap
+          </span>
+          <ArrowLeft className="h-3.5 w-3.5 rotate-180 text-slate-400 group-hover:text-purple-600 transition-colors" />
         </Link>
         <Link
           to="/dsa-problems"
-          className="glass-strong rounded-xl px-4 py-3 text-sm font-medium text-aurora hover:bg-white/10 transition flex items-center justify-between"
+          className="bg-white border border-slate-200/90 text-slate-800 hover:text-purple-700 hover:bg-purple-50/70 shadow-xs hover:shadow-sm font-semibold rounded-2xl transition-all duration-200 flex items-center justify-between px-4 py-3.5 group transform hover:scale-[1.02] hover:-translate-y-0.5"
         >
-          Problem Library <ArrowLeft className="h-3 w-3 rotate-180" />
+          <span className="flex items-center gap-2">
+            <Code2 className="h-4 w-4 text-purple-600" /> Problem Library
+          </span>
+          <ArrowLeft className="h-3.5 w-3.5 rotate-180 text-slate-400 group-hover:text-purple-600 transition-colors" />
         </Link>
         <Link
           to="/dsa-companies"
-          className="glass-strong rounded-xl px-4 py-3 text-sm font-medium text-aurora hover:bg-white/10 transition flex items-center justify-between"
+          className="bg-white border border-slate-200/90 text-slate-800 hover:text-purple-700 hover:bg-purple-50/70 shadow-xs hover:shadow-sm font-semibold rounded-2xl transition-all duration-200 flex items-center justify-between px-4 py-3.5 group transform hover:scale-[1.02] hover:-translate-y-0.5"
         >
-          Company Prep <ArrowLeft className="h-3 w-3 rotate-180" />
+          <span className="flex items-center gap-2">
+            <Award className="h-4 w-4 text-purple-600" /> Company Prep
+          </span>
+          <ArrowLeft className="h-3.5 w-3.5 rotate-180 text-slate-400 group-hover:text-purple-600 transition-colors" />
         </Link>
         <Link
           to="/dsa-daily"
-          className="glass-strong rounded-xl px-4 py-3 text-sm font-medium text-aurora hover:bg-white/10 transition flex items-center justify-between"
+          className="bg-white border border-slate-200/90 text-slate-800 hover:text-purple-700 hover:bg-purple-50/70 shadow-xs hover:shadow-sm font-semibold rounded-2xl transition-all duration-200 flex items-center justify-between px-4 py-3.5 group transform hover:scale-[1.02] hover:-translate-y-0.5"
         >
-          Daily Challenge <ArrowLeft className="h-3 w-3 rotate-180" />
+          <span className="flex items-center gap-2">
+            <Calendar className="h-4 w-4 text-purple-600" /> Daily Challenge
+          </span>
+          <ArrowLeft className="h-3.5 w-3.5 rotate-180 text-slate-400 group-hover:text-purple-600 transition-colors" />
         </Link>
         <Link
           to="/dsa-mentor"
-          className="glass-strong rounded-xl px-4 py-3 text-sm font-medium text-aurora hover:bg-white/10 transition flex items-center justify-between"
+          className="bg-white border border-slate-200/90 text-slate-800 hover:text-purple-700 hover:bg-purple-50/70 shadow-xs hover:shadow-sm font-semibold rounded-2xl transition-all duration-200 flex items-center justify-between px-4 py-3.5 group transform hover:scale-[1.02] hover:-translate-y-0.5 sm:col-span-2 md:col-span-1"
         >
-          AI Mentor <ArrowLeft className="h-3 w-3 rotate-180" />
+          <span className="flex items-center gap-2">
+            <Lightbulb className="h-4 w-4 text-purple-600" /> AI Mentor
+          </span>
+          <ArrowLeft className="h-3.5 w-3.5 rotate-180 text-slate-400 group-hover:text-purple-600 transition-colors" />
         </Link>
       </div>
 
       {/* Primary KPI Grid (Auto-Tracked Practice Stats) */}
-      <div className="grid gap-4 md:grid-cols-5">
+      <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5">
         <Stat
           label="Total Active Time"
           value={analytics.totalActiveMinutes > 60 ? `${Math.round(analytics.totalActiveMinutes / 60)}h` : `${analytics.totalActiveMinutes}m`}
@@ -337,30 +352,30 @@ function DSAPage() {
         <Stat
           label="Weekly Practice"
           value={`${analytics.weeklyActiveMinutes}m`}
-          color="text-aurora"
+          color="text-purple-600"
         />
         <Stat
           label="Attempted"
           value={analytics.attemptedCount}
-          color="text-yellow-400"
+          color="text-amber-600"
         />
         <Stat
           label="Verified Solved"
           value={totalSolved}
-          color="text-green-400"
+          color="text-emerald-600"
         />
         <Stat
           label="Fastest Solve"
           value={analytics.fastestRuntimeMs ? `${analytics.fastestRuntimeMs}ms` : "N/A"}
-          color="text-accent"
+          color="text-indigo-600"
         />
       </div>
 
       {/* Difficulty Breakdown */}
       <div className="grid gap-4 md:grid-cols-3">
-        <Stat label="Easy Verified ✓" value={solvedTotals.e} color="text-green-400" />
-        <Stat label="Medium Verified ✓" value={solvedTotals.m} color="text-yellow-400" />
-        <Stat label="Hard Verified ✓" value={solvedTotals.h} color="text-red-400" />
+        <Stat label="Easy Verified ✓" value={solvedTotals.e} color="text-emerald-600" />
+        <Stat label="Medium Verified ✓" value={solvedTotals.m} color="text-amber-600" />
+        <Stat label="Hard Verified ✓" value={solvedTotals.h} color="text-rose-600" />
       </div>
 
       {/* Charts Grid */}
@@ -370,23 +385,26 @@ function DSAPage() {
           <div className="mt-4 h-64">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={last30}>
-                <CartesianGrid stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="day" stroke="rgba(255,255,255,0.4)" fontSize={11} />
-                <YAxis stroke="rgba(255,255,255,0.4)" fontSize={11} allowDecimals={false} />
+                <CartesianGrid stroke="#e2e8f0" strokeDasharray="3 3" />
+                <XAxis dataKey="day" stroke="#64748b" fontSize={11} tickLine={false} />
+                <YAxis stroke="#64748b" fontSize={11} allowDecimals={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{
-                    background: "rgba(0,0,0,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    background: "rgba(255, 255, 255, 0.96)",
+                    border: "1px solid #e2e8f0",
                     borderRadius: 12,
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    color: "#0f172a",
+                    fontWeight: 600,
                   }}
                 />
                 <Line
                   type="monotone"
                   dataKey="count"
                   name="Solved"
-                  stroke="oklch(0.72 0.22 295)"
+                  stroke="#8b5cf6"
                   strokeWidth={2.5}
-                  dot={false}
+                  dot={{ fill: "#8b5cf6", r: 4 }}
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -407,15 +425,18 @@ function DSAPage() {
                   paddingAngle={5}
                   dataKey="value"
                 >
-                  <Cell fill="#4ade80" />
-                  <Cell fill="#facc15" />
-                  <Cell fill="#f87171" />
+                  <Cell fill="#10b981" />
+                  <Cell fill="#f59e0b" />
+                  <Cell fill="#f43f5e" />
                 </Pie>
                 <Tooltip
                   contentStyle={{
-                    background: "rgba(0,0,0,0.8)",
-                    border: "1px solid rgba(255,255,255,0.1)",
+                    background: "rgba(255, 255, 255, 0.96)",
+                    border: "1px solid #e2e8f0",
                     borderRadius: 12,
+                    boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+                    color: "#0f172a",
+                    fontWeight: 600,
                   }}
                 />
                 <Legend verticalAlign="bottom" height={36} />
@@ -429,7 +450,7 @@ function DSAPage() {
       <div className="grid gap-4 lg:grid-cols-3">
         <Card className="lg:col-span-2">
           <SectionLabel icon={Calendar}>Consistency Heatmap (90 Days)</SectionLabel>
-          <p className="text-xs text-muted-foreground mt-1 mb-4">
+          <p className="text-xs text-slate-500 mt-1 mb-4">
             Every cell represents active practice sessions & verified solves.
           </p>
           <ConsistencyHeatmap days={heatmapDays} loading={loading} />
@@ -445,22 +466,22 @@ function DSAPage() {
 
 function SectionLabel({ icon: Icon, children }: { icon: React.ElementType; children: React.ReactNode }) {
   return (
-    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-muted-foreground">
-      <Icon className="h-3.5 w-3.5 text-aurora" />
+    <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-slate-500 font-semibold">
+      <Icon className="h-3.5 w-3.5 text-purple-600" />
       <span>{children}</span>
     </div>
   );
 }
 
 function Card({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return <div className={`glass-strong rounded-3xl p-5 border border-white/5 ${className}`}>{children}</div>;
+  return <div className={`bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs hover:shadow-sm transition-all ${className}`}>{children}</div>;
 }
 
 function Stat({ label, value, accent, color }: { label: string; value: React.ReactNode; accent?: boolean; color?: string }) {
   return (
-    <div className={`glass-strong rounded-3xl p-5 border border-white/5 ${accent ? "border-aurora/30 bg-aurora/5" : ""}`}>
-      <div className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</div>
-      <div className={`font-display text-2xl font-bold mt-1 ${color ?? (accent ? "text-aurora" : "")}`}>
+    <div className={`bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs transition-all ${accent ? "border-purple-200 bg-purple-50/40" : ""}`}>
+      <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">{label}</div>
+      <div className={`font-display text-2xl font-bold mt-1 ${color ?? (accent ? "text-purple-700" : "text-slate-900")}`}>
         {value}
       </div>
     </div>
@@ -470,11 +491,13 @@ function Stat({ label, value, accent, color }: { label: string; value: React.Rea
 function Pill({ icon: Icon, label, accent }: { icon: React.ElementType; label: string; accent?: boolean }) {
   return (
     <div
-      className={`glass rounded-full px-3 py-1 text-xs font-medium flex items-center gap-1.5 border border-white/10 ${
-        accent ? "text-aurora border-aurora/30 bg-aurora/10" : ""
+      className={`rounded-full px-3 py-1 text-xs font-semibold flex items-center gap-1.5 border shadow-xs ${
+        accent
+          ? "text-purple-700 border-purple-200 bg-purple-50"
+          : "text-slate-700 border-slate-200 bg-white"
       }`}
     >
-      <Icon className="h-3.5 w-3.5" />
+      <Icon className="h-3.5 w-3.5 text-purple-600" />
       {label}
     </div>
   );

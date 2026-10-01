@@ -391,24 +391,24 @@ function DSAProblemsPage() {
   );
 
   return (
-    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6">
+    <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 space-y-6 bg-[#F8FAFC]">
       {/* Page Header */}
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <Link
             to="/dashboard/dsa"
-            className="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors mb-2"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-500 hover:text-slate-900 transition-colors mb-2"
           >
             <ArrowLeft className="h-3.5 w-3.5 shrink-0" /> Back to DSA Command Center
           </Link>
-          <h1 className="font-display text-2xl md:text-3xl font-semibold text-foreground tracking-tight flex flex-wrap items-center gap-2.5">
+          <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex flex-wrap items-center gap-2.5">
             <span>DSA Problem Library</span>
-            <span className="text-[11px] font-sans font-medium bg-aurora/10 text-aurora border border-aurora/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0">
-              <Code2 className="w-3.5 h-3.5 text-aurora shrink-0" />
+            <span className="text-[11px] font-sans font-semibold bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 shadow-xs">
+              <Code2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
               <span>Internal Engine</span>
             </span>
           </h1>
-          <p className="text-xs md:text-sm text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+          <p className="text-xs md:text-sm text-slate-600 mt-1 max-w-2xl leading-relaxed">
             Practice algorithms with interactive code execution, autosaved drafts, and verified solution tracking.
           </p>
         </div>
@@ -417,22 +417,22 @@ function DSAProblemsPage() {
           {/* Mobile Filter Toggle Button */}
           <button
             onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-            className="lg:hidden glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-aurora"
+            className="lg:hidden bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-purple-700 shadow-xs"
             aria-label="Toggle filters menu"
           >
-            <Filter className="w-4 h-4 text-aurora shrink-0" />
+            <Filter className="w-4 h-4 text-purple-600 shrink-0" />
             <span>Filters</span>
             {hasActiveFilters && (
-              <span className="w-2 h-2 rounded-full bg-aurora animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
             )}
           </button>
 
           {/* Roadmap View Button */}
           <Link
             to="/dsa-roadmap"
-            className="glass rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-white/10 transition-colors flex items-center gap-2 border border-white/10 text-foreground shrink-0"
+            className="bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-slate-800 shadow-xs hover:text-purple-700 shrink-0"
           >
-            <MapIcon className="w-4 h-4 text-aurora shrink-0" />
+            <MapIcon className="w-4 h-4 text-purple-600 shrink-0" />
             <span>Roadmap View</span>
           </Link>
         </div>
@@ -445,9 +445,9 @@ function DSAProblemsPage() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden glass-strong rounded-3xl p-5 border border-white/10 overflow-hidden space-y-4"
+            className="lg:hidden bg-white rounded-3xl p-5 border border-slate-200/80 shadow-md overflow-hidden space-y-4"
           >
-            <div className="flex items-center justify-between border-b border-white/10 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
                 <Filter className="w-4 h-4 text-aurora shrink-0" />
                 <span>Filter Problems</span>
@@ -468,14 +468,14 @@ function DSAProblemsPage() {
       {/* Two-Column Desktop Layout */}
       <div className="flex flex-col lg:flex-row gap-6 items-start">
         {/* LEFT SIDEBAR (Desktop / Tablet) */}
-        <aside className="hidden lg:block w-64 shrink-0 glass-strong rounded-3xl p-5 border border-white/5 space-y-6 sticky top-20">
-          <div className="flex items-center justify-between border-b border-white/10 pb-3">
-            <h3 className="font-display font-semibold text-sm text-white flex items-center gap-2">
-              <Filter className="w-4 h-4 text-aurora shrink-0" />
+        <aside className="hidden lg:block w-64 shrink-0 bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-6 sticky top-20">
+          <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+            <h3 className="font-display font-semibold text-sm text-slate-900 flex items-center gap-2">
+              <Filter className="w-4 h-4 text-purple-600 shrink-0" />
               <span>Filters</span>
             </h3>
             {hasActiveFilters && (
-              <span className="text-[10px] bg-aurora/10 text-aurora border border-aurora/20 px-2 py-0.5 rounded-full font-mono">
+              <span className="text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-mono font-bold">
                 Active
               </span>
             )}
@@ -486,7 +486,7 @@ function DSAProblemsPage() {
         {/* RIGHT MAIN CONTENT AREA */}
         <main className="flex-1 min-w-0 space-y-4 w-full">
           {/* Top Bar Controls (Search, Difficulty, Topic) */}
-          <div className="glass-strong rounded-3xl p-4 border border-white/5 space-y-4">
+          <div className="bg-white rounded-3xl p-4 border border-slate-200/80 shadow-xs space-y-4">
             <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
               <div className="flex flex-wrap gap-2 items-center">
                 {/* Difficulty Select */}
@@ -494,10 +494,10 @@ function DSAProblemsPage() {
                   value={filters.difficulty || "all"}
                   onValueChange={(val) => updateFilter("difficulty", val)}
                 >
-                  <SelectTrigger className="glass rounded-full px-4 py-2 text-xs font-medium border-none shadow-none w-[140px] h-9">
+                  <SelectTrigger className="bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-full px-4 py-2 text-xs font-semibold text-slate-800 shadow-none w-[140px] h-9">
                     <SelectValue placeholder="Difficulty" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-slate-200 text-slate-900 shadow-xl rounded-xl">
                     <SelectItem value="all">All Difficulties</SelectItem>
                     <SelectItem value="easy">Easy</SelectItem>
                     <SelectItem value="medium">Medium</SelectItem>
@@ -510,10 +510,10 @@ function DSAProblemsPage() {
                   value={filters.topic || "all"}
                   onValueChange={(val) => updateFilter("topic", val)}
                 >
-                  <SelectTrigger className="glass rounded-full px-4 py-2 text-xs font-medium border-none shadow-none w-[170px] h-9">
+                  <SelectTrigger className="bg-slate-50 hover:bg-slate-100/80 border border-slate-200 rounded-full px-4 py-2 text-xs font-semibold text-slate-800 shadow-none w-[170px] h-9">
                     <SelectValue placeholder="All topics" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent className="bg-white border-slate-200 text-slate-900 shadow-xl rounded-xl">
                     <SelectItem value="all">All topics</SelectItem>
                     {topics.map((topic) => (
                       <SelectItem key={topic.id} value={topic.id}>
@@ -526,7 +526,7 @@ function DSAProblemsPage() {
 
               {/* Search Input with Magnifying Glass Icon */}
               <div className="relative w-full sm:w-64 flex items-center">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground pointer-events-none z-10 shrink-0" />
+                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 pointer-events-none z-10 shrink-0" />
                 <input
                   type="text"
                   placeholder="Search title, pattern..."
@@ -535,7 +535,7 @@ function DSAProblemsPage() {
                     setPage(0);
                     setSearchTerm(e.target.value);
                   }}
-                  className="w-full glass rounded-full pl-10 pr-4 py-2 text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-1 focus:ring-aurora/50 h-9"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 h-9 transition-all"
                 />
               </div>
             </div>
@@ -655,31 +655,31 @@ function DSAProblemsPage() {
                       key={problem.id}
                       initial={{ opacity: 0, y: 5 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className={`glass-strong rounded-2xl p-5 flex flex-col gap-4 lg:flex-row lg:items-center justify-between transition-colors group border ${
+                      className={`bg-white rounded-2xl p-5 flex flex-col gap-4 lg:flex-row lg:items-center justify-between transition-all group border shadow-xs hover:shadow-sm ${
                         isSolved
-                          ? "border-green-500/20 bg-green-500/5"
+                          ? "border-emerald-200/90 bg-emerald-50/30"
                           : hasStarted
-                          ? "border-aurora/20 bg-aurora/5"
-                          : "border-white/5 hover:border-white/10"
+                          ? "border-purple-200 bg-purple-50/30"
+                          : "border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
                       <div className="flex-1 space-y-3 min-w-0">
                         <div className="font-display font-semibold text-base flex flex-wrap items-center gap-2.5">
                           <span
-                            className={`text-[10px] uppercase tracking-widest px-2 py-0.5 rounded-md font-sans font-semibold ${
+                            className={`text-[10px] uppercase tracking-widest px-2.5 py-0.5 rounded-md font-sans font-bold ${
                               problem.difficulty?.toLowerCase() === "easy"
-                                ? "bg-green-500/10 text-green-400 border border-green-500/20"
+                                ? "bg-emerald-50 text-emerald-700 border border-emerald-200"
                                 : problem.difficulty?.toLowerCase() === "medium"
-                                ? "bg-yellow-500/10 text-yellow-400 border border-yellow-500/20"
-                                : "bg-red-500/10 text-red-400 border border-red-500/20"
+                                ? "bg-amber-50 text-amber-700 border border-amber-200"
+                                : "bg-rose-50 text-rose-700 border border-rose-200"
                             }`}
                           >
                             {problem.difficulty}
                           </span>
-                          <span className="text-white truncate">{problem.title}</span>
+                          <span className="text-slate-900 font-bold truncate group-hover:text-purple-700 transition-colors">{problem.title}</span>
                           {isSolved && (
-                            <span className="inline-flex items-center text-green-400 text-xs bg-green-400/10 px-2 py-0.5 rounded-full border border-green-400/20 font-sans font-medium">
-                              <CheckCircle2 className="w-3.5 h-3.5 mr-1" /> Solved
+                            <span className="inline-flex items-center text-emerald-700 text-xs bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-sans font-semibold">
+                              <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-600" /> Solved
                             </span>
                           )}
                         </div>

@@ -40,11 +40,11 @@ function getIntensityLevel(score: number): number {
 }
 
 const levelColors = [
-  "bg-white/[0.04] border-white/[0.06]", // Level 0: dark empty cell
-  "bg-aurora/25 border-aurora/35", // Level 1: low
-  "bg-aurora/50 border-aurora/65", // Level 2: moderate
-  "bg-aurora/80 border-aurora/90 shadow-[0_0_8px_rgba(168,85,247,0.4)]", // Level 3: strong
-  "bg-aurora border-white/30 shadow-[0_0_12px_rgba(168,85,247,0.7)]", // Level 4: high
+  "bg-slate-100 border-slate-200/70", // Level 0: light empty cell
+  "bg-purple-100 border-purple-200", // Level 1: low
+  "bg-purple-300 border-purple-400", // Level 2: moderate
+  "bg-purple-500 border-purple-600 text-white shadow-xs", // Level 3: strong
+  "bg-purple-700 border-purple-800 text-white shadow-sm", // Level 4: high
 ];
 
 export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
@@ -143,7 +143,7 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
   if (loading) {
     return (
       <div className="h-44 flex items-center justify-center">
-        <div className="h-6 w-6 rounded-full border-2 border-aurora border-t-transparent animate-spin" />
+        <div className="h-6 w-6 rounded-full border-2 border-purple-600 border-t-transparent animate-spin" />
       </div>
     );
   }
@@ -151,10 +151,10 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
   return (
     <div className="space-y-3">
       {/* Month Headers */}
-      <div className="flex items-center text-[10px] font-mono text-muted-foreground pl-7">
+      <div className="flex items-center text-[10px] font-mono text-slate-500 pl-7">
         <div className="flex-1 flex justify-between pr-2">
           {monthHeaders.map((m) => (
-            <span key={`${m.colIndex}-${m.label}`} className="text-white/60 font-medium">
+            <span key={`${m.colIndex}-${m.label}`} className="text-slate-600 font-semibold">
               {m.label}
             </span>
           ))}
@@ -164,7 +164,7 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
       {/* Grid with Weekday Labels */}
       <div className="flex items-start gap-2 overflow-x-auto pb-1 custom-scrollbar">
         {/* Weekday labels */}
-        <div className="grid grid-rows-7 gap-[3px] text-[9px] font-mono text-muted-foreground/70 pt-0.5 select-none shrink-0">
+        <div className="grid grid-rows-7 gap-[3px] text-[9px] font-mono text-slate-400 font-semibold pt-0.5 select-none shrink-0">
           <span className="h-3.5 leading-3.5">Mon</span>
           <span className="h-3.5 leading-3.5 opacity-0">Tue</span>
           <span className="h-3.5 leading-3.5">Wed</span>
@@ -205,55 +205,55 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
                             levelColors[lvl]
                           } ${
                             solves > 0
-                              ? "border-green-400/80 shadow-[0_0_6px_rgba(74,222,128,0.4)]"
+                              ? "border-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.3)]"
                               : ""
                           } ${
                             cell.isToday
-                              ? "ring-1 ring-aurora ring-offset-1 ring-offset-black"
+                              ? "ring-2 ring-purple-600 ring-offset-2 ring-offset-white"
                               : ""
                           }`}
                         />
                       </TooltipTrigger>
                       <TooltipContent
                         side="top"
-                        className="bg-black/90 border border-white/10 text-xs p-2.5 rounded-xl shadow-xl backdrop-blur-md max-w-xs"
+                        className="bg-white/95 border border-slate-200 text-xs p-3 rounded-xl shadow-xl backdrop-blur-md max-w-xs text-slate-900"
                       >
-                        <div className="font-semibold text-white">
-                          {formatDisplayDate(cell.dateObj)}
+                        <div className="font-semibold text-slate-900 flex items-center justify-between gap-2">
+                          <span>{formatDisplayDate(cell.dateObj)}</span>
                           {cell.isToday && (
-                            <span className="ml-1.5 text-[10px] text-aurora bg-aurora/10 px-1.5 py-0.5 rounded border border-aurora/20">
+                            <span className="text-[10px] text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded border border-purple-200 font-bold">
                               Today
                             </span>
                           )}
                         </div>
 
                         {score === 0 ? (
-                          <div className="text-muted-foreground text-[11px] mt-1">
+                          <div className="text-slate-500 text-[11px] mt-1">
                             No practice activity
                           </div>
                         ) : (
                           <div className="space-y-1 mt-1.5 text-[11px] font-mono">
                             {activeMins > 0 && (
-                              <div className="text-aurora flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-aurora" />
+                              <div className="text-purple-700 flex items-center gap-1.5 font-medium">
+                                <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />
                                 {activeMins}m active practice
                               </div>
                             )}
                             {solves > 0 && (
-                              <div className="text-neon flex items-center gap-1.5 font-semibold">
-                                <span className="w-1.5 h-1.5 rounded-full bg-neon" />
+                              <div className="text-emerald-700 flex items-center gap-1.5 font-bold">
+                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-600" />
                                 {solves} verified solve{solves > 1 ? "s" : ""}
                               </div>
                             )}
                             {runs > 0 && (
-                              <div className="text-accent flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
+                              <div className="text-amber-700 flex items-center gap-1.5 font-medium">
+                                <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                                 {runs} code run{runs > 1 ? "s" : ""}
                               </div>
                             )}
                             {subs > 0 && (
-                              <div className="text-white/70 flex items-center gap-1.5">
-                                <span className="w-1.5 h-1.5 rounded-full bg-white/50" />
+                              <div className="text-slate-600 flex items-center gap-1.5 font-medium">
+                                <span className="w-1.5 h-1.5 rounded-full bg-slate-400" />
                                 {subs} submission{subs > 1 ? "s" : ""}
                               </div>
                             )}
@@ -270,9 +270,9 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
       </div>
 
       {/* Footer Legend */}
-      <div className="flex items-center justify-between text-[10px] text-muted-foreground pt-1 border-t border-white/5 font-mono">
+      <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100 font-mono font-medium">
         <div className="flex items-center gap-1.5">
-          <Calendar className="w-3 h-3 text-aurora" />
+          <Calendar className="w-3 h-3 text-purple-600" />
           <span>90-Day Calendar</span>
         </div>
         <div className="flex items-center gap-1.5">

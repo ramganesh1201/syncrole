@@ -149,23 +149,23 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
   }
 
   const statusColor: Record<string, string> = {
-    solved: "text-neon",
-    attempted: "text-yellow-400",
-    in_progress: "text-aurora",
-    abandoned: "text-muted-foreground",
+    solved: "text-emerald-700 bg-emerald-50 border-emerald-200",
+    attempted: "text-amber-700 bg-amber-50 border-amber-200",
+    in_progress: "text-purple-700 bg-purple-50 border-purple-200",
+    abandoned: "text-slate-500 bg-slate-100 border-slate-200",
   };
 
   return (
     <div className="space-y-4">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <div className="inline-flex items-center gap-2 rounded-full glass px-2.5 py-1 text-[10px] font-medium text-muted-foreground">
-          <Activity className="h-3 w-3 text-accent" />
+        <div className="inline-flex items-center gap-2 rounded-full bg-purple-50 border border-purple-200 px-3 py-1 text-[11px] font-semibold text-purple-700 shadow-xs">
+          <Activity className="h-3.5 w-3.5 text-purple-600" />
           <span className="uppercase tracking-widest">Today's Practice</span>
         </div>
         <Link
           to="/dsa-problems"
-          className="text-[10px] text-aurora hover:underline"
+          className="text-xs font-semibold text-purple-600 hover:text-purple-700 hover:underline"
         >
           Go Practice →
         </Link>
@@ -174,7 +174,7 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
       {loading ? (
         <div className="space-y-2 animate-pulse">
           {[1, 2, 3].map((i) => (
-            <div key={i} className="h-8 bg-white/5 rounded-xl" />
+            <div key={i} className="h-8 bg-slate-100 rounded-xl" />
           ))}
         </div>
       ) : (
@@ -185,19 +185,19 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
               icon={Clock}
               label="Active Time"
               value={formatTime(stats.activePracticeSeconds)}
-              color="text-aurora"
+              color="text-purple-600"
             />
             <MiniStat
               icon={CheckCircle2}
               label="Solved"
               value={String(stats.problemsSolved)}
-              color="text-neon"
+              color="text-emerald-600"
             />
             <MiniStat
               icon={FlaskConical}
               label="Runs"
               value={String(stats.runCount)}
-              color="text-accent"
+              color="text-amber-600"
             />
           </div>
 
@@ -206,20 +206,20 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
               icon={Send}
               label="Submissions"
               value={String(stats.submissionCount)}
-              color="text-primary"
+              color="text-cyan-600"
             />
             <MiniStat
               icon={Play}
               label="Problems"
               value={String(stats.problemsAttempted)}
-              color="text-muted-foreground"
+              color="text-slate-700"
             />
           </div>
 
           {/* Recent practice history */}
           {stats.recentSessions.length > 0 && (
             <div className="space-y-2">
-              <div className="text-[10px] uppercase tracking-widest text-muted-foreground font-medium">
+              <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">
                 Recent Practice Activity
               </div>
               {stats.recentSessions.map((s) => {
@@ -230,20 +230,20 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
                     key={s.id}
                     to="/dsa-workspace/$problemId"
                     params={{ problemId: s.problem_id }}
-                    className="flex items-center justify-between glass rounded-xl px-3 py-2 text-xs hover:bg-white/5 transition-colors group"
+                    className="flex items-center justify-between bg-slate-50/80 border border-slate-200/80 rounded-xl px-3.5 py-2.5 text-xs hover:bg-slate-100 transition-all group shadow-xs"
                   >
                     <div className="min-w-0 flex-1">
-                      <div className="truncate text-foreground/90 group-hover:text-foreground font-medium transition-colors">
+                      <div className="truncate text-slate-900 group-hover:text-purple-700 font-semibold transition-colors">
                         {s.problem_title ?? "DSA Problem"}
                       </div>
-                      <div className="text-[10px] text-muted-foreground font-mono mt-0.5">
+                      <div className="text-[10px] text-slate-500 font-mono mt-0.5">
                         {formatTime(s.active_seconds)} active
                       </div>
                     </div>
                     <span
                       className={`flex-none ml-3 text-[11px] ${
-                        statusColor[displayStatus] ?? "text-muted-foreground"
-                      } font-semibold capitalize bg-white/5 px-2 py-0.5 rounded border border-white/5`}
+                        statusColor[displayStatus] ?? "text-slate-600 bg-slate-100 border-slate-200"
+                      } font-semibold capitalize px-2 py-0.5 rounded border`}
                     >
                       {displayStatus === "solved"
                         ? "✓ Solved"
@@ -258,23 +258,23 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
           )}
 
           {stats.activePracticeSeconds === 0 && stats.problemsAttempted === 0 && (
-            <div className="text-center py-4 text-sm text-muted-foreground glass rounded-xl border border-white/5">
+            <div className="text-center py-4 text-xs font-medium text-slate-500 bg-slate-50 rounded-xl border border-slate-200/80">
               No practice recorded yet today.{" "}
-              <Link to="/dsa-problems" className="text-aurora hover:underline">
+              <Link to="/dsa-problems" className="text-purple-600 font-semibold hover:underline">
                 Start a problem →
               </Link>
             </div>
           )}
 
           {/* Optional subjective fields — no XP awarded */}
-          <div className="pt-2 border-t border-white/5 space-y-3">
-            <div className="text-[10px] uppercase tracking-widest text-muted-foreground">
+          <div className="pt-3 border-t border-slate-100 space-y-3">
+            <div className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">
               Personal Journal (Optional)
             </div>
             <label className="block">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground flex justify-between">
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold flex justify-between">
                 <span>Confidence Today</span>
-                <span>{confidence}/5</span>
+                <span className="text-slate-800 font-bold">{confidence}/5</span>
               </span>
               <input
                 type="range"
@@ -282,18 +282,18 @@ export function TodayPracticePanel({ onNotesChange }: Props) {
                 max="5"
                 value={confidence}
                 onChange={(e) => setConfidence(parseInt(e.target.value))}
-                className="mt-2 w-full accent-aurora"
+                className="mt-2 w-full accent-purple-600"
               />
             </label>
             <label className="block">
-              <span className="text-[10px] uppercase tracking-widest text-muted-foreground">
+              <span className="text-[10px] uppercase tracking-widest text-slate-500 font-semibold">
                 Notes
               </span>
               <textarea
                 placeholder="What did you learn today?"
                 value={notes}
                 onChange={(e) => setNotes(e.target.value)}
-                className="mt-1 w-full glass rounded-xl px-3 py-2 text-sm resize-none h-16"
+                className="mt-1 w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all resize-none h-16"
               />
             </label>
           </div>
@@ -315,10 +315,10 @@ function MiniStat({
   color?: string;
 }) {
   return (
-    <div className="glass rounded-xl px-3 py-2 text-center">
-      <div className={`font-display text-xl font-bold ${color ?? ""}`}>{value}</div>
-      <div className="text-[10px] text-muted-foreground flex items-center justify-center gap-1 mt-0.5">
-        <Icon className="h-2.5 w-2.5" />
+    <div className="bg-slate-50/80 border border-slate-200/80 rounded-xl px-3 py-2.5 text-center shadow-xs">
+      <div className={`font-display text-lg font-bold ${color ?? "text-slate-900"}`}>{value}</div>
+      <div className="text-[10px] text-slate-500 font-medium flex items-center justify-center gap-1 mt-0.5">
+        <Icon className="h-3 w-3" />
         {label}
       </div>
     </div>
