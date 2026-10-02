@@ -9,38 +9,37 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as GateRouteImport } from './routes/gate'
-import { Route as CareerTransformationsRouteImport } from './routes/career-transformations'
-import { Route as AuthRouteImport } from './routes/auth'
-import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as AuthenticatedUpdatePasswordRouteImport } from './routes/_authenticated/update-password'
-import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
-import { Route as AuthenticatedRoleExplorerRouteImport } from './routes/_authenticated/role-explorer'
-import { Route as AuthenticatedResumeIntelligenceRouteImport } from './routes/_authenticated/resume-intelligence'
-import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
-import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
-import { Route as AuthenticatedHelpRouteImport } from './routes/_authenticated/help'
-import { Route as AuthenticatedDsaRoadmapRouteImport } from './routes/_authenticated/dsa-roadmap'
-import { Route as AuthenticatedDsaProblemsRouteImport } from './routes/_authenticated/dsa-problems'
-import { Route as AuthenticatedDsaMentorRouteImport } from './routes/_authenticated/dsa-mentor'
-import { Route as AuthenticatedDsaDailyRouteImport } from './routes/_authenticated/dsa-daily'
-import { Route as AuthenticatedDsaCompaniesRouteImport } from './routes/_authenticated/dsa-companies'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CareerTransformationsRouteImport } from './routes/career-transformations'
+import { Route as GateRouteImport } from './routes/gate'
 import { Route as AuthenticatedCareerIdentityRouteImport } from './routes/_authenticated/career-identity'
 import { Route as AuthenticatedDashboardRouteRouteImport } from './routes/_authenticated/dashboard/route'
+import { Route as AuthenticatedDsaCompaniesRouteImport } from './routes/_authenticated/dsa-companies'
+import { Route as AuthenticatedDsaDailyRouteImport } from './routes/_authenticated/dsa-daily'
+import { Route as AuthenticatedDsaMentorRouteImport } from './routes/_authenticated/dsa-mentor'
+import { Route as AuthenticatedDsaProblemsRouteImport } from './routes/_authenticated/dsa-problems'
+import { Route as AuthenticatedDsaRoadmapRouteImport } from './routes/_authenticated/dsa-roadmap'
+import { Route as AuthenticatedHelpRouteImport } from './routes/_authenticated/help'
+import { Route as AuthenticatedOnboardingRouteImport } from './routes/_authenticated/onboarding'
+import { Route as AuthenticatedProfileRouteImport } from './routes/_authenticated/profile'
+import { Route as AuthenticatedResumeIntelligenceRouteImport } from './routes/_authenticated/resume-intelligence'
+import { Route as AuthenticatedRoleExplorerRouteImport } from './routes/_authenticated/role-explorer'
+import { Route as AuthenticatedSettingsRouteImport } from './routes/_authenticated/settings'
+import { Route as AuthenticatedUpdatePasswordRouteImport } from './routes/_authenticated/update-password'
 import { Route as AuthenticatedDashboardIndexRouteImport } from './routes/_authenticated/dashboard/index'
-import { Route as AuthenticatedDsaWorkspaceProblemIdRouteImport } from './routes/_authenticated/dsa-workspace.$problemId'
-import { Route as AuthenticatedDashboardWorkspaceRouteImport } from './routes/_authenticated/dashboard.workspace'
 import { Route as AuthenticatedDashboardDsaRouteImport } from './routes/_authenticated/dashboard/dsa'
+import { Route as AuthenticatedDashboardWorkspaceRouteImport } from './routes/_authenticated/dashboard.workspace'
+import { Route as AuthenticatedDsaWorkspaceProblemIdRouteImport } from './routes/_authenticated/dsa-workspace.$problemId'
 
-const GateRoute = GateRouteImport.update({
-  id: '/gate',
-  path: '/gate',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const CareerTransformationsRoute = CareerTransformationsRouteImport.update({
-  id: '/career-transformations',
-  path: '/career-transformations',
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthRoute = AuthRouteImport.update({
@@ -48,80 +47,16 @@ const AuthRoute = AuthRouteImport.update({
   path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
-  id: '/_authenticated',
+const CareerTransformationsRoute = CareerTransformationsRouteImport.update({
+  id: '/career-transformations',
+  path: '/career-transformations',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const GateRoute = GateRouteImport.update({
+  id: '/gate',
+  path: '/gate',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedUpdatePasswordRoute =
-  AuthenticatedUpdatePasswordRouteImport.update({
-    id: '/update-password',
-    path: '/update-password',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedRoleExplorerRoute =
-  AuthenticatedRoleExplorerRouteImport.update({
-    id: '/role-explorer',
-    path: '/role-explorer',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedResumeIntelligenceRoute =
-  AuthenticatedResumeIntelligenceRouteImport.update({
-    id: '/resume-intelligence',
-    path: '/resume-intelligence',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
-  id: '/profile',
-  path: '/profile',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedHelpRoute = AuthenticatedHelpRouteImport.update({
-  id: '/help',
-  path: '/help',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDsaRoadmapRoute = AuthenticatedDsaRoadmapRouteImport.update({
-  id: '/dsa-roadmap',
-  path: '/dsa-roadmap',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDsaProblemsRoute =
-  AuthenticatedDsaProblemsRouteImport.update({
-    id: '/dsa-problems',
-    path: '/dsa-problems',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedDsaMentorRoute = AuthenticatedDsaMentorRouteImport.update({
-  id: '/dsa-mentor',
-  path: '/dsa-mentor',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDsaDailyRoute = AuthenticatedDsaDailyRouteImport.update({
-  id: '/dsa-daily',
-  path: '/dsa-daily',
-  getParentRoute: () => AuthenticatedRouteRoute,
-} as any)
-const AuthenticatedDsaCompaniesRoute =
-  AuthenticatedDsaCompaniesRouteImport.update({
-    id: '/dsa-companies',
-    path: '/dsa-companies',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
 const AuthenticatedCareerIdentityRoute =
   AuthenticatedCareerIdentityRouteImport.update({
     id: '/career-identity',
@@ -134,22 +69,75 @@ const AuthenticatedDashboardRouteRoute =
     path: '/dashboard',
     getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
+const AuthenticatedDsaCompaniesRoute =
+  AuthenticatedDsaCompaniesRouteImport.update({
+    id: '/dsa-companies',
+    path: '/dsa-companies',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDsaDailyRoute = AuthenticatedDsaDailyRouteImport.update({
+  id: '/dsa-daily',
+  path: '/dsa-daily',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDsaMentorRoute = AuthenticatedDsaMentorRouteImport.update({
+  id: '/dsa-mentor',
+  path: '/dsa-mentor',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedDsaProblemsRoute =
+  AuthenticatedDsaProblemsRouteImport.update({
+    id: '/dsa-problems',
+    path: '/dsa-problems',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedDsaRoadmapRoute = AuthenticatedDsaRoadmapRouteImport.update({
+  id: '/dsa-roadmap',
+  path: '/dsa-roadmap',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedHelpRoute = AuthenticatedHelpRouteImport.update({
+  id: '/help',
+  path: '/help',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedOnboardingRoute = AuthenticatedOnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedProfileRoute = AuthenticatedProfileRouteImport.update({
+  id: '/profile',
+  path: '/profile',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedResumeIntelligenceRoute =
+  AuthenticatedResumeIntelligenceRouteImport.update({
+    id: '/resume-intelligence',
+    path: '/resume-intelligence',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedRoleExplorerRoute =
+  AuthenticatedRoleExplorerRouteImport.update({
+    id: '/role-explorer',
+    path: '/role-explorer',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
+const AuthenticatedSettingsRoute = AuthenticatedSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedUpdatePasswordRoute =
+  AuthenticatedUpdatePasswordRouteImport.update({
+    id: '/update-password',
+    path: '/update-password',
+    getParentRoute: () => AuthenticatedRouteRoute,
+  } as any)
 const AuthenticatedDashboardIndexRoute =
   AuthenticatedDashboardIndexRouteImport.update({
     id: '/',
     path: '/',
-    getParentRoute: () => AuthenticatedDashboardRouteRoute,
-  } as any)
-const AuthenticatedDsaWorkspaceProblemIdRoute =
-  AuthenticatedDsaWorkspaceProblemIdRouteImport.update({
-    id: '/dsa-workspace/$problemId',
-    path: '/dsa-workspace/$problemId',
-    getParentRoute: () => AuthenticatedRouteRoute,
-  } as any)
-const AuthenticatedDashboardWorkspaceRoute =
-  AuthenticatedDashboardWorkspaceRouteImport.update({
-    id: '/workspace',
-    path: '/workspace',
     getParentRoute: () => AuthenticatedDashboardRouteRoute,
   } as any)
 const AuthenticatedDashboardDsaRoute =
@@ -157,6 +145,18 @@ const AuthenticatedDashboardDsaRoute =
     id: '/dsa',
     path: '/dsa',
     getParentRoute: () => AuthenticatedDashboardRouteRoute,
+  } as any)
+const AuthenticatedDashboardWorkspaceRoute =
+  AuthenticatedDashboardWorkspaceRouteImport.update({
+    id: '/workspace',
+    path: '/workspace',
+    getParentRoute: () => AuthenticatedDashboardRouteRoute,
+  } as any)
+const AuthenticatedDsaWorkspaceProblemIdRoute =
+  AuthenticatedDsaWorkspaceProblemIdRouteImport.update({
+    id: '/dsa-workspace/$problemId',
+    path: '/dsa-workspace/$problemId',
+    getParentRoute: () => AuthenticatedRouteRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -317,25 +317,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/gate': {
-      id: '/gate'
-      path: '/gate'
-      fullPath: '/gate'
-      preLoaderRoute: typeof GateRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/career-transformations': {
-      id: '/career-transformations'
-      path: '/career-transformations'
-      fullPath: '/career-transformations'
-      preLoaderRoute: typeof CareerTransformationsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -345,96 +331,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/update-password': {
-      id: '/_authenticated/update-password'
-      path: '/update-password'
-      fullPath: '/update-password'
-      preLoaderRoute: typeof AuthenticatedUpdatePasswordRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/career-transformations': {
+      id: '/career-transformations'
+      path: '/career-transformations'
+      fullPath: '/career-transformations'
+      preLoaderRoute: typeof CareerTransformationsRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/_authenticated/settings': {
-      id: '/_authenticated/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/role-explorer': {
-      id: '/_authenticated/role-explorer'
-      path: '/role-explorer'
-      fullPath: '/role-explorer'
-      preLoaderRoute: typeof AuthenticatedRoleExplorerRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/resume-intelligence': {
-      id: '/_authenticated/resume-intelligence'
-      path: '/resume-intelligence'
-      fullPath: '/resume-intelligence'
-      preLoaderRoute: typeof AuthenticatedResumeIntelligenceRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/profile': {
-      id: '/_authenticated/profile'
-      path: '/profile'
-      fullPath: '/profile'
-      preLoaderRoute: typeof AuthenticatedProfileRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/onboarding': {
-      id: '/_authenticated/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/help': {
-      id: '/_authenticated/help'
-      path: '/help'
-      fullPath: '/help'
-      preLoaderRoute: typeof AuthenticatedHelpRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dsa-roadmap': {
-      id: '/_authenticated/dsa-roadmap'
-      path: '/dsa-roadmap'
-      fullPath: '/dsa-roadmap'
-      preLoaderRoute: typeof AuthenticatedDsaRoadmapRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dsa-problems': {
-      id: '/_authenticated/dsa-problems'
-      path: '/dsa-problems'
-      fullPath: '/dsa-problems'
-      preLoaderRoute: typeof AuthenticatedDsaProblemsRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dsa-mentor': {
-      id: '/_authenticated/dsa-mentor'
-      path: '/dsa-mentor'
-      fullPath: '/dsa-mentor'
-      preLoaderRoute: typeof AuthenticatedDsaMentorRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dsa-daily': {
-      id: '/_authenticated/dsa-daily'
-      path: '/dsa-daily'
-      fullPath: '/dsa-daily'
-      preLoaderRoute: typeof AuthenticatedDsaDailyRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dsa-companies': {
-      id: '/_authenticated/dsa-companies'
-      path: '/dsa-companies'
-      fullPath: '/dsa-companies'
-      preLoaderRoute: typeof AuthenticatedDsaCompaniesRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
+    '/gate': {
+      id: '/gate'
+      path: '/gate'
+      fullPath: '/gate'
+      preLoaderRoute: typeof GateRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/career-identity': {
       id: '/_authenticated/career-identity'
@@ -450,25 +366,95 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedDashboardRouteRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/_authenticated/dsa-companies': {
+      id: '/_authenticated/dsa-companies'
+      path: '/dsa-companies'
+      fullPath: '/dsa-companies'
+      preLoaderRoute: typeof AuthenticatedDsaCompaniesRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dsa-daily': {
+      id: '/_authenticated/dsa-daily'
+      path: '/dsa-daily'
+      fullPath: '/dsa-daily'
+      preLoaderRoute: typeof AuthenticatedDsaDailyRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dsa-mentor': {
+      id: '/_authenticated/dsa-mentor'
+      path: '/dsa-mentor'
+      fullPath: '/dsa-mentor'
+      preLoaderRoute: typeof AuthenticatedDsaMentorRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dsa-problems': {
+      id: '/_authenticated/dsa-problems'
+      path: '/dsa-problems'
+      fullPath: '/dsa-problems'
+      preLoaderRoute: typeof AuthenticatedDsaProblemsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/dsa-roadmap': {
+      id: '/_authenticated/dsa-roadmap'
+      path: '/dsa-roadmap'
+      fullPath: '/dsa-roadmap'
+      preLoaderRoute: typeof AuthenticatedDsaRoadmapRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/help': {
+      id: '/_authenticated/help'
+      path: '/help'
+      fullPath: '/help'
+      preLoaderRoute: typeof AuthenticatedHelpRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/onboarding': {
+      id: '/_authenticated/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof AuthenticatedOnboardingRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/profile': {
+      id: '/_authenticated/profile'
+      path: '/profile'
+      fullPath: '/profile'
+      preLoaderRoute: typeof AuthenticatedProfileRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/resume-intelligence': {
+      id: '/_authenticated/resume-intelligence'
+      path: '/resume-intelligence'
+      fullPath: '/resume-intelligence'
+      preLoaderRoute: typeof AuthenticatedResumeIntelligenceRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/role-explorer': {
+      id: '/_authenticated/role-explorer'
+      path: '/role-explorer'
+      fullPath: '/role-explorer'
+      preLoaderRoute: typeof AuthenticatedRoleExplorerRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/settings': {
+      id: '/_authenticated/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof AuthenticatedSettingsRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/update-password': {
+      id: '/_authenticated/update-password'
+      path: '/update-password'
+      fullPath: '/update-password'
+      preLoaderRoute: typeof AuthenticatedUpdatePasswordRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/_authenticated/dashboard/': {
       id: '/_authenticated/dashboard/'
       path: '/'
       fullPath: '/dashboard/'
       preLoaderRoute: typeof AuthenticatedDashboardIndexRouteImport
-      parentRoute: typeof AuthenticatedDashboardRouteRoute
-    }
-    '/_authenticated/dsa-workspace/$problemId': {
-      id: '/_authenticated/dsa-workspace/$problemId'
-      path: '/dsa-workspace/$problemId'
-      fullPath: '/dsa-workspace/$problemId'
-      preLoaderRoute: typeof AuthenticatedDsaWorkspaceProblemIdRouteImport
-      parentRoute: typeof AuthenticatedRouteRoute
-    }
-    '/_authenticated/dashboard/workspace': {
-      id: '/_authenticated/dashboard/workspace'
-      path: '/workspace'
-      fullPath: '/dashboard/workspace'
-      preLoaderRoute: typeof AuthenticatedDashboardWorkspaceRouteImport
       parentRoute: typeof AuthenticatedDashboardRouteRoute
     }
     '/_authenticated/dashboard/dsa': {
@@ -477,6 +463,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/dashboard/dsa'
       preLoaderRoute: typeof AuthenticatedDashboardDsaRouteImport
       parentRoute: typeof AuthenticatedDashboardRouteRoute
+    }
+    '/_authenticated/dashboard/workspace': {
+      id: '/_authenticated/dashboard/workspace'
+      path: '/workspace'
+      fullPath: '/dashboard/workspace'
+      preLoaderRoute: typeof AuthenticatedDashboardWorkspaceRouteImport
+      parentRoute: typeof AuthenticatedDashboardRouteRoute
+    }
+    '/_authenticated/dsa-workspace/$problemId': {
+      id: '/_authenticated/dsa-workspace/$problemId'
+      path: '/dsa-workspace/$problemId'
+      fullPath: '/dsa-workspace/$problemId'
+      preLoaderRoute: typeof AuthenticatedDsaWorkspaceProblemIdRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
     }
   }
 }
