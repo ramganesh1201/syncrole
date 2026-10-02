@@ -174,7 +174,12 @@ function GatePage() {
                   isFallback={isFallback}
                 />
 
-                <GateSyllabusResourcesTab paper={activePaperObj} syllabus={syllabus} />
+                <GateSyllabusResourcesTab
+                  paper={activePaperObj}
+                  papers={papers}
+                  syllabus={syllabus}
+                  onSelectPaper={handleSelectPaper}
+                />
 
                 <GateUpdatesTab
                   events={events}

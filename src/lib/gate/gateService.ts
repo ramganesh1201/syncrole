@@ -13,7 +13,8 @@ import {
   GATE_EVENTS,
   GATE_UPDATES,
   GATE_CSE_SYLLABUS,
-  GATE_RESOURCES
+  GATE_RESOURCES,
+  getOfficialSyllabusForPaper
 } from './gateData';
 
 export interface GateDataResponse<T> {
@@ -27,7 +28,7 @@ export interface GateDataResponse<T> {
 
 export class GateService {
   /**
-   * Returns list of supported papers (CSE, DA, ECE, EE, ME, Civil)
+   * Returns list of all 30 supported GATE 2027 test papers
    */
   static getSupportedPapers(): GatePaperInfo[] {
     return GATE_PAPERS;
@@ -134,7 +135,7 @@ export class GateService {
   }
 
   /**
-   * Fetches syllabus for a specific paper code (e.g. 'CSE')
+   * Fetches syllabus for a specific paper code (e.g. 'CSE', 'DA', 'EE', 'ME', 'RA', etc.)
    */
   static async getSyllabus(paperCode: string = 'CSE'): Promise<GateDataResponse<GateSyllabusTopic[]>> {
     try {
@@ -176,13 +177,13 @@ export class GateService {
       console.warn('[GateService] Supabase syllabus query failed; using verified seed archive.', e);
     }
 
-    // Default return for CSE
-    const filteredSeed = GATE_CSE_SYLLABUS.filter(t => t.paperCode === paperCode || paperCode === 'CSE');
+    // Return official GATE 2027 syllabus topics for requested paper
+    const paperTopics = getOfficialSyllabusForPaper(paperCode);
 
     return {
-      data: filteredSeed,
+      data: paperTopics,
       isFallback: true,
-      lastVerifiedAt: GATE_CSE_SYLLABUS[0].lastVerifiedAt,
+      lastVerifiedAt: paperTopics[0]?.lastVerifiedAt || '2026-09-25T12:00:00Z',
       verificationStatus: 'verified',
     };
   }

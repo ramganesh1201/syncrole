@@ -320,7 +320,27 @@ function GateMobileSyllabusScreen({
   onSelectPaper: (code: string) => void;
 }) {
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('All');
+  const [isPaperPickerOpen, setIsPaperPickerOpen] = useState(false);
   const [openSubjectId, setOpenSubjectId] = useState<string>('');
+
+  // Extract unique categories
+  const categories = useMemo(() => {
+    const cats = Array.from(new Set(papers.map((p) => p.category || 'Other')));
+    return ['All', ...cats];
+  }, [papers]);
+
+  // Filter papers for Paper Selector Picker
+  const filteredPapers = useMemo(() => {
+    return papers.filter((p) => {
+      const matchesSearch =
+        !searchQuery.trim() ||
+        p.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.name.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+      return matchesSearch && matchesCategory;
+    });
+  }, [papers, searchQuery, selectedCategory]);
 
   // Group syllabus by Subject
   const subjectsMap = useMemo(() => {
@@ -334,14 +354,12 @@ function GateMobileSyllabusScreen({
     return Array.from(map.values());
   }, [syllabus]);
 
-  // Filter papers for Paper Selector
-  const filteredPapers = useMemo(() => {
-    if (!searchQuery.trim()) return papers;
-    const q = searchQuery.toLowerCase();
-    return papers.filter(
-      (p) => p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
-    );
-  }, [papers, searchQuery]);
+  // Auto-open first subject
+  useEffect(() => {
+    if (subjectsMap.length > 0 && !openSubjectId) {
+      setOpenSubjectId(subjectsMap[0].subjectId);
+    }
+  }, [subjectsMap]);
 
   return (
     <div className="space-y-4 text-slate-800 font-sans">
@@ -349,65 +367,155 @@ function GateMobileSyllabusScreen({
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3 shadow-xs">
         <div className="flex items-center justify-between">
           <h1 className="text-lg font-extrabold text-slate-900 tracking-tight">
-            GATE 2027 Syllabus
+            GATE 2027 Official Syllabus
           </h1>
           <span className="px-2.5 py-0.5 rounded-full bg-teal-50 border border-teal-200 text-teal-800 text-[10px] font-bold font-mono">
-            {paper.code} Selected
+            {papers.length} Papers Available
           </span>
         </div>
-        <p className="text-xs text-slate-600">
-          Official subject-wise topic breakdown for GATE 2027.
+        <p className="text-xs text-slate-600 leading-relaxed">
+          Official subject breakdowns for all 30 GATE 2027 test papers.
         </p>
 
-        {/* Paper Selection Chips */}
-        <div className="space-y-2 pt-1">
-          <div className="text-[10px] font-bold font-mono uppercase text-slate-400">
-            CHOOSE TEST PAPER ({papers.length})
+        {/* Searchable Paper Selector Launcher Button */}
+        <button
+          onClick={() => setIsPaperPickerOpen(true)}
+          className="w-full p-3.5 rounded-xl bg-slate-900 text-white flex items-center justify-between shadow-xs hover:bg-slate-800 transition active:scale-[0.99]"
+        >
+          <div className="flex items-center gap-2.5 truncate">
+            <Layers className="h-4 w-4 text-teal-400 shrink-0" />
+            <div className="text-left truncate">
+              <div className="text-[10px] font-bold font-mono uppercase text-teal-300">SELECTED TEST PAPER</div>
+              <div className="text-xs font-bold text-white truncate">
+                GATE {paper.code} — {paper.name}
+              </div>
+            </div>
           </div>
-          <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1 -mx-1 px-1">
-            {filteredPapers.map((p) => {
-              const isSelected = p.code === paper.code;
-              return (
-                <button
-                  key={p.code}
-                  onClick={() => onSelectPaper(p.code)}
-                  className={`px-3 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap transition shrink-0 ${
-                    isSelected
-                      ? 'bg-slate-900 text-white shadow-2xs'
-                      : 'bg-slate-100 border border-slate-200 text-slate-700 hover:bg-slate-200'
-                  }`}
-                >
-                  {p.code} — {p.name}
-                </button>
-              );
-            })}
-          </div>
-        </div>
+          <span className="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2.5 py-1 rounded-lg border border-white/20 shrink-0">
+            Change Paper ▾
+          </span>
+        </button>
       </div>
 
-      {/* Selected Paper Details */}
-      <div className="bg-teal-50/80 border border-teal-200/90 rounded-2xl p-4 flex items-center justify-between text-xs">
-        <div className="space-y-0.5">
-          <div className="font-bold text-teal-950">GATE {paper.code} — {paper.name}</div>
-          <div className="text-[11px] text-teal-800">Organized by IIT Madras • GATE 2027</div>
+      {/* SEARCHABLE PAPER SELECTOR MODAL / BOTTOM SHEET */}
+      {isPaperPickerOpen && (
+        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex flex-col justify-end md:justify-center p-0 md:p-6 animate-in fade-in">
+          <div className="bg-white rounded-t-3xl md:rounded-3xl max-h-[85vh] flex flex-col shadow-2xl overflow-hidden border border-slate-200">
+            {/* Modal Header */}
+            <div className="p-4 border-b border-slate-200 flex items-center justify-between bg-slate-50">
+              <div>
+                <h3 className="text-sm font-extrabold text-slate-900">Select GATE 2027 Paper</h3>
+                <p className="text-[11px] text-slate-500">Choose from all 30 official test papers</p>
+              </div>
+              <button
+                onClick={() => setIsPaperPickerOpen(false)}
+                className="p-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 transition text-xs font-bold"
+              >
+                Close ✕
+              </button>
+            </div>
+
+            {/* Search Input inside Picker */}
+            <div className="p-4 border-b border-slate-100 space-y-2 bg-white">
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+                <input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder="Search code or paper name (e.g. CSE, DA, EE, ME)..."
+                  className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-9 pr-3 py-2 text-xs text-slate-900 placeholder:text-slate-400 outline-none focus:ring-2 focus:ring-teal-500 shadow-2xs"
+                  autoFocus
+                />
+              </div>
+
+              {/* Category Filter Chips */}
+              <div className="flex items-center gap-1.5 overflow-x-auto custom-scrollbar pb-1 pt-1">
+                {categories.map((cat) => (
+                  <button
+                    key={cat}
+                    onClick={() => setSelectedCategory(cat)}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold whitespace-nowrap transition ${
+                      selectedCategory === cat
+                        ? 'bg-slate-900 text-white'
+                        : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                    }`}
+                  >
+                    {cat}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Paper List Items */}
+            <div className="p-4 overflow-y-auto custom-scrollbar space-y-2 max-h-[50vh]">
+              {filteredPapers.map((p) => {
+                const isSelected = p.code === paper.code;
+                return (
+                  <button
+                    key={p.code}
+                    onClick={() => {
+                      onSelectPaper(p.code);
+                      setIsPaperPickerOpen(false);
+                    }}
+                    className={`w-full p-3.5 rounded-2xl text-left transition flex items-center justify-between border ${
+                      isSelected
+                        ? 'bg-teal-50 border-teal-300 text-teal-950 font-bold shadow-2xs'
+                        : 'bg-white border-slate-200/80 text-slate-800 hover:bg-slate-50'
+                    }`}
+                  >
+                    <div className="space-y-0.5 min-w-0 pr-3">
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-xs font-black text-slate-900 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                          GATE {p.code}
+                        </span>
+                        {p.category && (
+                          <span className="text-[9px] font-mono text-slate-500 truncate">
+                            {p.category}
+                          </span>
+                        )}
+                      </div>
+                      <div className="text-xs font-bold text-slate-900 truncate pt-0.5">
+                        {p.name}
+                      </div>
+                    </div>
+                    {isSelected ? (
+                      <Check className="h-4 w-4 text-teal-700 shrink-0" />
+                    ) : (
+                      <ChevronRight className="h-4 w-4 text-slate-400 shrink-0" />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
-        {paper.officialSyllabusUrl && (
-          <a
-            href={paper.officialSyllabusUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="px-3 py-1.5 rounded-xl bg-white border border-teal-300 text-teal-900 text-[11px] font-bold shadow-2xs hover:bg-teal-50 transition flex items-center gap-1 shrink-0"
-          >
-            <span>PDF</span>
-            <ExternalLink className="h-3 w-3" />
-          </a>
-        )}
+      )}
+
+      {/* Selected Paper Details & Official Source Link */}
+      <div className="bg-teal-50/90 border border-teal-200/90 rounded-2xl p-4 flex items-center justify-between text-xs shadow-xs">
+        <div className="space-y-0.5 min-w-0">
+          <div className="font-bold text-teal-950 truncate">
+            GATE {paper.code} — {paper.name}
+          </div>
+          <div className="text-[11px] text-teal-800 font-medium">
+            Source: Official GATE 2027 IIT Madras Repository
+          </div>
+        </div>
+        <a
+          href={paper.officialSyllabusUrl || 'https://gate2027.iitm.ac.in/exam_papers_and_syllabus'}
+          target="_blank"
+          rel="noreferrer"
+          className="px-3 py-1.5 rounded-xl bg-white border border-teal-300 text-teal-900 text-[11px] font-bold shadow-2xs hover:bg-teal-50 transition flex items-center gap-1 shrink-0"
+        >
+          <span>Official PDF</span>
+          <ExternalLink className="h-3 w-3" />
+        </a>
       </div>
 
       {/* Subject Accordions */}
       <div className="space-y-2.5">
         <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-slate-400 px-1">
-          SUBJECT TOPICS ({subjectsMap.length} SUBJECTS)
+          SUBJECT TOPICS ({subjectsMap.length} SECTIONS)
         </div>
 
         {subjectsMap.map((sub) => {
@@ -442,26 +550,27 @@ function GateMobileSyllabusScreen({
                   {sub.topics.map((topic) => (
                     <div
                       key={topic.topicId}
-                      className="bg-white border border-slate-200/80 rounded-xl p-3 space-y-1.5 shadow-2xs"
+                      className="bg-white border border-slate-200/80 rounded-xl p-3.5 space-y-2 shadow-2xs"
                     >
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between gap-2">
                         <h4 className="text-xs font-bold text-slate-900">{topic.topicName}</h4>
                         {topic.weightageEstimate && (
-                          <span className="text-[9px] font-mono font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                          <span className="text-[9px] font-mono font-bold text-teal-800 bg-teal-50 px-2 py-0.5 rounded border border-teal-200 shrink-0">
                             {topic.weightageEstimate}
                           </span>
                         )}
                       </div>
+
                       <p className="text-[11px] text-slate-600 leading-relaxed font-medium">
                         {topic.conceptSummary}
                       </p>
 
                       {topic.keyTakeaways && topic.keyTakeaways.length > 0 && (
                         <div className="pt-2 border-t border-slate-100 space-y-1">
-                          <span className="text-[10px] font-bold text-slate-500 uppercase">
-                            Key Coverage:
+                          <span className="text-[10px] font-bold text-slate-500 uppercase font-mono">
+                            Key Syllabus Coverage Checklist:
                           </span>
-                          <div className="space-y-0.5">
+                          <div className="space-y-1">
                             {topic.keyTakeaways.map((item, idx) => (
                               <div key={idx} className="flex items-start gap-1.5 text-[11px] text-slate-700">
                                 <CheckCircle2 className="h-3.5 w-3.5 text-teal-600 shrink-0 mt-0.5" />
