@@ -23,13 +23,14 @@ import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/profile")({
   component: ProfilePage,
 });
 
 function ProfilePage() {
-  const { user } = Route.useRouteContext();
+  const { user, loading: authLoading } = useAuth();
   const [profile, setProfile] = useState<any>(null);
   const [placementStats, setPlacementStats] = useState<any>(null);
   const [xpLevel, setXpLevel] = useState<any>(null);
@@ -59,11 +60,12 @@ function ProfilePage() {
 
   useEffect(() => {
     async function load() {
+      if (!user?.id) return;
       const { data } = await supabase.from("profiles").select("*").eq("user_id", user.id).single();
       const { data: stats } = await supabase.from("placement_scores").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).single();
       const { data: xpData } = await supabase.from("xp_levels").select("*").eq("user_id", user.id).maybeSingle();
       const { data: streakData } = await supabase.from("streaks").select("*").eq("user_id", user.id).maybeSingle();
-      const { data: resumeData } = await supabase.from("resume_analysis").select("*").order("created_at", { ascending: false }).limit(1).maybeSingle();
+      const { data: resumeData } = await supabase.from("resume_analysis").select("*").eq("user_id", user.id).order("created_at", { ascending: false }).limit(1).maybeSingle();
       const { data: ghData } = await supabase.from("github_analysis").select("*").eq("user_id", user.id).maybeSingle();
       
       if (xpData) setXpLevel(xpData);
@@ -76,7 +78,7 @@ function ProfilePage() {
       setLoading(false);
     }
     load();
-  }, [user.id]);
+  }, [user?.id]);
 
   const handleChange = (e: any) => {
     const { name, value } = e.target;
@@ -250,7 +252,7 @@ function ProfilePage() {
     }
   };
 
-  if (loading) {
+  if (authLoading || loading || !user) {
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="w-8 h-8 border-4 border-aurora border-t-transparent rounded-full animate-spin" />
