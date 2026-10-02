@@ -95,7 +95,7 @@ function GatePage() {
         />
 
         {/* Main Content Area */}
-        <main className="mx-auto max-w-7xl px-4 md:px-6 py-8">
+        <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 pb-24 md:pb-8">
           {loading ? (
             <div className="min-h-[50vh] grid place-items-center">
               <div className="flex flex-col items-center gap-3">
