@@ -1,14 +1,30 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { GateService } from '@/lib/gate/gateService';
 import { GatePaperInfo, GateEvent, GateUpdate, GateSyllabusTopic } from '@/lib/gate/gateTypes';
-import GateHeader, { GateSectionId } from '@/components/gate/GateHeader';
+import GateHeader, { GateSectionId, GateMobileTab } from '@/components/gate/GateHeader';
 import GateOverviewTab from '@/components/gate/GateOverviewTab';
 import GateSyllabusResourcesTab from '@/components/gate/GateSyllabusResourcesTab';
 import GateUpdatesTab from '@/components/gate/GateUpdatesTab';
 import GateFooter from '@/components/gate/GateFooter';
+import { GateMobileScreens } from '@/components/gate/GateMobileScreens';
+
+interface GateSearch {
+  screen?: GateMobileTab;
+  paper?: string;
+}
 
 export const Route = createFileRoute('/gate')({
+  validateSearch: (search: Record<string, unknown>): GateSearch => {
+    const validScreens: GateMobileTab[] = ['home', 'syllabus', 'dates', 'updates', 'more'];
+    const screen = validScreens.includes(search.screen as GateMobileTab)
+      ? (search.screen as GateMobileTab)
+      : 'home';
+    return {
+      screen,
+      paper: (search.paper as string) || undefined,
+    };
+  },
   head: () => ({
     meta: [
       { title: 'GATE 2027 Information Hub — Official Syllabus, Dates & Exam Pattern | SyncRole' },
@@ -30,8 +46,12 @@ export const Route = createFileRoute('/gate')({
 });
 
 function GatePage() {
+  const search = useSearch({ from: '/gate' });
+  const navigate = useNavigate({ from: '/gate' });
+
+  const activeMobileScreen: GateMobileTab = search.screen || 'home';
   const [activeSection, setActiveSection] = useState<GateSectionId>('overview');
-  const [selectedPaper, setSelectedPaper] = useState<string>('CSE');
+  const [selectedPaper, setSelectedPaper] = useState<string>(search.paper || 'CSE');
 
   // Data state
   const papers: GatePaperInfo[] = GateService.getSupportedPapers();
@@ -41,6 +61,23 @@ function GatePage() {
   const [lastVerifiedAt, setLastVerifiedAt] = useState<string>('2026-09-25T12:00:00Z');
   const [isFallback, setIsFallback] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(true);
+
+  // Sync selected paper search param if changed
+  const handleSelectPaper = (code: string) => {
+    setSelectedPaper(code);
+    navigate({
+      search: (prev) => ({ ...prev, paper: code }),
+      replace: true,
+    });
+  };
+
+  // Switch mobile screen with scroll to top
+  const handleNavigateMobileScreen = (screen: GateMobileTab) => {
+    navigate({
+      search: (prev) => ({ ...prev, screen }),
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
+  };
 
   // Load initial GATE data
   useEffect(() => {
@@ -85,17 +122,19 @@ function GatePage() {
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col justify-between selection:bg-teal-100 selection:text-teal-900 font-sans">
       <div>
-        {/* Compact Contextual Header */}
+        {/* Persistent GATE Header (App Shell Header) */}
         <GateHeader
           activeSection={activeSection}
           onSelectSection={handleSelectSection}
+          activeMobileTab={activeMobileScreen}
+          onSelectMobileTab={handleNavigateMobileScreen}
           selectedPaper={selectedPaper}
           papers={papers}
-          onSelectPaper={setSelectedPaper}
+          onSelectPaper={handleSelectPaper}
         />
 
         {/* Main Content Area */}
-        <main className="mx-auto max-w-7xl px-4 md:px-6 py-8 pb-24 md:pb-8">
+        <main className="mx-auto max-w-7xl px-4 md:px-6 py-4 md:py-8 pb-24 md:pb-8">
           {loading ? (
             <div className="min-h-[50vh] grid place-items-center">
               <div className="flex flex-col items-center gap-3">
@@ -106,34 +145,49 @@ function GatePage() {
               </div>
             </div>
           ) : (
-            <div className="space-y-16">
-              {/* Comprehensive GATE 2027 Information Hub Content */}
-              <GateOverviewTab
-                paper={activePaperObj}
-                papers={papers}
-                events={events}
-                updates={updates}
-                onSelectPaper={setSelectedPaper}
-                onJumpToSyllabus={() => handleSelectSection('syllabus')}
-                lastVerifiedAt={lastVerifiedAt}
-                isFallback={isFallback}
-              />
+            <>
+              {/* MOBILE VIEW — DEDICATED APP SCREENS (Hidden on desktop) */}
+              <div className="md:hidden">
+                <GateMobileScreens
+                  activeScreen={activeMobileScreen}
+                  onNavigateScreen={handleNavigateMobileScreen}
+                  paper={activePaperObj}
+                  papers={papers}
+                  events={events}
+                  updates={updates}
+                  syllabus={syllabus}
+                  onSelectPaper={handleSelectPaper}
+                  lastVerifiedAt={lastVerifiedAt}
+                />
+              </div>
 
-              {/* Syllabus Breakdown & Interactive Learning Map */}
-              <GateSyllabusResourcesTab paper={activePaperObj} syllabus={syllabus} />
+              {/* DESKTOP VIEW — FULL GATE HUB (Hidden on mobile) */}
+              <div className="hidden md:block space-y-16">
+                <GateOverviewTab
+                  paper={activePaperObj}
+                  papers={papers}
+                  events={events}
+                  updates={updates}
+                  onSelectPaper={handleSelectPaper}
+                  onJumpToSyllabus={() => handleSelectSection('syllabus')}
+                  lastVerifiedAt={lastVerifiedAt}
+                  isFallback={isFallback}
+                />
 
-              {/* Updates & Timeline */}
-              <GateUpdatesTab
-                events={events}
-                updates={updates}
-                lastVerifiedAt={lastVerifiedAt}
-              />
-            </div>
+                <GateSyllabusResourcesTab paper={activePaperObj} syllabus={syllabus} />
+
+                <GateUpdatesTab
+                  events={events}
+                  updates={updates}
+                  lastVerifiedAt={lastVerifiedAt}
+                />
+              </div>
+            </>
           )}
         </main>
       </div>
 
-      {/* Compact Contextual GATE Footer */}
+      {/* Contextual GATE Footer */}
       <GateFooter lastVerifiedAt={lastVerifiedAt} />
     </div>
   );
