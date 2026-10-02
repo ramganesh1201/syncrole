@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Map, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight } from "lucide-react";
+import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
@@ -73,29 +73,56 @@ function AuthedLayout() {
   const pathname = router.state.location.pathname;
   const isFullScreenRoute = pathname.startsWith("/dsa-workspace/") || pathname.startsWith("/onboarding");
 
+  // Determine current mobile header section title
+  const getPageTitle = (path: string) => {
+    if (path.startsWith("/dashboard/dsa")) return "DSA Command";
+    if (path.startsWith("/dashboard/workspace")) return "Workspace";
+    if (path.startsWith("/dashboard")) return "Dashboard";
+    if (path.startsWith("/dsa-problems")) return "DSA Problems";
+    if (path.startsWith("/dsa-daily")) return "Daily DSA";
+    if (path.startsWith("/dsa-companies")) return "Target Companies";
+    if (path.startsWith("/dsa-roadmap")) return "DSA Roadmap";
+    if (path.startsWith("/dsa-mentor")) return "AI Mentor";
+    if (path.startsWith("/resume-intelligence")) return "Resume Intel";
+    if (path.startsWith("/role-explorer")) return "Role Explorer";
+    if (path.startsWith("/career-identity")) return "Career Identity";
+    if (path.startsWith("/profile")) return "Profile";
+    if (path.startsWith("/settings")) return "Settings";
+    if (path.startsWith("/help")) return "Help";
+    if (path.startsWith("/gate")) return "GATE Hub";
+    return "";
+  };
+
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-background grid place-items-center">
-        <div className="h-8 w-8 rounded-full border-2 border-purple-500 border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-[#F7F9FC] grid place-items-center">
+        <div className="h-8 w-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative bg-[#F8FAFC]">
-      {/* DESKTOP & MOBILE HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-md bg-white/90 border-b border-slate-200/80 shadow-xs transition-all">
-        <div className="mx-auto max-w-7xl px-4 md:px-6 h-16 flex items-center justify-between">
+    <div className="min-h-screen relative bg-[#F7F9FC] text-slate-900 font-sans">
+      {/* APP HEADER */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs transition-all pt-[env(safe-area-inset-top)]">
+        <div className="mx-auto max-w-7xl px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2.5 rounded-xl bg-slate-100/90 border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 active:scale-95 transition-all duration-200 flex items-center justify-center min-w-[44px] min-h-[44px]"
+              className="md:hidden p-2 rounded-xl bg-slate-100/90 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 active:scale-95 transition flex items-center justify-center min-w-[40px] min-h-[40px]"
               aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" />
             </button>
             <BrandLogo size="md" className="hidden md:flex" />
             <BrandLogo size="sm" className="md:hidden" />
+          </div>
+
+          {/* Center Title on Mobile */}
+          <div className="md:hidden text-center">
+            <span className="text-xs font-bold text-slate-700 tracking-tight">
+              {getPageTitle(pathname)}
+            </span>
           </div>
 
           <nav className="hidden md:flex items-center gap-1.5 text-sm">
@@ -109,17 +136,26 @@ function AuthedLayout() {
 
           <div className="flex items-center gap-2">
             <NotificationCenter>
-              <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 shadow-xs" aria-label="Notifications">
+              <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-xs" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
               </button>
             </NotificationCenter>
 
+            <Link to="/profile" className="md:hidden">
+              <Avatar className="h-8 w-8 border border-slate-200 cursor-pointer shadow-xs">
+                <AvatarImage src={profile?.avatar_url || ""} />
+                <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-bold">
+                  {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+            </Link>
+
             <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none ml-2">
-                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition-all duration-200 transform hover:scale-105 hover:border-purple-300 shadow-xs">
+                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition transform hover:scale-105 hover:border-purple-300 shadow-xs">
                     <AvatarImage src={profile?.avatar_url || ""} />
-                    <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-semibold">
+                    <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-bold">
                       {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
@@ -176,72 +212,72 @@ function AuthedLayout() {
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* MOBILE LEFT-SLIDING DRAWER CONTAINER */}
+      {/* MOBILE CATEGORIZED DRAWER CONTAINER */}
       <div
-        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(88vw,360px)] max-w-[360px] bg-white border-r border-slate-200/90 p-5 flex flex-col justify-between transition-transform duration-300 ease-out shadow-2xl md:hidden ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,340px)] max-w-[340px] bg-white border-r border-slate-200/90 p-4 flex flex-col justify-between transition-transform duration-300 ease-out shadow-2xl md:hidden ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        {/* FIXED HEADER */}
-        <div className="flex-none flex items-center justify-between pb-4 border-b border-slate-100">
+        {/* DRAWER HEADER */}
+        <div className="flex-none flex items-center justify-between pb-3.5 border-b border-slate-100">
           <BrandLogo size="md" />
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2.5 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition active:scale-95 flex items-center justify-center min-w-[44px] min-h-[44px]"
+            className="p-2 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition active:scale-95 flex items-center justify-center min-w-[36px] min-h-[36px]"
             aria-label="Close menu"
           >
-            <X className="h-5 w-5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* INDEPENDENT SCROLLABLE MIDDLE NAVIGATION */}
-        <nav className="flex-1 overflow-y-auto min-h-0 py-4 space-y-1.5">
-          {[
-            { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-            { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
-            { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
-            { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
-            { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
-            { label: "Role Explorer", href: "/role-explorer", icon: Target },
-            { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
-            { label: "My Profile", href: "/profile", icon: User },
-            { label: "Settings", href: "/settings", icon: Settings },
-            { label: "Help & Support", href: "/help", icon: HelpCircle },
-          ].map((item) => {
-            const isItemActive =
-              item.href === "/dashboard"
-                ? pathname === "/dashboard" || pathname === "/dashboard/"
-                : pathname.startsWith(item.href);
+        {/* CATEGORIZED NAVIGATION LIST */}
+        <nav className="flex-1 overflow-y-auto min-h-0 py-3 space-y-4">
+          {/* PRIMARY */}
+          <div className="space-y-1">
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Primary Workspace</span>
+            {[
+              { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+              { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
+              { label: "DSA Command Center", href: "/dashboard/dsa", icon: Code2 },
+            ].map((item) => (
+              <DrawerLink key={item.label} item={item} pathname={pathname} onClose={() => setIsMenuOpen(false)} />
+            ))}
+          </div>
 
-            return (
-              <Link
-                key={item.label}
-                to={item.href}
-                onClick={() => setIsMenuOpen(false)}
-                className={`min-h-[44px] px-3.5 py-2.5 rounded-xl border flex items-center justify-between transition-all duration-200 text-sm font-medium ${
-                  isItemActive
-                    ? "bg-purple-50 border-purple-200 text-purple-700 font-semibold shadow-xs"
-                    : "bg-slate-50/60 border-slate-200/60 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <item.icon className={`h-4 w-4 flex-shrink-0 transition-transform duration-200 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
-                  <span>{item.label}</span>
-                </div>
-                <ChevronRight className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
-              </Link>
-            );
-          })}
+          {/* CAREER */}
+          <div className="space-y-1 pt-1 border-t border-slate-100">
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Career & Skills</span>
+            {[
+              { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
+              { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
+              { label: "Role Explorer", href: "/role-explorer", icon: Target },
+              { label: "Target Companies", href: "/dsa-companies", icon: Building2 },
+            ].map((item) => (
+              <DrawerLink key={item.label} item={item} pathname={pathname} onClose={() => setIsMenuOpen(false)} />
+            ))}
+          </div>
+
+          {/* ACCOUNT */}
+          <div className="space-y-1 pt-1 border-t border-slate-100">
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Account & Settings</span>
+            {[
+              { label: "My Profile", href: "/profile", icon: User },
+              { label: "Settings", href: "/settings", icon: Settings },
+              { label: "Help & Support", href: "/help", icon: HelpCircle },
+            ].map((item) => (
+              <DrawerLink key={item.label} item={item} pathname={pathname} onClose={() => setIsMenuOpen(false)} />
+            ))}
+          </div>
         </nav>
 
-        {/* FIXED FOOTER WITH SAFE AREA BOTTOM PADDING */}
-        <div className="flex-none pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] border-t border-slate-100">
+        {/* FOOTER */}
+        <div className="flex-none pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-slate-100">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               signOut();
             }}
-            className="w-full min-h-[44px] flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 font-semibold text-sm hover:bg-rose-100 active:scale-[0.98] transition shadow-xs"
+            className="w-full min-h-[42px] flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-600 font-semibold text-xs hover:bg-rose-100 active:scale-[0.98] transition"
           >
             <LogOut className="h-4 w-4" />
             <span>Sign Out</span>
@@ -249,14 +285,41 @@ function AuthedLayout() {
         </div>
       </div>
 
-      {/* MAIN CONTENT OUTLET CONTAINER */}
-      <main className={isFullScreenRoute ? "" : "pb-20 md:pb-0"}>
+      {/* MAIN CONTENT CONTAINER */}
+      <main className={isFullScreenRoute ? "" : "pb-24 md:pb-0"}>
         <Outlet />
       </main>
 
-      {/* GLOBAL MOBILE BOTTOM NAVIGATION BAR */}
+      {/* NATIVE APP BOTTOM NAV BAR */}
       {!isFullScreenRoute && <GlobalMobileBottomNav pathname={pathname} />}
     </div>
+  );
+}
+
+function DrawerLink({ item, pathname, onClose }: { item: { label: string; href: string; icon: any }; pathname: string; onClose: () => void }) {
+  const isItemActive =
+    item.href === "/dashboard"
+      ? pathname === "/dashboard" || pathname === "/dashboard/"
+      : pathname.startsWith(item.href);
+
+  const Icon = item.icon;
+
+  return (
+    <Link
+      to={item.href}
+      onClick={onClose}
+      className={`min-h-[42px] px-3 py-2 rounded-xl flex items-center justify-between transition text-xs font-medium ${
+        isItemActive
+          ? "bg-purple-50 border border-purple-200/80 text-purple-700 font-semibold shadow-xs"
+          : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+      }`}
+    >
+      <div className="flex items-center gap-2.5">
+        <Icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
+        <span>{item.label}</span>
+      </div>
+      <ChevronRight className={`h-3.5 w-3.5 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
+    </Link>
   );
 }
 
@@ -279,13 +342,13 @@ function NavLink({
         e.preventDefault();
         router.navigate({ to });
       }}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 transform hover:scale-105 hover:-translate-y-0.5 inline-flex items-center gap-2 ${
+      className={`px-4 py-2 rounded-full text-sm font-medium transition inline-flex items-center gap-2 ${
         isActive
           ? "text-purple-700 bg-purple-50 font-semibold border border-purple-200/80 shadow-xs"
           : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
       }`}
     >
-      <Icon className={`h-4 w-4 transition-transform duration-200 ${isActive ? "text-purple-600" : "text-slate-500"}`} /> {children}
+      <Icon className={`h-4 w-4 ${isActive ? "text-purple-600" : "text-slate-500"}`} /> {children}
     </Link>
   );
 }
@@ -303,27 +366,21 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-lg px-2 py-2 flex items-center justify-around pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden">
+    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-lg px-3 py-1.5 flex items-center justify-around pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden h-[64px] box-content">
       {tabs.map((tab) => {
         if (tab.isCenter) {
           return (
             <button
               key={tab.label}
               onClick={() => tab.action?.()}
-              className={`relative -top-3 h-12 w-12 rounded-full p-px shadow-md transition active:scale-95 ${
+              className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 ${
                 isSyncPilotOpen
-                  ? "bg-gradient-to-tr from-cyan-400 via-purple-500 to-pink-500 shadow-purple-500/40 ring-2 ring-purple-400/60"
-                  : "bg-gradient-to-tr from-purple-600 to-blue-600 shadow-purple-500/30 hover:brightness-110"
+                  ? "bg-slate-900 text-purple-300 ring-2 ring-purple-500/40"
+                  : "bg-gradient-to-tr from-purple-600 to-indigo-600 text-white hover:brightness-110"
               }`}
               aria-label="Open SyncPilot AI Assistant"
             >
-              <div
-                className={`h-full w-full rounded-full grid place-items-center transition ${
-                  isSyncPilotOpen ? "bg-slate-900 text-cyan-300" : "bg-slate-900 text-purple-300"
-                }`}
-              >
-                <tab.icon className="h-5 w-5" />
-              </div>
+              <tab.icon className="h-5 w-5" />
             </button>
           );
         }
@@ -339,11 +396,11 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
           <Link
             key={tab.label}
             to={tab.href!}
-            className={`flex flex-col items-center gap-1 text-[10px] font-medium transition py-1 px-2 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
-              isActive ? "text-purple-600 font-bold" : "text-slate-500 hover:text-slate-800"
+            className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition py-1 px-2.5 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
+              isActive ? "text-purple-700 font-bold" : "text-slate-500 hover:text-slate-800"
             }`}
           >
-            <Icon className={`h-4 w-4 transition-transform duration-200 ${isActive ? "text-purple-600 scale-110" : "text-slate-500"}`} />
+            <Icon className={`h-4 w-4 transition-transform ${isActive ? "text-purple-600 scale-110" : "text-slate-400"}`} />
             <span>{tab.label}</span>
           </Link>
         );
