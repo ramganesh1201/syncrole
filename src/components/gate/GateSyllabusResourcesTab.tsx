@@ -218,12 +218,17 @@ export default function GateSyllabusResourcesTab({
                 </h3>
               </div>
               <a
-                href={paper.officialSyllabusUrl || 'https://gate2027.iitm.ac.in/exam_papers_and_syllabus'}
+                href={
+                  paper.officialPdfUrl ||
+                  `https://gate2027.iitm.ac.in/assets/syllabus/${
+                    paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
+                  }.pdf`
+                }
                 target="_blank"
                 rel="noreferrer"
                 className="px-3.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold hover:bg-teal-100 transition flex items-center gap-1.5 shrink-0"
               >
-                <span>Official PDF / Source</span>
+                <span>Official PDF</span>
                 <ExternalLink className="h-3.5 w-3.5 text-teal-700" />
               </a>
             </div>

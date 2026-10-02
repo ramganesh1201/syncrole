@@ -7,7 +7,7 @@ export const GATE_2027_COMBINATIONS_URL = 'https://gate2027.iitm.ac.in/two_paper
 export const GATE_2027_NOTIFICATIONS_URL = 'https://gate2027.iitm.ac.in/notifications';
 export const GATE_LAST_VERIFIED_DATE = '2026-09-25T12:00:00Z';
 
-export const GATE_PAPERS: GatePaperInfo[] = [
+const RAW_GATE_PAPERS: GatePaperInfo[] = [
   {
     code: 'CSE',
     name: 'Computer Science & Information Technology',
@@ -366,9 +366,16 @@ export const GATE_PAPERS: GatePaperInfo[] = [
     totalQuestions: 65,
     durationMinutes: 180,
     allowedSecondPapers: ['BT', 'CY'],
-    officialSyllabusUrl: GATE_2027_SYLLABUS_URL,
   },
 ];
+
+export const GATE_PAPERS: GatePaperInfo[] = RAW_GATE_PAPERS.map((p) => {
+  const fileCode = p.code === 'CSE' ? 'CS' : p.code === 'ECE' ? 'EC' : p.code;
+  return {
+    ...p,
+    officialPdfUrl: `https://gate2027.iitm.ac.in/assets/syllabus/${fileCode}.pdf`,
+  };
+});
 
 export const GATE_SOURCES: GateSource[] = [
   {

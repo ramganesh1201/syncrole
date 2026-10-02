@@ -94,5 +94,6 @@ export interface GatePaperInfo {
   durationMinutes: number;
   allowedSecondPapers?: string[];
   officialSyllabusUrl?: string;
+  officialPdfUrl?: string;
 }
 

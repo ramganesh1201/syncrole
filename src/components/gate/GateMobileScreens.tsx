@@ -502,7 +502,12 @@ function GateMobileSyllabusScreen({
           </div>
         </div>
         <a
-          href={paper.officialSyllabusUrl || 'https://gate2027.iitm.ac.in/exam_papers_and_syllabus'}
+          href={
+            paper.officialPdfUrl ||
+            `https://gate2027.iitm.ac.in/assets/syllabus/${
+              paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
+            }.pdf`
+          }
           target="_blank"
           rel="noreferrer"
           className="px-3 py-1.5 rounded-xl bg-white border border-teal-300 text-teal-900 text-[11px] font-bold shadow-2xs hover:bg-teal-50 transition flex items-center gap-1 shrink-0"
