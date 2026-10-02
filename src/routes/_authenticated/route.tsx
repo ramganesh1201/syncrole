@@ -297,13 +297,13 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   const tabs = [
     { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
     { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
-    { label: "AI SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
-    { label: "Analytics", href: "/resume-intelligence", icon: FileText },
+    { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
+    { label: "GATE Hub", href: "/gate", icon: GraduationCap },
     { label: "Profile", href: "/profile", icon: User },
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-lg px-2 py-2 flex items-center justify-around pb-safe md:hidden">
+    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-2xl border-t border-slate-200/90 shadow-lg px-2 py-2 flex items-center justify-around pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden">
       {tabs.map((tab) => {
         if (tab.isCenter) {
           return (

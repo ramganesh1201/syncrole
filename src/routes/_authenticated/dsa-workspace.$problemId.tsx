@@ -12,6 +12,7 @@ import {
   Loader2,
   ChevronRight,
   Info,
+  Laptop,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
@@ -303,6 +304,20 @@ function DSAWorkspacePage() {
 
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
+      {/* Mobile Laptop / Desktop Recommendation Banner */}
+      <div className="md:hidden bg-indigo-950 text-indigo-100 border-b border-indigo-800/80 px-4 py-2.5 text-xs flex items-center justify-between gap-3 shrink-0">
+        <div className="flex items-center gap-2 min-w-0">
+          <Laptop className="h-4 w-4 text-indigo-300 shrink-0" />
+          <span className="truncate">This coding workspace is best experienced on a laptop or desktop.</span>
+        </div>
+        <Link
+          to="/dsa-problems"
+          className="shrink-0 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-indigo-700 text-white font-semibold text-[11px] transition"
+        >
+          Back
+        </Link>
+      </div>
+
       {/* ---- Workspace Header ---- */}
       <header className="flex-none border-b border-white/5 bg-background/80 backdrop-blur-xl px-4 py-2">
         <div className="mx-auto max-w-screen-2xl flex items-center justify-between gap-4">
