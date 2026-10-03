@@ -159,14 +159,14 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
     : GUEST_DEMO.syncSummary;
 
   return (
-    <div className="min-h-screen bg-[#0e1217] text-foreground font-sans pb-24 relative overflow-x-hidden selection:bg-violet-500/30">
+    <div className="min-h-screen bg-[#F7F9FC] text-slate-900 font-sans pb-24 relative overflow-x-hidden">
       {/* Header */}
-      <header className="sticky top-0 z-40 bg-[#0e1217]/90 backdrop-blur-md border-b border-white/10 px-4 py-3 flex items-center justify-between">
+      <header className="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 py-3 flex items-center justify-between shadow-xs pt-[env(safe-area-inset-top)]">
         <div className="flex items-center gap-2">
           <button
             onClick={() => setIsMenuOpen(true)}
-            className="p-2 rounded-lg bg-white/5 border border-white/10 text-foreground hover:bg-white/10 active:scale-95 transition min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
-            aria-label="Open menu"
+            className="p-2 rounded-xl bg-slate-100/90 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 active:scale-95 transition min-w-[40px] min-h-[40px] flex items-center justify-center cursor-pointer"
+            aria-label="Open navigation menu"
           >
             <Menu className="h-4 w-4" />
           </button>
@@ -176,7 +176,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <div className="flex items-center gap-2">
           <button
             onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
-            className="px-3 py-1.5 rounded-lg text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white shadow-sm transition-all cursor-pointer"
+            className="px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white shadow-xs transition-all cursor-pointer active:scale-95"
           >
             {isAuthed ? "Dashboard" : "Sign In"}
           </button>
@@ -185,7 +185,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
       {/* Drawer Overlay */}
       <div
-        className={`fixed inset-0 z-[60] bg-black/70 backdrop-blur-xs transition-opacity duration-200 ${
+        className={`fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-xs transition-opacity duration-200 ${
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
@@ -193,15 +193,15 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
       {/* Drawer */}
       <div
-        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,320px)] bg-[#161b22] border-r border-white/10 p-4 flex flex-col justify-between transition-transform duration-200 ease-out ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,320px)] bg-white border-r border-slate-200/90 p-4 flex flex-col justify-between transition-transform duration-200 ease-out shadow-2xl ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between pb-3 border-b border-white/10">
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
           <BrandLogo size="md" />
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2 rounded-lg bg-white/5 text-muted-foreground hover:text-foreground transition active:scale-95 min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
+            className="p-2 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition active:scale-95 min-w-[36px] min-h-[36px] flex items-center justify-center cursor-pointer"
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
@@ -234,29 +234,29 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
                 key={item.label}
                 to={item.href}
                 onClick={() => setIsMenuOpen(false)}
-                className={`min-h-[40px] px-3 py-2 rounded-lg border flex items-center justify-between transition text-xs font-medium ${
+                className={`min-h-[42px] px-3 py-2 rounded-xl flex items-center justify-between transition text-xs font-medium ${
                   isItemActive
-                    ? "bg-violet-600/20 border-violet-500/40 text-violet-300 font-semibold"
-                    : "bg-white/5 border-transparent text-muted-foreground hover:text-foreground hover:bg-white/10"
+                    ? "bg-purple-50 border border-purple-200/80 text-purple-700 font-semibold shadow-xs"
+                    : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <item.icon className="h-3.5 w-3.5 flex-shrink-0 text-violet-400" />
+                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
                   <span>{item.label}</span>
                 </div>
-                <ChevronRight className="h-3.5 w-3.5 flex-shrink-0 opacity-50" />
+                <ChevronRight className={`h-3.5 w-3.5 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
               </Link>
             );
           })}
         </nav>
 
-        <div className="pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] border-t border-white/10">
+        <div className="pt-3 pb-[calc(0.5rem+env(safe-area-inset-bottom))] border-t border-slate-100">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               nav({ to: isAuthed ? "/dashboard" : "/auth" });
             }}
-            className="w-full min-h-[40px] flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white font-medium text-xs shadow-md transition cursor-pointer"
+            className="w-full min-h-[42px] flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-semibold text-xs shadow-xs transition cursor-pointer active:scale-95"
           >
             <span>{isAuthed ? "Go to Dashboard" : "Get Started Now"}</span>
           </button>
@@ -265,38 +265,38 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
       <main className="px-4 pt-4 space-y-4">
         {/* Hero Card */}
-        <section className="surface-primary rounded-2xl border border-white/10 p-5 space-y-3">
+        <section className="bg-white rounded-2xl border border-slate-200/90 p-5 space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-violet-500/10 border border-violet-500/20 text-violet-400 text-[11px] font-semibold">
-              <Sparkles className="h-3 w-3" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[11px] font-bold">
+              <Sparkles className="h-3.5 w-3.5 text-purple-600" />
               <span>AI Career OS</span>
             </div>
 
             {onOpenDemo && (
               <button
                 onClick={onOpenDemo}
-                className="inline-flex items-center gap-1 text-[11px] font-medium text-amber-400 bg-amber-400/10 border border-amber-400/20 px-2.5 py-0.5 rounded-md hover:bg-amber-400/20 transition cursor-pointer"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-700 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full hover:bg-amber-100 transition cursor-pointer"
               >
-                <Play className="h-3 w-3 fill-amber-400" />
+                <Play className="h-3 w-3 fill-amber-600 text-amber-600" />
                 <span>Try Demo</span>
               </button>
             )}
           </div>
 
           <div className="space-y-1">
-            <p className="text-xs text-muted-foreground">Welcome, {firstName}</p>
-            <h1 className="text-2xl font-bold tracking-tight text-foreground">
-              Your digital <span className="text-cyan-400">career twin.</span>
+            <p className="text-xs font-semibold text-slate-500">Welcome, {firstName}</p>
+            <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+              Your digital <span className="text-purple-600">career twin.</span>
             </h1>
           </div>
 
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-xs text-slate-600 leading-relaxed font-medium">
             A continuous simulation of your readiness — built from resume analysis, GitHub contributions, DSA progress, and skill gaps.
           </p>
 
           <button
             onClick={() => nav({ to: isAuthed ? "/dashboard" : "/auth" })}
-            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-violet-600 hover:bg-violet-500 text-white transition shadow-sm cursor-pointer"
+            className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl text-xs font-semibold bg-purple-600 hover:bg-purple-700 text-white transition shadow-xs cursor-pointer active:scale-95"
           >
             <span>{isAuthed ? "Explore Workspace" : "Get Started Free"}</span>
             <ArrowRight className="h-3.5 w-3.5" />
@@ -317,97 +317,97 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             <button
               key={action.title}
               onClick={() => nav({ to: action.href })}
-              className="surface-primary rounded-xl border border-white/8 p-2.5 text-center flex flex-col items-center hover:bg-white/10 active:scale-95 transition cursor-pointer"
+              className="bg-white rounded-xl border border-slate-200/90 p-2.5 text-center flex flex-col items-center hover:bg-slate-50 active:scale-95 transition cursor-pointer shadow-2xs"
             >
-              <div className="h-7 w-7 rounded-lg bg-white/5 border border-white/10 flex items-center justify-center mb-1 text-violet-400">
+              <div className="h-7 w-7 rounded-lg bg-purple-50 border border-purple-200/80 flex items-center justify-center mb-1 text-purple-600">
                 <action.icon className="h-3.5 w-3.5" />
               </div>
-              <span className="text-[11px] font-semibold text-foreground line-clamp-1">{action.title}</span>
-              <span className="text-[9px] text-muted-foreground line-clamp-1">{action.desc}</span>
+              <span className="text-[11px] font-bold text-slate-900 line-clamp-1">{action.title}</span>
+              <span className="text-[9px] font-medium text-slate-500 line-clamp-1">{action.desc}</span>
             </button>
           ))}
         </section>
 
         {/* Metrics Banner */}
-        <section className="surface-primary rounded-xl border border-white/10 p-3 grid grid-cols-4 gap-2 text-center divide-x divide-white/10">
+        <section className="bg-white rounded-xl border border-slate-200/90 p-3 grid grid-cols-4 gap-2 text-center divide-x divide-slate-100 shadow-2xs">
           <div className="px-1">
-            <div className="text-sm font-bold text-violet-400">{score}%</div>
-            <div className="text-[9px] text-muted-foreground">Readiness</div>
+            <div className="text-sm font-bold text-purple-600">{score}%</div>
+            <div className="text-[9px] font-semibold text-slate-500">Readiness</div>
           </div>
           <div className="px-1">
-            <div className="text-sm font-bold text-cyan-400">{codingScore}</div>
-            <div className="text-[9px] text-muted-foreground">Coding</div>
+            <div className="text-sm font-bold text-blue-600">{codingScore}</div>
+            <div className="text-[9px] font-semibold text-slate-500">Coding</div>
           </div>
           <div className="px-1">
-            <div className="text-sm font-bold text-emerald-400">{dsaScore}</div>
-            <div className="text-[9px] text-muted-foreground">DSA</div>
+            <div className="text-sm font-bold text-emerald-600">{dsaScore}</div>
+            <div className="text-[9px] font-semibold text-slate-500">DSA</div>
           </div>
           <div className="px-1">
-            <div className="text-sm font-bold text-foreground">{consistencyScore}</div>
-            <div className="text-[9px] text-muted-foreground">Rhythm</div>
+            <div className="text-sm font-bold text-slate-800">{consistencyScore}</div>
+            <div className="text-[9px] font-semibold text-slate-500">Rhythm</div>
           </div>
         </section>
 
         {/* Skill Builder Card */}
-        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
+        <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-lg bg-violet-600/20 text-violet-400 border border-violet-500/30 flex items-center justify-center font-bold text-xs">
+              <div className="h-8 w-8 rounded-xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center font-extrabold text-xs">
                 L{level}
               </div>
               <div>
-                <div className="text-[10px] font-bold uppercase tracking-wider text-violet-400">Level {level}</div>
-                <div className="text-sm font-bold text-foreground">Career Growth Index</div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Level {level}</div>
+                <div className="text-sm font-bold text-slate-900">Career Growth Index</div>
               </div>
             </div>
 
-            <span className="px-2 py-0.5 rounded-md bg-emerald-400/10 text-emerald-400 text-[10px] font-semibold border border-emerald-400/20">
+            <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
               Active
             </span>
           </div>
 
           <div className="space-y-1">
             <div className="flex justify-between text-xs font-semibold">
-              <span className="text-muted-foreground">Career Readiness</span>
-              <span className="text-violet-400">{score}%</span>
+              <span className="text-slate-500">Career Readiness</span>
+              <span className="text-purple-600">{score}%</span>
             </div>
-            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+            <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
               <div
-                className="h-full bg-violet-500 rounded-full transition-all duration-500"
+                className="h-full bg-purple-600 rounded-full transition-all duration-500"
                 style={{ width: `${Math.min(100, Math.max(5, score))}%` }}
               />
             </div>
           </div>
 
-          <div className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 border border-white/8 text-xs">
+          <div className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 text-xs">
             <div className="flex items-center gap-2">
-              <Flame className="h-4 w-4 text-amber-400" />
-              <span className="font-semibold text-amber-400">{streakDays} Day Practice Streak</span>
+              <Flame className="h-4 w-4 text-amber-500 fill-amber-500" />
+              <span className="font-bold text-amber-800">{streakDays} Day Practice Streak</span>
             </div>
-            <Award className="h-4 w-4 text-muted-foreground" />
+            <Award className="h-4 w-4 text-slate-400" />
           </div>
         </section>
 
         {/* Today's Mission & Tabs */}
         <section className="space-y-3">
-          <div className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Target className="h-3.5 w-3.5 text-violet-400" />
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-3 shadow-xs">
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
+              <Target className="h-3.5 w-3.5 text-purple-600" />
               <span>Today&apos;s Priority Mission</span>
             </div>
 
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-bold text-foreground">
+                <h3 className="text-sm font-bold text-slate-900">
                   {activeMission?.title || "Complete Resume Review"}
                 </h3>
-                <p className="text-xs text-violet-400 font-medium mt-0.5">
+                <p className="text-xs text-purple-600 font-semibold mt-0.5">
                   +{activeMission?.xp || activeMission?.xp_reward || 30} XP reward
                 </p>
               </div>
 
               <div className="text-right">
-                <span className="text-xs font-bold text-cyan-400">
+                <span className="text-xs font-extrabold text-blue-600">
                   {activeMission?.progress || 75}%
                 </span>
               </div>
@@ -415,41 +415,41 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
             <button
               onClick={() => nav({ to: isAuthed ? "/dsa-daily" : "/auth" })}
-              className="w-full py-2 rounded-lg bg-white/5 border border-white/10 text-xs font-semibold text-foreground hover:bg-white/10 flex items-center justify-center gap-1.5 transition cursor-pointer"
+              className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200/80 border border-slate-200/80 text-xs font-semibold text-slate-800 flex items-center justify-center gap-1.5 transition cursor-pointer active:scale-95"
             >
               <span>Continue Mission</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </button>
           </div>
 
-          <div className="surface-primary rounded-2xl border border-white/10 p-4 space-y-3">
-            <div className="flex rounded-lg bg-white/5 p-1 border border-white/5">
+          <div className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-3 shadow-xs">
+            <div className="flex rounded-xl bg-slate-100 p-1 border border-slate-200/60">
               <button
                 onClick={() => setActiveTab("strengths")}
-                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeTab === "strengths"
-                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/30"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-emerald-700 shadow-2xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Strengths
               </button>
               <button
                 onClick={() => setActiveTab("weaknesses")}
-                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeTab === "weaknesses"
-                    ? "bg-violet-500/20 text-violet-400 border border-violet-500/30"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-purple-700 shadow-2xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Gaps
               </button>
               <button
                 onClick={() => setActiveTab("growth")}
-                className={`flex-1 py-1 rounded-md text-xs font-semibold transition cursor-pointer ${
+                className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeTab === "growth"
-                    ? "bg-cyan-500/20 text-cyan-400 border border-cyan-500/30"
-                    : "text-muted-foreground hover:text-foreground"
+                    ? "bg-white text-blue-700 shadow-2xs font-bold"
+                    : "text-slate-600 hover:text-slate-900"
                 }`}
               >
                 Growth
@@ -459,24 +459,24 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             <div className="space-y-1.5 pt-1">
               {activeTab === "strengths" &&
                 realStrengths.map((item) => (
-                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
-                    <CheckCircle className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-medium text-slate-800">
+                    <CheckCircle className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
 
               {activeTab === "weaknesses" &&
                 realWeaknesses.map((item) => (
-                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
-                    <AlertCircle className="h-3.5 w-3.5 text-violet-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-medium text-slate-800">
+                    <AlertCircle className="h-3.5 w-3.5 text-purple-600 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
 
               {activeTab === "growth" &&
                 realGrowth.map((item) => (
-                  <div key={item} className="flex items-center gap-2 p-2 rounded-lg bg-white/5 text-xs text-foreground">
-                    <TrendingUp className="h-3.5 w-3.5 text-cyan-400 shrink-0" />
+                  <div key={item} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-medium text-slate-800">
+                    <TrendingUp className="h-3.5 w-3.5 text-blue-600 shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -485,15 +485,15 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         </section>
 
         {/* Career Memory */}
-        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-2.5">
+        <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-2.5 shadow-xs">
           <div className="flex items-center justify-between">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Layers className="h-3.5 w-3.5 text-violet-400" />
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
+              <Layers className="h-3.5 w-3.5 text-purple-600" />
               <span>Career Activity Log</span>
             </div>
             <button
               onClick={() => nav({ to: "/career-identity" })}
-              className="text-[11px] text-cyan-400 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
+              className="text-[11px] text-purple-600 font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
               <span>View all</span>
               <ArrowRight className="h-3 w-3" />
@@ -502,84 +502,108 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
 
           <div className="space-y-2">
             {realMemory.map((mem: any, i: number) => (
-              <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-white/5 text-xs">
+              <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
                 <div className="flex items-center gap-2 pr-2">
-                  <Activity className="h-3.5 w-3.5 text-violet-400 shrink-0" />
-                  <span className="text-foreground font-medium line-clamp-1">{mem.text}</span>
+                  <Activity className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                  <span className="text-slate-800 font-medium line-clamp-1">{mem.text}</span>
                 </div>
-                <span className="text-[10px] text-muted-foreground shrink-0">{mem.time}</span>
+                <span className="text-[10px] text-slate-400 font-mono shrink-0">{mem.time}</span>
               </div>
             ))}
           </div>
         </section>
 
         {/* Sync Summary */}
-        <section className="surface-primary rounded-2xl border border-white/10 p-4 space-y-2">
+        <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-2 shadow-xs">
           <div className="flex items-center justify-between">
-            <div className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
-              <Zap className="h-3.5 w-3.5 text-violet-400" />
+            <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
+              <Zap className="h-3.5 w-3.5 text-purple-600" />
               <span>Career Synthesis</span>
             </div>
           </div>
 
-          <p className="text-xs text-muted-foreground leading-relaxed italic">
+          <p className="text-xs text-slate-600 leading-relaxed italic font-medium">
             &ldquo;{syncSummary}&rdquo;
           </p>
         </section>
 
         {/* Footer */}
-        <footer className="pt-4 pb-2 border-t border-white/10 space-y-3 text-center">
+        <footer className="pt-4 pb-2 border-t border-slate-200/80 space-y-3 text-center">
           <div className="flex justify-center">
             <BrandLogo size="md" />
           </div>
-          <p className="text-xs text-muted-foreground max-w-xs mx-auto">
+          <p className="text-xs text-slate-500 max-w-xs mx-auto font-medium">
             Your intelligent career operating system.
           </p>
-          <div className="flex justify-center gap-4 text-xs text-muted-foreground">
-            <Link to="/help" className="hover:text-foreground">Help</Link>
-            <Link to="/career-transformations" className="hover:text-foreground">Stories</Link>
-            <Link to="/auth" className="hover:text-foreground">Account</Link>
+          <div className="flex justify-center gap-4 text-xs font-semibold text-slate-600">
+            <Link to="/help" className="hover:text-purple-600">Help</Link>
+            <Link to="/career-transformations" className="hover:text-purple-600">Stories</Link>
+            <Link to="/auth" className="hover:text-purple-600">Account</Link>
           </div>
-          <div className="text-[10px] text-muted-foreground/60">
+          <div className="text-[10px] text-slate-400">
             © {new Date().getFullYear()} SyncRole. All rights reserved.
           </div>
         </footer>
       </main>
 
-      {/* Bottom Nav */}
-      <nav className="fixed bottom-0 inset-x-0 z-50 bg-[#0e1217]/95 backdrop-blur-md border-t border-white/10 px-2 py-2 flex items-center justify-around pb-safe">
-        {[
-          { label: "Home", href: "/", icon: Home },
-          { label: "Progress", href: "/dashboard", icon: TrendingUp },
-          { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
-          { label: "Insights", href: "/resume-intelligence", icon: FileText },
-          { label: "Profile", href: "/profile", icon: User },
-        ].map((tab) => {
-          if (tab.isCenter) {
-            return (
-              <button
-                key={tab.label}
-                onClick={() => tab.action?.()}
-                className="surface-primary hover:bg-white/10 text-foreground border border-white/15 rounded-full p-2.5 shadow-md flex items-center justify-center cursor-pointer -top-2 relative"
-                aria-label="Open SyncPilot AI Assistant"
-              >
-                <tab.icon className="h-4 w-4 text-violet-400" />
-              </button>
-            );
-          }
-
-          return (
-            <Link
-              key={tab.label}
-              to={tab.href}
-              className="flex flex-col items-center gap-0.5 text-muted-foreground hover:text-foreground active:scale-95 transition px-3 py-1"
-            >
-              <tab.icon className="h-4 w-4" />
-              <span className="text-[10px] font-medium">{tab.label}</span>
-            </Link>
-          );
-        })}
-      </nav>
+      {/* Standard Approved Mobile Bottom Navigation */}
+      <GlobalHomepageBottomNav pathname={pathname} />
     </div>
+  );
+}
+
+function GlobalHomepageBottomNav({ pathname }: { pathname: string }) {
+  const { openSyncPilot, panelState } = useSyncPilot();
+  const isSyncPilotOpen = panelState !== "closed";
+
+  const tabs = [
+    { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
+    { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
+    { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
+    { label: "GATE Hub", href: "/gate", icon: GraduationCap },
+    { label: "Profile", href: "/profile", icon: User },
+  ];
+
+  return (
+    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-lg px-3 py-1.5 flex items-center justify-around pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden h-[64px] box-content">
+      {tabs.map((tab) => {
+        if (tab.isCenter) {
+          return (
+            <button
+              key={tab.label}
+              onClick={() => tab.action?.()}
+              className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 ${
+                isSyncPilotOpen
+                  ? "bg-slate-900 text-purple-300 ring-2 ring-purple-500/40"
+                  : "bg-gradient-to-tr from-purple-600 to-indigo-600 text-white hover:brightness-110"
+              }`}
+              aria-label="Open SyncPilot AI Assistant"
+            >
+              <tab.icon className="h-5 w-5" />
+            </button>
+          );
+        }
+
+        const isActive =
+          tab.href === "/dashboard"
+            ? pathname === "/dashboard" || pathname === "/dashboard/" || pathname === "/"
+            : pathname.startsWith(tab.href!);
+
+        const Icon = tab.icon;
+
+        return (
+          <Link
+            key={tab.label}
+            to={tab.href!}
+            className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition py-1 px-2.5 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
+              isActive ? "text-purple-700 font-bold" : "text-slate-500 hover:text-slate-800"
+            }`}
+          >
+            <Icon className={`h-4 w-4 transition-transform ${isActive ? "text-purple-600 scale-110" : "text-slate-400"}`} />
+            <span>{tab.label}</span>
+          </Link>
+        );
+      })}
+    </nav>
   );
 }

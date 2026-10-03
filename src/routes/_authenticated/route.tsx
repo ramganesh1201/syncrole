@@ -385,10 +385,34 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
           );
         }
 
-        const isActive =
-          tab.href === "/dashboard"
-            ? pathname === "/dashboard" || pathname === "/dashboard/"
-            : pathname.startsWith(tab.href!);
+        const isWorkspaceTab = tab.href === "/dashboard/workspace";
+        const isDashboardTab = tab.href === "/dashboard";
+        const isProfileTab = tab.href === "/profile";
+        const isGateTab = tab.href === "/gate";
+
+        let isActive = false;
+        if (isWorkspaceTab) {
+          isActive = pathname.startsWith("/dashboard/workspace");
+        } else if (isDashboardTab) {
+          isActive =
+            (pathname === "/dashboard" ||
+              pathname === "/dashboard/" ||
+              pathname === "/" ||
+              (pathname.startsWith("/dashboard/") && !pathname.startsWith("/dashboard/workspace")) ||
+              pathname.startsWith("/dsa-") ||
+              pathname.startsWith("/resume-intelligence"));
+        } else if (isProfileTab) {
+          isActive =
+            pathname.startsWith("/profile") ||
+            pathname.startsWith("/settings") ||
+            pathname.startsWith("/career-identity") ||
+            pathname.startsWith("/role-explorer") ||
+            pathname.startsWith("/help");
+        } else if (isGateTab) {
+          isActive = pathname.startsWith("/gate");
+        } else {
+          isActive = pathname.startsWith(tab.href!);
+        }
 
         const Icon = tab.icon;
 
