@@ -1,0 +1,282 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - generic [ref=f1e3]:
+      - banner [ref=f1e4]:
+        - generic [ref=f1e5]:
+          - link "SyncRole Logo SyncRole" [ref=f1e7] [cursor=pointer]:
+            - /url: /
+            - img "SyncRole Logo" [ref=f1e9]
+            - generic [ref=f1e10]: SyncRole
+          - generic [ref=f1e11]:
+            - button "Toggle Search" [ref=f1e12]
+            - button "Get Started" [ref=f1e16] [cursor=pointer]
+            - button "Toggle Menu" [ref=f1e18]
+      - generic [ref=f1e22]:
+        - generic [ref=f1e23]:
+          - generic [ref=f1e24]: AI Career OS for Students
+          - heading "Build Your Future with SyncRole" [level=1] [ref=f1e28]
+          - paragraph [ref=f1e29]: Your all-in-one platform to grow from college to career. Get personalized learning paths, track DSA progress, analyze your resume & GitHub, and prepare for GATE 2027.
+          - generic [ref=f1e30]:
+            - generic [ref=f1e31]: Full-Stack Roadmap
+            - generic [ref=f1e36]: DSA Analytics
+            - generic [ref=f1e41]: Resume AI
+            - generic [ref=f1e46]: GATE 2027 Hub
+          - generic [ref=f1e51]:
+            - button "Start Your Journey" [ref=f1e52] [cursor=pointer]
+            - button "Explore SyncRole" [ref=f1e56] [cursor=pointer]
+          - generic [ref=f1e60]:
+            - generic [ref=f1e61]:
+              - img "Student user" [ref=f1e62]
+              - img "Student user" [ref=f1e63]
+              - img "Student user" [ref=f1e64]
+            - paragraph [ref=f1e65]: Joined by 1,000+ ambitious engineering students
+        - generic [ref=f1e67]:
+          - img "Student climbing toward a dream career with SyncRole"
+      - generic [ref=f1e70]:
+        - generic [ref=f1e77]:
+          - generic [ref=f1e78]: Career Path
+          - generic [ref=f1e79]: Personalized Roadmap
+        - generic [ref=f1e86]:
+          - generic [ref=f1e87]: Resume AI
+          - generic [ref=f1e88]: Instant ATS Feedback
+        - generic [ref=f1e95]:
+          - generic [ref=f1e96]: DSA Tracker
+          - generic [ref=f1e97]: Topic Analytics
+        - generic [ref=f1e102]:
+          - generic [ref=f1e103]: GitHub Pulse
+          - generic [ref=f1e104]: Commit Signal
+        - generic [ref=f1e117]:
+          - generic [ref=f1e118]: AI Guidance
+          - generic [ref=f1e119]: SyncPilot Assistant
+      - generic [ref=f1e121]:
+        - generic [ref=f1e122]:
+          - paragraph [ref=f1e123]: ALL-IN-ONE PLATFORM
+          - heading "Everything You Need, In One Place" [level=2] [ref=f1e124]
+          - paragraph [ref=f1e125]: From skill building to landing your dream role — SyncRole gives you the guidance and tools to stay ahead.
+        - generic [ref=f1e126]:
+          - generic [ref=f1e127]:
+            - button "Track Progress" [ref=f1e128] [cursor=pointer]
+            - button "Learn & Practice" [ref=f1e137] [cursor=pointer]
+            - button "AI Career Twin" [ref=f1e146] [cursor=pointer]
+            - button "GATE Hub" [ref=f1e158] [cursor=pointer]
+            - button "Build Portfolio" [ref=f1e167] [cursor=pointer]
+          - generic [ref=f1e179]:
+            - generic [ref=f1e180]:
+              - generic [ref=f1e181]: Analytics
+              - generic [ref=f1e182]: SyncRole Engine
+            - generic [ref=f1e183]:
+              - heading "Real-Time Career Readiness Index" [level=3] [ref=f1e184]
+              - paragraph [ref=f1e185]: SyncRole combines your DSA performance, GitHub activity, resume quality, and project depth into a single actionable score.
+            - generic [ref=f1e186]:
+              - generic [ref=f1e188]:
+                - generic [ref=f1e189]: Overall Preparedness
+                - generic [ref=f1e190]: 72%
+              - generic [ref=f1e194]:
+                - generic [ref=f1e195]: DSA Problem Solving
+                - generic [ref=f1e196]: 68%
+              - generic [ref=f1e200]:
+                - generic [ref=f1e201]: Resume ATS Match
+                - generic [ref=f1e202]: 78%
+      - generic [ref=f1e207]:
+        - generic [ref=f1e208]:
+          - generic [ref=f1e209]: Your Career, Your Way
+          - heading "Explore Your Career Journey" [level=2] [ref=f1e213]
+          - paragraph [ref=f1e214]: Build real-world projects, practice DSA, and track your readiness — with clear direction for every step.
+          - button "Explore Journey" [ref=f1e216] [cursor=pointer]
+          - generic [ref=f1e220]:
+            - generic [ref=f1e221]:
+              - generic [ref=f1e222]: 50+
+              - generic [ref=f1e223]: Real Projects
+            - generic [ref=f1e224]:
+              - generic [ref=f1e225]: 100+
+              - generic [ref=f1e226]: Learning Paths
+            - generic [ref=f1e227]:
+              - generic [ref=f1e228]: 10+
+              - generic [ref=f1e229]: Career Roles
+        - generic [ref=f1e232]:
+          - generic [ref=f1e233]:
+            - generic [ref=f1e234]:
+              - generic [ref=f1e235]: S
+              - generic [ref=f1e236]: SyncRole Mobile
+            - generic [ref=f1e237]: Live Dashboard
+          - generic [ref=f1e238]:
+            - generic [ref=f1e239]:
+              - generic [ref=f1e240]:
+                - 'heading "Target: Software Engineer" [level=4] [ref=f1e241]'
+                - paragraph [ref=f1e242]: 3rd Year CSE • SyncRole Guided
+              - generic [ref=f1e243]: On Track
+            - generic [ref=f1e244]:
+              - generic [ref=f1e245]:
+                - generic [ref=f1e246]: Career Readiness
+                - generic [ref=f1e247]: 68%
+              - generic [ref=f1e250]:
+                - generic [ref=f1e251]: DSA Analytics
+                - generic [ref=f1e252]: 42 / 100
+                - generic [ref=f1e253]: 12 Easy • 24 Medium
+            - generic [ref=f1e254]:
+              - generic [ref=f1e255]: Today's Goals
+              - generic [ref=f1e256]:
+                - generic [ref=f1e257]:
+                  - generic [ref=f1e258]: Arrays & Hashing Problem Set
+                  - generic [ref=f1e263]: +15 XP
+                - generic [ref=f1e264]:
+                  - generic [ref=f1e265]: Resume ATS Alignment Check
+                  - generic [ref=f1e270]: +20 XP
+      - generic [ref=f1e273]:
+        - generic [ref=f1e274]:
+          - generic [ref=f1e275]:
+            - paragraph [ref=f1e276]: SIMPLE STEPS
+            - heading "How SyncRole Works" [level=2] [ref=f1e277]
+            - paragraph [ref=f1e278]: A structured path from learning to landing your engineering role.
+          - generic [ref=f1e279]:
+            - generic [ref=f1e280]:
+              - generic [ref=f1e281]: "01"
+              - generic [ref=f1e282]:
+                - heading "Understand" [level=3] [ref=f1e283]
+                - paragraph [ref=f1e284]: Define your goal & assess current skills.
+            - generic [ref=f1e285]:
+              - generic [ref=f1e286]: "02"
+              - generic [ref=f1e287]:
+                - heading "Plan" [level=3] [ref=f1e288]
+                - paragraph [ref=f1e289]: Get personalized learning & milestone paths.
+            - generic [ref=f1e290]:
+              - generic [ref=f1e291]: "03"
+              - generic [ref=f1e292]:
+                - heading "Practice" [level=3] [ref=f1e293]
+                - paragraph [ref=f1e294]: Build DSA consistency & real project proof.
+            - generic [ref=f1e295]:
+              - generic [ref=f1e296]: "04"
+              - generic [ref=f1e297]:
+                - heading "Grow" [level=3] [ref=f1e298]
+                - paragraph [ref=f1e299]: Track progress & prepare for recruiter calls.
+        - generic [ref=f1e301]:
+          - generic [ref=f1e302]:
+            - generic [ref=f1e303]: GATE Hub
+            - generic [ref=f1e307]: Official 2027
+          - generic [ref=f1e308]:
+            - heading "GATE 2027 Preparation" [level=3] [ref=f1e309]
+            - paragraph [ref=f1e310]: Dedicated space for GATE CSE & DA syllabus, official updates, and study resources.
+          - list [ref=f1e311]:
+            - listitem [ref=f1e312]:
+              - generic [ref=f1e316]: Official updates & exam notifications
+            - listitem [ref=f1e317]:
+              - generic [ref=f1e321]: Structured CSE & Data Analytics syllabus
+            - listitem [ref=f1e322]:
+              - generic [ref=f1e326]: Focused preparation — zero clutter
+          - link "Explore GATE Hub" [ref=f1e327] [cursor=pointer]:
+            - /url: /gate
+      - generic [ref=f1e332]:
+        - generic [ref=f1e333]:
+          - paragraph [ref=f1e334]: STUDENTS LIKE YOU
+          - heading "Real Stories. Real Impact." [level=2] [ref=f1e335]
+          - paragraph [ref=f1e336]: See how SyncRole is helping engineering students build skills and land opportunities.
+        - generic [ref=f1e337]:
+          - generic [ref=f1e338]:
+            - paragraph [ref=f1e339]: “SyncRole helped me stay consistent with DSA and land my internship. The progress tracking is amazing!”
+            - generic [ref=f1e340]:
+              - img "Priya Sharma" [ref=f1e341]
+              - generic [ref=f1e342]:
+                - heading "Priya Sharma" [level=4] [ref=f1e343]
+                - paragraph [ref=f1e344]: B.Tech CSE · 3rd Year
+          - generic [ref=f1e345]:
+            - paragraph [ref=f1e346]: “The GATE Hub is a game changer! All the important updates and syllabus resources in one place.”
+            - generic [ref=f1e347]:
+              - img "Rahul Verma" [ref=f1e348]
+              - generic [ref=f1e349]:
+                - heading "Rahul Verma" [level=4] [ref=f1e350]
+                - paragraph [ref=f1e351]: B.Tech ECE · 3rd Year
+          - generic [ref=f1e352]:
+            - paragraph [ref=f1e353]: “I built my portfolio through SyncRole and got noticed by recruiters. The guidance is spot on!”
+            - generic [ref=f1e354]:
+              - img "Ananya Reddy" [ref=f1e355]
+              - generic [ref=f1e356]:
+                - heading "Ananya Reddy" [level=4] [ref=f1e357]
+                - paragraph [ref=f1e358]: B.Tech CSE · 4th Year
+      - generic [ref=f1e361]:
+        - paragraph [ref=f1e362]: YOUR JOURNEY STARTS NOW
+        - heading "Ready to Build Your Future?" [level=2] [ref=f1e363]
+        - paragraph [ref=f1e364]: Start building the skills, projects, and direction you need for your next step.
+        - generic [ref=f1e365]:
+          - button "Get Started Free" [ref=f1e366] [cursor=pointer]
+          - paragraph [ref=f1e370]: No credit card required • Free for students
+    - contentinfo [ref=f1e371]:
+      - generic [ref=f1e372]:
+        - generic [ref=f1e373]:
+          - generic [ref=f1e374]:
+            - link "SyncRole Logo SyncRole" [ref=f1e375] [cursor=pointer]:
+              - /url: /
+              - img "SyncRole Logo" [ref=f1e377]
+              - generic [ref=f1e378]: SyncRole
+            - paragraph [ref=f1e379]: Build your future. One step at a time. The AI Career Operating System helping students learn, practice DSA, build projects, and get recruiter-ready.
+            - generic [ref=f1e380]:
+              - link "GitHub" [ref=f1e381] [cursor=pointer]:
+                - /url: https://github.com/ramganesh1201
+              - link "LinkedIn" [ref=f1e385] [cursor=pointer]:
+                - /url: https://www.linkedin.com/in/vemula-ram-ganesh/
+              - link "X" [ref=f1e390] [cursor=pointer]:
+                - /url: https://x.com
+              - link "Website" [ref=f1e393] [cursor=pointer]:
+                - /url: "#"
+          - generic [ref=f1e397]:
+            - generic [ref=f1e398]:
+              - heading "Product" [level=4] [ref=f1e399]
+              - list [ref=f1e400]:
+                - listitem [ref=f1e401]:
+                  - link "Dashboard" [ref=f1e402] [cursor=pointer]:
+                    - /url: /dashboard
+                - listitem [ref=f1e403]:
+                  - link "Career Journey" [ref=f1e404] [cursor=pointer]:
+                    - /url: "#journey"
+                - listitem [ref=f1e405]:
+                  - link "DSA Practice" [ref=f1e406] [cursor=pointer]:
+                    - /url: /dashboard/dsa
+                - listitem [ref=f1e407]:
+                  - link "Resume Intelligence" [ref=f1e408] [cursor=pointer]:
+                    - /url: /dashboard
+                - listitem [ref=f1e409]:
+                  - link "AI Career Twin" [ref=f1e410] [cursor=pointer]:
+                    - /url: /dashboard
+            - generic [ref=f1e411]:
+              - heading "Explore" [level=4] [ref=f1e412]
+              - list [ref=f1e413]:
+                - listitem [ref=f1e414]:
+                  - link "GATE Hub New" [ref=f1e415] [cursor=pointer]:
+                    - /url: /gate
+                    - generic [ref=f1e416]: GATE Hub
+                    - generic [ref=f1e417]: New
+                - listitem [ref=f1e418]:
+                  - link "Learning Paths" [ref=f1e419] [cursor=pointer]:
+                    - /url: "#journey"
+                - listitem [ref=f1e420]:
+                  - link "Real Projects" [ref=f1e421] [cursor=pointer]:
+                    - /url: "#journey"
+                - listitem [ref=f1e422]:
+                  - link "Platform Features" [ref=f1e423] [cursor=pointer]:
+                    - /url: "#features"
+            - generic [ref=f1e424]:
+              - heading "Account & Info" [level=4] [ref=f1e425]
+              - list [ref=f1e426]:
+                - listitem [ref=f1e427]:
+                  - link "Sign In / Register" [ref=f1e428] [cursor=pointer]:
+                    - /url: /auth
+                - listitem [ref=f1e429]:
+                  - link "Student Stories" [ref=f1e430] [cursor=pointer]:
+                    - /url: "#stories"
+                - listitem [ref=f1e431]:
+                  - link "Overview" [ref=f1e432] [cursor=pointer]:
+                    - /url: "#home"
+        - generic [ref=f1e433]:
+          - generic [ref=f1e434]: © 2026 SyncRole. All rights reserved.
+          - generic [ref=f1e435]: I build ideas into digital products
+    - navigation [ref=f1e439]:
+      - link "Home" [ref=f1e440] [cursor=pointer]:
+        - /url: "#home"
+      - link "Features" [ref=f1e445] [cursor=pointer]:
+        - /url: "#features"
+      - link "Journey" [ref=f1e451] [cursor=pointer]:
+        - /url: "#journey"
+      - link "GATE Hub" [ref=f1e457] [cursor=pointer]:
+        - /url: /gate
+      - link "Account" [ref=f1e463] [cursor=pointer]:
+        - /url: /auth
+  - region "Notifications alt+T"

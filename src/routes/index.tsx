@@ -1,10 +1,9 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState, useRef } from "react";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   ArrowRight,
-  Check,
   CheckCircle2,
   Search,
   Menu,
@@ -14,28 +13,25 @@ import {
   BookOpen,
   Target,
   Rocket,
-  Award,
-  TrendingUp,
-  Building2,
-  Flame,
-  ChevronRight,
-  Star,
-  Activity,
-  Layers,
-  BarChart3,
   Shield,
   GraduationCap,
-  Briefcase,
-  UserCheck,
-  Compass,
-  FileCheck,
   Zap,
-  Lock,
+  Home,
+  Layers,
+  UserCheck,
+  LayoutDashboard,
+  Brain,
+  ChevronRight,
+  TrendingUp,
+  FileCheck,
+  Star,
+  Activity,
+  Compass,
+  BarChart3,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
 import { useAuth } from "@/hooks/use-auth";
-import { supabase } from "@/integrations/supabase/client";
 
 const DemoModal = lazy(() => import("@/components/home/DemoModal"));
 
@@ -68,12 +64,13 @@ function Navbar() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
-      setScrolled(window.scrollY > 20);
+      setScrolled(window.scrollY > 15);
     };
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
@@ -94,17 +91,17 @@ function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-xs border-b border-slate-100 py-3"
-          : "bg-white/70 backdrop-blur-sm py-4 border-b border-slate-100/60"
+          ? "bg-white/90 backdrop-blur-md shadow-xs border-b border-slate-200/60 py-2.5"
+          : "bg-white/75 backdrop-blur-sm py-3.5 border-b border-slate-100"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo */}
-        <div className="flex items-center gap-8">
+        {/* Brand Logo & Context */}
+        <div className="flex items-center gap-6">
           <BrandLogo size="md" />
 
           {/* Nav links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-7 text-sm font-semibold text-slate-600">
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-600">
             <a
               href="#home"
               className="text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1.5"
@@ -119,7 +116,7 @@ function Navbar() {
               className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
             >
               GATE Hub
-              <span className="bg-blue-600 text-white text-[10px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+              <span className="bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
                 New
               </span>
             </Link>
@@ -132,47 +129,72 @@ function Navbar() {
           </nav>
         </div>
 
-        {/* Right side: Search bar & CTA */}
-        <div className="hidden sm:flex items-center gap-3">
-          {/* Search bar */}
-          <form onSubmit={handleSearchSubmit} className="relative">
+        {/* Right side (Desktop & Mobile Controls) */}
+        <div className="flex items-center gap-2.5">
+          {/* Desktop Search bar */}
+          <form onSubmit={handleSearchSubmit} className="hidden sm:block relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search anything..."
-              className="w-44 focus:w-56 transition-all duration-300 bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-slate-200/70 focus:border-blue-400 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20"
+              placeholder="Search skills, DSA..."
+              className="w-40 focus:w-52 transition-all duration-300 bg-slate-100/80 hover:bg-slate-100 focus:bg-white border border-slate-200/80 focus:border-blue-400 rounded-full pl-9 pr-4 py-1.5 text-xs text-slate-800 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20"
             />
           </form>
 
-          {/* Primary CTA */}
+          {/* Mobile Search Toggle */}
           <button
-            onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-            className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 transition-all flex items-center gap-1.5 cursor-pointer"
+            onClick={() => setSearchOpen(!searchOpen)}
+            className="sm:hidden p-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            aria-label="Toggle Search"
           >
-            {user ? "Dashboard" : "Get Started"}
-            <ArrowRight className="h-3.5 w-3.5" />
+            <Search className="h-4 w-4" />
           </button>
-        </div>
 
-        {/* Mobile Hamburger toggle */}
-        <div className="flex sm:hidden items-center gap-2">
+          {/* Primary Action Button */}
           <button
             onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-            className="bg-blue-600 text-white font-semibold text-xs px-3.5 py-1.5 rounded-full"
+            className="bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-sm shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer min-h-[44px]"
           >
-            {user ? "Dashboard" : "Get Started"}
+            <span>{user ? "Dashboard" : "Get Started"}</span>
+            <ArrowRight className="h-3.5 w-3.5 hidden sm:inline" />
           </button>
+
+          {/* Mobile Menu Drawer Toggle */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100"
+            className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
             aria-label="Toggle Menu"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
         </div>
       </div>
+
+      {/* Expandable Mobile Search Bar */}
+      <AnimatePresence>
+        {searchOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="sm:hidden px-4 pt-2 pb-3 border-t border-slate-100 bg-white"
+          >
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search skills, DSA, topics..."
+                autoFocus
+                className="w-full bg-slate-100 border border-slate-200 rounded-full pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20"
+              />
+            </form>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Mobile Menu Drawer */}
       <AnimatePresence>
@@ -181,36 +203,26 @@ function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3"
+            className="lg:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3"
           >
-            <form onSubmit={handleSearchSubmit} className="relative mb-3">
-              <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
-              <input
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Search anything..."
-                className="w-full bg-slate-100 border border-slate-200 rounded-full pl-9 pr-4 py-2 text-xs text-slate-800"
-              />
-            </form>
             <a
               href="#home"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-blue-600 py-1"
+              className="block text-sm font-semibold text-blue-600 py-1.5"
             >
               Home
             </a>
             <a
               href="#features"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1"
+              className="block text-sm font-medium text-slate-700 py-1.5"
             >
               Features
             </a>
             <Link
               to="/gate"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between text-sm font-medium text-slate-700 py-1"
+              className="flex items-center justify-between text-sm font-medium text-slate-700 py-1.5"
             >
               <span>GATE Hub</span>
               <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
@@ -220,14 +232,14 @@ function Navbar() {
             <a
               href="#journey"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1"
+              className="block text-sm font-medium text-slate-700 py-1.5"
             >
               Resources
             </a>
             <a
               href="#stories"
               onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1"
+              className="block text-sm font-medium text-slate-700 py-1.5"
             >
               About
             </a>
@@ -239,6 +251,63 @@ function Navbar() {
 }
 
 /* -------------------------------------------------------------------------- */
+/*                        MOBILE BOTTOM NAVIGATION BAR                        */
+/* -------------------------------------------------------------------------- */
+function MobileBottomNav() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
+  const navItems = [
+    { label: "Home", href: "#home", icon: Home, isRoute: false },
+    { label: "Features", href: "#features", icon: Layers, isRoute: false },
+    { label: "Journey", href: "#journey", icon: Target, isRoute: false },
+    { label: "GATE Hub", href: "/gate", icon: Shield, isRoute: true, isNew: true },
+    {
+      label: user ? "Dashboard" : "Account",
+      href: user ? "/dashboard" : "/auth",
+      icon: user ? LayoutDashboard : UserCheck,
+      isRoute: true,
+    },
+  ];
+
+  return (
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 px-3 py-1.5 shadow-lg safe-area-pb flex items-center justify-around">
+      {navItems.map((item) => {
+        const IconComp = item.icon;
+        if (item.isRoute) {
+          return (
+            <Link
+              key={item.label}
+              to={item.href as any}
+              className="relative flex flex-col items-center justify-center px-2 py-1 min-w-[56px] min-h-[44px] text-[10px] font-semibold text-slate-500 hover:text-blue-600 transition-colors"
+            >
+              <div className="relative">
+                <IconComp className="h-5 w-5 mb-0.5" />
+                {item.isNew && (
+                  <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
+                )}
+              </div>
+              <span>{item.label}</span>
+            </Link>
+          );
+        }
+
+        return (
+          <a
+            key={item.label}
+            href={item.href}
+            className="flex flex-col items-center justify-center px-2 py-1 min-w-[56px] min-h-[44px] text-[10px] font-semibold text-slate-500 hover:text-blue-600 transition-colors"
+          >
+            <IconComp className="h-5 w-5 mb-0.5" />
+            <span>{item.label}</span>
+          </a>
+        );
+      })}
+    </nav>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
 /*                                HERO SECTION                                */
 /* -------------------------------------------------------------------------- */
 function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
@@ -246,56 +315,60 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
   const navigate = useNavigate();
 
   return (
-    <section id="home" className="relative pt-28 sm:pt-36 pb-16 sm:pb-24 overflow-hidden bg-gradient-to-b from-slate-50/80 via-blue-50/20 to-white">
-      {/* Background Decorative Gradient Orbs */}
-      <div className="absolute top-10 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-gradient-to-r from-blue-200/40 via-purple-200/30 to-indigo-200/40 blur-3xl pointer-events-none rounded-full -z-10" />
+    <section
+      id="home"
+      className="relative pt-24 sm:pt-36 pb-12 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-50/90 via-white to-white"
+    >
+      {/* Subtle Background Accent */}
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-blue-100/40 via-indigo-100/30 to-slate-100/40 blur-3xl pointer-events-none rounded-full -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Headline & CTA */}
-          <div className="lg:col-span-6 space-y-6 text-left">
+          <div className="lg:col-span-6 space-y-5 text-left">
             {/* Pill Eyebrow */}
-            <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-full px-3.5 py-1.5 text-xs font-semibold text-indigo-700 shadow-xs">
-              <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+            <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+              <Sparkles className="h-3.5 w-3.5 text-blue-600" />
               <span>AI Career OS for Students</span>
             </div>
 
             {/* Title */}
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
               Build Your Future <br />
               with{" "}
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600">
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 via-indigo-600 to-slate-800">
                 SyncRole
               </span>
             </h1>
 
             {/* Subtitle */}
-            <p className="text-base sm:text-lg text-slate-600 max-w-xl font-normal leading-relaxed">
-              Your all-in-one platform to grow from college to career. Get personalized learning paths, track your progress, analyze your resume & GitHub, practice DSA, and explore your dream opportunities — all in one place.
+            <p className="text-sm sm:text-base text-slate-600 max-w-xl font-normal leading-relaxed">
+              Your all-in-one platform to grow from college to career. Get personalized learning paths, track DSA progress, analyze your resume & GitHub, and prepare for GATE 2027.
             </p>
 
-            {/* Key Feature Checkmarks */}
-            <div className="flex flex-wrap gap-2.5 pt-1">
+            {/* Micro Feature Ticker / Tags */}
+            <div className="flex flex-wrap gap-2 pt-1">
               {[
-                "Full-Stack Development",
-                "Career Guidance",
-                "AI-Powered Applications",
+                "Full-Stack Roadmap",
+                "DSA Analytics",
+                "Resume AI",
+                "GATE 2027 Hub",
               ].map((badge) => (
                 <div
                   key={badge}
-                  className="inline-flex items-center gap-1.5 bg-blue-50/80 border border-blue-100 text-blue-800 text-xs font-semibold px-3 py-1.5 rounded-full"
+                  className="inline-flex items-center gap-1.5 bg-slate-100/80 border border-slate-200/60 text-slate-700 text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded-full"
                 >
-                  <CheckCircle2 className="h-3.5 w-3.5 text-blue-600" />
+                  <CheckCircle2 className="h-3 w-3 text-blue-600 shrink-0" />
                   <span>{badge}</span>
                 </div>
               ))}
             </div>
 
             {/* Action Buttons */}
-            <div className="flex flex-wrap items-center gap-4 pt-2">
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button
                 onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-lg shadow-blue-500/25 hover:shadow-xl hover:shadow-blue-500/35 transition-all flex items-center gap-2 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-md shadow-blue-500/20 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
               >
                 <span>Start Your Journey</span>
                 <ArrowRight className="h-4 w-4" />
@@ -303,51 +376,46 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
 
               <button
                 onClick={onOpenDemo}
-                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-sm sm:text-base px-6 py-3.5 rounded-full shadow-xs transition-all flex items-center gap-2 cursor-pointer"
+                className="bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-semibold text-sm sm:text-base px-6 py-3.5 rounded-full shadow-2xs transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
               >
                 <Play className="h-4 w-4 text-blue-600 fill-blue-600" />
-                <span>Explore Features</span>
+                <span>Explore SyncRole</span>
               </button>
             </div>
 
             {/* Social Proof */}
-            <div className="flex items-center gap-3 pt-4 border-t border-slate-200/60">
+            <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
               <div className="flex -space-x-2">
                 <img
-                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                  className="inline-block h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-white object-cover"
                   src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80"
                   alt="Student user"
                 />
                 <img
-                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                  className="inline-block h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-white object-cover"
                   src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80"
                   alt="Student user"
                 />
                 <img
-                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
+                  className="inline-block h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-white object-cover"
                   src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80"
                   alt="Student user"
                 />
-                <img
-                  className="inline-block h-8 w-8 rounded-full ring-2 ring-white object-cover"
-                  src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=120&q=80"
-                  alt="Student user"
-                />
               </div>
-              <p className="text-xs text-slate-600 font-medium">
-                Join <span className="font-bold text-slate-900">1000+</span> students on their journey
+              <p className="text-xs text-slate-500 font-medium">
+                Joined by <span className="font-semibold text-slate-900">1,000+</span> ambitious engineering students
               </p>
             </div>
           </div>
 
-          {/* Right Column: Integrated Hero Artwork */}
-          <div className="lg:col-span-6 relative flex items-center justify-center lg:-ml-4 xl:-ml-8 z-10">
-            <div className="relative w-full max-w-xl lg:max-w-none lg:w-[115%] xl:w-[122%] flex items-center justify-center">
+          {/* Right Column: Hero Artwork */}
+          <div className="lg:col-span-6 flex items-center justify-center">
+            <div className="relative w-full max-w-md lg:max-w-none flex items-center justify-center">
               <img
                 src="/heroimage.png"
                 alt="Student climbing toward a dream career with SyncRole"
-                className="w-full h-auto max-h-[560px] sm:max-h-[620px] lg:max-h-[660px] object-contain object-center transform lg:scale-105 transition-all duration-500 pointer-events-none select-none"
-                style={{ mixBlendMode: 'multiply' }}
+                className="w-full h-auto max-h-[300px] sm:max-h-[460px] object-contain transform hover:scale-[1.01] transition-all duration-300 pointer-events-none select-none"
+                style={{ mixBlendMode: "multiply" }}
                 loading="eager"
                 decoding="async"
               />
@@ -360,77 +428,34 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                           FEATURE INTRODUCTION                              */
+/*                     QUICK PROOF / CAPABILITY STRIP                          */
 /* -------------------------------------------------------------------------- */
-function FeatureIntroSection() {
-  const features = [
-    {
-      title: "Track Progress",
-      desc: "See your skills, scores and achievements in one place.",
-      icon: BarChart3,
-      color: "text-emerald-600 bg-emerald-50 border-emerald-100",
-    },
-    {
-      title: "Learn & Practice",
-      desc: "DSA, resume, GitHub and real-world challenges.",
-      icon: BookOpen,
-      color: "text-blue-600 bg-blue-50 border-blue-100",
-    },
-    {
-      title: "AI Career Twin",
-      desc: "Get personalized guidance for your dream role & company.",
-      icon: Rocket,
-      color: "text-purple-600 bg-purple-50 border-purple-100",
-    },
-    {
-      title: "GATE Hub",
-      desc: "Stay updated with official GATE resources and latest events.",
-      icon: Shield,
-      color: "text-amber-600 bg-amber-50 border-amber-100",
-    },
-    {
-      title: "Build Portfolio",
-      desc: "Showcase your projects and get recruiter-ready.",
-      icon: Code2,
-      color: "text-cyan-600 bg-cyan-50 border-cyan-100",
-    },
+function CapabilityTickerSection() {
+  const capabilities = [
+    { title: "Career Path", label: "Personalized Roadmap", icon: Target, color: "text-blue-600 bg-blue-50" },
+    { title: "Resume AI", label: "Instant ATS Feedback", icon: FileCheck, color: "text-indigo-600 bg-indigo-50" },
+    { title: "DSA Tracker", label: "Topic Analytics", icon: Code2, color: "text-emerald-600 bg-emerald-50" },
+    { title: "GitHub Pulse", label: "Commit Signal", icon: Zap, color: "text-amber-600 bg-amber-50" },
+    { title: "AI Guidance", label: "SyncPilot Assistant", icon: Brain, color: "text-purple-600 bg-purple-50" },
   ];
 
   return (
-    <section id="features" className="py-16 sm:py-20 bg-white border-y border-slate-100">
+    <section className="py-6 bg-slate-50/60 border-y border-slate-200/60 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto space-y-2">
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
-            ALL-IN-ONE PLATFORM
-          </p>
-          <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Everything You Need, In One Place
-          </h2>
-          <p className="text-sm sm:text-base text-slate-600">
-            From learning to landing your dream job — SyncRole gives you the tools, guidance and support to stay ahead.
-          </p>
-        </div>
-
-        {/* 5 Horizontal Feature Cards Grid */}
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
-          {features.map((f, idx) => {
-            const IconComp = f.icon;
+        <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar pb-1">
+          {capabilities.map((c, i) => {
+            const Icon = c.icon;
             return (
               <div
-                key={idx}
-                className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-blue-200 transition-all duration-200 group flex flex-col justify-between"
+                key={i}
+                className="flex items-center gap-2.5 bg-white border border-slate-200/70 rounded-full px-3.5 py-2 shrink-0 shadow-2xs hover:border-blue-300 transition-colors"
               >
-                <div>
-                  <div className={`h-11 w-11 rounded-xl border ${f.color} flex items-center justify-center mb-4 group-hover:scale-105 transition-transform`}>
-                    <IconComp className="h-5.5 w-5.5" />
-                  </div>
-                  <h3 className="font-bold text-base text-slate-900 mb-1.5">
-                    {f.title}
-                  </h3>
-                  <p className="text-xs text-slate-500 leading-relaxed font-normal">
-                    {f.desc}
-                  </p>
+                <div className={`h-7 w-7 rounded-full ${c.color} flex items-center justify-center shrink-0`}>
+                  <Icon className="h-3.5 w-3.5" />
+                </div>
+                <div className="text-left">
+                  <div className="text-xs font-bold text-slate-900 leading-none">{c.title}</div>
+                  <div className="text-[10px] text-slate-500 leading-tight font-medium mt-0.5">{c.label}</div>
                 </div>
               </div>
             );
@@ -442,164 +467,319 @@ function FeatureIntroSection() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                         CAREER JOURNEY & LAPTOP MOCKUP                      */
+/*                     EVERYTHING YOU NEED (DYNAMIC PREVIEW)                  */
+/* -------------------------------------------------------------------------- */
+function EverythingYouNeedSection() {
+  const [activeTab, setActiveTab] = useState(0);
+
+  const tabs = [
+    {
+      id: 0,
+      title: "Track Progress",
+      subtitle: "See skills, scores & readiness",
+      icon: BarChart3,
+      badge: "Analytics",
+      preview: {
+        headline: "Real-Time Career Readiness Index",
+        detail: "SyncRole combines your DSA performance, GitHub activity, resume quality, and project depth into a single actionable score.",
+        metrics: [
+          { label: "Overall Preparedness", val: "72%", color: "bg-blue-600" },
+          { label: "DSA Problem Solving", val: "68%", color: "bg-indigo-600" },
+          { label: "Resume ATS Match", val: "78%", color: "bg-emerald-600" },
+        ],
+      },
+    },
+    {
+      id: 1,
+      title: "Learn & Practice",
+      subtitle: "DSA & curated problem sets",
+      icon: BookOpen,
+      badge: "Practice",
+      preview: {
+        headline: "Targeted DSA & Technical Preparation",
+        detail: "Topic-wise problem breakdown with complexity analysis, hints, and step-by-step guidance designed for top engineering roles.",
+        metrics: [
+          { label: "Arrays & Hashing", val: "24 Solved", color: "bg-blue-600" },
+          { label: "Trees & Graphs", val: "14 Solved", color: "bg-indigo-600" },
+          { label: "Dynamic Programming", val: "8 Solved", color: "bg-purple-600" },
+        ],
+      },
+    },
+    {
+      id: 2,
+      title: "AI Career Twin",
+      subtitle: "Personalized guidance 24/7",
+      icon: Rocket,
+      badge: "SyncPilot",
+      preview: {
+        headline: "Your Dedicated AI Career Mentor",
+        detail: "SyncPilot analyzes your weak areas and tells you exactly what to study today to increase your recruiter callback rate.",
+        metrics: [
+          { label: "Daily Recommendation", val: "Binary Trees & Resume v2", color: "bg-blue-600" },
+          { label: "Target Role Match", val: "Frontend Engineer (85%)", color: "bg-indigo-600" },
+        ],
+      },
+    },
+    {
+      id: 3,
+      title: "GATE Hub",
+      subtitle: "Official GATE 2027 resources",
+      icon: Shield,
+      badge: "GATE 2027",
+      preview: {
+        headline: "Official GATE 2027 CSE & DA Resource Center",
+        detail: "Access verified syllabi, topic weightage, previous year papers, and official exam timeline updates in one structured hub.",
+        metrics: [
+          { label: "GATE CSE Syllabus", val: "100% Updated", color: "bg-blue-600" },
+          { label: "Official Notifications", val: "Live Feed", color: "bg-emerald-600" },
+        ],
+      },
+    },
+    {
+      id: 4,
+      title: "Build Portfolio",
+      subtitle: "Showcase verified projects",
+      icon: Code2,
+      badge: "Projects",
+      preview: {
+        headline: "Showcase Verified Production Projects",
+        detail: "Turn your repository commits into clean portfolio proof cards that recruiters can evaluate instantly.",
+        metrics: [
+          { label: "GitHub Commits", val: "12 last 7 days", color: "bg-purple-600" },
+          { label: "Recruiter Signal", val: "High Impact", color: "bg-blue-600" },
+        ],
+      },
+    },
+  ];
+
+  const currentTab = tabs[activeTab];
+
+  return (
+    <section id="features" className="py-16 sm:py-24 bg-white border-b border-slate-100">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-left sm:text-center max-w-2xl mx-auto space-y-2 mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+            ALL-IN-ONE PLATFORM
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Everything You Need, In One Place
+          </h2>
+          <p className="text-xs sm:text-base text-slate-600 font-normal">
+            From skill building to landing your dream role — SyncRole gives you the guidance and tools to stay ahead.
+          </p>
+        </div>
+
+        {/* Dynamic Feature Composition */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Navigation Pill List */}
+          <div className="lg:col-span-5 flex flex-row lg:flex-col gap-2 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+            {tabs.map((tab, idx) => {
+              const IconComp = tab.icon;
+              const isActive = activeTab === idx;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => setActiveTab(idx)}
+                  className={`flex-1 min-w-[200px] lg:min-w-0 text-left p-3.5 sm:p-4 rounded-xl border transition-all duration-200 cursor-pointer min-h-[48px] flex items-center justify-between ${
+                    isActive
+                      ? "bg-blue-50/80 border-blue-200 text-blue-900 shadow-2xs"
+                      : "bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <div
+                      className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${
+                        isActive ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"
+                      }`}
+                    >
+                      <IconComp className="h-4.5 w-4.5" />
+                    </div>
+                    <div>
+                      <div className="font-bold text-xs sm:text-sm">{tab.title}</div>
+                      <div className="text-[11px] text-slate-500 font-normal hidden sm:block">
+                        {tab.subtitle}
+                      </div>
+                    </div>
+                  </div>
+
+                  <ChevronRight
+                    className={`h-4 w-4 shrink-0 transition-transform ${
+                      isActive ? "text-blue-600 translate-x-0.5" : "text-slate-400 opacity-50"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Interactive Active Module Preview Box */}
+          <div className="lg:col-span-7">
+            <div className="bg-slate-900 text-white rounded-2xl p-5 sm:p-7 border border-slate-800 shadow-lg text-left relative overflow-hidden">
+              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 border border-blue-800/80 px-2.5 py-1 rounded-full">
+                  {currentTab.badge}
+                </span>
+                <span className="text-[11px] text-slate-400 font-mono">SyncRole Engine</span>
+              </div>
+
+              <div className="mt-4 space-y-3">
+                <h3 className="text-base sm:text-xl font-bold text-white leading-snug">
+                  {currentTab.preview.headline}
+                </h3>
+                <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
+                  {currentTab.preview.detail}
+                </p>
+              </div>
+
+              {/* Dynamic Metrics */}
+              <div className="mt-6 space-y-3 pt-4 border-t border-slate-800/80">
+                {currentTab.preview.metrics.map((m, i) => (
+                  <div key={i} className="space-y-1">
+                    <div className="flex justify-between text-xs font-semibold">
+                      <span className="text-slate-300">{m.label}</span>
+                      <span className="text-blue-300 font-mono">{m.val}</span>
+                    </div>
+                    <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
+                      <div className={`h-full ${m.color} rounded-full`} style={{ width: "75%" }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/* -------------------------------------------------------------------------- */
+/*                         CAREER JOURNEY PRODUCT PREVIEW                      */
 /* -------------------------------------------------------------------------- */
 function ProductShowcaseSection() {
   const { user } = useAuth();
   const navigate = useNavigate();
 
   return (
-    <section id="journey" className="py-20 sm:py-28 bg-gradient-to-br from-blue-50/70 via-indigo-50/40 to-slate-50 border-b border-slate-100 overflow-hidden">
+    <section
+      id="journey"
+      className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 via-indigo-50/20 to-white border-b border-slate-100 overflow-hidden"
+    >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text & Stats */}
-          <div className="lg:col-span-5 space-y-6 text-left">
-            <div className="inline-flex items-center gap-2 bg-indigo-100/80 border border-indigo-200 rounded-full px-3.5 py-1 text-xs font-semibold text-indigo-700">
-              <Zap className="h-3.5 w-3.5 text-indigo-600 fill-indigo-600" />
+          <div className="lg:col-span-5 space-y-5 text-left">
+            <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1 text-xs font-semibold text-indigo-700">
+              <Zap className="h-3.5 w-3.5 text-indigo-600" />
               <span>Your Career, Your Way</span>
             </div>
 
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Explore Your <br />
+            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+              Explore Your <br className="hidden sm:inline" />
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
                 Career Journey
               </span>
             </h2>
 
-            <p className="text-sm sm:text-base text-slate-600 leading-relaxed font-normal max-w-md">
-              Build real-world projects, solve problems, and gain in-demand skills — with clean code and modern tech.
+            <p className="text-xs sm:text-base text-slate-600 leading-relaxed font-normal">
+              Build real-world projects, practice DSA, and track your readiness — with clear direction for every step.
             </p>
 
             <div>
               <button
                 onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-sm px-6 py-3 rounded-full shadow-md shadow-blue-500/20 transition-all flex items-center gap-2 cursor-pointer"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-sm transition-all flex items-center gap-2 cursor-pointer min-h-[44px]"
               >
-                <span>Explore Projects</span>
+                <span>Explore Journey</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
 
             {/* Metrics */}
-            <div className="pt-6 border-t border-slate-200/80 grid grid-cols-3 gap-4 text-left">
+            <div className="pt-5 border-t border-slate-200/80 grid grid-cols-3 gap-3 text-left">
               <div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
-                  50+
-                </div>
-                <div className="text-xs text-slate-500 font-medium">Real Projects</div>
+                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">50+</div>
+                <div className="text-[11px] text-slate-500 font-medium">Real Projects</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
-                  100+
-                </div>
-                <div className="text-xs text-slate-500 font-medium">Learning Paths</div>
+                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">100+</div>
+                <div className="text-[11px] text-slate-500 font-medium">Learning Paths</div>
               </div>
               <div>
-                <div className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
-                  10+
-                </div>
-                <div className="text-xs text-slate-500 font-medium">Career Roles</div>
+                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">10+</div>
+                <div className="text-[11px] text-slate-500 font-medium">Career Roles</div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Sleek Laptop Display Mockup */}
+          {/* Right Column: Native Mobile/Desktop Product Preview Frame */}
           <div className="lg:col-span-7">
-            <div className="relative mx-auto">
-              {/* Laptop Shell Outer Frame */}
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-900 p-2 sm:p-3 shadow-2xl shadow-blue-950/30 border border-slate-800">
-                {/* Top Laptop Notch / Camera bar */}
-                <div className="h-4 bg-slate-950 rounded-t-xl sm:rounded-t-2xl flex items-center justify-center px-4">
-                  <div className="h-1.5 w-1.5 rounded-full bg-slate-700" />
+            <div className="max-w-md mx-auto lg:max-w-none">
+              <div className="rounded-2xl sm:rounded-3xl bg-slate-950 p-3 sm:p-4 shadow-xl border border-slate-800 text-white text-left font-sans">
+                {/* Header */}
+                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
+                  <div className="flex items-center gap-2">
+                    <div className="h-6 w-6 rounded-md bg-blue-600 flex items-center justify-center text-xs font-bold">
+                      S
+                    </div>
+                    <span className="font-bold text-xs">SyncRole Mobile</span>
+                  </div>
+                  <span className="text-[10px] text-slate-400 font-mono">Live Dashboard</span>
                 </div>
 
-                {/* Laptop Screen Content */}
-                <div className="rounded-lg sm:rounded-xl bg-[#0b0f19] text-white p-4 sm:p-6 overflow-hidden border border-slate-800 text-left font-sans">
-                  {/* Mock Dashboard Header */}
-                  <div className="flex items-center justify-between pb-4 border-b border-slate-800/80">
-                    <div className="flex items-center gap-2">
-                      <div className="h-6 w-6 rounded-lg bg-blue-600 flex items-center justify-center text-xs font-bold">
-                        S
-                      </div>
-                      <span className="font-bold text-xs tracking-tight">SyncRole</span>
-                    </div>
-
-                    <div className="flex items-center gap-3">
-                      <div className="hidden sm:flex items-center gap-1.5 bg-slate-900 border border-slate-800 rounded-full px-3 py-1 text-[11px] text-slate-400">
-                        <Search className="h-3 w-3 text-slate-500" />
-                        <span>Search skills, DSA, projects...</span>
-                      </div>
-                      <div className="flex items-center gap-2">
-                        <div className="h-7 w-7 rounded-full bg-gradient-to-tr from-blue-500 to-indigo-500 flex items-center justify-center text-xs font-bold text-white">
-                          RG
-                        </div>
-                        <div className="hidden sm:block text-[11px]">
-                          <div className="font-semibold text-slate-200 leading-none">Ram Ganesh</div>
-                          <div className="text-[9px] text-slate-400 leading-tight">3rd Year • CSE</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Welcome banner */}
-                  <div className="mt-4 flex items-center justify-between">
+                {/* Body Content */}
+                <div className="mt-3 space-y-3">
+                  <div className="flex items-center justify-between">
                     <div>
-                      <h4 className="text-sm sm:text-base font-bold text-slate-100 flex items-center gap-1.5">
-                        Good Morning, Ram Ganesh! 🖐️
+                      <h4 className="text-xs sm:text-sm font-bold text-slate-100">
+                        Target: Software Engineer
                       </h4>
-                      <p className="text-[11px] text-slate-400">
-                        Semi-slow start: top tool for top growth.
-                      </p>
+                      <p className="text-[10px] text-slate-400">3rd Year CSE • SyncRole Guided</p>
                     </div>
+                    <span className="bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800 px-2 py-0.5 rounded-full">
+                      On Track
+                    </span>
                   </div>
 
-                  {/* 4 Metric Cards Row */}
-                  <div className="mt-4 grid grid-cols-2 sm:grid-cols-4 gap-2.5">
-                    <div className="bg-slate-900/90 border border-slate-800/90 rounded-xl p-3">
+                  {/* Score gauge cards */}
+                  <div className="grid grid-cols-2 gap-2">
+                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-2.5">
                       <div className="text-[10px] text-slate-400 font-medium">Career Readiness</div>
-                      <div className="mt-1 text-base font-bold text-blue-400">68%</div>
+                      <div className="text-base font-bold text-blue-400 mt-0.5">68%</div>
                       <div className="mt-1 h-1 bg-slate-800 rounded-full overflow-hidden">
                         <div className="h-full bg-blue-500 w-[68%]" />
                       </div>
                     </div>
 
-                    <div className="bg-slate-900/90 border border-slate-800/90 rounded-xl p-3">
-                      <div className="text-[10px] text-slate-400 font-medium">DSA Progress</div>
-                      <div className="mt-1 text-base font-bold text-slate-100">42 <span className="text-[10px] text-slate-400 font-normal">/ 100</span></div>
-                      <div className="text-[9px] text-emerald-400 mt-0.5">12 Easy</div>
-                    </div>
-
-                    <div className="bg-slate-900/90 border border-slate-800/90 rounded-xl p-3">
-                      <div className="text-[10px] text-slate-400 font-medium">Resume Score</div>
-                      <div className="mt-1 text-base font-bold text-indigo-400">78 <span className="text-[10px] text-slate-400 font-normal">/ 100</span></div>
-                      <div className="text-[9px] text-indigo-300 mt-0.5">2 Revision</div>
-                    </div>
-
-                    <div className="bg-slate-900/90 border border-slate-800/90 rounded-xl p-3">
-                      <div className="text-[10px] text-slate-400 font-medium">GitHub Activity</div>
-                      <div className="mt-1 text-base font-bold text-purple-400">12 commits</div>
-                      <div className="text-[9px] text-slate-400 mt-0.5">in last 7d</div>
+                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-2.5">
+                      <div className="text-[10px] text-slate-400 font-medium">DSA Analytics</div>
+                      <div className="text-base font-bold text-emerald-400 mt-0.5">42 / 100</div>
+                      <div className="text-[9px] text-slate-400">12 Easy • 24 Medium</div>
                     </div>
                   </div>
 
-                  {/* Mock Today's Journey Checklist */}
-                  <div className="mt-4 bg-slate-900/60 border border-slate-800 rounded-xl p-3.5">
-                    <div className="text-[11px] font-bold text-slate-300 mb-2.5">Today's Journey</div>
-                    <div className="space-y-2">
-                      <div className="flex items-center justify-between bg-slate-950/80 p-2 rounded-lg border border-slate-800 text-[11px]">
+                  {/* Checklist */}
+                  <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                    <div className="text-[11px] font-bold text-slate-300 mb-2">Today's Goals</div>
+                    <div className="space-y-1.5 text-[11px]">
+                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800/80">
                         <div className="flex items-center gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                          <span className="text-slate-200">Complete DSA Practice (Arrays)</span>
+                          <span className="text-slate-200">Arrays & Hashing Problem Set</span>
                         </div>
-                        <span className="bg-blue-600 text-white px-2 py-0.5 rounded text-[9px] font-semibold">Start</span>
+                        <span className="text-[9px] text-blue-300 font-semibold bg-blue-950 px-1.5 py-0.5 rounded">
+                          +15 XP
+                        </span>
                       </div>
-
-                      <div className="flex items-center justify-between bg-slate-950/80 p-2 rounded-lg border border-slate-800 text-[11px]">
+                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800/80">
                         <div className="flex items-center gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                          <span className="text-slate-200">Update your Resume</span>
+                          <span className="text-slate-200">Resume ATS Alignment Check</span>
                         </div>
-                        <span className="bg-indigo-600 text-white px-2 py-0.5 rounded text-[9px] font-semibold">Continue</span>
+                        <span className="text-[9px] text-indigo-300 font-semibold bg-indigo-950 px-1.5 py-0.5 rounded">
+                          +20 XP
+                        </span>
                       </div>
                     </div>
                   </div>
@@ -620,158 +800,98 @@ function WorkflowAndGateSection() {
   const navigate = useNavigate();
 
   const steps = [
-    {
-      num: "1",
-      title: "Understand",
-      desc: "Know your goals and current level.",
-      icon: Target,
-      color: "bg-emerald-50 text-emerald-600 border-emerald-200",
-    },
-    {
-      num: "2",
-      title: "Learn",
-      desc: "Access in-depth resources & content.",
-      icon: BookOpen,
-      color: "bg-blue-50 text-blue-600 border-blue-200",
-    },
-    {
-      num: "3",
-      title: "Practice",
-      desc: "Build skills with DSA & real projects.",
-      icon: Code2,
-      color: "bg-teal-50 text-teal-600 border-teal-200",
-    },
-    {
-      num: "4",
-      title: "Grow",
-      desc: "Track progress & improve with AI.",
-      icon: Rocket,
-      color: "bg-purple-50 text-purple-600 border-purple-200",
-    },
+    { num: "01", title: "Understand", desc: "Define your goal & assess current skills.", icon: Target },
+    { num: "02", title: "Plan", desc: "Get personalized learning & milestone paths.", icon: BookOpen },
+    { num: "03", title: "Practice", desc: "Build DSA consistency & real project proof.", icon: Code2 },
+    { num: "04", title: "Grow", desc: "Track progress & prepare for recruiter calls.", icon: Rocket },
   ];
 
   return (
-    <section className="py-20 sm:py-28 bg-white">
+    <section className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
           {/* Left Column: How SyncRole Works */}
-          <div className="lg:col-span-7 space-y-8 text-left">
+          <div className="lg:col-span-7 space-y-6 text-left">
             <div>
               <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
                 SIMPLE STEPS
               </p>
-              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight mt-1">
                 How SyncRole Works
               </h2>
-              <p className="text-sm sm:text-base text-slate-600 mt-2">
-                Follow a clear path from learning to landing your dream role.
+              <p className="text-xs sm:text-base text-slate-600 mt-1">
+                A structured path from learning to landing your engineering role.
               </p>
             </div>
 
-            {/* 4 Steps Flow */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              {steps.map((s, idx) => {
-                const IconComp = s.icon;
+            {/* Step Flow List */}
+            <div className="space-y-3 pt-2">
+              {steps.map((s) => {
+                const Icon = s.icon;
                 return (
                   <div
                     key={s.num}
-                    className="bg-slate-50/80 rounded-2xl p-5 border border-slate-200/70 hover:bg-white hover:shadow-md hover:border-blue-200 transition-all duration-200"
+                    className="flex items-start gap-3.5 p-3.5 sm:p-4 bg-slate-50/70 border border-slate-200/70 rounded-xl hover:bg-white hover:border-blue-200 transition-all duration-200"
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <div className={`h-10 w-10 rounded-xl border ${s.color} flex items-center justify-center font-bold text-sm`}>
-                        <IconComp className="h-5 w-5" />
-                      </div>
-                      <div>
-                        <span className="text-xs font-bold text-slate-400 block uppercase tracking-wider">
-                          Step {s.num}
-                        </span>
-                        <h3 className="font-bold text-slate-900 text-base leading-tight">
-                          {s.title}
-                        </h3>
-                      </div>
+                    <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
+                      {s.num}
                     </div>
-                    <p className="text-xs text-slate-600 font-normal leading-relaxed">
-                      {s.desc}
-                    </p>
+                    <div>
+                      <h3 className="font-bold text-slate-900 text-sm">{s.title}</h3>
+                      <p className="text-xs text-slate-500 font-normal leading-relaxed mt-0.5">
+                        {s.desc}
+                      </p>
+                    </div>
                   </div>
                 );
               })}
             </div>
-
-            <div>
-              <button
-                onClick={() => navigate({ to: "/auth" })}
-                className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-xs transition-all flex items-center gap-2 cursor-pointer"
-              >
-                <span>Start Learning</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </button>
-            </div>
           </div>
 
-          {/* Right Column: GATE Hub Highlight Card */}
+          {/* Right Column: GATE Hub Highlight */}
           <div className="lg:col-span-5">
-            <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/70 to-slate-50 border border-blue-100 p-6 sm:p-8 shadow-sm flex flex-col justify-between text-left space-y-6">
-              <div>
-                {/* Header badge */}
-                <div className="flex items-center justify-between mb-4">
-                  <div className="inline-flex items-center gap-2 bg-blue-600 text-white text-xs font-bold px-3 py-1.5 rounded-full shadow-xs">
-                    <Shield className="h-3.5 w-3.5" />
-                    <span>GATE Hub</span>
-                  </div>
-                  <span className="bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
-                    New
-                  </span>
+            <div className="rounded-2xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 border border-blue-100 p-6 sm:p-7 text-left space-y-5">
+              <div className="flex items-center justify-between">
+                <div className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
+                  <Shield className="h-3.5 w-3.5" />
+                  <span>GATE Hub</span>
                 </div>
+                <span className="bg-blue-100 text-blue-700 text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full">
+                  Official 2027
+                </span>
+              </div>
 
+              <div>
                 <h3 className="text-xl sm:text-2xl font-extrabold text-slate-900 tracking-tight">
                   GATE 2027 Preparation
                 </h3>
                 <p className="text-xs sm:text-sm text-slate-600 mt-1 font-normal">
-                  Your dedicated space for GATE 2027 preparation, syllabus, official updates, and study resources.
+                  Dedicated space for GATE CSE & DA syllabus, official updates, and study resources.
                 </p>
-
-                {/* Bullets */}
-                <ul className="mt-5 space-y-2.5 text-xs text-slate-700 font-medium">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
-                    <span>Latest official updates & notifications</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
-                    <span>Syllabus, resources & study plan</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
-                    <span>Real-time data from official sources</span>
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
-                    <span>Simple, clean and focused — no distractions</span>
-                  </li>
-                </ul>
               </div>
 
-              {/* Inset Campus Graphic Preview Card */}
-              <div className="rounded-2xl bg-gradient-to-r from-blue-900 to-indigo-900 text-white p-4 overflow-hidden relative shadow-md">
-                <div className="relative z-10 flex items-center justify-between">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-blue-300 tracking-wider">OFFICIAL REPO</span>
-                    <h4 className="text-sm font-bold text-white">GATE 2027 CSE & DA</h4>
-                  </div>
-                  <GraduationCap className="h-8 w-8 text-blue-300/80" />
-                </div>
-              </div>
+              <ul className="space-y-2 text-xs text-slate-700 font-medium">
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
+                  <span>Official updates & exam notifications</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
+                  <span>Structured CSE & Data Analytics syllabus</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0" />
+                  <span>Focused preparation — zero clutter</span>
+                </li>
+              </ul>
 
-              <div>
-                <Link
-                  to="/gate"
-                  className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm py-3 px-5 rounded-full shadow-md shadow-blue-500/20 transition-all flex items-center justify-center gap-2"
-                >
-                  <span>Explore GATE Hub</span>
-                  <ArrowRight className="h-4 w-4" />
-                </Link>
-              </div>
+              <Link
+                to="/gate"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm py-3 px-5 rounded-full shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
+              >
+                <span>Explore GATE Hub</span>
+                <ArrowRight className="h-4 w-4" />
+              </Link>
             </div>
           </div>
         </div>
@@ -794,7 +914,7 @@ function TestimonialsSection() {
     },
     {
       quote:
-        "The GATE Hub is a game changer! All the important updates and resources in one place.",
+        "The GATE Hub is a game changer! All the important updates and syllabus resources in one place.",
       name: "Rahul Verma",
       role: "B.Tech ECE · 3rd Year",
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
@@ -809,54 +929,39 @@ function TestimonialsSection() {
   ];
 
   return (
-    <section id="stories" className="py-20 sm:py-28 bg-slate-50/80 border-t border-slate-200/70">
+    <section id="stories" className="py-16 sm:py-24 bg-slate-50/70 border-t border-slate-200/70">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-12 gap-4">
-          <div className="text-left max-w-xl">
-            <div className="inline-flex items-center gap-2 bg-cyan-100 text-cyan-800 text-xs font-semibold px-3 py-1 rounded-full mb-3">
-              <span>STUDENTS LIKE YOU</span>
-            </div>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Real Stories. Real Impact.
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 mt-1">
-              See how SyncRole is helping students build better skills, land opportunities and achieve their dreams.
-            </p>
-          </div>
-
-          <div>
-            <a
-              href="#home"
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-semibold text-slate-700 hover:text-blue-600 bg-white border border-slate-200 px-4 py-2 rounded-full shadow-xs transition-colors"
-            >
-              <span>Read Their Stories</span>
-              <ArrowRight className="h-3.5 w-3.5" />
-            </a>
-          </div>
+        <div className="text-left sm:text-center max-w-xl mx-auto space-y-2 mb-10">
+          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+            STUDENTS LIKE YOU
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            Real Stories. Real Impact.
+          </h2>
+          <p className="text-xs sm:text-base text-slate-600 font-normal">
+            See how SyncRole is helping engineering students build skills and land opportunities.
+          </p>
         </div>
 
-        {/* 3 Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+        {/* 3 Story Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
           {stories.map((item, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-6"
+              className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4"
             >
-              <div>
-                <span className="text-3xl text-blue-500 font-serif leading-none block mb-2">“</span>
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                  {item.quote}
-                </p>
-              </div>
+              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
+                “{item.quote}”
+              </p>
 
-              <div className="flex items-center gap-3 pt-4 border-t border-slate-100">
+              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
                 <img
                   src={item.avatar}
                   alt={item.name}
-                  className="h-10 w-10 rounded-full object-cover border border-slate-200"
+                  className="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0"
                 />
                 <div>
-                  <h4 className="font-bold text-xs sm:text-sm text-slate-900 leading-tight">
+                  <h4 className="font-bold text-xs text-slate-900 leading-tight">
                     {item.name}
                   </h4>
                   <p className="text-[11px] text-slate-500 font-medium">
@@ -881,40 +986,29 @@ function FinalCTASection() {
 
   return (
     <section className="py-12 sm:py-16 bg-white">
-      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="relative rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 border border-blue-100/80 p-8 sm:p-12 lg:p-14 text-center overflow-hidden shadow-sm">
-          {/* Subtle decorative shapes */}
-          <div className="absolute top-0 right-0 -mr-12 -mt-12 w-56 h-56 rounded-full bg-blue-200/20 blur-3xl pointer-events-none" />
-          <div className="absolute bottom-0 left-0 -ml-12 -mb-12 w-56 h-56 rounded-full bg-indigo-200/20 blur-3xl pointer-events-none" />
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 border border-blue-100 p-7 sm:p-12 text-center space-y-4 shadow-2xs">
+          <p className="text-[11px] font-bold uppercase tracking-widest text-blue-600">
+            YOUR JOURNEY STARTS NOW
+          </p>
+          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
+            Ready to Build Your Future?
+          </h2>
+          <p className="text-xs sm:text-base text-slate-600 max-w-lg mx-auto font-normal leading-relaxed">
+            Start building the skills, projects, and direction you need for your next step.
+          </p>
 
-          {/* Handwritten note */}
-          <div className="absolute bottom-4 right-6 hidden sm:block text-indigo-400/60 font-mono italic text-xs tracking-wider transform -rotate-2 pointer-events-none select-none">
-            Better Skills Bigger Dreams ♡
-          </div>
-
-          <div className="relative z-10 max-w-xl mx-auto space-y-4">
-            <p className="text-[11px] font-bold uppercase tracking-widest text-indigo-500">
-              YOUR JOURNEY STARTS NOW
+          <div className="pt-2 flex flex-col items-center gap-2">
+            <button
+              onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
+              className="bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs sm:text-sm px-7 py-3.5 rounded-full shadow-md shadow-blue-500/20 transition-all inline-flex items-center gap-2 cursor-pointer min-h-[48px]"
+            >
+              <span>{user ? "Open Dashboard" : "Get Started Free"}</span>
+              <ArrowRight className="h-4 w-4" />
+            </button>
+            <p className="text-[11px] text-slate-500 font-medium">
+              No credit card required • Free for students
             </p>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Ready to Build Your Future?
-            </h2>
-            <p className="text-sm sm:text-base text-slate-600 font-normal leading-relaxed">
-              Start building the skills, projects, and direction you need for your next step.
-            </p>
-
-            <div className="pt-3 flex flex-col items-center gap-2.5">
-              <button
-                onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-                className="bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm sm:text-base px-8 py-3.5 rounded-full shadow-lg shadow-blue-500/20 hover:shadow-xl hover:shadow-blue-500/30 hover:-translate-y-px transition-all inline-flex items-center gap-2 cursor-pointer"
-              >
-                <span>{user ? "Open Dashboard" : "Get Started Free"}</span>
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              <p className="text-[11px] text-slate-500 font-medium">
-                No credit card required
-              </p>
-            </div>
           </div>
         </div>
       </div>
@@ -929,11 +1023,12 @@ function LandingPage() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col justify-between">
+    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col justify-between pb-16 sm:pb-0">
       <div>
         <Navbar />
         <HeroSection onOpenDemo={() => setIsDemoOpen(true)} />
-        <FeatureIntroSection />
+        <CapabilityTickerSection />
+        <EverythingYouNeedSection />
         <ProductShowcaseSection />
         <WorkflowAndGateSection />
         <TestimonialsSection />
@@ -941,6 +1036,9 @@ function LandingPage() {
       </div>
 
       <SyncFooter />
+
+      {/* Mobile Bottom Navigation */}
+      <MobileBottomNav />
 
       <Suspense fallback={null}>
         <DemoModal isOpen={isDemoOpen} onClose={() => setIsDemoOpen(false)} />
