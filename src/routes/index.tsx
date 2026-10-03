@@ -28,6 +28,7 @@ import {
 import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
 import { useAuth } from "@/hooks/use-auth";
+import { useSyncPilot } from "@/hooks/useSyncPilot";
 
 const DemoModal = lazy(() => import("@/components/home/DemoModal"));
 
@@ -193,30 +194,50 @@ function MobileBottomNav() {
   const { user } = useAuth();
   const router = useRouter();
   const pathname = router.state.location.pathname;
+  const { openSyncPilot, panelState } = useSyncPilot();
+  const isSyncPilotOpen = panelState !== "closed";
 
   const navItems = [
     { label: "Home", href: "/", icon: Home },
     { label: "Explore", href: "/career-transformations", icon: Compass },
+    { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
     { label: "GATE Hub", href: "/gate", icon: Shield, isNew: true },
     { label: "Profile", href: user ? "/profile" : "/auth", icon: UserCheck },
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl px-4 py-1.5 shadow-xs flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl px-2.5 py-1.5 shadow-xs flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
       {navItems.map((item) => {
+        if (item.isCenter) {
+          return (
+            <button
+              key={item.label}
+              onClick={() => item.action?.()}
+              className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 ${
+                isSyncPilotOpen
+                  ? "bg-slate-900 text-blue-300 ring-2 ring-blue-500/40"
+                  : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110"
+              }`}
+              aria-label="Open SyncPilot AI Assistant"
+            >
+              <item.icon className="h-5 w-5" />
+            </button>
+          );
+        }
+
         const IconComp = item.icon;
         const isActive =
           item.href === "/"
             ? pathname === "/"
-            : pathname.startsWith(item.href);
+            : pathname.startsWith(item.href!);
 
         return (
           <Link
             key={item.label}
             to={item.href as any}
-            className={`relative flex flex-col items-center justify-center px-3 py-1.5 min-w-[64px] min-h-[44px] rounded-xl transition-all duration-150 ${
+            className={`relative flex flex-col items-center justify-center px-2 py-1 min-w-[52px] min-h-[44px] rounded-xl transition-all duration-150 ${
               isActive
-                ? "text-blue-600 bg-blue-50/80 font-bold"
+                ? "text-blue-600 font-bold"
                 : "text-slate-500 hover:text-slate-800 font-medium"
             }`}
           >
