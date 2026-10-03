@@ -156,15 +156,6 @@ function Navbar() {
             <span>{user ? "Dashboard" : "Get Started"}</span>
             <ArrowRight className="h-3.5 w-3.5 hidden sm:inline" />
           </button>
-
-          {/* Mobile Navigation Drawer Toggle (Desktop Hidden) */}
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95"
-            aria-label="Toggle Menu"
-          >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </button>
         </div>
       </div>
 
@@ -188,57 +179,6 @@ function Navbar() {
                 className="w-full bg-slate-100 border border-slate-200/80 rounded-full pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </form>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Mobile Menu Drawer */}
-      <AnimatePresence>
-        {mobileMenuOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white px-6 py-4 space-y-3"
-          >
-            <a
-              href="#home"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-semibold text-blue-600 py-1.5"
-            >
-              Home
-            </a>
-            <a
-              href="#features"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1.5"
-            >
-              Features
-            </a>
-            <Link
-              to="/gate"
-              onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-between text-sm font-medium text-slate-700 py-1.5"
-            >
-              <span>GATE Hub</span>
-              <span className="bg-blue-600 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">
-                New
-              </span>
-            </Link>
-            <Link
-              to="/career-transformations"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1.5"
-            >
-              Explore Transformations
-            </Link>
-            <a
-              href="#stories"
-              onClick={() => setMobileMenuOpen(false)}
-              className="block text-sm font-medium text-slate-700 py-1.5"
-            >
-              About
-            </a>
           </motion.div>
         )}
       </AnimatePresence>
