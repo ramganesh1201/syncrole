@@ -262,7 +262,7 @@ function MobileBottomNav() {
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-100 px-4 py-1.5 shadow-lg flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl px-4 py-1.5 shadow-xs flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
       {navItems.map((item) => {
         const IconComp = item.icon;
         const isActive =
