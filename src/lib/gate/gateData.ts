@@ -374,7 +374,7 @@ export const GATE_PAPERS: GatePaperInfo[] = RAW_GATE_PAPERS.map((p) => {
   const fileCode = p.code === 'CSE' ? 'CS' : p.code === 'ECE' ? 'EC' : p.code;
   return {
     ...p,
-    officialPdfUrl: `https://gate2027.iitm.ac.in/assets/syllabus/${fileCode}.pdf`,
+    officialPdfUrl: `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${fileCode}_GATE2027_Syllabus.pdf`,
   };
 });
 

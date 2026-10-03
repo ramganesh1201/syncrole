@@ -504,9 +504,9 @@ function GateMobileSyllabusScreen({
         <a
           href={
             paper.officialPdfUrl ||
-            `https://gate2027.iitm.ac.in/assets/syllabus/${
+            `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
               paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
-            }.pdf`
+            }_GATE2027_Syllabus.pdf`
           }
           target="_blank"
           rel="noreferrer"
