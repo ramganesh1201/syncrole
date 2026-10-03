@@ -5,6 +5,7 @@ export const GATE_2027_SYLLABUS_URL = 'https://gate2027.iitm.ac.in/exam_papers_a
 export const GATE_2027_PATTERN_URL = 'https://gate2027.iitm.ac.in/question_paper_pattern';
 export const GATE_2027_COMBINATIONS_URL = 'https://gate2027.iitm.ac.in/two_paper_combinations';
 export const GATE_2027_NOTIFICATIONS_URL = 'https://gate2027.iitm.ac.in/notifications';
+export const GATE_2027_BROCHURE_URL = 'https://gate2027.iitm.ac.in/assets/docs/brochure.pdf';
 export const GATE_LAST_VERIFIED_DATE = '2026-09-25T12:00:00Z';
 
 const RAW_GATE_PAPERS: GatePaperInfo[] = [

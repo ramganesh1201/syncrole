@@ -291,7 +291,7 @@ function GateMobileHomeScreen({
             <ExternalLink className="h-4 w-4 text-teal-700 shrink-0" />
           </a>
           <a
-            href="https://gate2027.iitm.ac.in/brochure"
+            href="https://gate2027.iitm.ac.in/assets/docs/brochure.pdf"
             target="_blank"
             rel="noreferrer"
             className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 flex items-center justify-between text-xs font-bold text-slate-900 hover:bg-slate-100 transition"
@@ -926,7 +926,7 @@ function GateMobileMoreScreen({
             <ExternalLink className="h-4 w-4 text-teal-700 shrink-0" />
           </a>
           <a
-            href="https://gate2027.iitm.ac.in/brochure"
+            href="https://gate2027.iitm.ac.in/assets/docs/brochure.pdf"
             target="_blank"
             rel="noreferrer"
             className="p-3 rounded-xl bg-slate-50 border border-slate-200 flex items-center justify-between font-bold text-slate-900 hover:bg-slate-100 transition"

@@ -855,7 +855,7 @@ export default function GateOverviewTab({
               </li>
               <li>
                 <a
-                  href="https://gate2027.iitm.ac.in/syllabus"
+                  href="https://gate2027.iitm.ac.in/exam_papers_and_syllabus"
                   target="_blank"
                   rel="noreferrer"
                   className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 border border-slate-200 hover:border-slate-300 font-medium text-slate-800"
