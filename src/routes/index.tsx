@@ -87,7 +87,7 @@ function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100 py-2.5"
+          ? "bg-white/95 backdrop-blur-md shadow-2xs py-2.5"
           : "bg-white/80 backdrop-blur-sm py-3.5"
       }`}
     >
