@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
 import { lazy, Suspense, useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -17,17 +17,13 @@ import {
   GraduationCap,
   Zap,
   Home,
-  Layers,
   UserCheck,
   LayoutDashboard,
   Brain,
   ChevronRight,
-  TrendingUp,
-  FileCheck,
-  Star,
-  Activity,
-  Compass,
   BarChart3,
+  Compass,
+  FileCheck,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
@@ -91,17 +87,17 @@ function Navbar() {
     <header
       className={`fixed top-0 inset-x-0 z-50 transition-all duration-200 ${
         scrolled
-          ? "bg-white/90 backdrop-blur-md shadow-xs border-b border-slate-200/60 py-2.5"
-          : "bg-white/75 backdrop-blur-sm py-3.5 border-b border-slate-100"
+          ? "bg-white/95 backdrop-blur-md shadow-xs border-b border-slate-100 py-2.5"
+          : "bg-white/80 backdrop-blur-sm py-3.5"
       }`}
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
-        {/* Brand Logo & Context */}
-        <div className="flex items-center gap-6">
-          <BrandLogo size="md" />
+        {/* Mobile Integrated Brand Identity Lockup */}
+        <div className="flex items-center gap-3">
+          <BrandLogo size="md" className="active:scale-[0.98] transition-transform" />
 
-          {/* Nav links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-600">
+          {/* Nav links (Desktop Only) */}
+          <nav className="hidden lg:flex items-center gap-7 text-xs font-semibold text-slate-600 ml-4">
             <a
               href="#home"
               className="text-blue-600 hover:text-blue-700 transition-colors flex items-center gap-1.5"
@@ -129,8 +125,8 @@ function Navbar() {
           </nav>
         </div>
 
-        {/* Right side (Desktop & Mobile Controls) */}
-        <div className="flex items-center gap-2.5">
+        {/* Right side (Desktop Search & Mobile/Desktop Action) */}
+        <div className="flex items-center gap-2">
           {/* Desktop Search bar */}
           <form onSubmit={handleSearchSubmit} className="hidden sm:block relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
@@ -143,28 +139,28 @@ function Navbar() {
             />
           </form>
 
-          {/* Mobile Search Toggle */}
+          {/* Mobile Search Toggle Button */}
           <button
             onClick={() => setSearchOpen(!searchOpen)}
-            className="sm:hidden p-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="sm:hidden p-2 text-slate-600 hover:text-slate-900 rounded-full hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95"
             aria-label="Toggle Search"
           >
-            <Search className="h-4 w-4" />
+            <Search className="h-4.5 w-4.5" />
           </button>
 
-          {/* Primary Action Button */}
+          {/* TOP NAVBAR DASHBOARD / PRIMARY ACTION BUTTON (MUST REMAIN IN TOP NAV) */}
           <button
             onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-            className="bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-sm shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer min-h-[44px]"
+            className="bg-blue-600 hover:bg-blue-700 active:scale-[0.97] text-white font-semibold text-xs sm:text-sm px-4 sm:px-5 py-2 sm:py-2.5 rounded-full shadow-sm shadow-blue-500/20 transition-all flex items-center gap-1.5 cursor-pointer min-h-[44px]"
           >
             <span>{user ? "Dashboard" : "Get Started"}</span>
             <ArrowRight className="h-3.5 w-3.5 hidden sm:inline" />
           </button>
 
-          {/* Mobile Menu Drawer Toggle */}
+          {/* Mobile Navigation Drawer Toggle (Desktop Hidden) */}
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center"
+            className="lg:hidden p-2 text-slate-600 hover:text-slate-900 rounded-xl hover:bg-slate-100 min-h-[44px] min-w-[44px] flex items-center justify-center active:scale-95"
             aria-label="Toggle Menu"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
@@ -172,14 +168,14 @@ function Navbar() {
         </div>
       </div>
 
-      {/* Expandable Mobile Search Bar */}
+      {/* Expandable Mobile Search Input Bar */}
       <AnimatePresence>
         {searchOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="sm:hidden px-4 pt-2 pb-3 border-t border-slate-100 bg-white"
+            className="sm:hidden px-4 pt-2 pb-3 bg-white"
           >
             <form onSubmit={handleSearchSubmit} className="relative">
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />
@@ -189,7 +185,7 @@ function Navbar() {
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search skills, DSA, topics..."
                 autoFocus
-                className="w-full bg-slate-100 border border-slate-200 rounded-full pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20"
+                className="w-full bg-slate-100 border border-slate-200/80 rounded-full pl-9 pr-4 py-2 text-xs text-slate-800 outline-none focus:ring-2 focus:ring-blue-500/20"
               />
             </form>
           </motion.div>
@@ -203,7 +199,7 @@ function Navbar() {
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
             exit={{ opacity: 0, height: 0 }}
-            className="lg:hidden bg-white border-b border-slate-200 px-6 py-4 space-y-3"
+            className="lg:hidden bg-white px-6 py-4 space-y-3"
           >
             <a
               href="#home"
@@ -229,13 +225,13 @@ function Navbar() {
                 New
               </span>
             </Link>
-            <a
-              href="#journey"
+            <Link
+              to="/career-transformations"
               onClick={() => setMobileMenuOpen(false)}
               className="block text-sm font-medium text-slate-700 py-1.5"
             >
-              Resources
-            </a>
+              Explore Transformations
+            </Link>
             <a
               href="#stories"
               onClick={() => setMobileMenuOpen(false)}
@@ -251,56 +247,47 @@ function Navbar() {
 }
 
 /* -------------------------------------------------------------------------- */
-/*                        MOBILE BOTTOM NAVIGATION BAR                        */
+/*             PWA PERSISTENT BOTTOM ROUTE NAVIGATION (NO ANCHORS)            */
 /* -------------------------------------------------------------------------- */
 function MobileBottomNav() {
   const { user } = useAuth();
-  const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = router.state.location.pathname;
 
   const navItems = [
-    { label: "Home", href: "#home", icon: Home, isRoute: false },
-    { label: "Features", href: "#features", icon: Layers, isRoute: false },
-    { label: "Journey", href: "#journey", icon: Target, isRoute: false },
-    { label: "GATE Hub", href: "/gate", icon: Shield, isRoute: true, isNew: true },
-    {
-      label: user ? "Dashboard" : "Account",
-      href: user ? "/dashboard" : "/auth",
-      icon: user ? LayoutDashboard : UserCheck,
-      isRoute: true,
-    },
+    { label: "Home", href: "/", icon: Home },
+    { label: "Explore", href: "/career-transformations", icon: Compass },
+    { label: "GATE Hub", href: "/gate", icon: Shield, isNew: true },
+    { label: "Profile", href: user ? "/profile" : "/auth", icon: UserCheck },
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-lg border-t border-slate-200/80 px-3 py-1.5 shadow-lg safe-area-pb flex items-center justify-around">
+    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl border-t border-slate-100 px-4 py-1.5 shadow-lg flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
       {navItems.map((item) => {
         const IconComp = item.icon;
-        if (item.isRoute) {
-          return (
-            <Link
-              key={item.label}
-              to={item.href as any}
-              className="relative flex flex-col items-center justify-center px-2 py-1 min-w-[56px] min-h-[44px] text-[10px] font-semibold text-slate-500 hover:text-blue-600 transition-colors"
-            >
-              <div className="relative">
-                <IconComp className="h-5 w-5 mb-0.5" />
-                {item.isNew && (
-                  <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
-                )}
-              </div>
-              <span>{item.label}</span>
-            </Link>
-          );
-        }
+        const isActive =
+          item.href === "/"
+            ? pathname === "/"
+            : pathname.startsWith(item.href);
 
         return (
-          <a
+          <Link
             key={item.label}
-            href={item.href}
-            className="flex flex-col items-center justify-center px-2 py-1 min-w-[56px] min-h-[44px] text-[10px] font-semibold text-slate-500 hover:text-blue-600 transition-colors"
+            to={item.href as any}
+            className={`relative flex flex-col items-center justify-center px-3 py-1.5 min-w-[64px] min-h-[44px] rounded-xl transition-all duration-150 ${
+              isActive
+                ? "text-blue-600 bg-blue-50/80 font-bold"
+                : "text-slate-500 hover:text-slate-800 font-medium"
+            }`}
           >
-            <IconComp className="h-5 w-5 mb-0.5" />
-            <span>{item.label}</span>
-          </a>
+            <div className="relative">
+              <IconComp className={`h-5 w-5 ${isActive ? "text-blue-600 scale-105" : "text-slate-400"}`} />
+              {item.isNew && (
+                <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
+              )}
+            </div>
+            <span className="text-[10px] tracking-tight mt-0.5">{item.label}</span>
+          </Link>
         );
       })}
     </nav>
@@ -317,17 +304,17 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
   return (
     <section
       id="home"
-      className="relative pt-24 sm:pt-36 pb-12 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-50/90 via-white to-white"
+      className="relative pt-24 sm:pt-36 pb-12 sm:pb-20 overflow-hidden bg-gradient-to-b from-slate-50/80 via-white to-white"
     >
       {/* Subtle Background Accent */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-blue-100/40 via-indigo-100/30 to-slate-100/40 blur-3xl pointer-events-none rounded-full -z-10" />
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-gradient-to-r from-blue-100/30 via-indigo-100/20 to-slate-100/30 blur-3xl pointer-events-none rounded-full -z-10" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           {/* Left Column: Headline & CTA */}
           <div className="lg:col-span-6 space-y-5 text-left">
-            {/* Pill Eyebrow */}
-            <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
+            {/* Context Eyebrow */}
+            <div className="inline-flex items-center gap-1.5 bg-blue-50 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
               <Sparkles className="h-3.5 w-3.5 text-blue-600" />
               <span>AI Career OS for Students</span>
             </div>
@@ -356,7 +343,7 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
               ].map((badge) => (
                 <div
                   key={badge}
-                  className="inline-flex items-center gap-1.5 bg-slate-100/80 border border-slate-200/60 text-slate-700 text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded-full"
+                  className="inline-flex items-center gap-1.5 bg-slate-100/80 text-slate-700 text-[11px] sm:text-xs font-medium px-2.5 py-1 rounded-full"
                 >
                   <CheckCircle2 className="h-3 w-3 text-blue-600 shrink-0" />
                   <span>{badge}</span>
@@ -368,7 +355,7 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
             <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2">
               <button
                 onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-                className="bg-blue-600 hover:bg-blue-700 active:scale-[0.99] text-white font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-md shadow-blue-500/20 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
+                className="bg-blue-600 hover:bg-blue-700 active:scale-[0.98] text-white font-semibold text-sm sm:text-base px-7 py-3.5 rounded-full shadow-md shadow-blue-500/20 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer min-h-[48px]"
               >
                 <span>Start Your Journey</span>
                 <ArrowRight className="h-4 w-4" />
@@ -384,7 +371,7 @@ function HeroSection({ onOpenDemo }: { onOpenDemo: () => void }) {
             </div>
 
             {/* Social Proof */}
-            <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+            <div className="flex items-center gap-3 pt-3">
               <div className="flex -space-x-2">
                 <img
                   className="inline-block h-7 w-7 sm:h-8 sm:w-8 rounded-full ring-2 ring-white object-cover"
@@ -440,15 +427,15 @@ function CapabilityTickerSection() {
   ];
 
   return (
-    <section className="py-6 bg-slate-50/60 border-y border-slate-200/60 overflow-hidden">
+    <section className="py-8 bg-slate-50/50 overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between gap-2 overflow-x-auto no-scrollbar pb-1">
+        <div className="flex items-center justify-between gap-2.5 overflow-x-auto no-scrollbar pb-1">
           {capabilities.map((c, i) => {
             const Icon = c.icon;
             return (
               <div
                 key={i}
-                className="flex items-center gap-2.5 bg-white border border-slate-200/70 rounded-full px-3.5 py-2 shrink-0 shadow-2xs hover:border-blue-300 transition-colors"
+                className="flex items-center gap-2.5 bg-white rounded-full px-3.5 py-2 shrink-0 shadow-2xs hover:bg-slate-50 transition-colors"
               >
                 <div className={`h-7 w-7 rounded-full ${c.color} flex items-center justify-center shrink-0`}>
                   <Icon className="h-3.5 w-3.5" />
@@ -555,7 +542,7 @@ function EverythingYouNeedSection() {
   const currentTab = tabs[activeTab];
 
   return (
-    <section id="features" className="py-16 sm:py-24 bg-white border-b border-slate-100">
+    <section id="features" className="py-16 sm:py-24 bg-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Section Header */}
         <div className="text-left sm:text-center max-w-2xl mx-auto space-y-2 mb-10">
@@ -581,16 +568,16 @@ function EverythingYouNeedSection() {
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(idx)}
-                  className={`flex-1 min-w-[200px] lg:min-w-0 text-left p-3.5 sm:p-4 rounded-xl border transition-all duration-200 cursor-pointer min-h-[48px] flex items-center justify-between ${
+                  className={`flex-1 min-w-[200px] lg:min-w-0 text-left p-3.5 sm:p-4 rounded-2xl transition-all duration-200 cursor-pointer min-h-[48px] flex items-center justify-between ${
                     isActive
-                      ? "bg-blue-50/80 border-blue-200 text-blue-900 shadow-2xs"
-                      : "bg-white border-slate-200/70 text-slate-600 hover:bg-slate-50 hover:border-slate-300"
+                      ? "bg-blue-50/80 text-blue-900 shadow-2xs"
+                      : "bg-slate-50/60 text-slate-600 hover:bg-slate-100"
                   }`}
                 >
                   <div className="flex items-center gap-3">
                     <div
-                      className={`h-9 w-9 rounded-lg flex items-center justify-center shrink-0 ${
-                        isActive ? "bg-blue-600 text-white" : "bg-slate-100 text-slate-600"
+                      className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${
+                        isActive ? "bg-blue-600 text-white" : "bg-white text-slate-600 shadow-2xs"
                       }`}
                     >
                       <IconComp className="h-4.5 w-4.5" />
@@ -605,7 +592,7 @@ function EverythingYouNeedSection() {
 
                   <ChevronRight
                     className={`h-4 w-4 shrink-0 transition-transform ${
-                      isActive ? "text-blue-600 translate-x-0.5" : "text-slate-400 opacity-50"
+                      isActive ? "text-blue-600 translate-x-0.5" : "text-slate-400 opacity-40"
                     }`}
                   />
                 </button>
@@ -615,9 +602,9 @@ function EverythingYouNeedSection() {
 
           {/* Interactive Active Module Preview Box */}
           <div className="lg:col-span-7">
-            <div className="bg-slate-900 text-white rounded-2xl p-5 sm:p-7 border border-slate-800 shadow-lg text-left relative overflow-hidden">
+            <div className="bg-slate-900 text-white rounded-3xl p-5 sm:p-7 shadow-lg text-left relative overflow-hidden">
               <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 border border-blue-800/80 px-2.5 py-1 rounded-full">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 px-2.5 py-1 rounded-full">
                   {currentTab.badge}
                 </span>
                 <span className="text-[11px] text-slate-400 font-mono">SyncRole Engine</span>
@@ -664,13 +651,13 @@ function ProductShowcaseSection() {
   return (
     <section
       id="journey"
-      className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 via-indigo-50/20 to-white border-b border-slate-100 overflow-hidden"
+      className="py-16 sm:py-24 bg-gradient-to-b from-slate-50/60 via-indigo-50/15 to-white overflow-hidden"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
           {/* Left Text & Stats */}
           <div className="lg:col-span-5 space-y-5 text-left">
-            <div className="inline-flex items-center gap-1.5 bg-indigo-50 border border-indigo-100 rounded-full px-3 py-1 text-xs font-semibold text-indigo-700">
+            <div className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">
               <Zap className="h-3.5 w-3.5 text-indigo-600" />
               <span>Your Career, Your Way</span>
             </div>
@@ -697,7 +684,7 @@ function ProductShowcaseSection() {
             </div>
 
             {/* Metrics */}
-            <div className="pt-5 border-t border-slate-200/80 grid grid-cols-3 gap-3 text-left">
+            <div className="pt-5 border-t border-slate-100 grid grid-cols-3 gap-3 text-left">
               <div>
                 <div className="text-xl sm:text-3xl font-extrabold text-slate-900">50+</div>
                 <div className="text-[11px] text-slate-500 font-medium">Real Projects</div>
@@ -716,7 +703,7 @@ function ProductShowcaseSection() {
           {/* Right Column: Native Mobile/Desktop Product Preview Frame */}
           <div className="lg:col-span-7">
             <div className="max-w-md mx-auto lg:max-w-none">
-              <div className="rounded-2xl sm:rounded-3xl bg-slate-950 p-3 sm:p-4 shadow-xl border border-slate-800 text-white text-left font-sans">
+              <div className="rounded-3xl bg-slate-950 p-4 sm:p-5 shadow-xl text-white text-left font-sans">
                 {/* Header */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-800">
                   <div className="flex items-center gap-2">
@@ -737,14 +724,14 @@ function ProductShowcaseSection() {
                       </h4>
                       <p className="text-[10px] text-slate-400">3rd Year CSE • SyncRole Guided</p>
                     </div>
-                    <span className="bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800 px-2 py-0.5 rounded-full">
+                    <span className="bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800/80 px-2 py-0.5 rounded-full">
                       On Track
                     </span>
                   </div>
 
                   {/* Score gauge cards */}
                   <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-2.5">
+                    <div className="bg-slate-900 rounded-2xl p-2.5">
                       <div className="text-[10px] text-slate-400 font-medium">Career Readiness</div>
                       <div className="text-base font-bold text-blue-400 mt-0.5">68%</div>
                       <div className="mt-1 h-1 bg-slate-800 rounded-full overflow-hidden">
@@ -752,7 +739,7 @@ function ProductShowcaseSection() {
                       </div>
                     </div>
 
-                    <div className="bg-slate-900 border border-slate-800 rounded-xl p-2.5">
+                    <div className="bg-slate-900 rounded-2xl p-2.5">
                       <div className="text-[10px] text-slate-400 font-medium">DSA Analytics</div>
                       <div className="text-base font-bold text-emerald-400 mt-0.5">42 / 100</div>
                       <div className="text-[9px] text-slate-400">12 Easy • 24 Medium</div>
@@ -760,22 +747,22 @@ function ProductShowcaseSection() {
                   </div>
 
                   {/* Checklist */}
-                  <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-3">
+                  <div className="bg-slate-900/90 rounded-2xl p-3">
                     <div className="text-[11px] font-bold text-slate-300 mb-2">Today's Goals</div>
                     <div className="space-y-1.5 text-[11px]">
-                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800/80">
+                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-xl text-slate-200">
                         <div className="flex items-center gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                          <span className="text-slate-200">Arrays & Hashing Problem Set</span>
+                          <span>Arrays & Hashing Problem Set</span>
                         </div>
                         <span className="text-[9px] text-blue-300 font-semibold bg-blue-950 px-1.5 py-0.5 rounded">
                           +15 XP
                         </span>
                       </div>
-                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-lg border border-slate-800/80">
+                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-xl text-slate-200">
                         <div className="flex items-center gap-2">
                           <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                          <span className="text-slate-200">Resume ATS Alignment Check</span>
+                          <span>Resume ATS Alignment Check</span>
                         </div>
                         <span className="text-[9px] text-indigo-300 font-semibold bg-indigo-950 px-1.5 py-0.5 rounded">
                           +20 XP
@@ -827,13 +814,12 @@ function WorkflowAndGateSection() {
             {/* Step Flow List */}
             <div className="space-y-3 pt-2">
               {steps.map((s) => {
-                const Icon = s.icon;
                 return (
                   <div
                     key={s.num}
-                    className="flex items-start gap-3.5 p-3.5 sm:p-4 bg-slate-50/70 border border-slate-200/70 rounded-xl hover:bg-white hover:border-blue-200 transition-all duration-200"
+                    className="flex items-start gap-3.5 p-3.5 sm:p-4 bg-slate-50/60 rounded-2xl hover:bg-slate-50 transition-colors"
                   >
-                    <div className="h-8 w-8 rounded-lg bg-blue-50 text-blue-600 border border-blue-100 flex items-center justify-center font-bold text-xs shrink-0">
+                    <div className="h-8 w-8 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-xs shrink-0">
                       {s.num}
                     </div>
                     <div>
@@ -850,7 +836,7 @@ function WorkflowAndGateSection() {
 
           {/* Right Column: GATE Hub Highlight */}
           <div className="lg:col-span-5">
-            <div className="rounded-2xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-slate-50 border border-blue-100 p-6 sm:p-7 text-left space-y-5">
+            <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/40 to-slate-50 p-6 sm:p-7 text-left space-y-5">
               <div className="flex items-center justify-between">
                 <div className="inline-flex items-center gap-1.5 bg-blue-600 text-white text-xs font-bold px-3 py-1 rounded-full">
                   <Shield className="h-3.5 w-3.5" />
@@ -929,7 +915,7 @@ function TestimonialsSection() {
   ];
 
   return (
-    <section id="stories" className="py-16 sm:py-24 bg-slate-50/70 border-t border-slate-200/70">
+    <section id="stories" className="py-16 sm:py-24 bg-slate-50/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-left sm:text-center max-w-xl mx-auto space-y-2 mb-10">
           <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
@@ -948,17 +934,17 @@ function TestimonialsSection() {
           {stories.map((item, idx) => (
             <div
               key={idx}
-              className="bg-white rounded-2xl p-5 border border-slate-200/80 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4"
+              className="bg-white rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4"
             >
               <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
                 “{item.quote}”
               </p>
 
-              <div className="flex items-center gap-3 pt-3 border-t border-slate-100">
+              <div className="flex items-center gap-3 pt-3">
                 <img
                   src={item.avatar}
                   alt={item.name}
-                  className="h-9 w-9 rounded-full object-cover border border-slate-200 shrink-0"
+                  className="h-9 w-9 rounded-full object-cover shrink-0"
                 />
                 <div>
                   <h4 className="font-bold text-xs text-slate-900 leading-tight">
@@ -987,7 +973,7 @@ function FinalCTASection() {
   return (
     <section className="py-12 sm:py-16 bg-white">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50 to-slate-50 border border-blue-100 p-7 sm:p-12 text-center space-y-4 shadow-2xs">
+        <div className="rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/60 to-slate-50 p-7 sm:p-12 text-center space-y-4 shadow-2xs">
           <p className="text-[11px] font-bold uppercase tracking-widest text-blue-600">
             YOUR JOURNEY STARTS NOW
           </p>
@@ -1023,7 +1009,7 @@ function LandingPage() {
   const [isDemoOpen, setIsDemoOpen] = useState(false);
 
   return (
-    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col justify-between pb-16 sm:pb-0">
+    <div className="min-h-screen bg-white text-slate-900 font-sans antialiased selection:bg-blue-100 selection:text-blue-900 flex flex-col justify-between pb-24 sm:pb-0">
       <div>
         <Navbar />
         <HeroSection onOpenDemo={() => setIsDemoOpen(true)} />
@@ -1037,7 +1023,7 @@ function LandingPage() {
 
       <SyncFooter />
 
-      {/* Mobile Bottom Navigation */}
+      {/* PWA Persistent Mobile Bottom Route Navigation */}
       <MobileBottomNav />
 
       <Suspense fallback={null}>
