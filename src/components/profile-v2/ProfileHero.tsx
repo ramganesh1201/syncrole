@@ -32,134 +32,145 @@ export const ProfileHero = React.memo(function ProfileHero({
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-      className="relative overflow-hidden rounded-[32px] bg-slate-900 border border-white/10 p-6 md:p-10 flex flex-col xl:flex-row gap-10 items-stretch mb-10 shadow-2xl"
+      initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
+      className="bg-white border border-slate-200/90 rounded-2xl p-6 md:p-8 flex flex-col xl:flex-row gap-8 items-stretch mb-8 shadow-xs"
       id="overview"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/10 via-slate-900 to-transparent opacity-80" />
-      
-      {/* Left: Avatar & Identity */}
-      <div className="relative flex flex-col md:flex-row items-center md:items-start gap-8 flex-1">
-        <div className="relative shrink-0 flex flex-col items-center gap-4">
-          <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full border-[6px] border-slate-800 overflow-hidden shadow-2xl bg-slate-800 ring-2 ring-white/10">
+      {/* Left: Avatar & Identity & Compact Metrics */}
+      <div className="flex flex-col md:flex-row items-center md:items-start gap-6 flex-1 min-w-0">
+        <div className="relative shrink-0 flex flex-col items-center gap-2">
+          <div className="relative w-24 h-24 md:w-28 md:h-28 rounded-full border-4 border-slate-100 overflow-hidden shadow-xs bg-slate-100 ring-1 ring-slate-200">
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-5xl font-bold text-indigo-400 bg-slate-800">
+              <div className="w-full h-full flex items-center justify-center text-3xl font-extrabold text-purple-600 bg-purple-50">
                 {profile?.full_name?.charAt(0) || "U"}
               </div>
             )}
           </div>
-          <div className="flex items-center gap-1.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 px-4 py-1.5 rounded-full text-[11px] font-black uppercase tracking-widest shadow-lg shadow-emerald-500/10">
-            <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <div className="flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full text-[10px] font-extrabold uppercase tracking-wider">
+            <div className="w-2 h-2 rounded-full bg-emerald-500" />
             {profile?.availability || "Available"}
           </div>
         </div>
 
-        <div className="flex-1 text-center md:text-left space-y-6 w-full">
+        <div className="flex-1 text-center md:text-left space-y-4 w-full min-w-0">
           <div>
-            <h1 className="text-3xl md:text-4xl font-display font-black text-white tracking-tight mb-2">{profile?.full_name || "SyncRole User"}</h1>
-            <div className="flex flex-col md:flex-row items-center gap-3 md:gap-5 flex-wrap">
-              <span className="flex items-center gap-2 text-sm text-indigo-300 font-bold bg-indigo-500/10 px-3 py-1 rounded-lg border border-indigo-500/20">
-                <Briefcase className="w-4 h-4" /> {profile?.target_role || "Targeting Role"}
+            <h1 className="text-2xl md:text-3xl font-extrabold text-slate-900 tracking-tight mb-2">
+              {profile?.full_name || "SyncRole User"}
+            </h1>
+            <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 flex-wrap">
+              <span className="flex items-center gap-1.5 text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-full border border-purple-200/80">
+                <Briefcase className="w-3.5 h-3.5 text-purple-600" /> {profile?.target_role || "Targeting Role"}
               </span>
               {profile?.dream_companies?.[0] && (
-                <span className="flex items-center gap-2 text-sm text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-lg border border-white/5">
-                  <Building2 className="w-4 h-4 text-slate-400" /> {profile.dream_companies[0]}
+                <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/80">
+                  <Building2 className="w-3.5 h-3.5 text-slate-500" /> {profile.dream_companies[0]}
                 </span>
               )}
-              <span className="flex items-center gap-2 text-sm text-slate-300 font-medium bg-white/5 px-3 py-1 rounded-lg border border-white/5">
-                <MapPin className="w-4 h-4 text-slate-400" /> {profile?.preferred_location || profile?.city || "Remote"}
+              <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/80">
+                <MapPin className="w-3.5 h-3.5 text-slate-500" /> {profile?.preferred_location || profile?.city || "Remote"}
               </span>
             </div>
           </div>
           
-          {/* Center: Core Metrics Grid */}
-          <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-3xl">
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-start justify-center shadow-inner hover:bg-white/10 transition-colors cursor-default">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 flex items-center gap-1.5"><Target className="w-3.5 h-3.5 text-emerald-400" /> Readiness</p>
-              <p className="text-2xl font-black text-white">{readiness}%</p>
+          {/* Core Metrics Row */}
+          <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 pt-1">
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center">
+              <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
+                <Target className="w-3 h-3 text-emerald-600" /> Readiness
+              </p>
+              <p className="text-xl font-extrabold text-slate-900">{readiness}%</p>
             </div>
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-start justify-center shadow-inner hover:bg-white/10 transition-colors cursor-default">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 flex items-center gap-1.5"><Star className="w-3.5 h-3.5 text-purple-400" /> Twin Score</p>
-              <p className="text-2xl font-black text-white">{twinScore}%</p>
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center">
+              <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
+                <Star className="w-3 h-3 text-purple-600" /> Twin Score
+              </p>
+              <p className="text-xl font-extrabold text-slate-900">{twinScore}%</p>
             </div>
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-start justify-center shadow-inner hover:bg-white/10 transition-colors cursor-default">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-amber-400" /> Level</p>
-              <div className="flex items-baseline gap-2">
-                <p className="text-2xl font-black text-white">{xpLevel?.level || 1}</p>
-              </div>
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center">
+              <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
+                <Zap className="w-3 h-3 text-amber-500" /> Level
+              </p>
+              <p className="text-xl font-extrabold text-slate-900">{xpLevel?.level || 1}</p>
             </div>
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-start justify-center shadow-inner hover:bg-white/10 transition-colors cursor-default">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 flex items-center gap-1.5"><Zap className="w-3.5 h-3.5 text-orange-400 fill-orange-400" /> Streak</p>
-              <div className="flex items-baseline gap-2">
-                <p className="text-2xl font-black text-white">{currentStreak}</p>
-              </div>
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center">
+              <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
+                <Zap className="w-3 h-3 text-orange-500 fill-orange-500" /> Streak
+              </p>
+              <p className="text-xl font-extrabold text-slate-900">{currentStreak}</p>
             </div>
-            <div className="bg-white/5 rounded-2xl p-4 border border-white/10 flex flex-col items-start justify-center shadow-inner hover:bg-white/10 transition-colors cursor-default">
-              <p className="text-[10px] text-muted-foreground uppercase font-black tracking-widest mb-1.5 flex items-center gap-1.5"><TrendingUp className="w-3.5 h-3.5 text-blue-400" /> Profile</p>
-              <div className="flex items-baseline gap-2">
-                <p className="text-2xl font-black text-white">{completionPct}%</p>
-              </div>
+            <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center col-span-2 sm:col-span-1">
+              <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
+                <TrendingUp className="w-3 h-3 text-blue-600" /> Profile
+              </p>
+              <p className="text-xl font-extrabold text-slate-900">{completionPct}%</p>
             </div>
           </div>
 
-          {/* Quick Actions (Ghost & Outline only) */}
-          <div className="flex flex-wrap items-center justify-center md:justify-start gap-3 pt-2">
-            <button onClick={onEditClick} className="h-10 px-5 bg-transparent border-2 border-white/10 hover:border-white/30 text-white font-bold rounded-xl text-xs transition-all flex items-center gap-2">
-              <Edit className="w-4 h-4" /> Edit Profile
+          {/* Quick Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center md:justify-start gap-2.5 pt-1">
+            <button 
+              onClick={onEditClick} 
+              className="h-9 px-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold rounded-xl text-xs transition-all flex items-center gap-2 shadow-xs cursor-pointer active:scale-95"
+            >
+              <Edit className="w-3.5 h-3.5" /> Edit Profile
             </button>
-            <button onClick={onUploadClick} disabled={uploading} className="h-10 px-5 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-2">
-              <Upload className="w-4 h-4" /> {uploading ? "Wait..." : "Update Resume"}
+            <button 
+              onClick={onUploadClick} 
+              disabled={uploading} 
+              className="h-9 px-4 bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200/80 transition-colors flex items-center gap-2 cursor-pointer active:scale-95"
+            >
+              <Upload className="w-3.5 h-3.5 text-slate-600" /> {uploading ? "Wait..." : "Update Resume"}
             </button>
-            <a href="#coding-profiles" className="h-10 px-5 bg-white/5 hover:bg-white/10 text-white font-bold rounded-xl text-xs transition-colors flex items-center gap-2">
-              <Github className="w-4 h-4" /> Profiles
+            <a 
+              href="#coding-profiles" 
+              className="h-9 px-4 bg-slate-100 hover:bg-slate-200/80 text-slate-800 font-semibold rounded-xl text-xs border border-slate-200/80 transition-colors flex items-center gap-2 cursor-pointer"
+            >
+              <Github className="w-3.5 h-3.5 text-slate-600" /> Coding Profiles
             </a>
           </div>
         </div>
       </div>
 
-      {/* Right: AI Career Summary Card */}
-      <div className="relative xl:w-[340px] shrink-0 bg-indigo-950/40 border border-indigo-500/30 rounded-3xl p-6 flex flex-col justify-between shadow-xl backdrop-blur-sm">
-        <div className="absolute top-0 right-0 w-32 h-32 bg-indigo-500/20 rounded-full blur-3xl -mr-10 -mt-10 pointer-events-none" />
-        
-        <div className="relative z-10">
-          <div className="flex items-center gap-3 mb-5">
-            <div className="bg-indigo-500/20 p-2 rounded-xl border border-indigo-500/40">
-              <Compass className="w-5 h-5 text-indigo-400" />
-            </div>
-            <h3 className="text-sm font-black text-white uppercase tracking-wider">AI Coach Insight</h3>
+      {/* Right: AI Coach Guidance Module */}
+      <div className="relative xl:w-[320px] shrink-0 bg-gradient-to-br from-purple-50/80 via-indigo-50/50 to-blue-50/40 border border-purple-200/80 rounded-2xl p-5 flex flex-col justify-between shadow-2xs">
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 text-xs font-bold text-purple-700 uppercase tracking-wider font-mono">
+            <Compass className="w-4 h-4 text-purple-600" />
+            <span>AI Coach Insight</span>
           </div>
-          
-          <div className="space-y-4">
+
+          <div className="space-y-3">
             <div>
-              <p className="text-[10px] text-indigo-300/80 uppercase font-bold tracking-widest mb-1">Current Goal</p>
-              <p className="text-sm font-bold text-white flex items-center gap-2">
-                <Target className="w-3.5 h-3.5 text-indigo-400" /> {profile?.target_role || "Software Engineer"} at {profile?.dream_companies?.[0] || "Top Tech"}
+              <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider font-mono mb-0.5">Target Goal</p>
+              <p className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+                <Target className="w-3.5 h-3.5 text-purple-600 shrink-0" /> 
+                <span className="truncate">{profile?.target_role || "Software Engineer"} at {profile?.dream_companies?.[0] || "Top Tech"}</span>
               </p>
             </div>
-            
-            <div className="bg-black/30 rounded-xl p-4 border border-white/5">
-              <p className="text-[10px] text-amber-400/90 uppercase font-black tracking-widest flex items-center gap-1.5 mb-1.5">
-                <AlertCircle className="w-3.5 h-3.5" /> Biggest Opportunity
+
+            <div className="bg-white/80 rounded-xl p-3 border border-purple-100 shadow-2xs space-y-1.5">
+              <p className="text-[10px] text-amber-800 font-extrabold uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                <AlertCircle className="w-3.5 h-3.5 text-amber-600" /> Primary Focus Area
               </p>
-              <p className="text-xs font-semibold text-slate-200 leading-relaxed">
-                Improve your ATS match rate. Adjust formatting and add Docker to increase readiness.
+              <p className="text-xs font-medium text-slate-700 leading-relaxed">
+                Improve your ATS match rate. Update skills and complete a resume review to boost placement readiness.
               </p>
-              <div className="mt-3 flex items-center justify-between border-t border-white/5 pt-3">
-                <span className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Est. Gain</span>
-                <span className="text-xs font-black text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded border border-emerald-500/20">+8% Readiness</span>
+              <div className="pt-2 flex items-center justify-between border-t border-purple-100">
+                <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider font-mono">Est. Impact</span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">+8% Readiness</span>
               </div>
             </div>
           </div>
         </div>
-        
-        {/* ONE Primary Button */}
+
         <Link 
           to="/dashboard" 
-          className="relative z-10 mt-6 w-full bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-bold h-12 rounded-xl text-sm transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(99,102,241,0.3)] hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] border border-white/10"
+          className="mt-4 w-full bg-slate-900 hover:bg-slate-800 text-white font-semibold h-10 rounded-xl text-xs transition-all flex items-center justify-center gap-2 shadow-xs cursor-pointer active:scale-95"
         >
-          Continue Career Journey <ChevronRight className="w-4 h-4" />
+          <span>Continue Journey</span>
+          <ChevronRight className="w-3.5 h-3.5" />
         </Link>
       </div>
     </motion.div>

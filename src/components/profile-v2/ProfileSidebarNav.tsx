@@ -65,9 +65,9 @@ export function ProfileSidebarNav() {
   };
 
   return (
-    <div className="sticky top-24 z-40 hidden md:block w-full max-w-[240px]">
-      <div className="space-y-1 mb-6 px-2">
-        <h3 className="text-xs font-bold text-muted-foreground uppercase tracking-wider mb-3 px-3">Career Identity</h3>
+    <div className="sticky top-24 z-40 hidden md:block w-full max-w-[220px] shrink-0">
+      <div className="space-y-1 mb-6 px-1">
+        <h3 className="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">Profile Navigation</h3>
         {navLinks.map((link) => {
           const Icon = link.icon;
           const isActive = activeSection === link.id;
@@ -77,18 +77,18 @@ export function ProfileSidebarNav() {
               key={link.id}
               href={`#${link.id}`}
               onClick={(e) => handleClick(e, link.id)}
-              className={`flex items-center gap-3 px-3 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+              className={`flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-semibold transition-all duration-150 relative ${
                 isActive 
-                  ? "bg-indigo-500/10 text-indigo-400 border border-indigo-500/20" 
-                  : "text-slate-400 hover:text-white hover:bg-white/5 border border-transparent"
+                  ? "bg-blue-50 text-blue-700 border border-blue-200/80 shadow-xs" 
+                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-transparent"
               }`}
             >
-              <Icon className={`w-4 h-4 ${isActive ? "text-indigo-400" : "text-slate-500"}`} />
+              <Icon className={`w-4 h-4 ${isActive ? "text-blue-600" : "text-slate-400"}`} />
               {link.label}
               {isActive && (
                 <motion.div 
                   layoutId="sidebar-active" 
-                  className="absolute left-0 w-1 h-5 bg-indigo-500 rounded-r-full" 
+                  className="absolute left-0 w-1 h-4 bg-blue-600 rounded-r-full" 
                   transition={{ type: "spring", stiffness: 300, damping: 30 }}
                 />
               )}

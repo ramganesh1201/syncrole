@@ -51,7 +51,7 @@ export function BrandLogo({
         />
       </div>
 
-      {/* Brand Wordmark with sleek typography and live identity */}
+      {/* Brand Wordmark with sleek typography */}
       {showText && (
         <div className="flex items-center gap-1">
           <span
@@ -66,11 +66,6 @@ export function BrandLogo({
             <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent font-extrabold ml-[1px]">
               Role
             </span>
-          </span>
-
-          {/* Micro Live OS Dot */}
-          <span className="hidden sm:inline-flex items-center justify-center">
-            <span className="h-1.5 w-1.5 rounded-full bg-blue-600 animate-pulse" />
           </span>
         </div>
       )}

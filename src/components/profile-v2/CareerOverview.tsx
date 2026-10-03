@@ -12,74 +12,67 @@ export const CareerOverview = React.memo(function CareerOverview({ profile }: Ca
       label: "Expected Salary", 
       value: profile?.expected_salary || "Not Set", 
       icon: Banknote,
-      color: "text-emerald-400",
-      bg: "bg-emerald-500/10 border-emerald-500/20"
+      color: "text-emerald-600 bg-emerald-50 border-emerald-200"
     },
     { 
       label: "Preferred Location", 
       value: profile?.preferred_location || profile?.city || "Remote", 
       icon: Map,
-      color: "text-blue-400",
-      bg: "bg-blue-500/10 border-blue-500/20"
+      color: "text-blue-600 bg-blue-50 border-blue-200"
     },
     { 
       label: "Engineering Domain", 
       value: profile?.career_goal ? profile.career_goal.charAt(0).toUpperCase() + profile.career_goal.slice(1) : "Software", 
       icon: Briefcase,
-      color: "text-purple-400",
-      bg: "bg-purple-500/10 border-purple-500/20"
+      color: "text-purple-600 bg-purple-50 border-purple-200"
     },
     { 
       label: "Company Fit", 
       value: profile?.company_preference || "MNC / Startup", 
       icon: Building2,
-      color: "text-indigo-400",
-      bg: "bg-indigo-500/10 border-indigo-500/20"
+      color: "text-indigo-600 bg-indigo-50 border-indigo-200"
     },
     {
       label: "Experience Level",
-      value: "Entry Level", // Mocked as it's not strictly in profile, but standard for student profiles
+      value: "Entry Level",
       icon: Clock,
-      color: "text-amber-400",
-      bg: "bg-amber-500/10 border-amber-500/20"
+      color: "text-amber-600 bg-amber-50 border-amber-200"
     },
     {
       label: "Graduation Year",
       value: profile?.graduation_year || "In Progress",
       icon: CalendarDays,
-      color: "text-rose-400",
-      bg: "bg-rose-500/10 border-rose-500/20"
+      color: "text-rose-600 bg-rose-50 border-rose-200"
     }
   ];
 
   return (
     <motion.div 
-      initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
+      initial={{ opacity: 0, y: 14 }} animate={{ opacity: 1, y: 0 }}
       id="career"
+      className="space-y-4"
     >
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2 font-display">Career Snapshot</h2>
-          <p className="text-sm text-muted-foreground font-medium">Your primary objectives and structural preferences.</p>
+          <h2 className="text-xl font-bold text-slate-900 font-display">Career Snapshot</h2>
+          <p className="text-xs text-slate-500 font-medium">Your primary objectives and structural preferences.</p>
         </div>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-5">
+      <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs grid grid-cols-2 md:grid-cols-3 gap-4">
         {cards.map((card, idx) => {
           const Icon = card.icon;
           return (
             <div 
               key={idx} 
-              className="glass bg-slate-900/60 border border-white/5 rounded-3xl p-6 flex flex-col justify-center h-[140px] hover:bg-slate-800/80 transition-all group shadow-lg"
+              className="bg-slate-50 border border-slate-200/80 rounded-xl p-3.5 flex items-center gap-3.5 hover:bg-slate-100/80 transition-colors"
             >
-              <div className="flex items-center gap-4 mb-4">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center border ${card.bg} transition-transform group-hover:scale-105`}>
-                  <Icon className={`w-5 h-5 ${card.color}`} />
-                </div>
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center border shrink-0 ${card.color}`}>
+                <Icon className="w-4 h-4" />
               </div>
-              <div>
-                <p className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-1">{card.label}</p>
-                <p className="text-sm font-bold text-white truncate group-hover:text-indigo-200 transition-colors">{card.value}</p>
+              <div className="min-w-0">
+                <p className="text-[10px] font-extrabold text-slate-400 uppercase tracking-wider font-mono mb-0.5">{card.label}</p>
+                <p className="text-xs font-bold text-slate-900 truncate">{card.value}</p>
               </div>
             </div>
           );

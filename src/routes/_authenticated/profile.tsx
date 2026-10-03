@@ -45,17 +45,10 @@ function ProfilePage() {
   const nav = useNavigate();
   const [isEditExpanded, setIsEditExpanded] = useState(false);
 
-  const scrollToSection = (id: string) => {
-    const el = document.getElementById(id);
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  };
-
   const handleEditClick = () => {
     setIsEditExpanded(true);
-    setTimeout(() => scrollToSection("edit-profile"), 100);
   };
+
 
 
   useEffect(() => {
@@ -279,13 +272,13 @@ function ProfilePage() {
           githubAnalysis={githubAnalysis}
           uploading={uploading}
           onEditClick={handleEditClick}
-          onUploadClick={() => scrollToSection("edit-profile")}
+          onUploadClick={handleEditClick}
           handleResumeUpload={handleResumeUpload}
         />
       </div>
 
-      {/* Desktop Profile View (>= 768px) - UNCHANGED */}
-      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 py-8 pb-32">
+      {/* Desktop Profile View (>= 768px) */}
+      <div className="hidden md:block max-w-7xl mx-auto px-4 md:px-6 py-6 pb-24">
         <ProfileHero 
           profile={profile}
           placementStats={placementStats}
@@ -294,23 +287,23 @@ function ProfilePage() {
           streak={streak}
           uploading={uploading}
           onEditClick={handleEditClick}
-          onUploadClick={() => scrollToSection("edit-profile")}
+          onUploadClick={handleEditClick}
         />
         
         <ProfileMobileNav />
         
-        <div className="flex flex-col md:flex-row gap-8 relative mt-8">
+        <div className="flex flex-col md:flex-row gap-8 relative mt-6">
           <ProfileSidebarNav />
           
-          <div className="flex-1 space-y-16 min-w-0">
+          <div className="flex-1 space-y-10 min-w-0">
             
-            <section id="career-group" className="space-y-10 scroll-mt-24">
+            <section id="career-group" className="space-y-8 scroll-mt-24">
               <CareerOverview profile={profile} />
               <SkillsSection profile={profile} onEditClick={handleEditClick} />
               <ProjectsSection profile={profile} onEditClick={handleEditClick} />
             </section>
 
-            <section id="professional-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
+            <section id="professional-group" className="space-y-8 scroll-mt-24 pt-6 border-t border-slate-200">
               <CodingProfilesSection profile={profile} onEditClick={handleEditClick} />
               <div id="resume-github" className="grid lg:grid-cols-2 gap-6 scroll-mt-24">
                 <ResumeSummary placementStats={placementStats} resumeAnalysis={resumeAnalysis} uploading={uploading} onUpload={handleResumeUpload} />
@@ -318,30 +311,43 @@ function ProfilePage() {
               </div>
             </section>
             
-            <section id="growth-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
+            <section id="growth-group" className="space-y-8 scroll-mt-24 pt-6 border-t border-slate-200">
               <AchievementsSection onViewAllClick={() => console.log("Open achievement modal")} />
               <ActivityTimeline placementStats={placementStats} />
-            </section>
-
-            <section id="settings-group" className="space-y-10 scroll-mt-24 pt-6 border-t border-white/5">
-              <EditProfileForm 
-                user={user}
-                profile={profile}
-                handleChange={handleChange}
-                handleSelectChange={handleSelectChange}
-                handleArrayChange={handleArrayChange}
-                handleSave={handleSave}
-                saving={saving}
-                uploading={uploading}
-                handleResumeUpload={handleResumeUpload}
-                isExpanded={isEditExpanded}
-                onToggle={() => setIsEditExpanded(!isEditExpanded)}
-              />
             </section>
 
           </div>
         </div>
       </div>
+
+      {/* In-Context Edit Profile Modal Overlay (Zero scroll jump!) */}
+      {isEditExpanded && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 sm:p-6 overflow-y-auto">
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.96 }}
+            transition={{ duration: 0.15 }}
+            className="w-full max-w-4xl my-auto"
+          >
+            <EditProfileForm 
+              user={user}
+              profile={profile}
+              handleChange={handleChange}
+              handleSelectChange={handleSelectChange}
+              handleArrayChange={handleArrayChange}
+              handleSave={async () => {
+                await handleSave();
+                setIsEditExpanded(false);
+              }}
+              saving={saving}
+              uploading={uploading}
+              handleResumeUpload={handleResumeUpload}
+              onClose={() => setIsEditExpanded(false)}
+            />
+          </motion.div>
+        </div>
+      )}
     </>
   );
 }
