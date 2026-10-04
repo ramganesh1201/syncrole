@@ -1222,7 +1222,7 @@ function ProductShowcaseSection() {
                           </span>
                         </div>
                         <div className="space-y-1.5 pt-1 text-xs text-slate-600">
-                          {currentStage.visualCard.points.map((pt, i) => (
+                          {currentStage.visualCard.points?.map((pt, i) => (
                             <div key={i} className="flex items-center gap-2">
                               <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
                               <span>{pt}</span>
@@ -1500,7 +1500,7 @@ function TestimonialsSection() {
   const [isPaused, setIsPaused] = useState(false);
   const [showStoryModal, setShowStoryModal] = useState(false);
 
-  const touchStartX = useRef<number | null>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   // Fetch published community stories from Supabase if available
   useEffect(() => {
@@ -1510,8 +1510,16 @@ function TestimonialsSection() {
       .select("id, author_name, author_role, author_college, before_syncrole, current_results")
       .eq("is_published", true)
       .order("created_at", { ascending: false })
-      .limit(6)
-      .then(({ data: rows }) => {
+      .limit(8)
+      .then((res: { data: unknown }) => {
+        const rows = res.data as Array<{
+          id: string;
+          author_name: string | null;
+          author_role: string | null;
+          author_college: string | null;
+          before_syncrole: string;
+          current_results: string | null;
+        }> | null;
         if (active && rows && rows.length > 0) {
           const dbStories: CommunityStory[] = rows.map((r) => ({
             id: r.id,
@@ -1531,17 +1539,55 @@ function TestimonialsSection() {
     };
   }, []);
 
-  // Calm, controlled auto-advance (Pauses on hover/touch/modal)
+  // Sync active index with actual scroll position
+  const handleScroll = () => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const firstCard = container.firstElementChild as HTMLElement;
+    if (!firstCard) return;
+
+    const cardWidth = firstCard.offsetWidth + 20; // width + gap
+    const index = Math.round(container.scrollLeft / cardWidth) % stories.length;
+    if (index >= 0 && index < stories.length && index !== activeIndex) {
+      setActiveIndex(index);
+    }
+  };
+
+  // Automatic smooth horizontal scrolling movement
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (isPaused || prefersReducedMotion || showStoryModal || stories.length <= 1) return;
 
     const interval = setInterval(() => {
-      setActiveIndex((prev) => (prev + 1) % stories.length);
-    }, 5500);
+      if (!scrollRef.current) return;
+      const container = scrollRef.current;
+      const firstCard = container.firstElementChild as HTMLElement;
+      if (!firstCard) return;
+
+      const cardWidth = firstCard.offsetWidth + 20;
+      const maxScroll = container.scrollWidth - container.clientWidth;
+
+      if (container.scrollLeft >= maxScroll - 15) {
+        // Seamlessly scroll back to start
+        container.scrollTo({ left: 0, behavior: "smooth" });
+      } else {
+        container.scrollBy({ left: cardWidth, behavior: "smooth" });
+      }
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [isPaused, showStoryModal, stories.length]);
+
+  const scrollToStory = (index: number) => {
+    if (!scrollRef.current) return;
+    const container = scrollRef.current;
+    const firstCard = container.firstElementChild as HTMLElement;
+    if (!firstCard) return;
+
+    const cardWidth = firstCard.offsetWidth + 20;
+    container.scrollTo({ left: index * cardWidth, behavior: "smooth" });
+    setActiveIndex(index);
+  };
 
   const handleShareStoryClick = () => {
     if (user) {
@@ -1551,44 +1597,27 @@ function TestimonialsSection() {
     }
   };
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    setIsPaused(true);
-    touchStartX.current = e.touches[0].clientX;
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    setIsPaused(false);
-    if (touchStartX.current === null) return;
-
-    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
-    if (deltaX > 40) {
-      // Swipe Right -> Previous
-      setActiveIndex((prev) => (prev === 0 ? stories.length - 1 : prev - 1));
-    } else if (deltaX < -40) {
-      // Swipe Left -> Next
-      setActiveIndex((prev) => (prev + 1) % stories.length);
-    }
-    touchStartX.current = null;
-  };
-
-  const currentStory = stories[activeIndex] || stories[0];
-  const avatarInitial = currentStory?.name ? currentStory.name.charAt(0).toUpperCase() : "S";
+  // Duplicate items for continuous feel if 3+ stories
+  const displayStories = stories.length >= 3 ? [...stories, ...stories] : stories;
 
   return (
-    <section id="stories" className="py-16 sm:py-24 bg-slate-50/60 overflow-hidden text-left">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
-        {/* Concise Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-slate-200/60">
-          <div className="space-y-1.5 max-w-xl">
-            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+    <section id="stories" className="py-12 sm:py-16 bg-slate-50/60 overflow-hidden text-left">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 sm:space-y-8">
+        {/* Compact Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 pb-3 border-b border-slate-200/60">
+          <div className="space-y-1 max-w-xl">
+            <p className="text-[11px] font-bold uppercase tracking-widest text-slate-400">
               REAL STORIES. REAL IMPACT.
             </p>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Stories from the SyncRole community.
             </h2>
+            <p className="text-xs sm:text-sm text-slate-500 font-normal">
+              Real experiences from students building their tech and engineering careers.
+            </p>
           </div>
 
-          <div className="flex items-center gap-4 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <Link
               to="/career-transformations"
               className="text-xs sm:text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors inline-flex items-center gap-1"
@@ -1599,7 +1628,7 @@ function TestimonialsSection() {
 
             <button
               onClick={handleShareStoryClick}
-              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-xs transition-all flex items-center gap-2 cursor-pointer min-h-[44px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-4 py-2.5 rounded-full shadow-xs transition-all flex items-center gap-1.5 cursor-pointer min-h-[40px]"
             >
               <Sparkles className="h-4 w-4" />
               <span>Share Your Story</span>
@@ -1607,100 +1636,91 @@ function TestimonialsSection() {
           </div>
         </div>
 
-        {/* Featured Story Panel (1 Primary Story at a Time) */}
+        {/* Horizontal Story Rail Track */}
         <div
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={handleTouchStart}
-          onTouchEnd={handleTouchEnd}
-          className="max-w-4xl mx-auto"
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
+          className="relative"
         >
-          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-xs relative overflow-hidden">
-            <AnimatePresence mode="wait">
-              <motion.div
-                key={currentStory.id}
-                initial={{ opacity: 0, scale: 0.99 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.99 }}
-                transition={{ duration: 0.22, ease: "easeOut" }}
-                className="space-y-6 sm:space-y-8"
-              >
-                {/* Prominent Profile Avatar & Identity Lockup */}
-                <div className="flex items-center gap-4 sm:gap-5 pb-4 border-b border-slate-100">
-                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-blue-100 text-blue-700 font-bold font-display text-xl sm:text-2xl flex items-center justify-center border-2 border-blue-200/80 shadow-xs shrink-0">
-                    {avatarInitial}
-                  </div>
-                  <div>
-                    <h3 className="font-extrabold text-base sm:text-xl text-slate-900 tracking-tight leading-snug">
-                      {currentStory.name}
-                    </h3>
-                    <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
-                      {currentStory.college} • <span className="text-slate-700">{currentStory.role}</span>
-                    </p>
-                  </div>
-                </div>
+          <div
+            ref={scrollRef}
+            onScroll={handleScroll}
+            className="flex gap-4 sm:gap-5 overflow-x-auto scroll-smooth snap-x snap-mandatory py-2 px-1 [::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]"
+          >
+            {displayStories.map((stg, idx) => {
+              const avatarInitial = stg.name ? stg.name.charAt(0).toUpperCase() : "S";
+              return (
+                <div
+                  key={`${stg.id}-${idx}`}
+                  className="w-[82vw] max-w-[320px] sm:w-[340px] md:w-[360px] shrink-0 snap-start bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 shadow-xs hover:shadow-md transition-all flex flex-col justify-between"
+                >
+                  <div className="space-y-4">
+                    {/* Profile DP & Information */}
+                    <div className="flex items-center gap-3.5 pb-3 border-b border-slate-100">
+                      <div className="h-11 w-11 sm:h-13 sm:w-13 rounded-full bg-blue-100 text-blue-700 font-bold font-display text-base sm:text-lg flex items-center justify-center border-2 border-blue-200/80 shadow-2xs shrink-0">
+                        {avatarInitial}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <h3 className="font-extrabold text-sm sm:text-base text-slate-900 tracking-tight leading-snug truncate">
+                          {stg.name}
+                        </h3>
+                        <p className="text-xs text-slate-500 font-medium truncate mt-0.5">
+                          {stg.college} • <span className="text-slate-700">{stg.role}</span>
+                        </p>
+                      </div>
+                    </div>
 
-                {/* Real Story Quote Block */}
-                <div className="space-y-3">
-                  <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-md">
-                    {currentStory.category}
-                  </span>
-                  <p className="text-sm sm:text-lg text-slate-800 leading-relaxed font-normal font-sans italic">
-                    “{currentStory.quote}”
-                  </p>
-                </div>
-
-                {/* Story Context & Outcome Row */}
-                <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                  <div>
-                    <span className="text-slate-500 font-medium">Verified Progress Outcome:</span>{" "}
-                    <strong className="text-slate-900 font-semibold">{currentStory.outcome}</strong>
+                    {/* Story Content Excerpt */}
+                    <div className="space-y-2">
+                      <span className="inline-block text-[10px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2 py-0.5 rounded-md">
+                        {stg.category}
+                      </span>
+                      <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-sans line-clamp-4 italic">
+                        “{stg.quote}”
+                      </p>
+                    </div>
                   </div>
 
-                  <Link
-                    to={currentStory.link}
-                    className="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 transition-colors shrink-0"
-                  >
-                    <span>Read Full Story</span>
-                    <ArrowRight className="h-4 w-4" />
-                  </Link>
+                  {/* Outcome & Read Story Action */}
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between text-xs gap-2">
+                    <div className="min-w-0">
+                      <span className="text-slate-400 block text-[10px] uppercase tracking-wider font-semibold">Outcome</span>
+                      <strong className="text-slate-900 font-bold truncate block">{stg.outcome}</strong>
+                    </div>
+                    <Link
+                      to={stg.link}
+                      className="inline-flex items-center gap-1 font-bold text-blue-600 hover:text-blue-700 transition-colors shrink-0"
+                    >
+                      <span>Read Story</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
-              </motion.div>
-            </AnimatePresence>
-
-            {/* Story Progress Indicators (Dot Bar) */}
-            <div className="flex items-center justify-center gap-2 pt-6 sm:pt-8">
-              {stories.map((stg, idx) => {
-                const isActive = activeIndex === idx;
-                return (
-                  <button
-                    key={stg.id}
-                    onClick={() => {
-                      setIsPaused(true);
-                      setActiveIndex(idx);
-                    }}
-                    aria-label={`Go to story ${idx + 1}`}
-                    className="relative h-2 rounded-full overflow-hidden transition-all duration-300 cursor-pointer min-h-[12px] min-w-[12px] flex items-center justify-center"
-                  >
-                    <div
-                      className={`h-2 rounded-full transition-all duration-300 ${
-                        isActive ? "w-8 bg-blue-100" : "w-2.5 bg-slate-200 hover:bg-slate-300"
-                      }`}
-                    />
-                    {isActive && (
-                      <motion.div
-                        className="absolute inset-y-0 left-0 bg-blue-600 rounded-full"
-                        initial={{ width: "0%" }}
-                        animate={{ width: isPaused ? "100%" : "100%" }}
-                        transition={{ duration: isPaused ? 0.2 : 5.5, ease: isPaused ? "easeOut" : "linear" }}
-                      />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
+              );
+            })}
           </div>
         </div>
+
+        {/* Secondary Progress Indicator Dots */}
+        {stories.length > 1 && (
+          <div className="flex items-center justify-center gap-1.5 pt-2">
+            {stories.map((stg, idx) => {
+              const isActive = activeIndex === idx;
+              return (
+                <button
+                  key={stg.id}
+                  onClick={() => scrollToStory(idx)}
+                  aria-label={`Scroll to story ${idx + 1}`}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    isActive ? "w-6 bg-blue-600" : "w-2 bg-slate-300 hover:bg-slate-400"
+                  }`}
+                />
+              );
+            })}
+          </div>
+        )}
       </div>
 
       {/* Story Submission Modal */}
