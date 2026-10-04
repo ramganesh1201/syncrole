@@ -24,6 +24,9 @@ import {
   BarChart3,
   Compass,
   FileCheck,
+  TrendingUp,
+  Check,
+  Clock,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
@@ -419,6 +422,8 @@ function CapabilityTickerSection() {
 /* -------------------------------------------------------------------------- */
 function EverythingYouNeedSection() {
   const [activeTab, setActiveTab] = useState(0);
+  const { user } = useAuth();
+  const navigate = useNavigate();
 
   const tabs = [
     {
@@ -427,15 +432,7 @@ function EverythingYouNeedSection() {
       subtitle: "See skills, scores & readiness",
       icon: BarChart3,
       badge: "Analytics",
-      preview: {
-        headline: "Real-Time Career Readiness Index",
-        detail: "SyncRole combines your DSA performance, GitHub activity, resume quality, and project depth into a single actionable score.",
-        metrics: [
-          { label: "Overall Preparedness", val: "72%", color: "bg-blue-600" },
-          { label: "DSA Problem Solving", val: "68%", color: "bg-indigo-600" },
-          { label: "Resume ATS Match", val: "78%", color: "bg-emerald-600" },
-        ],
-      },
+      route: user ? "/dashboard" : "/auth",
     },
     {
       id: 1,
@@ -443,15 +440,7 @@ function EverythingYouNeedSection() {
       subtitle: "DSA & curated problem sets",
       icon: BookOpen,
       badge: "Practice",
-      preview: {
-        headline: "Targeted DSA & Technical Preparation",
-        detail: "Topic-wise problem breakdown with complexity analysis, hints, and step-by-step guidance designed for top engineering roles.",
-        metrics: [
-          { label: "Arrays & Hashing", val: "24 Solved", color: "bg-blue-600" },
-          { label: "Trees & Graphs", val: "14 Solved", color: "bg-indigo-600" },
-          { label: "Dynamic Programming", val: "8 Solved", color: "bg-purple-600" },
-        ],
-      },
+      route: user ? "/dashboard/dsa" : "/auth",
     },
     {
       id: 2,
@@ -459,14 +448,7 @@ function EverythingYouNeedSection() {
       subtitle: "Personalized guidance 24/7",
       icon: Rocket,
       badge: "SyncPilot",
-      preview: {
-        headline: "Your Dedicated AI Career Mentor",
-        detail: "SyncPilot analyzes your weak areas and tells you exactly what to study today to increase your recruiter callback rate.",
-        metrics: [
-          { label: "Daily Recommendation", val: "Binary Trees & Resume v2", color: "bg-blue-600" },
-          { label: "Target Role Match", val: "Frontend Engineer (85%)", color: "bg-indigo-600" },
-        ],
-      },
+      route: user ? "/dashboard" : "/auth",
     },
     {
       id: 3,
@@ -474,14 +456,7 @@ function EverythingYouNeedSection() {
       subtitle: "Official GATE 2027 resources",
       icon: Shield,
       badge: "GATE 2027",
-      preview: {
-        headline: "Official GATE 2027 CSE & DA Resource Center",
-        detail: "Access verified syllabi, topic weightage, previous year papers, and official exam timeline updates in one structured hub.",
-        metrics: [
-          { label: "GATE CSE Syllabus", val: "100% Updated", color: "bg-blue-600" },
-          { label: "Official Notifications", val: "Live Feed", color: "bg-emerald-600" },
-        ],
-      },
+      route: "/gate",
     },
     {
       id: 4,
@@ -489,14 +464,7 @@ function EverythingYouNeedSection() {
       subtitle: "Showcase verified projects",
       icon: Code2,
       badge: "Projects",
-      preview: {
-        headline: "Showcase Verified Production Projects",
-        detail: "Turn your repository commits into clean portfolio proof cards that recruiters can evaluate instantly.",
-        metrics: [
-          { label: "GitHub Commits", val: "12 last 7 days", color: "bg-purple-600" },
-          { label: "Recruiter Signal", val: "High Impact", color: "bg-blue-600" },
-        ],
-      },
+      route: user ? "/dashboard" : "/auth",
     },
   ];
 
@@ -518,42 +486,86 @@ function EverythingYouNeedSection() {
           </p>
         </div>
 
-        {/* Dynamic Feature Composition */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
-          {/* Navigation Pill List */}
-          <div className="lg:col-span-5 flex flex-row lg:flex-col gap-2 overflow-x-auto no-scrollbar pb-2 lg:pb-0">
+        {/* Mobile Horizontal Selector (Compact, Swipeable, Scroll-safe) */}
+        <div className="lg:hidden mb-6">
+          <div
+            role="tablist"
+            aria-label="Feature navigation"
+            className="flex flex-row gap-2 overflow-x-auto no-scrollbar pb-1 -mx-4 px-4 scroll-smooth"
+          >
             {tabs.map((tab, idx) => {
               const IconComp = tab.icon;
               const isActive = activeTab === idx;
               return (
                 <button
                   key={tab.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  id={`feature-tab-mobile-${idx}`}
+                  aria-controls={`feature-preview-panel-${idx}`}
                   onClick={() => setActiveTab(idx)}
-                  className={`flex-1 min-w-[200px] lg:min-w-0 text-left p-3.5 sm:p-4 rounded-2xl transition-all duration-200 cursor-pointer min-h-[48px] flex items-center justify-between ${
+                  className={`shrink-0 flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-150 cursor-pointer min-h-[44px] ${
                     isActive
-                      ? "bg-blue-50/80 text-blue-900 shadow-2xs"
-                      : "bg-slate-50/60 text-slate-600 hover:bg-slate-100"
+                      ? "bg-blue-600 text-white shadow-xs shadow-blue-500/20"
+                      : "bg-slate-100 text-slate-700 hover:bg-slate-200/70 border border-slate-200/60"
                   }`}
                 >
-                  <div className="flex items-center gap-3">
+                  <IconComp className={`h-4 w-4 shrink-0 ${isActive ? "text-white" : "text-slate-500"}`} />
+                  <span>{tab.title}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Desktop & Main Content Composition */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+          {/* Desktop Left Navigation List */}
+          <div
+            role="tablist"
+            aria-label="Feature selection"
+            className="hidden lg:flex lg:col-span-5 flex-col gap-2.5"
+          >
+            {tabs.map((tab, idx) => {
+              const IconComp = tab.icon;
+              const isActive = activeTab === idx;
+              return (
+                <button
+                  key={tab.id}
+                  role="tab"
+                  aria-selected={isActive}
+                  id={`feature-tab-${idx}`}
+                  aria-controls={`feature-preview-panel-${idx}`}
+                  onClick={() => setActiveTab(idx)}
+                  className={`w-full text-left p-4 rounded-2xl transition-all duration-150 cursor-pointer border flex items-center justify-between group ${
+                    isActive
+                      ? "bg-blue-50/90 text-blue-900 border-blue-200/80 shadow-2xs"
+                      : "bg-white text-slate-700 border-slate-200/70 hover:bg-slate-50/80 hover:border-slate-300/80"
+                  }`}
+                >
+                  <div className="flex items-center gap-3.5">
                     <div
-                      className={`h-9 w-9 rounded-xl flex items-center justify-center shrink-0 ${
-                        isActive ? "bg-blue-600 text-white" : "bg-white text-slate-600 shadow-2xs"
+                      className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 transition-colors ${
+                        isActive
+                          ? "bg-blue-600 text-white shadow-xs shadow-blue-500/20"
+                          : "bg-slate-100 text-slate-600 group-hover:bg-slate-200/60"
                       }`}
                     >
-                      <IconComp className="h-4.5 w-4.5" />
+                      <IconComp className="h-5 w-5" />
                     </div>
                     <div>
-                      <div className="font-bold text-xs sm:text-sm">{tab.title}</div>
-                      <div className="text-[11px] text-slate-500 font-normal hidden sm:block">
+                      <div className={`font-bold text-sm ${isActive ? "text-slate-900" : "text-slate-800"}`}>
+                        {tab.title}
+                      </div>
+                      <div className="text-xs text-slate-500 font-normal mt-0.5">
                         {tab.subtitle}
                       </div>
                     </div>
                   </div>
 
                   <ChevronRight
-                    className={`h-4 w-4 shrink-0 transition-transform ${
-                      isActive ? "text-blue-600 translate-x-0.5" : "text-slate-400 opacity-40"
+                    className={`h-4 w-4 shrink-0 transition-transform duration-150 ${
+                      isActive ? "text-blue-600 translate-x-1" : "text-slate-300 group-hover:text-slate-400 opacity-60"
                     }`}
                   />
                 </button>
@@ -561,39 +573,402 @@ function EverythingYouNeedSection() {
             })}
           </div>
 
-          {/* Interactive Active Module Preview Box */}
-          <div className="lg:col-span-7">
-            <div className="bg-slate-900 text-white rounded-3xl p-5 sm:p-7 shadow-lg text-left relative overflow-hidden">
-              <div className="flex items-center justify-between pb-4 border-b border-slate-800">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-blue-400 bg-blue-950 px-2.5 py-1 rounded-full">
-                  {currentTab.badge}
-                </span>
-                <span className="text-[11px] text-slate-400 font-mono">SyncRole Engine</span>
-              </div>
-
-              <div className="mt-4 space-y-3">
-                <h3 className="text-base sm:text-xl font-bold text-white leading-snug">
-                  {currentTab.preview.headline}
-                </h3>
-                <p className="text-xs sm:text-sm text-slate-300 font-normal leading-relaxed">
-                  {currentTab.preview.detail}
-                </p>
-              </div>
-
-              {/* Dynamic Metrics */}
-              <div className="mt-6 space-y-3 pt-4 border-t border-slate-800/80">
-                {currentTab.preview.metrics.map((m, i) => (
-                  <div key={i} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold">
-                      <span className="text-slate-300">{m.label}</span>
-                      <span className="text-blue-300 font-mono">{m.val}</span>
-                    </div>
-                    <div className="h-1.5 bg-slate-800 rounded-full overflow-hidden">
-                      <div className={`h-full ${m.color} rounded-full`} style={{ width: "75%" }} />
-                    </div>
+          {/* Interactive Light Product Preview Area */}
+          <div className="lg:col-span-7 w-full">
+            <div
+              id={`feature-preview-panel-${activeTab}`}
+              role="tabpanel"
+              aria-labelledby={`feature-tab-${activeTab}`}
+              className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 sm:p-7 shadow-xs text-left relative overflow-hidden"
+            >
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key={activeTab}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.18, ease: "easeOut" }}
+                  className="space-y-6"
+                >
+                  {/* Top Header Badge & Engine Signal */}
+                  <div className="flex items-center justify-between pb-4 border-b border-slate-200/70">
+                    <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200/60 px-3 py-1 rounded-full">
+                      {currentTab.badge}
+                    </span>
+                    <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                      <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                      Live Product Preview
+                    </span>
                   </div>
-                ))}
-              </div>
+
+                  {/* Feature Preview 0: Track Progress */}
+                  {activeTab === 0 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                          Real-Time Career Readiness Index
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mt-1">
+                          SyncRole combines your DSA performance, GitHub activity, resume quality, and project depth into a single actionable score.
+                        </p>
+                      </div>
+
+                      {/* Light Card UI Representation */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          <div>
+                            <div className="text-xs font-semibold text-slate-500">Overall Career Readiness</div>
+                            <div className="text-2xl sm:text-3xl font-extrabold text-blue-600 tracking-tight font-display mt-0.5">
+                              72%
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1.5 text-xs font-medium text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full">
+                            <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
+                            <span>+4% this week</span>
+                          </div>
+                        </div>
+
+                        {/* Readiness Progress Bar */}
+                        <div className="space-y-1.5">
+                          <div className="flex justify-between text-xs font-medium text-slate-600">
+                            <span>Readiness Index</span>
+                            <span className="font-mono text-slate-900 font-semibold">72 / 100</span>
+                          </div>
+                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-gradient-to-r from-blue-600 to-indigo-600 rounded-full w-[72%]" />
+                          </div>
+                        </div>
+
+                        {/* Breakdown Metrics */}
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+                          <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                            <div className="text-[11px] text-slate-500 font-medium">DSA Solving</div>
+                            <div className="text-base font-bold text-slate-900 font-mono mt-0.5">68%</div>
+                            <div className="h-1 bg-slate-200 rounded-full mt-2 overflow-hidden">
+                              <div className="h-full bg-blue-600 rounded-full w-[68%]" />
+                            </div>
+                          </div>
+
+                          <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                            <div className="text-[11px] text-slate-500 font-medium">Resume ATS</div>
+                            <div className="text-base font-bold text-slate-900 font-mono mt-0.5">78%</div>
+                            <div className="h-1 bg-slate-200 rounded-full mt-2 overflow-hidden">
+                              <div className="h-full bg-indigo-600 rounded-full w-[78%]" />
+                            </div>
+                          </div>
+
+                          <div className="bg-slate-50 border border-slate-100 p-3 rounded-xl">
+                            <div className="text-[11px] text-slate-500 font-medium">Project Depth</div>
+                            <div className="text-base font-bold text-slate-900 font-mono mt-0.5">74%</div>
+                            <div className="h-1 bg-slate-200 rounded-full mt-2 overflow-hidden">
+                              <div className="h-full bg-emerald-600 rounded-full w-[74%]" />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action CTA */}
+                      <div>
+                        <button
+                          onClick={() => navigate({ to: currentTab.route })}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer min-h-[44px]"
+                        >
+                          <span>View Detailed Analytics</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Feature Preview 1: Learn & Practice */}
+                  {activeTab === 1 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                          Targeted DSA & Technical Preparation
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mt-1">
+                          Topic-wise problem breakdown with complexity analysis, hints, and step-by-step guidance designed for top engineering roles.
+                        </p>
+                      </div>
+
+                      {/* Light UI Practice Snippet */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                        {/* Featured Solved Problem */}
+                        <div className="flex items-center justify-between bg-slate-50 border border-slate-200/60 p-3.5 rounded-xl">
+                          <div className="space-y-1">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-sm text-slate-900">Two Sum</span>
+                              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded">
+                                Easy
+                              </span>
+                              <span className="text-[11px] text-slate-500">Arrays & Hashing</span>
+                            </div>
+                            <div className="text-xs text-slate-500 font-mono">
+                              O(n) Time • O(n) Space
+                            </div>
+                          </div>
+                          <div className="flex items-center gap-1 text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg">
+                            <Check className="h-3.5 w-3.5" />
+                            <span>Solved</span>
+                          </div>
+                        </div>
+
+                        {/* Daily Progress */}
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs">
+                            <span className="font-semibold text-slate-700">Today's Goal</span>
+                            <span className="font-mono text-blue-600 font-bold">3 / 5 Solved</span>
+                          </div>
+                          <div className="h-2 bg-slate-100 rounded-full overflow-hidden">
+                            <div className="h-full bg-blue-600 rounded-full w-[60%]" />
+                          </div>
+                        </div>
+
+                        {/* Topics Pill Breakdown */}
+                        <div className="space-y-2 pt-1">
+                          <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                            Topic Mastery Breakdown
+                          </div>
+                          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2">
+                            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                              <span className="font-medium text-slate-700">Arrays & Hashing</span>
+                              <span className="font-mono font-bold text-blue-600">24</span>
+                            </div>
+                            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                              <span className="font-medium text-slate-700">Trees & Graphs</span>
+                              <span className="font-mono font-bold text-indigo-600">14</span>
+                            </div>
+                            <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 flex items-center justify-between text-xs">
+                              <span className="font-medium text-slate-700">Dynamic Prog.</span>
+                              <span className="font-mono font-bold text-purple-600">8</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action CTA */}
+                      <div>
+                        <button
+                          onClick={() => navigate({ to: currentTab.route })}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer min-h-[44px]"
+                        >
+                          <span>Continue DSA Practice</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Feature Preview 2: AI Career Twin */}
+                  {activeTab === 2 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                          Your Dedicated AI Career Mentor
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mt-1">
+                          SyncPilot analyzes your weak areas and tells you exactly what to study today to increase your recruiter callback rate.
+                        </p>
+                      </div>
+
+                      {/* Light UI AI Mentor Insight Card */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          <div>
+                            <div className="text-xs text-slate-500 font-medium">Target Role</div>
+                            <div className="text-base font-bold text-slate-900 mt-0.5">Software Engineer</div>
+                          </div>
+                          <div className="text-right">
+                            <div className="text-[11px] text-slate-500 font-medium">Target Role Match</div>
+                            <div className="text-sm font-bold font-mono text-blue-600">85% Callback Rate</div>
+                          </div>
+                        </div>
+
+                        {/* Next Best Action Card */}
+                        <div className="bg-blue-50/70 border border-blue-200/70 p-4 rounded-xl space-y-2">
+                          <div className="flex items-center gap-2 text-xs font-bold text-blue-900">
+                            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+                            <span>Recommended Next Best Action</span>
+                          </div>
+                          <div className="text-xs font-semibold text-slate-800">
+                            Strengthen: System Design & Tree Traversal
+                          </div>
+                          <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                            SyncPilot identified tree recursion and system design patterns as your highest-leveraged focus area for top recruiter callbacks.
+                          </p>
+                          <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-white px-2.5 py-1 rounded-md border border-blue-200/60 mt-1">
+                            <Clock className="h-3 w-3 text-blue-600" />
+                            <span>Recommended: 3 focused sessions this week</span>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action CTA */}
+                      <div>
+                        <button
+                          onClick={() => navigate({ to: currentTab.route })}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer min-h-[44px]"
+                        >
+                          <span>View Career Recommendations</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Feature Preview 3: GATE Hub */}
+                  {activeTab === 3 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                          Official GATE 2027 CSE & DA Resource Center
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mt-1">
+                          Access verified syllabi, topic weightage, previous year papers, and official exam timeline updates in one structured hub.
+                        </p>
+                      </div>
+
+                      {/* Light UI GATE Preview */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          <div>
+                            <div className="text-xs font-semibold text-slate-500">Exam Target</div>
+                            <div className="text-base font-bold text-slate-900 mt-0.5">GATE 2027 CSE</div>
+                          </div>
+                          <span className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-1 rounded-full">
+                            Syllabus 100% Verified
+                          </span>
+                        </div>
+
+                        {/* Subject Progress */}
+                        <div className="space-y-3">
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs font-medium">
+                              <span className="text-slate-700">Operating Systems</span>
+                              <span className="font-mono text-blue-600 font-bold">72%</span>
+                            </div>
+                            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-full bg-blue-600 rounded-full w-[72%]" />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs font-medium">
+                              <span className="text-slate-700">DBMS & SQL</span>
+                              <span className="font-mono text-indigo-600 font-bold">58%</span>
+                            </div>
+                            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-full bg-indigo-600 rounded-full w-[58%]" />
+                            </div>
+                          </div>
+
+                          <div className="space-y-1">
+                            <div className="flex justify-between text-xs font-medium">
+                              <span className="text-slate-700">Computer Networks</span>
+                              <span className="font-mono text-emerald-600 font-bold">64%</span>
+                            </div>
+                            <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
+                              <div className="h-full bg-emerald-600 rounded-full w-[64%]" />
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Next Milestone Banner */}
+                        <div className="bg-slate-50 border border-slate-200/60 p-3 rounded-xl flex items-center justify-between text-xs">
+                          <span className="font-medium text-slate-700">
+                            Next Milestone: <strong className="text-slate-900 font-semibold">Complete DBMS Revision & PYQs</strong>
+                          </span>
+                          <span className="text-blue-600 font-semibold shrink-0 ml-2">3 Days Left</span>
+                        </div>
+                      </div>
+
+                      {/* Action CTA */}
+                      <div>
+                        <button
+                          onClick={() => navigate({ to: currentTab.route })}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer min-h-[44px]"
+                        >
+                          <span>Open GATE Hub</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Feature Preview 4: Build Portfolio */}
+                  {activeTab === 4 && (
+                    <div className="space-y-5">
+                      <div>
+                        <h3 className="text-lg sm:text-xl font-bold text-slate-900 tracking-tight leading-snug">
+                          Showcase Verified Production Projects
+                        </h3>
+                        <p className="text-xs sm:text-sm text-slate-600 font-normal leading-relaxed mt-1">
+                          Turn your repository commits into clean portfolio proof cards that recruiters can evaluate instantly.
+                        </p>
+                      </div>
+
+                      {/* Light UI Portfolio Proof Card */}
+                      <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-xs space-y-4">
+                        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                          <div>
+                            <div className="text-xs text-slate-500 font-medium">Featured Project</div>
+                            <div className="text-base font-bold text-slate-900 mt-0.5">
+                              SyncRole Career Engine
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full flex items-center gap-1">
+                            <Check className="h-3 w-3" /> Verified Proof
+                          </span>
+                        </div>
+
+                        <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                          Full-stack platform with real-time DSA tracking, automated resume analysis, and structured GATE roadmap cards.
+                        </p>
+
+                        {/* Tech Stack Pills */}
+                        <div className="flex flex-wrap gap-1.5">
+                          <span className="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-0.5 rounded-md">
+                            React
+                          </span>
+                          <span className="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-0.5 rounded-md">
+                            Supabase
+                          </span>
+                          <span className="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-0.5 rounded-md">
+                            Tailwind CSS
+                          </span>
+                          <span className="bg-slate-100 text-slate-700 text-[11px] font-medium px-2.5 py-0.5 rounded-md">
+                            AI Engine
+                          </span>
+                        </div>
+
+                        {/* Impact Signal */}
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs">
+                            <div className="text-slate-500 text-[10px]">GitHub Activity</div>
+                            <div className="font-bold text-slate-900 font-mono mt-0.5">12 commits / 7d</div>
+                          </div>
+                          <div className="bg-slate-50 p-2.5 rounded-lg border border-slate-100 text-xs">
+                            <div className="text-slate-500 text-[10px]">Recruiter Signal</div>
+                            <div className="font-bold text-blue-600 mt-0.5">High Impact</div>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Action CTA */}
+                      <div>
+                        <button
+                          onClick={() => navigate({ to: currentTab.route })}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-xl shadow-xs transition-all cursor-pointer min-h-[44px]"
+                        >
+                          <span>Showcase Projects</span>
+                          <ArrowRight className="h-4 w-4" />
+                        </button>
+                      </div>
+                    </div>
+                  )}
+                </motion.div>
+              </AnimatePresence>
             </div>
           </div>
         </div>
