@@ -983,130 +983,323 @@ function EverythingYouNeedSection() {
 function ProductShowcaseSection() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const [activeStage, setActiveStage] = useState(0);
+
+  const journeyStages = [
+    {
+      id: 0,
+      step: "01",
+      title: "Set Your Target",
+      badge: "Target Role",
+      subtitle: "Choose your role & company direction",
+      icon: Target,
+      headline: "Define Your Target Role & Career Goal",
+      detail: "Select your desired engineering track, target role, and preferred companies to establish your personalized preparation benchmark.",
+      visualCard: {
+        role: "Software Engineer",
+        track: "Full-Stack & Systems Track",
+        tag: "Role Target",
+        points: [
+          "Target Role Alignment & Benchmark Setup",
+          "Automated Skill Gap Identification",
+          "Role-Specific DSA & System Design Path",
+        ],
+      },
+    },
+    {
+      id: 1,
+      step: "02",
+      title: "Know Your Readiness",
+      badge: "Readiness Index",
+      subtitle: "Evaluate strengths & skill gaps",
+      icon: BarChart3,
+      headline: "Understand Where You Stand Today",
+      detail: "SyncRole analyzes your DSA problem count, resume ATS alignment, and project proof into a single real-time readiness score.",
+      visualCard: {
+        readinessScore: "68%",
+        trend: "+4% this week",
+        metrics: [
+          { label: "DSA Problem Solving", val: "68%", color: "bg-blue-600" },
+          { label: "Resume ATS Match", val: "78%", color: "bg-indigo-600" },
+          { label: "Project Proof Depth", val: "74%", color: "bg-emerald-600" },
+        ],
+      },
+    },
+    {
+      id: 2,
+      title: "Follow Your Next Step",
+      badge: "Next Action",
+      subtitle: "Get focused daily recommendations",
+      icon: Sparkles,
+      headline: "No Guesswork on What to Study Next",
+      detail: "Receive prioritized daily recommendations based on your weak areas so every practice session delivers high recruiter ROI.",
+      visualCard: {
+        focusArea: "Arrays & Dynamic Programming",
+        recommendation: "3 focused practice sessions recommended this week for callback boost",
+        suggestedTool: "DSA Practice & Resume Audit",
+      },
+    },
+    {
+      id: 3,
+      step: "03",
+      title: "Achieve Milestones",
+      badge: "Daily Progress",
+      subtitle: "Maintain consistency & unlock callbacks",
+      icon: CheckCircle2,
+      headline: "Consistent Momentum Toward Tech Roles",
+      detail: "Track daily streaks, complete verified problem sets, and build proof cards recruiters can evaluate instantly.",
+      visualCard: {
+        milestone: "Arrays & Hashing Problem Set",
+        status: "Completed & Verified",
+        impact: "Recruiter Callback Readiness Updated",
+      },
+    },
+  ];
+
+  const currentStage = journeyStages[activeStage];
 
   return (
     <section
       id="journey"
-      className="py-16 sm:py-24 bg-gradient-to-b from-slate-50/60 via-indigo-50/15 to-white overflow-hidden"
+      className="py-16 sm:py-24 bg-gradient-to-b from-slate-50/60 via-indigo-50/15 to-white overflow-hidden text-left"
     >
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
-          {/* Left Text & Stats */}
-          <div className="lg:col-span-5 space-y-5 text-left">
-            <div className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
+          {/* Left Text & Truthful Product Highlights */}
+          <div className="lg:col-span-5 space-y-6">
+            <div className="inline-flex items-center gap-1.5 bg-indigo-50 text-indigo-700 text-xs font-semibold px-3 py-1 rounded-full border border-indigo-200/60">
               <Zap className="h-3.5 w-3.5 text-indigo-600" />
               <span>Your Career, Your Way</span>
             </div>
 
-            <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
-              Explore Your <br className="hidden sm:inline" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
-                Career Journey
-              </span>
-            </h2>
+            <div className="space-y-3">
+              <h2 className="text-2xl sm:text-4xl lg:text-5xl font-extrabold text-slate-900 tracking-tight leading-tight">
+                Explore Your <br className="hidden sm:inline" />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600">
+                  Career Journey
+                </span>
+              </h2>
 
-            <p className="text-xs sm:text-base text-slate-600 leading-relaxed font-normal">
-              Build real-world projects, practice DSA, and track your readiness — with clear direction for every step.
-            </p>
+              <p className="text-xs sm:text-base text-slate-600 leading-relaxed font-normal">
+                Define your target role, evaluate your current readiness, and follow actionable daily steps to close your skill gaps.
+              </p>
+            </div>
 
             <div>
               <button
                 onClick={() => navigate({ to: user ? "/dashboard" : "/auth" })}
-                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-sm transition-all flex items-center gap-2 cursor-pointer min-h-[44px]"
+                className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-6 py-3 rounded-full shadow-xs transition-all flex items-center gap-2 cursor-pointer min-h-[44px]"
               >
                 <span>Explore Journey</span>
                 <ArrowRight className="h-4 w-4" />
               </button>
             </div>
 
-            {/* Metrics */}
-            <div className="pt-5 border-t border-slate-100 grid grid-cols-3 gap-3 text-left">
-              <div>
-                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">50+</div>
-                <div className="text-[11px] text-slate-500 font-medium">Real Projects</div>
+            {/* Truthful Value Communication (Replaces fake 50+/100+/10+ claims) */}
+            <div className="pt-5 border-t border-slate-200/80 space-y-3">
+              <div className="text-xs font-bold uppercase tracking-wider text-slate-400">
+                Core Capabilities
               </div>
-              <div>
-                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">100+</div>
-                <div className="text-[11px] text-slate-500 font-medium">Learning Paths</div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-3xl font-extrabold text-slate-900">10+</div>
-                <div className="text-[11px] text-slate-500 font-medium">Career Roles</div>
+              <div className="space-y-2 text-xs font-medium text-slate-700">
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200/60">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Personalized Target Role & Company Benchmarking</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200/60">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Real-Time Readiness Index Tracking</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="h-4 w-4 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0 border border-blue-200/60">
+                    <Check className="h-3 w-3" />
+                  </div>
+                  <span>Actionable Daily Guidance & Skill Gap Closing</span>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Right Column: Native Mobile/Desktop Product Preview Frame */}
-          <div className="lg:col-span-7">
-            <div className="max-w-md mx-auto lg:max-w-none">
-              <div className="rounded-3xl bg-slate-950 p-4 sm:p-5 shadow-xl text-white text-left font-sans">
-                {/* Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-                  <div className="flex items-center gap-2">
-                    <div className="h-6 w-6 rounded-md bg-blue-600 flex items-center justify-center text-xs font-bold">
-                      S
-                    </div>
-                    <span className="font-bold text-xs">SyncRole Mobile</span>
-                  </div>
-                  <span className="text-[10px] text-slate-400 font-mono">Live Dashboard</span>
-                </div>
+          {/* Right Column: Interactive Light Product Journey Visualization */}
+          <div className="lg:col-span-7 w-full">
+            <div className="bg-slate-50/80 border border-slate-200/80 rounded-3xl p-5 sm:p-7 shadow-xs space-y-6">
+              {/* Header Badge */}
+              <div className="flex items-center justify-between pb-4 border-b border-slate-200/70">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-blue-700 bg-blue-50 border border-blue-200/60 px-3 py-1 rounded-full">
+                  Journey Roadmap
+                </span>
+                <span className="text-xs text-slate-400 font-medium flex items-center gap-1.5">
+                  <span className="h-2 w-2 rounded-full bg-blue-600 animate-pulse" />
+                  4-Step Progression
+                </span>
+              </div>
 
-                {/* Body Content */}
-                <div className="mt-3 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <h4 className="text-xs sm:text-sm font-bold text-slate-100">
-                        Target: Software Engineer
-                      </h4>
-                      <p className="text-[10px] text-slate-400">3rd Year CSE • SyncRole Guided</p>
-                    </div>
-                    <span className="bg-emerald-950 text-emerald-400 text-[10px] font-bold border border-emerald-800/80 px-2 py-0.5 rounded-full">
-                      On Track
-                    </span>
-                  </div>
-
-                  {/* Score gauge cards */}
-                  <div className="grid grid-cols-2 gap-2">
-                    <div className="bg-slate-900 rounded-2xl p-2.5">
-                      <div className="text-[10px] text-slate-400 font-medium">Career Readiness</div>
-                      <div className="text-base font-bold text-blue-400 mt-0.5">68%</div>
-                      <div className="mt-1 h-1 bg-slate-800 rounded-full overflow-hidden">
-                        <div className="h-full bg-blue-500 w-[68%]" />
-                      </div>
-                    </div>
-
-                    <div className="bg-slate-900 rounded-2xl p-2.5">
-                      <div className="text-[10px] text-slate-400 font-medium">DSA Analytics</div>
-                      <div className="text-base font-bold text-emerald-400 mt-0.5">42 / 100</div>
-                      <div className="text-[9px] text-slate-400">12 Easy • 24 Medium</div>
-                    </div>
-                  </div>
-
-                  {/* Checklist */}
-                  <div className="bg-slate-900/90 rounded-2xl p-3">
-                    <div className="text-[11px] font-bold text-slate-300 mb-2">Today's Goals</div>
-                    <div className="space-y-1.5 text-[11px]">
-                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-xl text-slate-200">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-blue-400" />
-                          <span>Arrays & Hashing Problem Set</span>
-                        </div>
-                        <span className="text-[9px] text-blue-300 font-semibold bg-blue-950 px-1.5 py-0.5 rounded">
-                          +15 XP
+              {/* Connected Journey Stage Tabs (Desktop & Mobile selector) */}
+              <div
+                role="tablist"
+                aria-label="Career journey progression"
+                className="grid grid-cols-2 sm:grid-cols-4 gap-2"
+              >
+                {journeyStages.map((stg, idx) => {
+                  const IconComp = stg.icon;
+                  const isActive = activeStage === idx;
+                  return (
+                    <button
+                      key={stg.id}
+                      role="tab"
+                      aria-selected={isActive}
+                      id={`journey-tab-${idx}`}
+                      aria-controls={`journey-panel-${idx}`}
+                      onClick={() => setActiveStage(idx)}
+                      className={`p-3 rounded-2xl border text-left transition-all duration-150 cursor-pointer flex flex-col justify-between min-h-[76px] ${
+                        isActive
+                          ? "bg-blue-600 text-white border-blue-600 shadow-xs shadow-blue-500/20"
+                          : "bg-white text-slate-700 border-slate-200/70 hover:bg-slate-100/70"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between w-full">
+                        <span className={`text-[10px] font-bold tracking-wider uppercase ${isActive ? "text-blue-100" : "text-slate-400"}`}>
+                          {stg.step}
                         </span>
+                        <IconComp className={`h-4 w-4 ${isActive ? "text-white" : "text-slate-500"}`} />
                       </div>
-                      <div className="flex items-center justify-between bg-slate-950 p-2 rounded-xl text-slate-200">
-                        <div className="flex items-center gap-2">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-indigo-400" />
-                          <span>Resume ATS Alignment Check</span>
+                      <div className={`text-xs font-bold mt-1 line-clamp-1 ${isActive ? "text-white" : "text-slate-900"}`}>
+                        {stg.title}
+                      </div>
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Interactive Stage Preview Card */}
+              <div
+                id={`journey-panel-${activeStage}`}
+                role="tabpanel"
+                aria-labelledby={`journey-tab-${activeStage}`}
+              >
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={activeStage}
+                    initial={{ opacity: 0, y: 6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -6 }}
+                    transition={{ duration: 0.18, ease: "easeOut" }}
+                    className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs space-y-4 text-left"
+                  >
+                    <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                      <div>
+                        <div className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">
+                          Step {currentStage.step} • {currentStage.badge}
                         </div>
-                        <span className="text-[9px] text-indigo-300 font-semibold bg-indigo-950 px-1.5 py-0.5 rounded">
-                          +20 XP
-                        </span>
+                        <h3 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight mt-0.5">
+                          {currentStage.headline}
+                        </h3>
                       </div>
                     </div>
-                  </div>
-                </div>
+
+                    <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                      {currentStage.detail}
+                    </p>
+
+                    {/* Stage Specific Visual Content */}
+                    {activeStage === 0 && (
+                      <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-xl space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-xs text-slate-500 font-medium">Selected Target Role</div>
+                            <div className="text-sm font-bold text-slate-900 mt-0.5">
+                              {currentStage.visualCard.role}
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-full">
+                            {currentStage.visualCard.tag}
+                          </span>
+                        </div>
+                        <div className="space-y-1.5 pt-1 text-xs text-slate-600">
+                          {currentStage.visualCard.points.map((pt, i) => (
+                            <div key={i} className="flex items-center gap-2">
+                              <Check className="h-3.5 w-3.5 text-blue-600 shrink-0" />
+                              <span>{pt}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeStage === 1 && (
+                      <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-xl space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <div className="text-xs text-slate-500 font-medium">Career Readiness Score</div>
+                            <div className="text-2xl font-extrabold text-blue-600 font-display mt-0.5">
+                              {currentStage.visualCard.readinessScore}
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2.5 py-1 rounded-full flex items-center gap-1">
+                            <TrendingUp className="h-3.5 w-3.5" />
+                            {currentStage.visualCard.trend}
+                          </span>
+                        </div>
+                        <div className="space-y-2 pt-1">
+                          {currentStage.visualCard.metrics?.map((m, i) => (
+                            <div key={i} className="space-y-1">
+                              <div className="flex justify-between text-xs font-medium text-slate-700">
+                                <span>{m.label}</span>
+                                <span className="font-mono text-slate-900 font-bold">{m.val}</span>
+                              </div>
+                              <div className="h-1.5 bg-slate-200/80 rounded-full overflow-hidden">
+                                <div className={`h-full ${m.color} rounded-full`} style={{ width: m.val }} />
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+
+                    {activeStage === 2 && (
+                      <div className="bg-blue-50/70 border border-blue-200/70 p-4 rounded-xl space-y-2.5">
+                        <div className="flex items-center gap-2 text-xs font-bold text-blue-900">
+                          <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+                          <span>Recommended Next Action</span>
+                        </div>
+                        <div className="text-xs font-bold text-slate-900">
+                          Focus Area: {currentStage.visualCard.focusArea}
+                        </div>
+                        <p className="text-xs text-slate-600 leading-relaxed font-normal">
+                          {currentStage.visualCard.recommendation}
+                        </p>
+                        <div className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-blue-700 bg-white px-2.5 py-1 rounded-md border border-blue-200/60">
+                          <Clock className="h-3 w-3 text-blue-600" />
+                          <span>Suggested Tool: {currentStage.visualCard.suggestedTool}</span>
+                        </div>
+                      </div>
+                    )}
+
+                    {activeStage === 3 && (
+                      <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-xl space-y-3">
+                        <div className="flex items-center justify-between">
+                          <div className="space-y-0.5">
+                            <div className="text-xs text-slate-500 font-medium">Daily Goal Target</div>
+                            <div className="text-sm font-bold text-slate-900">
+                              {currentStage.visualCard.milestone}
+                            </div>
+                          </div>
+                          <span className="text-xs font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200 px-2.5 py-1 rounded-lg flex items-center gap-1">
+                            <Check className="h-3.5 w-3.5" />
+                            {currentStage.visualCard.status}
+                          </span>
+                        </div>
+                        <div className="bg-white p-2.5 rounded-lg border border-slate-200/60 text-xs text-slate-600 flex items-center justify-between">
+                          <span>Recruiter Callback Impact</span>
+                          <span className="font-bold text-blue-600 font-mono">High Signal</span>
+                        </div>
+                      </div>
+                    )}
+                  </motion.div>
+                </AnimatePresence>
               </div>
             </div>
           </div>

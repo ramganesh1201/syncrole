@@ -142,11 +142,6 @@ export default function SyncFooter() {
           <div>
             © {new Date().getFullYear()} SyncRole. All rights reserved.
           </div>
-
-          <div className="flex items-center gap-1 text-slate-500">
-            <span>I build ideas into digital products</span>
-            <Heart className="h-3.5 w-3.5 text-red-500 fill-red-500 inline ml-0.5" />
-          </div>
         </div>
       </div>
     </footer>
