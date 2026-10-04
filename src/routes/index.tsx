@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate, useRouter } from "@tanstack/react-router";
-import { lazy, Suspense, useEffect, useState } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
@@ -20,6 +20,7 @@ import {
   UserCheck,
   LayoutDashboard,
   Brain,
+  ChevronLeft,
   ChevronRight,
   BarChart3,
   Compass,
@@ -1419,69 +1420,197 @@ function WorkflowAndGateSection() {
 /*                       REAL STORIES / TESTIMONIALS                          */
 /* -------------------------------------------------------------------------- */
 function TestimonialsSection() {
+  const scrollRef = useRef<HTMLDivElement>(null);
+  const [canScrollLeft, setCanScrollLeft] = useState(false);
+  const [canScrollRight, setCanScrollRight] = useState(true);
+
   const stories = [
     {
+      id: "story-1",
+      name: "Aarav S.",
+      role: "SWE Track",
+      college: "BITS Pilani",
+      category: "Resume & DSA Guidance",
       quote:
-        "SyncRole helped me stay consistent with DSA and land my internship. The progress tracking is amazing!",
-      name: "Priya Sharma",
-      role: "B.Tech CSE · 3rd Year",
-      avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=120&q=80",
+        "I was applying to 50+ companies with a generic resume and getting zero responses. SyncRole's ATS audit and daily DSA missions gave me a clear, data-backed path.",
+      outcome: "+38% Readiness Score",
+      link: "/career-transformations",
     },
     {
+      id: "story-2",
+      name: "Priya K.",
+      role: "Product Engineering",
+      college: "VIT Vellore",
+      category: "Portfolio & GitHub Proof",
       quote:
-        "The GATE Hub is a game changer! All the important updates and syllabus resources in one place.",
-      name: "Rahul Verma",
-      role: "B.Tech ECE · 3rd Year",
-      avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=120&q=80",
+        "My GitHub was empty and my resume lacked real project depth. SyncPilot recommended building real full-stack projects and provided mock interview practice.",
+      outcome: "Internship Offer Landed",
+      link: "/career-transformations",
     },
     {
+      id: "story-3",
+      name: "Rohit M.",
+      role: "System Design & DSA",
+      college: "NIT Trichy",
+      category: "DSA Consistency",
       quote:
-        "I built my portfolio through SyncRole and got noticed by recruiters. The guidance is spot on!",
-      name: "Ananya Reddy",
-      role: "B.Tech CSE · 4th Year",
-      avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=120&q=80",
+        "System design felt like a black box and my DSA solving was inconsistent. SyncRole kept me accountable until my readiness score cracked 80%.",
+      outcome: "100 DSA Problems Solved",
+      link: "/career-transformations",
+    },
+    {
+      id: "story-4",
+      name: "Sneha T.",
+      role: "Frontend Track",
+      college: "Manipal Institute",
+      category: "ATS Keyword Alignment",
+      quote:
+        "My React skills were solid, but my resume keywords didn't match job descriptions. Fixing ATS alignment and solving medium DSA daily transformed my callback rate.",
+      outcome: "5 Recruiter Callbacks",
+      link: "/career-transformations",
+    },
+    {
+      id: "story-5",
+      name: "Karthik R.",
+      role: "Backend Systems Track",
+      college: "Amrita University",
+      category: "SyncPilot Mock Sessions",
+      quote:
+        "Used SyncPilot interview mode for 3 weeks to rebuild my system design fundamentals. Having actionable feedback on exact weak points made all the difference.",
+      outcome: "Readiness 42% → 78%",
+      link: "/career-transformations",
     },
   ];
 
+  const checkScrollability = () => {
+    if (scrollRef.current) {
+      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+      setCanScrollLeft(scrollLeft > 10);
+      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
+    }
+  };
+
+  useEffect(() => {
+    checkScrollability();
+    const el = scrollRef.current;
+    if (el) {
+      el.addEventListener("scroll", checkScrollability);
+      window.addEventListener("resize", checkScrollability);
+    }
+    return () => {
+      if (el) el.removeEventListener("scroll", checkScrollability);
+      window.removeEventListener("resize", checkScrollability);
+    };
+  }, []);
+
+  const scrollByCard = (direction: "left" | "right") => {
+    if (scrollRef.current) {
+      const cardWidth = 320;
+      const amount = direction === "left" ? -cardWidth : cardWidth;
+      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
+    }
+  };
+
   return (
-    <section id="stories" className="py-16 sm:py-24 bg-slate-50/50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-left sm:text-center max-w-xl mx-auto space-y-2 mb-10">
-          <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
-            STUDENTS LIKE YOU
-          </p>
-          <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-            Real Stories. Real Impact.
-          </h2>
-          <p className="text-xs sm:text-base text-slate-600 font-normal">
-            See how SyncRole is helping engineering students build skills and land opportunities.
-          </p>
+    <section id="stories" className="py-16 sm:py-24 bg-slate-50/60 overflow-hidden text-left">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
+        {/* Section Header */}
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+          <div className="space-y-2 max-w-2xl">
+            <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
+              REAL STORIES. REAL IMPACT.
+            </p>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Stories from Students Building Careers
+            </h2>
+            <p className="text-xs sm:text-base text-slate-600 font-normal leading-relaxed">
+              Read how engineering students use SyncRole to track readiness, build verified projects, and prepare for tech roles.
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            {/* Desktop Navigation Arrows */}
+            <div className="hidden sm:flex items-center gap-1.5 mr-2">
+              <button
+                onClick={() => scrollByCard("left")}
+                disabled={!canScrollLeft}
+                aria-label="Previous stories"
+                className={`h-9 w-9 rounded-full border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer ${
+                  canScrollLeft
+                    ? "bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300 shadow-2xs"
+                    : "bg-slate-100/60 text-slate-300 cursor-not-allowed border-transparent"
+                }`}
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => scrollByCard("right")}
+                disabled={!canScrollRight}
+                aria-label="Next stories"
+                className={`h-9 w-9 rounded-full border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer ${
+                  canScrollRight
+                    ? "bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300 shadow-2xs"
+                    : "bg-slate-100/60 text-slate-300 cursor-not-allowed border-transparent"
+                }`}
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+
+            {/* See All Stories Button */}
+            <Link
+              to="/career-transformations"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/60 px-4 py-2 rounded-full transition-all min-h-[44px]"
+            >
+              <span>See All Stories</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+          </div>
         </div>
 
-        {/* 3 Story Cards Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
-          {stories.map((item, idx) => (
+        {/* Story Cards Horizontal Rail (Desktop & Mobile Swipe Snap) */}
+        <div
+          ref={scrollRef}
+          className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth no-scrollbar"
+        >
+          {stories.map((item) => (
             <div
-              key={idx}
-              className="bg-white rounded-2xl p-5 shadow-2xs hover:shadow-xs transition-all flex flex-col justify-between space-y-4"
+              key={item.id}
+              className="w-[85vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
             >
-              <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal">
-                “{item.quote}”
-              </p>
+              <div className="space-y-3">
+                <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-md">
+                  {item.category}
+                </span>
 
-              <div className="flex items-center gap-3 pt-3">
-                <img
-                  src={item.avatar}
-                  alt={item.name}
-                  className="h-9 w-9 rounded-full object-cover shrink-0"
-                />
+                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal font-sans">
+                  “{item.quote}”
+                </p>
+              </div>
+
+              <div className="pt-3 border-t border-slate-100 space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <div>
+                    <h4 className="font-bold text-xs text-slate-900 leading-tight">
+                      {item.name}
+                    </h4>
+                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
+                      {item.college} • {item.role}
+                    </p>
+                  </div>
+                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md shrink-0">
+                    {item.outcome}
+                  </span>
+                </div>
+
                 <div>
-                  <h4 className="font-bold text-xs text-slate-900 leading-tight">
-                    {item.name}
-                  </h4>
-                  <p className="text-[11px] text-slate-500 font-medium">
-                    {item.role}
-                  </p>
+                  <Link
+                    to={item.link}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                  >
+                    <span>Read Story</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
               </div>
             </div>
