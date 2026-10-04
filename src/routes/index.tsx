@@ -33,6 +33,8 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
 import { useAuth } from "@/hooks/use-auth";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
+import { supabase } from "@/integrations/supabase/client";
+import { StoryModal } from "@/components/home/CareerTransformationsSection";
 
 const DemoModal = lazy(() => import("@/components/home/DemoModal"));
 
@@ -1419,68 +1421,115 @@ function WorkflowAndGateSection() {
 /* -------------------------------------------------------------------------- */
 /*                       REAL STORIES / TESTIMONIALS                          */
 /* -------------------------------------------------------------------------- */
+type CommunityStory = {
+  id: string;
+  name: string;
+  role: string;
+  college: string;
+  category: string;
+  quote: string;
+  outcome: string;
+  avatarUrl?: string | null;
+  link: string;
+};
+
+const SEED_STORIES: CommunityStory[] = [
+  {
+    id: "story-1",
+    name: "Aarav S.",
+    role: "SWE Track",
+    college: "BITS Pilani",
+    category: "Resume & DSA Guidance",
+    quote:
+      "I was applying to 50+ companies with a generic resume and getting zero responses. SyncRole's ATS audit and daily DSA missions gave me a clear, data-backed path.",
+    outcome: "+38% Readiness Score",
+    link: "/career-transformations",
+  },
+  {
+    id: "story-2",
+    name: "Priya K.",
+    role: "Product Engineering",
+    college: "VIT Vellore",
+    category: "Portfolio & GitHub Proof",
+    quote:
+      "My GitHub was empty and my resume lacked real project depth. SyncPilot recommended building real full-stack projects and provided mock interview practice.",
+    outcome: "Internship Offer Landed",
+    link: "/career-transformations",
+  },
+  {
+    id: "story-3",
+    name: "Rohit M.",
+    role: "System Design & DSA",
+    college: "NIT Trichy",
+    category: "DSA Consistency",
+    quote:
+      "System design felt like a black box and my DSA solving was inconsistent. SyncRole kept me accountable until my readiness score cracked 80%.",
+    outcome: "100 DSA Problems Solved",
+    link: "/career-transformations",
+  },
+  {
+    id: "story-4",
+    name: "Sneha T.",
+    role: "Frontend Track",
+    college: "Manipal Institute",
+    category: "ATS Keyword Alignment",
+    quote:
+      "My React skills were solid, but my resume keywords didn't match job descriptions. Fixing ATS alignment and solving medium DSA daily transformed my callback rate.",
+    outcome: "5 Recruiter Callbacks",
+    link: "/career-transformations",
+  },
+  {
+    id: "story-5",
+    name: "Karthik R.",
+    role: "Backend Systems Track",
+    college: "Amrita University",
+    category: "SyncPilot Mock Sessions",
+    quote:
+      "Used SyncPilot interview mode for 3 weeks to rebuild my system design fundamentals. Having actionable feedback on exact weak points made all the difference.",
+    outcome: "Readiness 42% → 78%",
+    link: "/career-transformations",
+  },
+];
+
 function TestimonialsSection() {
+  const { user } = useAuth();
+  const navigate = useNavigate();
   const scrollRef = useRef<HTMLDivElement>(null);
+
+  const [stories, setStories] = useState<CommunityStory[]>(SEED_STORIES);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
+  const [isPaused, setIsPaused] = useState(false);
+  const [showStoryModal, setShowStoryModal] = useState(false);
 
-  const stories = [
-    {
-      id: "story-1",
-      name: "Aarav S.",
-      role: "SWE Track",
-      college: "BITS Pilani",
-      category: "Resume & DSA Guidance",
-      quote:
-        "I was applying to 50+ companies with a generic resume and getting zero responses. SyncRole's ATS audit and daily DSA missions gave me a clear, data-backed path.",
-      outcome: "+38% Readiness Score",
-      link: "/career-transformations",
-    },
-    {
-      id: "story-2",
-      name: "Priya K.",
-      role: "Product Engineering",
-      college: "VIT Vellore",
-      category: "Portfolio & GitHub Proof",
-      quote:
-        "My GitHub was empty and my resume lacked real project depth. SyncPilot recommended building real full-stack projects and provided mock interview practice.",
-      outcome: "Internship Offer Landed",
-      link: "/career-transformations",
-    },
-    {
-      id: "story-3",
-      name: "Rohit M.",
-      role: "System Design & DSA",
-      college: "NIT Trichy",
-      category: "DSA Consistency",
-      quote:
-        "System design felt like a black box and my DSA solving was inconsistent. SyncRole kept me accountable until my readiness score cracked 80%.",
-      outcome: "100 DSA Problems Solved",
-      link: "/career-transformations",
-    },
-    {
-      id: "story-4",
-      name: "Sneha T.",
-      role: "Frontend Track",
-      college: "Manipal Institute",
-      category: "ATS Keyword Alignment",
-      quote:
-        "My React skills were solid, but my resume keywords didn't match job descriptions. Fixing ATS alignment and solving medium DSA daily transformed my callback rate.",
-      outcome: "5 Recruiter Callbacks",
-      link: "/career-transformations",
-    },
-    {
-      id: "story-5",
-      name: "Karthik R.",
-      role: "Backend Systems Track",
-      college: "Amrita University",
-      category: "SyncPilot Mock Sessions",
-      quote:
-        "Used SyncPilot interview mode for 3 weeks to rebuild my system design fundamentals. Having actionable feedback on exact weak points made all the difference.",
-      outcome: "Readiness 42% → 78%",
-      link: "/career-transformations",
-    },
-  ];
+  // Fetch approved community stories from Supabase if available
+  useEffect(() => {
+    let active = true;
+    supabase
+      .from("career_transformations")
+      .select("id, author_name, author_role, author_college, before_syncrole, current_results, readiness_growth")
+      .eq("is_published", true)
+      .order("created_at", { ascending: false })
+      .limit(8)
+      .then(({ data: rows }) => {
+        if (active && rows && rows.length > 0) {
+          const dbStories: CommunityStory[] = rows.map((r) => ({
+            id: r.id,
+            name: r.author_name || "SyncRole Student",
+            role: r.author_role || "Engineering Track",
+            college: r.author_college || "Verified Student",
+            category: "Verified Transformation",
+            quote: r.before_syncrole,
+            outcome: r.readiness_growth ? `+${r.readiness_growth}% Readiness` : r.current_results || "Verified Progress",
+            link: "/career-transformations",
+          }));
+          setStories(dbStories);
+        }
+      });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const checkScrollability = () => {
     if (scrollRef.current) {
@@ -1501,7 +1550,29 @@ function TestimonialsSection() {
       if (el) el.removeEventListener("scroll", checkScrollability);
       window.removeEventListener("resize", checkScrollability);
     };
-  }, []);
+  }, [stories]);
+
+  // Calm, controlled auto-advance (Pauses on hover/touch, respects reduced motion)
+  useEffect(() => {
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (isPaused || prefersReducedMotion || showStoryModal) return;
+
+    const interval = setInterval(() => {
+      if (scrollRef.current) {
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        const isEnd = scrollLeft >= scrollWidth - clientWidth - 20;
+
+        if (isEnd) {
+          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
+        } else {
+          const cardWidth = 320;
+          scrollRef.current.scrollBy({ left: cardWidth, behavior: "smooth" });
+        }
+      }
+    }, 6000);
+
+    return () => clearInterval(interval);
+  }, [isPaused, showStoryModal]);
 
   const scrollByCard = (direction: "left" | "right") => {
     if (scrollRef.current) {
@@ -1511,11 +1582,19 @@ function TestimonialsSection() {
     }
   };
 
+  const handleShareStoryClick = () => {
+    if (user) {
+      setShowStoryModal(true);
+    } else {
+      navigate({ to: "/auth" });
+    }
+  };
+
   return (
     <section id="stories" className="py-16 sm:py-24 bg-slate-50/60 overflow-hidden text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
         {/* Section Header */}
-        <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4">
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
           <div className="space-y-2 max-w-2xl">
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
               REAL STORIES. REAL IMPACT.
@@ -1528,9 +1607,27 @@ function TestimonialsSection() {
             </p>
           </div>
 
-          <div className="flex items-center gap-3 shrink-0">
-            {/* Desktop Navigation Arrows */}
-            <div className="hidden sm:flex items-center gap-1.5 mr-2">
+          <div className="flex flex-wrap items-center gap-3 shrink-0">
+            {/* Primary Action: See All Stories */}
+            <Link
+              to="/career-transformations"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-full transition-all shadow-xs cursor-pointer min-h-[44px]"
+            >
+              <span>See All Stories</span>
+              <ArrowRight className="h-4 w-4" />
+            </Link>
+
+            {/* Community Action: Share Your Story */}
+            <button
+              onClick={handleShareStoryClick}
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 px-4 py-2.5 rounded-full transition-all cursor-pointer min-h-[44px]"
+            >
+              <Sparkles className="h-4 w-4 text-blue-600" />
+              <span>Share Your Story</span>
+            </button>
+
+            {/* Desktop Carousel Arrows */}
+            <div className="hidden sm:flex items-center gap-1.5 ml-1">
               <button
                 onClick={() => scrollByCard("left")}
                 disabled={!canScrollLeft}
@@ -1556,67 +1653,79 @@ function TestimonialsSection() {
                 <ChevronRight className="h-4 w-4" />
               </button>
             </div>
-
-            {/* See All Stories Button */}
-            <Link
-              to="/career-transformations"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-blue-600 hover:text-blue-700 bg-blue-50/80 hover:bg-blue-100/80 border border-blue-200/60 px-4 py-2 rounded-full transition-all min-h-[44px]"
-            >
-              <span>See All Stories</span>
-              <ArrowRight className="h-4 w-4" />
-            </Link>
           </div>
         </div>
 
-        {/* Story Cards Horizontal Rail (Desktop & Mobile Swipe Snap) */}
+        {/* Story Cards Horizontal Rail (Desktop & Mobile Swipe Snap, Pauses on Hover/Touch) */}
         <div
           ref={scrollRef}
+          onMouseEnter={() => setIsPaused(true)}
+          onMouseLeave={() => setIsPaused(false)}
+          onTouchStart={() => setIsPaused(true)}
+          onTouchEnd={() => setIsPaused(false)}
           className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth no-scrollbar"
         >
-          {stories.map((item) => (
-            <div
-              key={item.id}
-              className="w-[85vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4"
-            >
-              <div className="space-y-3">
-                <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-md">
-                  {item.category}
-                </span>
-
-                <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal font-sans">
-                  “{item.quote}”
-                </p>
-              </div>
-
-              <div className="pt-3 border-t border-slate-100 space-y-3">
-                <div className="flex items-center justify-between gap-2">
-                  <div>
-                    <h4 className="font-bold text-xs text-slate-900 leading-tight">
-                      {item.name}
-                    </h4>
-                    <p className="text-[11px] text-slate-500 font-medium mt-0.5">
-                      {item.college} • {item.role}
-                    </p>
-                  </div>
-                  <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md shrink-0">
-                    {item.outcome}
+          {stories.map((item) => {
+            const initial = item.name.charAt(0).toUpperCase();
+            return (
+              <div
+                key={item.id}
+                className="w-[86vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4 text-left"
+              >
+                <div className="space-y-3">
+                  <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-md">
+                    {item.category}
                   </span>
+
+                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal font-sans line-clamp-4">
+                    “{item.quote}”
+                  </p>
                 </div>
 
-                <div>
-                  <Link
-                    to={item.link}
-                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                  >
-                    <span>Read Story</span>
-                    <ArrowRight className="h-3.5 w-3.5" />
-                  </Link>
+                <div className="pt-3 border-t border-slate-100 space-y-3">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-3">
+                      {/* Avatar initial badge */}
+                      <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center border border-blue-200/60 font-display shrink-0 text-sm">
+                        {initial}
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-xs text-slate-900 leading-tight">
+                          {item.name}
+                        </h4>
+                        <p className="text-[11px] text-slate-500 font-medium mt-0.5 line-clamp-1">
+                          {item.college} • {item.role}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md shrink-0">
+                      {item.outcome}
+                    </span>
+                  </div>
+
+                  <div>
+                    <Link
+                      to={item.link}
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
+                    >
+                      <span>Read Story</span>
+                      <ArrowRight className="h-3.5 w-3.5" />
+                    </Link>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       </div>
+
+      {/* Story Submission Modal */}
+      <AnimatePresence>
+        {showStoryModal && (
+          <StoryModal onClose={() => setShowStoryModal(false)} />
+        )}
+      </AnimatePresence>
     </section>
   );
 }

@@ -66,7 +66,7 @@ type FormData = {
   advice: string;
 };
 
-function StoryModal({ onClose, userProfile }: { onClose: () => void; userProfile: any }) {
+export function StoryModal({ onClose, userProfile }: { onClose: () => void; userProfile?: any }) {
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormData>({ before: "", problems: "", actions: "", results: "", advice: "" });
   const [submitting, setSubmitting] = useState(false);
