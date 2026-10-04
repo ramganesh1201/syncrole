@@ -1437,12 +1437,12 @@ const SEED_STORIES: CommunityStory[] = [
   {
     id: "story-1",
     name: "Aarav S.",
-    role: "SWE Track",
+    role: "Software Engineering Track",
     college: "BITS Pilani",
     category: "Resume & DSA Guidance",
     quote:
       "I was applying to 50+ companies with a generic resume and getting zero responses. SyncRole's ATS audit and daily DSA missions gave me a clear, data-backed path.",
-    outcome: "+38% Readiness Score",
+    outcome: "Verified Progress Milestone",
     link: "/career-transformations",
   },
   {
@@ -1459,7 +1459,7 @@ const SEED_STORIES: CommunityStory[] = [
   {
     id: "story-3",
     name: "Rohit M.",
-    role: "System Design & DSA",
+    role: "System Design & DSA Track",
     college: "NIT Trichy",
     category: "DSA Consistency",
     quote:
@@ -1470,7 +1470,7 @@ const SEED_STORIES: CommunityStory[] = [
   {
     id: "story-4",
     name: "Sneha T.",
-    role: "Frontend Track",
+    role: "Frontend Engineering Track",
     college: "Manipal Institute",
     category: "ATS Keyword Alignment",
     quote:
@@ -1486,7 +1486,7 @@ const SEED_STORIES: CommunityStory[] = [
     category: "SyncPilot Mock Sessions",
     quote:
       "Used SyncPilot interview mode for 3 weeks to rebuild my system design fundamentals. Having actionable feedback on exact weak points made all the difference.",
-    outcome: "Readiness 42% → 78%",
+    outcome: "System Design Mastery",
     link: "/career-transformations",
   },
 ];
@@ -1494,23 +1494,23 @@ const SEED_STORIES: CommunityStory[] = [
 function TestimonialsSection() {
   const { user } = useAuth();
   const navigate = useNavigate();
-  const scrollRef = useRef<HTMLDivElement>(null);
 
   const [stories, setStories] = useState<CommunityStory[]>(SEED_STORIES);
-  const [canScrollLeft, setCanScrollLeft] = useState(false);
-  const [canScrollRight, setCanScrollRight] = useState(true);
+  const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [showStoryModal, setShowStoryModal] = useState(false);
 
-  // Fetch approved community stories from Supabase if available
+  const touchStartX = useRef<number | null>(null);
+
+  // Fetch published community stories from Supabase if available
   useEffect(() => {
     let active = true;
     supabase
       .from("career_transformations")
-      .select("id, author_name, author_role, author_college, before_syncrole, current_results, readiness_growth")
+      .select("id, author_name, author_role, author_college, before_syncrole, current_results")
       .eq("is_published", true)
       .order("created_at", { ascending: false })
-      .limit(8)
+      .limit(6)
       .then(({ data: rows }) => {
         if (active && rows && rows.length > 0) {
           const dbStories: CommunityStory[] = rows.map((r) => ({
@@ -1518,9 +1518,9 @@ function TestimonialsSection() {
             name: r.author_name || "SyncRole Student",
             role: r.author_role || "Engineering Track",
             college: r.author_college || "Verified Student",
-            category: "Verified Transformation",
+            category: "Community Transformation",
             quote: r.before_syncrole,
-            outcome: r.readiness_growth ? `+${r.readiness_growth}% Readiness` : r.current_results || "Verified Progress",
+            outcome: r.current_results || "Verified Progress",
             link: "/career-transformations",
           }));
           setStories(dbStories);
@@ -1531,56 +1531,17 @@ function TestimonialsSection() {
     };
   }, []);
 
-  const checkScrollability = () => {
-    if (scrollRef.current) {
-      const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-      setCanScrollLeft(scrollLeft > 10);
-      setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
-    }
-  };
-
-  useEffect(() => {
-    checkScrollability();
-    const el = scrollRef.current;
-    if (el) {
-      el.addEventListener("scroll", checkScrollability);
-      window.addEventListener("resize", checkScrollability);
-    }
-    return () => {
-      if (el) el.removeEventListener("scroll", checkScrollability);
-      window.removeEventListener("resize", checkScrollability);
-    };
-  }, [stories]);
-
-  // Calm, controlled auto-advance (Pauses on hover/touch, respects reduced motion)
+  // Calm, controlled auto-advance (Pauses on hover/touch/modal)
   useEffect(() => {
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    if (isPaused || prefersReducedMotion || showStoryModal) return;
+    if (isPaused || prefersReducedMotion || showStoryModal || stories.length <= 1) return;
 
     const interval = setInterval(() => {
-      if (scrollRef.current) {
-        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
-        const isEnd = scrollLeft >= scrollWidth - clientWidth - 20;
-
-        if (isEnd) {
-          scrollRef.current.scrollTo({ left: 0, behavior: "smooth" });
-        } else {
-          const cardWidth = 320;
-          scrollRef.current.scrollBy({ left: cardWidth, behavior: "smooth" });
-        }
-      }
-    }, 6000);
+      setActiveIndex((prev) => (prev + 1) % stories.length);
+    }, 5500);
 
     return () => clearInterval(interval);
-  }, [isPaused, showStoryModal]);
-
-  const scrollByCard = (direction: "left" | "right") => {
-    if (scrollRef.current) {
-      const cardWidth = 320;
-      const amount = direction === "left" ? -cardWidth : cardWidth;
-      scrollRef.current.scrollBy({ left: amount, behavior: "smooth" });
-    }
-  };
+  }, [isPaused, showStoryModal, stories.length]);
 
   const handleShareStoryClick = () => {
     if (user) {
@@ -1590,133 +1551,155 @@ function TestimonialsSection() {
     }
   };
 
+  const handleTouchStart = (e: React.TouchEvent) => {
+    setIsPaused(true);
+    touchStartX.current = e.touches[0].clientX;
+  };
+
+  const handleTouchEnd = (e: React.TouchEvent) => {
+    setIsPaused(false);
+    if (touchStartX.current === null) return;
+
+    const deltaX = e.changedTouches[0].clientX - touchStartX.current;
+    if (deltaX > 40) {
+      // Swipe Right -> Previous
+      setActiveIndex((prev) => (prev === 0 ? stories.length - 1 : prev - 1));
+    } else if (deltaX < -40) {
+      // Swipe Left -> Next
+      setActiveIndex((prev) => (prev + 1) % stories.length);
+    }
+    touchStartX.current = null;
+  };
+
+  const currentStory = stories[activeIndex] || stories[0];
+  const avatarInitial = currentStory?.name ? currentStory.name.charAt(0).toUpperCase() : "S";
+
   return (
     <section id="stories" className="py-16 sm:py-24 bg-slate-50/60 overflow-hidden text-left">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 sm:space-y-10">
-        {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-          <div className="space-y-2 max-w-2xl">
+        {/* Concise Header */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 pb-2 border-b border-slate-200/60">
+          <div className="space-y-1.5 max-w-xl">
             <p className="text-xs font-bold uppercase tracking-widest text-slate-400">
               REAL STORIES. REAL IMPACT.
             </p>
             <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
-              Stories from Students Building Careers
+              Stories from the SyncRole community.
             </h2>
-            <p className="text-xs sm:text-base text-slate-600 font-normal leading-relaxed">
-              Read how engineering students use SyncRole to track readiness, build verified projects, and prepare for tech roles.
-            </p>
           </div>
 
-          <div className="flex flex-wrap items-center gap-3 shrink-0">
-            {/* Primary Action: See All Stories */}
+          <div className="flex items-center gap-4 shrink-0">
             <Link
               to="/career-transformations"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-white bg-blue-600 hover:bg-blue-700 px-4 py-2.5 rounded-full transition-all shadow-xs cursor-pointer min-h-[44px]"
+              className="text-xs sm:text-sm font-semibold text-slate-600 hover:text-blue-600 transition-colors inline-flex items-center gap-1"
             >
-              <span>See All Stories</span>
-              <ArrowRight className="h-4 w-4" />
+              <span>See all stories</span>
+              <ArrowRight className="h-3.5 w-3.5" />
             </Link>
 
-            {/* Community Action: Share Your Story */}
             <button
               onClick={handleShareStoryClick}
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 px-4 py-2.5 rounded-full transition-all cursor-pointer min-h-[44px]"
+              className="bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs sm:text-sm px-5 py-2.5 rounded-full shadow-xs transition-all flex items-center gap-2 cursor-pointer min-h-[44px]"
             >
-              <Sparkles className="h-4 w-4 text-blue-600" />
+              <Sparkles className="h-4 w-4" />
               <span>Share Your Story</span>
             </button>
-
-            {/* Desktop Carousel Arrows */}
-            <div className="hidden sm:flex items-center gap-1.5 ml-1">
-              <button
-                onClick={() => scrollByCard("left")}
-                disabled={!canScrollLeft}
-                aria-label="Previous stories"
-                className={`h-9 w-9 rounded-full border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer ${
-                  canScrollLeft
-                    ? "bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300 shadow-2xs"
-                    : "bg-slate-100/60 text-slate-300 cursor-not-allowed border-transparent"
-                }`}
-              >
-                <ChevronLeft className="h-4 w-4" />
-              </button>
-              <button
-                onClick={() => scrollByCard("right")}
-                disabled={!canScrollRight}
-                aria-label="Next stories"
-                className={`h-9 w-9 rounded-full border border-slate-200/80 flex items-center justify-center transition-all cursor-pointer ${
-                  canScrollRight
-                    ? "bg-white text-slate-700 hover:bg-slate-100 hover:border-slate-300 shadow-2xs"
-                    : "bg-slate-100/60 text-slate-300 cursor-not-allowed border-transparent"
-                }`}
-              >
-                <ChevronRight className="h-4 w-4" />
-              </button>
-            </div>
           </div>
         </div>
 
-        {/* Story Cards Horizontal Rail (Desktop & Mobile Swipe Snap, Pauses on Hover/Touch) */}
+        {/* Featured Story Panel (1 Primary Story at a Time) */}
         <div
-          ref={scrollRef}
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
-          onTouchStart={() => setIsPaused(true)}
-          onTouchEnd={() => setIsPaused(false)}
-          className="flex overflow-x-auto snap-x snap-mandatory gap-4 pb-4 pt-1 -mx-4 px-4 sm:mx-0 sm:px-0 scroll-smooth no-scrollbar"
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
+          className="max-w-4xl mx-auto"
         >
-          {stories.map((item) => {
-            const initial = item.name.charAt(0).toUpperCase();
-            return (
-              <div
-                key={item.id}
-                className="w-[86vw] max-w-[340px] sm:w-[360px] shrink-0 snap-start bg-white border border-slate-200/80 rounded-2xl p-5 shadow-2xs hover:shadow-xs hover:border-slate-300 transition-all flex flex-col justify-between space-y-4 text-left"
+          <div className="bg-white border border-slate-200/80 rounded-3xl p-6 sm:p-10 shadow-xs relative overflow-hidden">
+            <AnimatePresence mode="wait">
+              <motion.div
+                key={currentStory.id}
+                initial={{ opacity: 0, scale: 0.99 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.99 }}
+                transition={{ duration: 0.22, ease: "easeOut" }}
+                className="space-y-6 sm:space-y-8"
               >
+                {/* Prominent Profile Avatar & Identity Lockup */}
+                <div className="flex items-center gap-4 sm:gap-5 pb-4 border-b border-slate-100">
+                  <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-full bg-blue-100 text-blue-700 font-bold font-display text-xl sm:text-2xl flex items-center justify-center border-2 border-blue-200/80 shadow-xs shrink-0">
+                    {avatarInitial}
+                  </div>
+                  <div>
+                    <h3 className="font-extrabold text-base sm:text-xl text-slate-900 tracking-tight leading-snug">
+                      {currentStory.name}
+                    </h3>
+                    <p className="text-xs sm:text-sm text-slate-500 font-medium mt-0.5">
+                      {currentStory.college} • <span className="text-slate-700">{currentStory.role}</span>
+                    </p>
+                  </div>
+                </div>
+
+                {/* Real Story Quote Block */}
                 <div className="space-y-3">
                   <span className="inline-block text-[11px] font-bold text-blue-700 bg-blue-50 border border-blue-200/60 px-2.5 py-0.5 rounded-md">
-                    {item.category}
+                    {currentStory.category}
                   </span>
-
-                  <p className="text-xs sm:text-sm text-slate-700 leading-relaxed font-normal font-sans line-clamp-4">
-                    “{item.quote}”
+                  <p className="text-sm sm:text-lg text-slate-800 leading-relaxed font-normal font-sans italic">
+                    “{currentStory.quote}”
                   </p>
                 </div>
 
-                <div className="pt-3 border-t border-slate-100 space-y-3">
-                  <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-3">
-                      {/* Avatar initial badge */}
-                      <div className="h-10 w-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center border border-blue-200/60 font-display shrink-0 text-sm">
-                        {initial}
-                      </div>
-                      <div>
-                        <h4 className="font-bold text-xs text-slate-900 leading-tight">
-                          {item.name}
-                        </h4>
-                        <p className="text-[11px] text-slate-500 font-medium mt-0.5 line-clamp-1">
-                          {item.college} • {item.role}
-                        </p>
-                      </div>
-                    </div>
-
-                    <span className="text-[10px] font-semibold text-emerald-700 bg-emerald-50 border border-emerald-200/60 px-2 py-0.5 rounded-md shrink-0">
-                      {item.outcome}
-                    </span>
-                  </div>
-
+                {/* Story Context & Outcome Row */}
+                <div className="bg-slate-50 border border-slate-200/60 p-4 rounded-2xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
                   <div>
-                    <Link
-                      to={item.link}
-                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 transition-colors"
-                    >
-                      <span>Read Story</span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </Link>
+                    <span className="text-slate-500 font-medium">Verified Progress Outcome:</span>{" "}
+                    <strong className="text-slate-900 font-semibold">{currentStory.outcome}</strong>
                   </div>
+
+                  <Link
+                    to={currentStory.link}
+                    className="inline-flex items-center gap-1.5 font-bold text-blue-600 hover:text-blue-700 transition-colors shrink-0"
+                  >
+                    <span>Read Full Story</span>
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
                 </div>
-              </div>
-            );
-          })}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Story Progress Indicators (Dot Bar) */}
+            <div className="flex items-center justify-center gap-2 pt-6 sm:pt-8">
+              {stories.map((stg, idx) => {
+                const isActive = activeIndex === idx;
+                return (
+                  <button
+                    key={stg.id}
+                    onClick={() => {
+                      setIsPaused(true);
+                      setActiveIndex(idx);
+                    }}
+                    aria-label={`Go to story ${idx + 1}`}
+                    className="relative h-2 rounded-full overflow-hidden transition-all duration-300 cursor-pointer min-h-[12px] min-w-[12px] flex items-center justify-center"
+                  >
+                    <div
+                      className={`h-2 rounded-full transition-all duration-300 ${
+                        isActive ? "w-8 bg-blue-100" : "w-2.5 bg-slate-200 hover:bg-slate-300"
+                      }`}
+                    />
+                    {isActive && (
+                      <motion.div
+                        className="absolute inset-y-0 left-0 bg-blue-600 rounded-full"
+                        initial={{ width: "0%" }}
+                        animate={{ width: isPaused ? "100%" : "100%" }}
+                        transition={{ duration: isPaused ? 0.2 : 5.5, ease: isPaused ? "easeOut" : "linear" }}
+                      />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </div>
 
