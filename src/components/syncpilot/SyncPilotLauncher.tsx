@@ -3,29 +3,25 @@ import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import { SyncPilotButton } from "./SyncPilotButton";
-import { SyncPilotLoading } from "./SyncPilotLoading";
-import { useSyncPilot, SyncPilotMode, SyncPilotProvider } from "@/hooks/useSyncPilot";
+import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { useAuth } from "@/hooks/use-auth";
 import { GuestDemoMode } from "./GuestDemoMode";
 
-// Lazy-load heavy mode components
+// Lazy-load mode components
 const CareerTwinMode = lazy(() => import("./CareerTwinMode").then(m => ({ default: m.CareerTwinMode })));
 const RecruiterMode  = lazy(() => import("./RecruiterMode").then(m => ({ default: m.RecruiterMode })));
 const InterviewMode  = lazy(() => import("./InterviewMode").then(m => ({ default: m.InterviewMode })));
 
-type PanelState = "closed" | "booting" | "open";
-
-// Panel dimensions per mode
 const PANEL_DIMS: Record<SyncPilotMode, { width: string; height: string; bottom: string; right: string }> = {
-  career_twin: { width: "470px",  height: "min(720px, calc(100vh - 120px))", bottom: "104px", right: "2rem" },
-  recruiter:   { width: "min(72vw, 900px)", height: "min(700px, calc(100vh - 120px))", bottom: "104px", right: "2rem" },
-  interview:   { width: "min(90vw, 1100px)", height: "min(800px, calc(100vh - 40px))", bottom: "50%", right: "50%" },
+  career_twin: { width: "min(500px, 92vw)", height: "min(720px, calc(100vh - 100px))", bottom: "1.5rem", right: "1.5rem" },
+  recruiter:   { width: "min(800px, 92vw)", height: "min(720px, calc(100vh - 100px))", bottom: "1.5rem", right: "1.5rem" },
+  interview:   { width: "min(1000px, 94vw)", height: "min(800px, calc(100vh - 40px))", bottom: "50%", right: "50%" },
 };
 
 function LoadingFallback() {
   return (
-    <div className="h-full flex items-center justify-center">
-      <Loader2 className="h-6 w-6 animate-spin text-cyan-400" />
+    <div className="h-full flex items-center justify-center bg-white text-slate-500">
+      <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
     </div>
   );
 }
@@ -33,15 +29,10 @@ function LoadingFallback() {
 function SyncPilotLauncherInner() {
   const {
     panelState,
-    setPanelState,
     openSyncPilot,
     closeSyncPilot,
     mode,
     switchMode,
-    userData,
-    loadConversations,
-    loadConversation,
-    conversationId,
   } = useSyncPilot();
   const { user } = useAuth();
 
@@ -63,10 +54,6 @@ function SyncPilotLauncherInner() {
 
   const handleSwitchMode = (newMode: SyncPilotMode) => {
     switchMode(newMode);
-    if (newMode === "interview") {
-      setPanelState("booting");
-      setTimeout(() => setPanelState("open"), 800);
-    }
   };
 
   // Close on ESC key
@@ -80,9 +67,9 @@ function SyncPilotLauncherInner() {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, [panelState]);
 
-  // Lock body scroll when SyncPilot is open
+  // Lock body scroll on mobile only
   useEffect(() => {
-    if (panelState !== "closed" && typeof window !== "undefined") {
+    if (panelState !== "closed" && isMobile && typeof window !== "undefined") {
       document.body.style.overflow = "hidden";
     } else if (typeof window !== "undefined") {
       document.body.style.overflow = "";
@@ -90,33 +77,34 @@ function SyncPilotLauncherInner() {
     return () => {
       if (typeof window !== "undefined") document.body.style.overflow = "";
     };
-  }, [panelState]);
+  }, [panelState, isMobile]);
 
   const dims = PANEL_DIMS[(mode as SyncPilotMode) || "career_twin"] || PANEL_DIMS.career_twin;
   const isInterview = mode === "interview";
 
   const panelContent = (
     <>
-      {/* ── Side Panel (Career Twin / Recruiter) ── */}
+      {/* Side Panel (Career Twin / Recruiter) */}
       <AnimatePresence>
         {panelState !== "closed" && !isInterview && (
           <>
+            {/* Subtle translucent backdrop NO BLUR so underlying page stays crisp */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="fixed inset-0 z-[9990] bg-black/80 backdrop-blur-sm md:bg-transparent"
+              className="fixed inset-0 z-[9990] bg-slate-900/15 md:bg-transparent"
               onClick={handleClose}
             />
 
             <motion.div
               key="panel"
-              initial={{ opacity: 0, y: 40, scale: 0.94 }}
+              initial={{ opacity: 0, y: 20, scale: 0.97 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: 40, scale: 0.94 }}
-              transition={{ type: "spring", stiffness: 300, damping: 28 }}
-              className="fixed z-[9999] glass-strong rounded-none md:rounded-3xl overflow-hidden border-0 md:border md:border-white/12 shadow-2xl bg-[#07090e]"
+              exit={{ opacity: 0, y: 20, scale: 0.97 }}
+              transition={{ type: "spring", stiffness: 350, damping: 30 }}
+              className="fixed z-[9999] bg-white rounded-none md:rounded-3xl overflow-hidden border-0 md:border md:border-slate-200/90 shadow-2xl shadow-slate-900/15"
               style={
                 isMobile
                   ? {
@@ -133,39 +121,31 @@ function SyncPilotLauncherInner() {
                       height: dims.height,
                       bottom: dims.bottom,
                       right: dims.right,
-                      boxShadow:
-                        mode === "recruiter"
-                          ? "0 0 80px -20px oklch(0.72 0.22 295 / 50%), 0 40px 100px -20px black"
-                          : "0 0 60px -15px oklch(0.75 0.2 200 / 40%), 0 30px 80px -20px black",
                     }
               }
             >
-              {panelState === "booting" ? (
-                <SyncPilotLoading userName={userData?.profile?.full_name ?? undefined} />
-              ) : (
-                <Suspense fallback={<LoadingFallback />}>
-                  {!user ? (
-                    <GuestDemoMode onClose={handleClose} />
-                  ) : (
-                    (() => {
-                      switch (mode) {
-                        case "career_twin":
-                          return <CareerTwinMode onClose={handleClose} onSwitchMode={handleSwitchMode} />;
-                        case "recruiter":
-                          return <RecruiterMode onClose={handleClose} onSwitchMode={handleSwitchMode} />;
-                        default:
-                          return null;
-                      }
-                    })()
-                  )}
-                </Suspense>
-              )}
+              <Suspense fallback={<LoadingFallback />}>
+                {!user ? (
+                  <GuestDemoMode onClose={handleClose} />
+                ) : (
+                  (() => {
+                    switch (mode) {
+                      case "career_twin":
+                        return <CareerTwinMode onClose={handleClose} onSwitchMode={handleSwitchMode} />;
+                      case "recruiter":
+                        return <RecruiterMode onClose={handleClose} onSwitchMode={handleSwitchMode} />;
+                      default:
+                        return null;
+                    }
+                  })()
+                )}
+              </Suspense>
             </motion.div>
           </>
         )}
       </AnimatePresence>
 
-      {/* ── Fullscreen Overlay (Interview Mode) ── */}
+      {/* Fullscreen Overlay (Interview Mode) */}
       <AnimatePresence>
         {panelState !== "closed" && isInterview && user && (
           <motion.div
@@ -173,19 +153,12 @@ function SyncPilotLauncherInner() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.5 }}
-            className="fixed inset-0 w-[100vw] h-[100vh] z-[99999] bg-black/90 backdrop-blur-md overflow-hidden flex flex-col"
-            style={{ position: "fixed", inset: 0, width: "100vw", height: "100vh", zIndex: 99999 }}
+            transition={{ duration: 0.3 }}
+            className="fixed inset-0 w-[100vw] h-[100vh] z-[99999] bg-slate-900/90 backdrop-blur-sm overflow-hidden flex flex-col"
           >
-            {panelState === "booting" ? (
-              <div className="flex-1 flex items-center justify-center">
-                <SyncPilotLoading userName={userData?.profile?.full_name ?? undefined} />
-              </div>
-            ) : (
-              <Suspense fallback={<LoadingFallback />}>
-                <InterviewMode onClose={handleClose} onSwitchMode={handleSwitchMode} />
-              </Suspense>
-            )}
+            <Suspense fallback={<LoadingFallback />}>
+              <InterviewMode onClose={handleClose} onSwitchMode={handleSwitchMode} />
+            </Suspense>
           </motion.div>
         )}
       </AnimatePresence>
@@ -194,7 +167,7 @@ function SyncPilotLauncherInner() {
 
   return (
     <>
-      {/* FAB - only visible on desktop (>=768px) when panel is closed */}
+      {/* FAB - visible when panel is closed */}
       <AnimatePresence>
         {panelState === "closed" && (
           <motion.div
@@ -202,7 +175,7 @@ function SyncPilotLauncherInner() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed z-[9998] bottom-[2rem] right-[2rem] hidden md:block"
+            className="fixed z-[9998] bottom-[1.5rem] right-[1.5rem] block"
           >
             <SyncPilotButton onClick={handleOpen} />
           </motion.div>

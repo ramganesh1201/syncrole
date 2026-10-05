@@ -4,7 +4,6 @@ import { FeatureFlags } from "@/lib/feature-flags";
 import { CareerDnaService } from "@/lib/services/career-dna.service";
 import { GapAnalysisService } from "@/lib/services/gap-analysis.service";
 
-
 export type SyncPilotMode = "career_twin" | "recruiter" | "interview";
 export type PanelState = "closed" | "booting" | "open";
 
@@ -118,7 +117,6 @@ function useSyncPilotInternal() {
     message: string,
     options?: { company?: string; role?: string }
   ): Promise<string> => {
-    console.log("STEP 1 sendMessage");
     setLoading(true);
 
     const userMsg: ChatMessage = {
@@ -174,7 +172,6 @@ function useSyncPilotInternal() {
       if (newConvId && !conversationId) {
         setConversationId(newConvId);
         
-        // Optimistic update to prevent read-after-write race condition
         const newTitle = message.length > 60 ? message.slice(0, 60) + "…" : message;
         setConversations(prev => [{
           id: newConvId,
@@ -183,13 +180,10 @@ function useSyncPilotInternal() {
           updated_at: new Date().toISOString()
         }, ...prev]);
 
-        // Background reload after delay to ensure consistency
         setTimeout(() => {
-          console.log("STEP 6 refresh history");
           loadConversations();
         }, 1000);
       } else if (conversationId) {
-        // Optimistically bump existing conversation to top
         setConversations(prev => {
           const arr = [...prev];
           const idx = arr.findIndex(c => c.id === conversationId);
@@ -219,16 +213,13 @@ function useSyncPilotInternal() {
     }
   }, [mode, conversationId, messages, loadConversations]);
 
+  // Open instantly in New Chat mode without auto-loading old conversations
   const openSyncPilot = useCallback(() => {
-    setPanelState("booting");
-    setTimeout(async () => {
-      setPanelState("open");
-      const convs = await loadConversations();
-      if (convs && convs.length > 0 && !conversationId) {
-        loadConversation(convs[0].id);
-      }
-    }, 1900);
-  }, [loadConversations, loadConversation, conversationId]);
+    setPanelState("open");
+    setConversationId(null);
+    setMessages([]);
+    loadConversations();
+  }, [loadConversations]);
 
   const closeSyncPilot = useCallback(() => {
     setPanelState("closed");
