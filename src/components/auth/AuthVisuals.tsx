@@ -1,67 +1,11 @@
 import { motion } from "framer-motion";
-import { 
-  Code2, 
-  Layers, 
-  FileCheck, 
-  Sparkles, 
-  CheckCircle2, 
-  Compass, 
-  ArrowUpRight,
-  ShieldCheck,
-  KeyRound,
-  Zap
-} from "lucide-react";
+import { Sparkles, ArrowRight } from "lucide-react";
 
-interface VisualProps {
+interface AuthVisualsProps {
   mode: "signin" | "signup" | "forgot";
 }
 
-export function AuthVisuals({ mode }: VisualProps) {
-  if (mode === "signup") {
-    return <SignUpVisual />;
-  }
-  if (mode === "forgot") {
-    return <ForgotVisual />;
-  }
-  return <SignInVisual />;
-}
-
-function SignInVisual() {
-  const competencies = [
-    {
-      name: "DSA & Problem Solving",
-      score: 84,
-      target: "142/170 Topics",
-      icon: Code2,
-      color: "from-blue-600 to-indigo-600",
-      bgColor: "bg-blue-50 text-blue-600",
-    },
-    {
-      name: "System Architecture",
-      score: 72,
-      target: "Scalable Systems",
-      icon: Layers,
-      color: "from-indigo-600 to-violet-600",
-      bgColor: "bg-indigo-50 text-indigo-600",
-    },
-    {
-      name: "Resume & ATS Optimization",
-      score: 80,
-      target: "Top Tech Match",
-      icon: FileCheck,
-      color: "from-violet-600 to-purple-600",
-      bgColor: "bg-violet-50 text-violet-600",
-    },
-    {
-      name: "Mock Interview Performance",
-      score: 76,
-      target: "SyncRole AI Twin",
-      icon: Sparkles,
-      color: "from-purple-600 to-pink-600",
-      bgColor: "bg-purple-50 text-purple-600",
-    },
-  ];
-
+export function AuthVisuals({ mode }: AuthVisualsProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 16 }}
@@ -69,251 +13,220 @@ function SignInVisual() {
       transition={{ duration: 0.4, ease: "easeOut" }}
       className="space-y-6"
     >
-      {/* Header text for Left Column */}
+      {/* Reduced & Refined Left Column Headline */}
       <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold mb-3">
-          <Zap className="w-3.5 h-3.5 text-indigo-600" />
-          <span>SyncRole Career OS</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100/80 text-indigo-700 text-xs font-semibold mb-3">
+          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+          <span>SYNCROLE CAREER OS</span>
         </div>
+        
         <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Welcome back, <br />
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            keep building your career.
-          </span>
+          {mode === "signup" ? (
+            <>
+              Start your career <br />
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                journey today.
+              </span>
+            </>
+          ) : mode === "forgot" ? (
+            <>
+              Recover your <br />
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                SyncRole workspace.
+              </span>
+            </>
+          ) : (
+            <>
+              Build your career, <br />
+              <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
+                one step at a time.
+              </span>
+            </>
+          )}
         </h1>
-        <p className="mt-2.5 text-sm text-slate-600 leading-relaxed max-w-md">
-          Log in to access your personalized career workspace, track your skill growth, and prepare for top engineering roles.
+
+        <p className="mt-2.5 text-sm text-slate-600 leading-relaxed max-w-sm">
+          {mode === "signup"
+            ? "Create your account to unlock structured learning paths, project roadmaps, and recruiter readiness."
+            : mode === "forgot"
+            ? "Enter your email address to receive a instant, secure password reset link."
+            : "Your personalized workspace for engineering skill growth, DSA practice, and role readiness."}
         </p>
       </div>
 
-      {/* Main Career Readiness UI Visualization Card */}
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/50 space-y-4">
-        {/* Card Title & Live Status */}
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-lg bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 font-bold text-xs">
-              78%
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900">Career Readiness Score</h3>
-              <p className="text-[11px] text-slate-500">Target Role: Senior Full-Stack Engineer</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/60 text-emerald-700 text-[11px] font-medium">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-            <span>Twin Active</span>
-          </div>
-        </div>
-
-        {/* Competencies Progress Bars */}
-        <div className="space-y-3">
-          {competencies.map((c, i) => (
-            <div key={i} className="space-y-1.5">
-              <div className="flex items-center justify-between text-xs">
-                <div className="flex items-center gap-2 font-medium text-slate-700">
-                  <div className={`p-1 rounded-md ${c.bgColor}`}>
-                    <c.icon className="w-3.5 h-3.5" />
-                  </div>
-                  <span>{c.name}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-slate-400 font-mono">{c.target}</span>
-                  <span className="font-bold text-slate-900">{c.score}%</span>
-                </div>
-              </div>
-              <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-100">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${c.score}%` }}
-                  transition={{ duration: 0.8, delay: 0.1 * i, ease: "easeOut" }}
-                  className={`h-full rounded-full bg-gradient-to-r ${c.color}`}
-                />
-              </div>
-            </div>
-          ))}
-        </div>
-
-        {/* Milestone Footer Badge */}
-        <div className="pt-2">
-          <div className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-            <div className="flex items-center gap-2.5">
-              <div className="h-6 w-6 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center font-bold text-[10px]">
-                🎯
-              </div>
-              <div>
-                <span className="font-semibold text-slate-800">Next Milestone: </span>
-                <span className="text-slate-600">Reach 85% readiness for recruiter callback boost</span>
-              </div>
-            </div>
-            <ArrowUpRight className="w-4 h-4 text-slate-400 shrink-0" />
-          </div>
-        </div>
-      </div>
+      {/* Main Career Journey Visual Scene (Vector Art Illustration) */}
+      <CareerJourneyIllustration mode={mode} />
     </motion.div>
   );
 }
 
-function SignUpVisual() {
-  const steps = [
-    {
-      title: "1. Skill Gap Assessment",
-      desc: "Analyze your current readiness across DSA, Systems, and Projects.",
-      status: "In Progress",
-      active: true,
-      icon: Compass,
-    },
-    {
-      title: "2. Master Core Concepts",
-      desc: "Structured practice roadmap tailored to target tech stacks.",
-      status: "Next Up",
-      active: false,
-      icon: Code2,
-    },
-    {
-      title: "3. Build Production Proof",
-      desc: "Architect full-stack projects that stand out to engineering leaders.",
-      status: "Upcoming",
-      active: false,
-      icon: Layers,
-    },
-    {
-      title: "4. Recruiter Readiness",
-      desc: "Mock interviews with SyncRole AI Twin and ATS resume optimization.",
-      status: "Goal",
-      active: false,
-      icon: CheckCircle2,
-    },
-  ];
-
+function CareerJourneyIllustration({ mode }: { mode: "signin" | "signup" | "forgot" }) {
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="space-y-6"
-    >
-      {/* Header text for Left Column */}
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold mb-3">
-          <Sparkles className="w-3.5 h-3.5 text-blue-600" />
-          <span>START YOUR JOURNEY</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Start building your <br />
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            career workspace today.
-          </span>
-        </h1>
-        <p className="mt-2.5 text-sm text-slate-600 leading-relaxed max-w-md">
-          Get access to structured learning roadmaps, track your engineering readiness, and connect your progress to real opportunities.
-        </p>
-      </div>
+    <div className="relative w-full aspect-[5/4] max-w-lg mx-auto rounded-3xl bg-gradient-to-b from-white/90 to-slate-50/90 border border-slate-200/80 shadow-xl shadow-slate-200/40 p-4 sm:p-6 overflow-hidden flex items-center justify-center group">
+      {/* Ambient background glows */}
+      <div 
+        className="absolute top-0 right-0 w-72 h-72 rounded-full opacity-40 blur-3xl pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(99,102,241,0.22), transparent 70%)" }}
+      />
+      <div 
+        className="absolute bottom-0 left-0 w-64 h-64 rounded-full opacity-30 blur-3xl pointer-events-none"
+        style={{ background: "radial-gradient(circle, rgba(59,130,246,0.18), transparent 70%)" }}
+      />
 
-      {/* Main Career Roadmap Pipeline Card */}
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/50 space-y-4">
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
-          <h3 className="text-sm font-bold text-slate-900">Career Growth Pipeline</h3>
-          <span className="text-[11px] font-medium text-indigo-600 bg-indigo-50 border border-indigo-100 px-2.5 py-0.5 rounded-full">
-            Personalized Path
-          </span>
-        </div>
+      <svg
+        viewBox="0 0 500 400"
+        fill="none"
+        xmlns="http://www.w3.org/2000/svg"
+        className="w-full h-full relative z-10 select-none"
+      >
+        <defs>
+          {/* Main Gradient for Path */}
+          <linearGradient id="pathGradient" x1="60" y1="340" x2="440" y2="60" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#2563EB" />
+            <stop offset="50%" stopColor="#4F46E5" />
+            <stop offset="100%" stopColor="#7C3AED" />
+          </linearGradient>
 
-        <div className="space-y-3.5 relative">
-          {/* Vertical connecting line */}
-          <div className="absolute left-[17px] top-3 bottom-3 w-0.5 bg-slate-200" />
+          {/* Elevation Curve 1 */}
+          <linearGradient id="elevationGrad1" x1="0" y1="400" x2="500" y2="200" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#EEF2FF" stopOpacity="0.9" />
+            <stop offset="100%" stopColor="#E0E7FF" stopOpacity="0.4" />
+          </linearGradient>
 
-          {steps.map((s, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, x: -10 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.4, delay: 0.1 * i }}
-              className="relative flex items-start gap-3.5 group"
-            >
-              <div
-                className={`relative z-10 h-9 w-9 rounded-xl flex items-center justify-center border transition-all ${
-                  s.active
-                    ? "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white border-transparent shadow-md shadow-indigo-500/20"
-                    : "bg-white text-slate-500 border-slate-200 group-hover:border-slate-300"
-                }`}
-              >
-                <s.icon className="w-4 h-4" />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h4 className={`text-xs font-bold ${s.active ? "text-slate-900" : "text-slate-700"}`}>
-                    {s.title}
-                  </h4>
-                  <span
-                    className={`text-[10px] font-semibold px-2 py-0.5 rounded-full ${
-                      s.active
-                        ? "bg-indigo-50 text-indigo-700 border border-indigo-100"
-                        : "bg-slate-100 text-slate-500"
-                    }`}
-                  >
-                    {s.status}
-                  </span>
-                </div>
-                <p className="text-[11px] text-slate-500 mt-0.5 leading-snug">{s.desc}</p>
-              </div>
-            </motion.div>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
+          {/* Elevation Curve 2 */}
+          <linearGradient id="elevationGrad2" x1="0" y1="400" x2="500" y2="100" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stopColor="#F8FAFC" stopOpacity="0.95" />
+            <stop offset="100%" stopColor="#EEF2FF" stopOpacity="0.6" />
+          </linearGradient>
 
-function ForgotVisual() {
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.4, ease: "easeOut" }}
-      className="space-y-6"
-    >
-      <div>
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold mb-3">
-          <ShieldCheck className="w-3.5 h-3.5 text-slate-600" />
-          <span>ACCOUNT SECURITY</span>
-        </div>
-        <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight leading-tight">
-          Recover access to your <br />
-          <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 bg-clip-text text-transparent">
-            SyncRole workspace.
-          </span>
-        </h1>
-        <p className="mt-2.5 text-sm text-slate-600 leading-relaxed max-w-md">
-          Don't worry — enter your account email address and we'll send you an instant reset link.
-        </p>
-      </div>
+          {/* Node Badge Shadow */}
+          <filter id="nodeShadow" x="-20%" y="-20%" width="140%" height="140%">
+            <feDropShadow dx="0" dy="2" stdDeviation="3" floodColor="#0F172A" floodOpacity="0.08" />
+          </filter>
 
-      <div className="bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-slate-200/80 shadow-xl shadow-slate-200/50 space-y-4">
-        <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
-            <KeyRound className="w-5 h-5" />
-          </div>
-          <div>
-            <h3 className="text-sm font-bold text-slate-900">Secure Reset Process</h3>
-            <p className="text-xs text-slate-500">Fast, encrypted password recovery</p>
-          </div>
-        </div>
+          {/* Destination Glow */}
+          <filter id="destinationGlow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feComposite in="SourceGraphic" in2="blur" operator="over" />
+          </filter>
+        </defs>
 
-        <div className="space-y-2.5 text-xs text-slate-600 pt-2 border-t border-slate-100">
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Check your inbox for the reset link</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Choose a new 8+ character password</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            <span>Return immediately to your active workspace</span>
-          </div>
-        </div>
-      </div>
-    </motion.div>
+        {/* 1. Background Grid Lines (Subtle) */}
+        <g opacity="0.25">
+          <line x1="40" y1="90" x2="460" y2="90" stroke="#94A3B8" strokeWidth="1" strokeDasharray="4 6" />
+          <line x1="40" y1="170" x2="460" y2="170" stroke="#94A3B8" strokeWidth="1" strokeDasharray="4 6" />
+          <line x1="40" y1="250" x2="460" y2="250" stroke="#94A3B8" strokeWidth="1" strokeDasharray="4 6" />
+          <line x1="40" y1="330" x2="460" y2="330" stroke="#94A3B8" strokeWidth="1" strokeDasharray="4 6" />
+        </g>
+
+        {/* 2. Elevation / Career Horizon Landscape Curves */}
+        <path
+          d="M0 400 L0 320 Q130 270 260 305 T500 230 L500 400 Z"
+          fill="url(#elevationGrad1)"
+        />
+        <path
+          d="M0 400 L0 350 Q170 305 310 325 T500 280 L500 400 Z"
+          fill="url(#elevationGrad2)"
+        />
+
+        {/* 3. Ascending Career Path */}
+        {/* Soft Track Shadow */}
+        <path
+          d="M70 330 C150 330 160 250 250 240 C340 230 350 130 430 80"
+          stroke="#CBD5E1"
+          strokeWidth="10"
+          strokeLinecap="round"
+          opacity="0.6"
+        />
+        {/* Main Vibrant Gradient Path */}
+        <path
+          d="M70 330 C150 330 160 250 250 240 C340 230 350 130 430 80"
+          stroke="url(#pathGradient)"
+          strokeWidth="5"
+          strokeLinecap="round"
+        />
+
+        {/* 4. Milestone Nodes along the Ascending Path */}
+
+        {/* Milestone 1: LEARN (x: 140, y: 300) */}
+        <g transform="translate(140, 300)" filter="url(#nodeShadow)">
+          <circle r="16" fill="#FFFFFF" stroke="#2563EB" strokeWidth="3" />
+          {/* Book / Code Symbol */}
+          <path d="M-5 -4 L0 -7 L5 -4 L5 4 L0 1 L-5 4 Z" fill="#2563EB" />
+          <g transform="translate(0, -28)">
+            <rect x="-24" y="-11" width="48" height="18" rx="5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <text x="0" y="2" textAnchor="middle" fill="#1E293B" fontSize="9" fontWeight="800" fontFamily="sans-serif" letterSpacing="0.5">
+              LEARN
+            </text>
+          </g>
+        </g>
+
+        {/* Milestone 2: BUILD (x: 235, y: 242) */}
+        <g transform="translate(235, 242)" filter="url(#nodeShadow)">
+          <circle r="16" fill="#FFFFFF" stroke="#4F46E5" strokeWidth="3" />
+          {/* Code brackets symbol */}
+          <path d="M-5 -3 L-2 -6 L-5 -9 M5 -3 L2 -6 L5 -9" stroke="#4F46E5" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          <g transform="translate(0, -28)">
+            <rect x="-24" y="-11" width="48" height="18" rx="5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <text x="0" y="2" textAnchor="middle" fill="#1E293B" fontSize="9" fontWeight="800" fontFamily="sans-serif" letterSpacing="0.5">
+              BUILD
+            </text>
+          </g>
+        </g>
+
+        {/* Milestone 3: PRACTICE (x: 330, y: 165) */}
+        <g transform="translate(330, 165)" filter="url(#nodeShadow)">
+          <circle r="16" fill="#FFFFFF" stroke="#7C3AED" strokeWidth="3" />
+          {/* Target symbol */}
+          <circle r="5" fill="none" stroke="#7C3AED" strokeWidth="2" />
+          <circle r="2" fill="#7C3AED" />
+          <g transform="translate(0, -28)">
+            <rect x="-30" y="-11" width="60" height="18" rx="5" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1" />
+            <text x="0" y="2" textAnchor="middle" fill="#1E293B" fontSize="9" fontWeight="800" fontFamily="sans-serif" letterSpacing="0.5">
+              PRACTICE
+            </text>
+          </g>
+        </g>
+
+        {/* Destination Milestone: CAREER READY (x: 430, y: 80) */}
+        <g transform="translate(430, 80)">
+          {/* Soft pulsing glow ring */}
+          <circle r="26" fill="#6366F1" opacity="0.18" className="animate-ping" />
+          <circle r="20" fill="url(#pathGradient)" filter="url(#destinationGlow)" />
+          {/* Star Icon */}
+          <path
+            d="M0 -8 L2.3 -2.3 L8.5 -2.3 L3.5 1.8 L5.4 7.8 L0 4.2 L-5.4 7.8 L-3.5 1.8 L-8.5 -2.3 L-2.3 -2.3 Z"
+            fill="#FFFFFF"
+          />
+          <g transform="translate(0, 36)" filter="url(#nodeShadow)">
+            <rect x="-34" y="-12" width="68" height="22" rx="11" fill="#4F46E5" />
+            <text x="0" y="3" textAnchor="middle" fill="#FFFFFF" fontSize="10" fontWeight="800" fontFamily="sans-serif" letterSpacing="0.6">
+              READY ✨
+            </text>
+          </g>
+        </g>
+
+        {/* 5. Developer / Student Figure standing at start of path */}
+        <g transform="translate(62, 272)">
+          {/* Base Shadow */}
+          <ellipse cx="14" cy="58" rx="18" ry="4.5" fill="#94A3B8" opacity="0.4" />
+          
+          {/* Figure Vector Art */}
+          {/* Legs */}
+          <rect x="7" y="34" width="4.5" height="22" rx="2" fill="#1E293B" />
+          <rect x="15.5" y="34" width="4.5" height="22" rx="2" fill="#334155" />
+          {/* Jacket / Torso */}
+          <rect x="4" y="14" width="19" height="22" rx="5" fill="#4F46E5" />
+          {/* Backpack */}
+          <rect x="-2" y="16" width="6" height="15" rx="3" fill="#312E81" />
+          {/* Head */}
+          <circle cx="13.5" cy="6" r="6.5" fill="#F87171" />
+          {/* Hair */}
+          <path d="M7 4 C7 -1 20 -1 20 4 Z" fill="#0F172A" />
+          {/* Arm Gesture pointing upward along the career path */}
+          <path d="M19 18 L29 11" stroke="#4F46E5" strokeWidth="3.5" strokeLinecap="round" />
+        </g>
+      </svg>
+    </div>
   );
 }
