@@ -100,6 +100,21 @@ function useSyncPilotInternal() {
     })));
   }, []);
 
+  const deleteConversation = useCallback(async (convId: string) => {
+    try {
+      await supabase.from("ai_messages").delete().eq("conversation_id", convId);
+      await supabase.from("ai_conversations").delete().eq("id", convId);
+      
+      setConversations(prev => prev.filter(c => c.id !== convId));
+      if (conversationId === convId) {
+        setConversationId(null);
+        setMessages([]);
+      }
+    } catch (e) {
+      console.error("Failed to delete conversation", e);
+    }
+  }, [conversationId]);
+
   const startNewConversation = useCallback(() => {
     setConversationId(null);
     setMessages([]);
@@ -213,7 +228,6 @@ function useSyncPilotInternal() {
     }
   }, [mode, conversationId, messages, loadConversations]);
 
-  // Open instantly in New Chat mode without auto-loading old conversations
   const openSyncPilot = useCallback(() => {
     setPanelState("open");
     setConversationId(null);
@@ -247,6 +261,7 @@ function useSyncPilotInternal() {
       loadUserData,
       loadConversations,
       loadConversation,
+      deleteConversation,
       setMessages,
     }),
     [
@@ -266,6 +281,7 @@ function useSyncPilotInternal() {
       loadUserData,
       loadConversations,
       loadConversation,
+      deleteConversation,
     ]
   );
 }
