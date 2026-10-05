@@ -10,7 +10,7 @@ export function SyncPilotButton({ onClick }: Props) {
   const [hovered, setHovered] = useState(false);
 
   return (
-    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[9998] flex items-center justify-end pointer-events-auto">
+    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[9998] hidden md:flex items-center justify-end pointer-events-auto">
       {/* Tooltip on Hover */}
       <AnimatePresence>
         {hovered && (
@@ -27,7 +27,7 @@ export function SyncPilotButton({ onClick }: Props) {
         )}
       </AnimatePresence>
 
-      {/* Floating Assistant Button */}
+      {/* Floating Assistant Button (Desktop Only) */}
       <motion.button
         onClick={onClick}
         onHoverStart={() => setHovered(true)}

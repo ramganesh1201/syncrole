@@ -1,9 +1,8 @@
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   X, Brain, Send, Loader2, User, Timer, Trophy,
-  Mic, MicOff, ChevronLeft, Building2, Briefcase,
-  Target, Play, Settings, History, CheckCircle2, Star, AlertCircle, TrendingUp, Award, Code2, Lock, Sparkles, ArrowDown
+  ChevronLeft, History, CheckCircle2, Star, AlertCircle, ArrowDown, Sparkles
 } from "lucide-react";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
@@ -14,8 +13,8 @@ type Props = {
   onSwitchMode: (m: SyncPilotMode) => void;
 };
 
-const COMPANY_PRESETS = ["Google", "Amazon", "Microsoft", "Meta", "Apple", "Flipkart", "Swiggy", "Uber", "Zomato"];
-const ROLE_PRESETS    = ["SDE-1", "SDE-2", "Backend Engineer", "Frontend Engineer", "Full Stack", "ML Engineer", "Data Engineer"];
+const COMPANY_PRESETS = ["Google", "Amazon", "Microsoft", "Meta", "Apple", "Swiggy", "Uber"];
+const ROLE_PRESETS    = ["SDE-1", "SDE-2", "Backend Engineer", "Frontend Engineer", "Full Stack", "ML Engineer"];
 
 function InterviewTimer({ running }: { running: boolean }) {
   const [seconds, setSeconds] = useState(0);
@@ -27,98 +26,77 @@ function InterviewTimer({ running }: { running: boolean }) {
 
   const m = String(Math.floor(seconds / 60)).padStart(2, "0");
   const s = String(seconds % 60).padStart(2, "0");
-  const isLong = seconds > 2700; // 45 min warning
+  const isLong = seconds > 2700;
 
   return (
-    <motion.div
-      className={`flex items-center gap-2 glass rounded-xl px-3 py-1.5 border ${
-        isLong ? "border-orange-500/40 text-orange-400" : "border-white/10 text-white"
-      }`}
-      animate={isLong ? { borderColor: ["rgba(249,115,22,0.4)", "rgba(249,115,22,0.8)", "rgba(249,115,22,0.4)"] } : {}}
-      transition={{ repeat: Infinity, duration: 1.5 }}
-    >
-      <Timer className={`h-3.5 w-3.5 ${isLong ? "text-orange-400" : "text-cyan-400"}`} />
-      <span className="font-mono text-sm font-bold">{m}:{s}</span>
-    </motion.div>
+    <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-mono font-bold ${
+      isLong ? "border-amber-300 bg-amber-50 text-amber-700" : "border-indigo-100 bg-indigo-50 text-indigo-700"
+    }`}>
+      <Timer className="h-3.5 w-3.5" />
+      <span>{m}:{s}</span>
+    </div>
   );
 }
-
 
 function ScoreCard({ score, feedback, strengths, weaknesses }: { score: number; feedback: string; strengths: string[]; weaknesses: string[] }) {
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      className="glass rounded-3xl p-6 border border-white/10 relative overflow-hidden"
+      className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xl space-y-6 max-w-lg mx-auto"
     >
-      <div className="absolute top-0 right-0 p-8 opacity-5">
-        <Trophy className="h-32 w-32" />
-      </div>
-
-      <div className="relative z-10 flex flex-col items-center text-center mb-6">
-        <div className="text-[10px] uppercase tracking-widest text-white/50 mb-3">Final Verdict</div>
-        <div className="relative">
-          <svg viewBox="0 0 100 100" className="h-24 w-24 -rotate-90">
-            <circle cx="50" cy="50" r="45" stroke="oklch(1 0 0 / 10%)" strokeWidth="8" fill="none" />
-            <motion.circle
-              cx="50" cy="50" r="45" stroke="oklch(0.72 0.22 295)" strokeWidth="8" fill="none"
-              strokeLinecap="round" strokeDasharray={2 * Math.PI * 45}
-              initial={{ strokeDashoffset: 2 * Math.PI * 45 }}
-              animate={{ strokeDashoffset: (2 * Math.PI * 45) * (1 - score / 100) }}
-              transition={{ duration: 1.5, ease: "easeOut", delay: 0.2 }}
-            />
-          </svg>
-          <div className="absolute inset-0 flex items-center justify-center rotate-90">
-            <span className="font-display text-2xl font-bold" style={{ color: "oklch(0.72 0.22 295)" }}>{score}</span>
-          </div>
+      <div className="text-center space-y-2">
+        <div className="inline-flex h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-100 items-center justify-center text-indigo-600">
+          <Trophy className="h-6 w-6" />
         </div>
+        <h3 className="text-xl font-bold text-slate-900">Interview Evaluation</h3>
+        <p className="text-xs text-slate-500">Feedback based on your responses during this mock session.</p>
       </div>
 
-      <div className="grid grid-cols-2 gap-4 mb-4 relative z-10">
-        {/* Strengths */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         {strengths.length > 0 && (
-          <div className="glass rounded-xl p-3 border border-white/8">
-            <div className="text-[10px] uppercase tracking-widest text-emerald-400 mb-2 flex items-center gap-1.5">
-              <CheckCircle2 className="h-3 w-3" /> Strengths
+          <div className="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-3.5 space-y-1.5">
+            <div className="text-xs font-bold text-emerald-700 flex items-center gap-1.5">
+              <CheckCircle2 className="h-4 w-4" /> Strengths
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-1">
               {strengths.map((s, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-xs text-white/70">
-                  <Star className="h-3 w-3 text-emerald-400 mt-0.5 flex-shrink-0" />
-                  {s}
+                <li key={i} className="text-[11px] text-slate-700 flex items-start gap-1">
+                  <Star className="h-3 w-3 text-emerald-600 shrink-0 mt-0.5" />
+                  <span>{s}</span>
                 </li>
               ))}
             </ul>
           </div>
         )}
-        {/* Weaknesses */}
         {weaknesses.length > 0 && (
-          <div className="glass rounded-xl p-3 border border-white/8">
-            <div className="text-[10px] uppercase tracking-widest text-red-400 mb-2 flex items-center gap-1.5">
-              <AlertCircle className="h-3 w-3" /> Areas to Improve
+          <div className="bg-amber-50/60 border border-amber-100 rounded-2xl p-3.5 space-y-1.5">
+            <div className="text-xs font-bold text-amber-700 flex items-center gap-1.5">
+              <AlertCircle className="h-4 w-4" /> Key Focus Areas
             </div>
-            <ul className="space-y-1.5">
+            <ul className="space-y-1">
               {weaknesses.map((w, i) => (
-                <li key={i} className="flex items-start gap-1.5 text-xs text-white/70">
-                  <AlertCircle className="h-3 w-3 text-red-400 mt-0.5 flex-shrink-0" />
-                  {w}
+                <li key={i} className="text-[11px] text-slate-700 flex items-start gap-1">
+                  <AlertCircle className="h-3 w-3 text-amber-600 shrink-0 mt-0.5" />
+                  <span>{w}</span>
                 </li>
               ))}
             </ul>
           </div>
         )}
       </div>
-      <div className="glass rounded-xl p-4 text-xs text-white/60 leading-relaxed border border-white/5">
+
+      <div className="bg-slate-50 border border-slate-200/80 rounded-2xl p-4 text-xs text-slate-700 leading-relaxed">
         {feedback}
       </div>
     </motion.div>
   );
 }
 
-type Phase = "setup" | "chamber-entry" | "active" | "scorecard";
+type Phase = "setup" | "active" | "scorecard";
 
 export function InterviewMode({ onClose, onSwitchMode }: Props) {
-  const { messages, loading, sendMessage, loadUserData, userData, switchMode, startNewConversation, conversations, loadConversation } = useSyncPilot();
+  const { messages, loading, sendMessage, loadUserData, userData, startNewConversation, conversations, loadConversation } = useSyncPilot();
   const [phase, setPhase] = useState<Phase>("setup");
   const [company, setCompany] = useState("");
   const [role, setRole]    = useState("");
@@ -133,7 +111,6 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
 
   useEffect(() => { loadUserData(); }, []);
 
-  // Sync actual user data to defaults if not manually changed
   useEffect(() => {
     if (userData?.profile) {
       if (!company && userData.profile.dream_companies?.length > 0) {
@@ -145,7 +122,6 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
     }
   }, [userData]);
 
-  // Jump to active phase if a conversation is loaded from history
   useEffect(() => {
     if (messages.length > 0 && phase === "setup") {
       setPhase("active");
@@ -153,7 +129,6 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
     }
   }, [messages, phase]);
 
-  // Detect scorecard in AI response
   useEffect(() => {
     const lastMsg = messages[messages.length - 1];
     if (!lastMsg || lastMsg.role !== "assistant") return;
@@ -162,15 +137,13 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
       const scoreMatch = lastMsg.content.match(/(?:overall score|final score)[:\s]+(\d+)/i);
       const score = scoreMatch ? parseInt(scoreMatch[1]) : 0;
       if (score > 0) {
-        setTimeout(() => {
-          setScoreData({
-            score,
-            feedback: lastMsg.content.slice(0, 300),
-            strengths: extractList(lastMsg.content, "strength"),
-            weaknesses: extractList(lastMsg.content, "weakness|improve|work on"),
-          });
-          setPhase("scorecard");
-        }, 1500);
+        setScoreData({
+          score,
+          feedback: lastMsg.content.slice(0, 300),
+          strengths: extractList(lastMsg.content, "strength"),
+          weaknesses: extractList(lastMsg.content, "weakness|improve|work on"),
+        });
+        setPhase("scorecard");
       }
     }
   }, [messages]);
@@ -192,16 +165,12 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
 
   async function startInterview() {
     startNewConversation();
-    setPhase("chamber-entry");
-    // Chamber animation plays for 2s, then go active
-    setTimeout(() => {
-      setPhase("active");
-      setInterviewStarted(true);
-      sendMessage(
-        `Start my interview now. I am applying for ${role} at ${company}. Begin with a brief introduction, then ask me the first technical question. Base the questions on my profile data, projects, and DSA progress.`,
-        { company, role }
-      );
-    }, 2200);
+    setPhase("active");
+    setInterviewStarted(true);
+    sendMessage(
+      `Start my technical mock interview now. I am applying for ${role || "Software Engineer"} at ${company || "Top Tech"}. Begin with a brief introduction, then ask me the first question based on my profile data, projects, and DSA progress.`,
+      { company, role }
+    );
   }
 
   async function handleSend() {
@@ -214,9 +183,196 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
   // ── SETUP PHASE ──
   if (phase === "setup") {
     return (
-      <div className="h-full flex overflow-hidden interview-chamber" style={{ background: "oklch(0.09 0.02 270 / 96%)" }}>
-        
-        {/* Conversation History Sidebar */}
+      <div className="h-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans relative overflow-hidden">
+        {/* Top Header */}
+        <div className="flex-shrink-0 px-4 py-3 bg-white border-b border-slate-200/90 z-10">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2.5">
+              <div className="h-8 w-8 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+                <Brain className="h-4 w-4" />
+              </div>
+              <div>
+                <div className="font-bold text-sm text-slate-900 leading-none">Interview Mode</div>
+                <div className="text-[11px] font-medium text-slate-500 mt-0.5">
+                  AI Mock Technical & Behavioral Interviewer
+                </div>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setShowHistory((v) => !v)}
+                className="h-8 w-8 rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer"
+                title="History"
+              >
+                <History className="h-4 w-4" />
+              </button>
+              <button
+                onClick={onClose}
+                className="h-8 w-8 rounded-xl hover:bg-slate-100 text-slate-600 hover:text-slate-900 flex items-center justify-center transition cursor-pointer"
+                title="Close"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+
+          {/* Mode Selector Tabs */}
+          <div className="mt-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
+            <button
+              onClick={() => onSwitchMode("career_twin")}
+              className="text-xs font-medium bg-slate-100 hover:bg-slate-200/80 text-slate-700 px-3 py-1 rounded-full whitespace-nowrap transition cursor-pointer"
+            >
+              Career Twin
+            </button>
+            <button
+              onClick={() => onSwitchMode("recruiter")}
+              className="text-xs font-medium bg-slate-100 hover:bg-slate-200/80 text-slate-700 px-3 py-1 rounded-full whitespace-nowrap transition cursor-pointer"
+            >
+              Recruiter Mode
+            </button>
+            <button className="text-xs font-semibold bg-blue-600 text-white px-3 py-1 rounded-full whitespace-nowrap shadow-xs">
+              Interview Mode
+            </button>
+          </div>
+        </div>
+
+        {/* Setup Content */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 flex items-center justify-center">
+          <AnimatePresence>
+            {showHistory && (
+              <ConversationHistory
+                conversations={conversations}
+                onSelect={(id) => { loadConversation(id); setShowHistory(false); }}
+                onClose={() => setShowHistory(false)}
+              />
+            )}
+          </AnimatePresence>
+
+          <motion.div
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="w-full max-w-md space-y-6 bg-white p-6 rounded-3xl border border-slate-200/90 shadow-xl"
+          >
+            <div className="text-center space-y-2">
+              <div className="inline-flex h-12 w-12 rounded-2xl bg-blue-50 border border-blue-100 items-center justify-center text-blue-600 mb-1">
+                <Brain className="h-6 w-6" />
+              </div>
+              <h2 className="text-xl font-bold text-slate-900 tracking-tight">Interview Chamber</h2>
+              <p className="text-xs text-slate-500 max-w-xs mx-auto leading-relaxed">
+                Practice technical questions, system design, and communication for your target role.
+              </p>
+            </div>
+
+            {/* Target Company */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700 block">Target Company</label>
+              <div className="flex flex-wrap gap-1.5">
+                {COMPANY_PRESETS.map((c) => (
+                  <button
+                    key={c}
+                    onClick={() => setCompany(c)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer border ${
+                      company === c
+                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {c}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Target Role */}
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-slate-700 block">Target Role</label>
+              <div className="flex flex-wrap gap-1.5">
+                {ROLE_PRESETS.map((r) => (
+                  <button
+                    key={r}
+                    onClick={() => setRole(r)}
+                    className={`px-3 py-1 rounded-full text-xs font-medium transition cursor-pointer border ${
+                      role === r
+                        ? "bg-blue-600 text-white border-blue-600 shadow-xs"
+                        : "bg-slate-50 text-slate-600 border-slate-200 hover:bg-slate-100"
+                    }`}
+                  >
+                    {r}
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Start Button */}
+            <button
+              onClick={startInterview}
+              disabled={!company || !role}
+              className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white font-semibold py-3 text-xs tracking-wide shadow-md shadow-indigo-500/20 transition active:scale-[0.99] disabled:opacity-50 cursor-pointer"
+            >
+              Start Mock Interview →
+            </button>
+          </motion.div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── SCORECARD PHASE ──
+  if (phase === "scorecard" && scoreData) {
+    return (
+      <div className="h-full flex flex-col bg-[#F8FAFC] text-slate-900 overflow-y-auto p-4">
+        <button onClick={onClose} className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full bg-white border border-slate-200 flex items-center justify-center">
+          <X className="h-4 w-4 text-slate-600" />
+        </button>
+        <div className="flex-1 flex items-center justify-center py-6">
+          <div className="w-full space-y-4">
+            <ScoreCard {...scoreData} />
+            <div className="flex gap-3 justify-center">
+              <button
+                onClick={() => { setPhase("setup"); setScoreData(null); setInterviewStarted(false); }}
+                className="bg-white hover:bg-slate-50 border border-slate-200 rounded-xl px-5 py-2.5 text-xs font-semibold text-slate-700 transition"
+              >
+                Start New Practice Session
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // ── ACTIVE INTERVIEW PHASE ──
+  return (
+    <div className="h-full flex flex-col bg-[#F8FAFC] text-slate-900 font-sans">
+      {/* Top Header */}
+      <div className="flex-shrink-0 px-4 py-3 bg-white border-b border-slate-200/90 flex items-center justify-between z-10">
+        <div className="flex items-center gap-2.5">
+          <div className="h-8 w-8 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 shrink-0">
+            <Brain className="h-4 w-4" />
+          </div>
+          <div>
+            <div className="text-xs font-bold text-slate-900 leading-none">AI Technical Interviewer</div>
+            <div className="text-[11px] font-medium text-slate-500 mt-0.5">{company} · {role}</div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <InterviewTimer running={interviewStarted} />
+          <button
+            onClick={() => setPhase("setup")}
+            className="text-xs font-semibold text-slate-600 hover:text-slate-900 px-2.5 py-1 rounded-lg hover:bg-slate-100 transition"
+          >
+            End
+          </button>
+          <button onClick={onClose} className="h-8 w-8 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-600 transition">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Messages */}
+      <div className="flex-1 min-h-0 overflow-hidden flex relative">
         <AnimatePresence>
           {showHistory && (
             <ConversationHistory
@@ -227,299 +383,88 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
           )}
         </AnimatePresence>
 
-        <div className="flex-1 flex flex-col items-center justify-center p-8 relative">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="w-full max-w-md space-y-6 mt-12"
-        >
-          {/* Header */}
-          <div className="absolute top-4 left-0 w-full px-4 flex items-center justify-between">
-            <div className="flex items-center gap-1">
-              {/* History button if we want to show it on left */}
-            </div>
-            <div className="flex items-center gap-1">
-              <button onClick={() => onSwitchMode("career_twin")}
-                className="text-[10px] glass px-2.5 py-1 rounded-full hover:bg-white/10 transition text-white/60 hover:text-white">
-                Career Twin
-              </button>
-              <button onClick={() => onSwitchMode("recruiter")}
-                className="text-[10px] glass px-2.5 py-1 rounded-full hover:bg-white/10 transition text-white/60 hover:text-white">
-                Recruiter
-              </button>
-              <button className="text-[10px] bg-pink-500/20 px-2.5 py-1 rounded-full text-pink-300 border border-pink-500/30 transition font-medium">
-                Interview
-              </button>
-              <div className="w-px h-4 bg-white/10 mx-1"></div>
-              <button onClick={() => setShowHistory(v => !v)}
-                className="h-8 w-8 rounded-full glass hover:bg-white/10 flex items-center justify-center transition" title="Toggle History">
-                <History className="h-4 w-4 text-white/60" />
-              </button>
-              <button onClick={onClose}
-                className="h-8 w-8 rounded-full glass hover:bg-white/10 flex items-center justify-center transition" title="Close">
-                <X className="h-4 w-4 text-white/60" />
-              </button>
-            </div>
-          </div>
-
-          <div className="text-center">
-            <div className="inline-flex h-16 w-16 rounded-2xl items-center justify-center mb-4"
-              style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-              <Brain className="h-8 w-8 text-white" />
-            </div>
-            <h2 className="font-display text-2xl font-bold text-white">Interview Chamber</h2>
-            <p className="text-sm text-white/50 mt-1">AI-powered interview simulation using your live profile</p>
-          </div>
-
-          {/* Company selector */}
-          <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest text-white/40">Target Company</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {COMPANY_PRESETS.map(c => (
-                <button key={c} onClick={() => setCompany(c)}
-                  className={`px-3 py-1.5 rounded-full text-xs transition ${
-                    company === c ? "text-white border-cyan-400/50" : "glass text-white/50 hover:text-white"
-                  }`}
-                  style={company === c ? {
-                    background: "linear-gradient(135deg, oklch(0.75 0.2 200 / 30%), oklch(0.72 0.22 295 / 30%))",
-                    border: "1px solid oklch(0.75 0.2 200 / 50%)",
-                  } : {}}>
-                  {c}
-                </button>
-              ))}
-            </div>
-            <input value={company} onChange={e => setCompany(e.target.value)}
-              className="w-full glass rounded-xl px-4 py-2.5 text-sm outline-none border border-white/10 placeholder:text-white/25"
-              placeholder="Or type custom company…" />
-          </div>
-
-          {/* Role selector */}
-          <div className="space-y-2">
-            <label className="text-xs uppercase tracking-widest text-white/40">Role</label>
-            <div className="flex flex-wrap gap-2 mb-2">
-              {ROLE_PRESETS.map(r => (
-                <button key={r} onClick={() => setRole(r)}
-                  className={`px-3 py-1.5 rounded-full text-xs transition ${
-                    role === r ? "text-white" : "glass text-white/50 hover:text-white"
-                  }`}
-                  style={role === r ? {
-                    background: "linear-gradient(135deg, oklch(0.72 0.22 295 / 30%), oklch(0.85 0.20 330 / 30%))",
-                    border: "1px solid oklch(0.72 0.22 295 / 50%)",
-                  } : {}}>
-                  {r}
-                </button>
-              ))}
-            </div>
-            <input value={role} onChange={e => setRole(e.target.value)}
-              className="w-full glass rounded-xl px-4 py-2.5 text-sm outline-none border border-white/10 placeholder:text-white/25"
-              placeholder="Or type custom role…" />
-          </div>
-
-          {/* Mode switch */}
-          <div className="flex gap-2">
-            <button onClick={() => onSwitchMode("career_twin")}
-              className="flex-1 glass rounded-xl py-2 text-xs text-white/50 hover:text-white transition">
-              ← Career Twin
-            </button>
-            <button onClick={startInterview} disabled={!company || !role}
-              className="flex-1 rounded-xl px-4 py-3.5 font-bold text-white transition disabled:opacity-50"
-              style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-              Enter Chamber →
-            </button>
-          </div>
-        </motion.div>
-      </div>
-      </div>
-    );
-  }
-
-  // ── CHAMBER ENTRY ANIMATION ──
-  if (phase === "chamber-entry") {
-    return (
-      <div className="h-full flex flex-col items-center justify-center interview-chamber relative overflow-hidden">
-        <div className="scan-line" />
-        <div className="absolute inset-0" style={{
-          backgroundImage: "linear-gradient(oklch(0.72 0.22 295 / 8%) 1px, transparent 1px), linear-gradient(90deg, oklch(0.72 0.22 295 / 8%) 1px, transparent 1px)",
-          backgroundSize: "40px 40px",
-        }} />
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.5 }}
-          className="text-center z-10 space-y-4"
-        >
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-            className="h-20 w-20 mx-auto rounded-full"
-            style={{
-              background: "conic-gradient(from 0deg, transparent 60%, oklch(0.72 0.22 295), oklch(0.85 0.20 330), transparent 100%)",
-            }}
-          />
-          <div className="font-display text-2xl font-bold text-white">Entering Interview Chamber</div>
-          <div className="text-sm text-white/50">{company} — {role}</div>
-          <div className="flex items-center justify-center gap-2 text-[11px] text-violet-400">
-            <motion.div animate={{ opacity: [1, 0, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
-              ▋
-            </motion.div>
-            AI Interviewer Initializing…
-          </div>
-        </motion.div>
-      </div>
-    );
-  }
-
-  // ── SCORECARD PHASE ──
-  if (phase === "scorecard" && scoreData) {
-    return (
-      <div className="h-full flex flex-col interview-chamber overflow-y-auto">
-        <button onClick={onClose} className="absolute top-4 right-4 z-10 h-8 w-8 rounded-full glass flex items-center justify-center">
-          <X className="h-4 w-4 text-white/60" />
-        </button>
-        <div className="flex-1 flex items-center justify-center p-6">
-          <div className="w-full space-y-4">
-            <ScoreCard {...scoreData} />
-            <div className="flex gap-3 justify-center">
-              <button onClick={() => { startNewConversation(); setPhase("setup"); setScoreData(null); setInterviewStarted(false); }}
-                className="glass rounded-xl px-6 py-2.5 text-sm hover:bg-white/10 transition">
-                Retry
-              </button>
-              <button onClick={() => onSwitchMode("career_twin")}
-                className="rounded-xl px-6 py-2.5 text-sm font-medium text-white transition"
-                style={{ background: "linear-gradient(135deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}>
-                Career Twin Analysis
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  // ── ACTIVE INTERVIEW ──
-  return (
-    <div className="h-full flex flex-col interview-chamber">
-      {/* Header bar */}
-      <div className="flex-shrink-0 px-4 py-3 border-b border-white/8 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          {/* Interviewer avatar */}
-          <div className="relative h-9 w-9 rounded-full flex items-center justify-center"
-            style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-            <Brain className="h-4 w-4 text-white" />
-            <span className="absolute -top-0.5 -right-0.5 h-2.5 w-2.5 rounded-full bg-emerald-400"
-              style={{ boxShadow: "0 0 6px oklch(0.88 0.18 145)" }} />
-          </div>
-          <div>
-            <div className="text-sm font-semibold text-white">AI Interviewer</div>
-            <div className="text-[10px] text-white/40">{company} · {role}</div>
-          </div>
-        </div>
-        <div className="flex items-center gap-2">
-          <InterviewTimer running={interviewStarted} />
-          <button onClick={() => { setPhase("scorecard"); setScoreData({ score: 0, feedback: "Session ended early", strengths: [], weaknesses: [] }); }}
-            className="text-[11px] glass px-3 py-1.5 rounded-xl hover:bg-white/10 transition text-orange-400 border border-orange-500/20">
-            End Interview
-          </button>
-          <button onClick={onClose}
-            className="h-8 w-8 rounded-full glass hover:bg-white/10 flex items-center justify-center transition">
-            <X className="h-4 w-4 text-white/60" />
-          </button>
-        </div>
-      </div>
-
-      {/* Chat area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-0 relative">
-        <div className="flex-1 overflow-y-auto px-5 py-4 space-y-4" ref={scrollRef} onScroll={handleScroll}>
-          {messages.map((m: any, i: number) => {
-            const isUser = m.role === "user";
-            return (
-              <motion.div key={m.id ?? i}
-                initial={{ opacity: 0, y: 8 }}
-                animate={{ opacity: 1, y: 0 }}
-                className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
-              >
-                {!isUser && (
-                  <div className="flex-shrink-0 h-8 w-8 rounded-full flex items-center justify-center"
-                    style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-                    <Brain className="h-4 w-4 text-white" />
+        <div className="flex-1 flex flex-col min-w-0 min-h-0 relative">
+          <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-4" ref={scrollRef} onScroll={handleScroll}>
+            {messages.map((m: any, i: number) => {
+              const isUser = m.role === "user";
+              return (
+                <motion.div
+                  key={m.id ?? i}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
+                >
+                  {!isUser && (
+                    <div className="h-7 w-7 rounded-xl bg-blue-50 border border-blue-100 text-blue-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <Brain className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
+                    isUser
+                      ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-medium rounded-tr-xs shadow-xs"
+                      : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs space-y-1.5"
+                  }`}>
+                    {m.content.split("\n").map((line: string, li: number) => (
+                      <p key={li} className={line === "" ? "h-1.5" : ""}>{line}</p>
+                    ))}
                   </div>
-                )}
-                <div className={`max-w-[78%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed break-words overflow-hidden ${
-                  isUser ? "rounded-tr-sm text-white" : "glass rounded-tl-sm border border-white/8"
-                }`} style={isUser ? {
-                  background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))",
-                } : {}}>
-                  {m.content.split("\n").map((line: string, li: number) => (
-                    <p key={li} className={line === "" ? "h-2" : ""}>{line}</p>
-                  ))}
-                </div>
-                {isUser && (
-                  <div className="flex-shrink-0 h-8 w-8 rounded-full glass flex items-center justify-center">
-                    <User className="h-4 w-4" />
-                  </div>
-                )}
-              </motion.div>
-            );
-          })}
+                  {isUser && (
+                    <div className="h-7 w-7 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
+                      <User className="h-3.5 w-3.5" />
+                    </div>
+                  )}
+                </motion.div>
+              );
+            })}
 
-          {loading && (
-            <div className="flex gap-3 items-center">
-              <div className="h-8 w-8 rounded-full flex items-center justify-center"
-                style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}>
-                <Brain className="h-4 w-4 text-white" />
+            {loading && (
+              <div className="flex items-center gap-2.5 text-xs text-slate-500 bg-white border border-slate-200/90 rounded-2xl px-4 py-2.5 shadow-xs w-fit">
+                <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />
+                <span className="font-medium">Evaluating response & generating next question…</span>
               </div>
-              <div className="glass rounded-2xl rounded-tl-sm px-4 py-3 border border-white/8">
-                <div className="flex gap-1.5">
-                  {[0, 0.15, 0.3].map((d, i) => (
-                    <motion.div key={i} className="h-2 w-2 rounded-full bg-violet-400"
-                      animate={{ y: [0, -6, 0] }} transition={{ repeat: Infinity, duration: 0.7, delay: d }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
-
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-50 pointer-events-none">
-          <AnimatePresence>
-            {showScrollButton && (
-              <motion.button
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.8 }}
-                onClick={scrollToBottom}
-                aria-label="Scroll to latest message"
-                className="h-10 w-10 rounded-full glass border border-white/20 shadow-[0_0_15px_rgba(0,0,0,0.5)] flex items-center justify-center text-white hover:bg-white/10 transition-colors pointer-events-auto focus:outline-none focus:ring-2 focus:ring-cyan-400"
-              >
-                <ArrowDown className="h-5 w-5" />
-              </motion.button>
             )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* Input */}
-      <div className="flex-shrink-0 p-4 border-t border-white/8">
-        <div className="flex gap-2 items-end">
-          <div className="flex-1 glass rounded-2xl border border-white/8 overflow-hidden">
-            <textarea
-              value={input}
-              onChange={e => { setInput(e.target.value); e.target.style.height = "auto"; e.target.style.height = Math.min(e.target.scrollHeight, 120) + "px"; }}
-              onKeyDown={e => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
-              placeholder="Type your answer… (Enter to send, Shift+Enter for new line)"
-              className="w-full bg-transparent px-4 py-3 text-sm outline-none resize-none min-h-[44px] max-h-[120px] placeholder:text-white/25"
-              rows={1}
-            />
           </div>
-          <motion.button
-            whileTap={{ scale: 0.9 }}
-            onClick={handleSend}
-            disabled={!input.trim() || loading}
-            className="h-12 w-12 rounded-2xl flex items-center justify-center disabled:opacity-40 transition"
-            style={{ background: "linear-gradient(135deg, oklch(0.72 0.22 295), oklch(0.85 0.20 330))" }}
-          >
-            {loading ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : <Send className="h-4 w-4 text-white" />}
-          </motion.button>
+
+          <div className="absolute bottom-16 left-1/2 -translate-x-1/2 z-30 pointer-events-none">
+            <AnimatePresence>
+              {showScrollButton && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.8 }}
+                  onClick={scrollToBottom}
+                  aria-label="Scroll to latest message"
+                  className="h-8 w-8 rounded-full bg-white border border-slate-200 shadow-md flex items-center justify-center text-slate-600 hover:text-slate-900 transition-colors pointer-events-auto cursor-pointer"
+                >
+                  <ArrowDown className="h-4 w-4" />
+                </motion.button>
+              )}
+            </AnimatePresence>
+          </div>
+
+          {/* Composer */}
+          <div className="flex-shrink-0 p-3 bg-white border-t border-slate-200/90 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
+            <div className="flex gap-2 items-end">
+              <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:bg-white focus-within:border-blue-500 focus-within:ring-4 focus-within:ring-blue-500/10 transition-all">
+                <textarea
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); handleSend(); } }}
+                  placeholder="Type your answer to the interviewer…"
+                  className="w-full bg-transparent px-3.5 py-2.5 text-xs font-medium text-slate-900 placeholder:text-slate-400 outline-none resize-none min-h-[44px] max-h-[120px]"
+                  rows={1}
+                />
+              </div>
+              <motion.button
+                whileTap={{ scale: 0.95 }}
+                onClick={handleSend}
+                disabled={!input.trim() || loading}
+                className="h-10 w-10 shrink-0 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center disabled:opacity-40 transition shadow-xs cursor-pointer"
+              >
+                {loading ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : <Send className="h-4 w-4 text-white" />}
+              </motion.button>
+            </div>
+          </div>
         </div>
       </div>
     </div>
