@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
-import { MetalFx } from "metal-fx";
+import { SafeMetalFx } from "@/components/ui/safe-metal";
 
 type Props = {
   onClick: () => void;
@@ -29,7 +29,7 @@ export function SyncPilotButton({ onClick }: Props) {
       </AnimatePresence>
 
       {/* Floating Assistant Button (Desktop Only) */}
-      <MetalFx preset="silver" variant="button" strength={0.4} theme="light">
+      <SafeMetalFx preset="silver" variant="button" strength={0.4} theme="light">
         <motion.button
           onClick={onClick}
           onHoverStart={() => setHovered(true)}
@@ -47,7 +47,7 @@ export function SyncPilotButton({ onClick }: Props) {
             <span className="text-[10px] font-medium text-slate-500 hidden sm:inline leading-none">AI Career Guide</span>
           </div>
         </motion.button>
-      </MetalFx>
+      </SafeMetalFx>
     </div>
   );
 }

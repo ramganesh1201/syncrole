@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { MetalBadge } from "metal-fx";
+import { SafeMetalBadge } from "@/components/ui/safe-metal";
 import {
   Github,
   Linkedin,
@@ -91,7 +91,7 @@ export default function SyncFooter() {
                 <li>
                   <Link to="/gate" className="text-slate-600 hover:text-blue-600 transition-colors inline-flex items-center gap-1.5">
                     <span>GATE Hub</span>
-                    <MetalBadge strength={0.5} theme="light" textColor="#1D4ED8">New</MetalBadge>
+                    <SafeMetalBadge strength={0.5} theme="light" textColor="#1D4ED8">New</SafeMetalBadge>
                   </Link>
                 </li>
                 <li>

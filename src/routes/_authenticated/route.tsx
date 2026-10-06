@@ -5,7 +5,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
-import { MetalFx } from "metal-fx";
+import { SafeMetalFx } from "@/components/ui/safe-metal";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -137,7 +137,7 @@ function AuthedLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <MetalFx preset="chromatic" variant="button" strength={0.4} theme="light">
+            <SafeMetalFx preset="chromatic" variant="button" strength={0.4} theme="light">
               <button
                 onClick={openSyncPilot}
                 className="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 active:scale-95 transition text-xs font-semibold cursor-pointer min-h-[36px]"
@@ -146,7 +146,7 @@ function AuthedLayout() {
                 <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
                 <span className="text-[11px] font-bold">SyncPilot</span>
               </button>
-            </MetalFx>
+            </SafeMetalFx>
 
             <NotificationCenter>
               <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-xs" aria-label="Notifications">
