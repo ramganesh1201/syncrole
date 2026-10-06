@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import { createPortal } from "react-dom";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2 } from "lucide-react";
+import { ThinkingOrb } from "thinking-orbs";
 import { SyncPilotButton } from "./SyncPilotButton";
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { useAuth } from "@/hooks/use-auth";
@@ -21,7 +22,7 @@ const PANEL_DIMS: Record<SyncPilotMode, { width: string; height: string; bottom:
 function LoadingFallback() {
   return (
     <div className="h-full flex items-center justify-center bg-white text-slate-500">
-      <Loader2 className="h-6 w-6 animate-spin text-indigo-600" />
+      <ThinkingOrb state="working" size={24} />
     </div>
   );
 }

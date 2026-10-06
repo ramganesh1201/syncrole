@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThinkingOrb } from "thinking-orbs";
 import {
   X, Briefcase, Send, Loader2, User,
   TrendingUp, CheckCircle2, Brain,
@@ -296,7 +297,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
 
             {loading && (
               <div className="flex items-center gap-2.5 text-xs text-slate-500 bg-white border border-slate-200/90 rounded-2xl px-4 py-2.5 shadow-xs w-fit">
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-purple-600" />
+                <ThinkingOrb state="searching" size={20} />
                 <span className="font-medium">Evaluating profile fit…</span>
               </div>
             )}

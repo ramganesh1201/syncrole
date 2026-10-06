@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { ThinkingOrb } from "thinking-orbs";
 import {
   X, Brain, Send, Loader2, User, Timer, Trophy,
   ChevronLeft, History, CheckCircle2, Star, AlertCircle, ArrowDown, Sparkles
@@ -419,7 +420,7 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
 
             {loading && (
               <div className="flex items-center gap-2.5 text-xs text-slate-500 bg-white border border-slate-200/90 rounded-2xl px-4 py-2.5 shadow-xs w-fit">
-                <Loader2 className="h-3.5 w-3.5 animate-spin text-blue-600" />
+                <ThinkingOrb state="solving" size={20} />
                 <span className="font-medium">Evaluating response & generating next question…</span>
               </div>
             )}
