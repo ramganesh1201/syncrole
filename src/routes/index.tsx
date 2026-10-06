@@ -33,6 +33,7 @@ import { BrandLogo } from "@/components/ui/brand-logo";
 import SyncFooter from "@/components/SyncFooter";
 import { useAuth } from "@/hooks/use-auth";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
+import { MetalFx, MetalBadge } from "metal-fx";
 import { supabase } from "@/integrations/supabase/client";
 import { StoryModal } from "@/components/home/CareerTransformationsSection";
 
@@ -120,9 +121,9 @@ function Navbar() {
               className="hover:text-blue-600 transition-colors flex items-center gap-1.5"
             >
               GATE Hub
-              <span className="bg-blue-600 text-white text-[9px] px-1.5 py-0.5 rounded-full font-bold uppercase tracking-wider">
+              <MetalBadge strength={0.5} theme="light" textColor="#1D4ED8">
                 New
-              </span>
+              </MetalBadge>
             </Link>
             <a href="#journey" className="hover:text-blue-600 transition-colors">
               Resources
@@ -136,14 +137,16 @@ function Navbar() {
         {/* Right side (Desktop Search & Mobile/Desktop Action) */}
         <div className="flex items-center gap-2">
           {/* Mobile SyncPilot Top Navbar Button */}
-          <button
-            onClick={openSyncPilot}
-            className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 active:scale-95 transition text-xs font-semibold cursor-pointer min-h-[38px]"
-            aria-label="Open SyncPilot AI Assistant"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-            <span className="text-[11px] font-bold">SyncPilot</span>
-          </button>
+          <MetalFx preset="chromatic" variant="button" strength={0.4} theme="light">
+            <button
+              onClick={openSyncPilot}
+              className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 active:scale-95 transition text-xs font-semibold cursor-pointer min-h-[38px]"
+              aria-label="Open SyncPilot AI Assistant"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+              <span className="text-[11px] font-bold">SyncPilot</span>
+            </button>
+          </MetalFx>
 
           {/* Desktop Search bar */}
           <form onSubmit={handleSearchSubmit} className="hidden sm:block relative">

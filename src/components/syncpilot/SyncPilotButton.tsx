@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sparkles } from "lucide-react";
+import { MetalFx } from "metal-fx";
 
 type Props = {
   onClick: () => void;
@@ -28,23 +29,25 @@ export function SyncPilotButton({ onClick }: Props) {
       </AnimatePresence>
 
       {/* Floating Assistant Button (Desktop Only) */}
-      <motion.button
-        onClick={onClick}
-        onHoverStart={() => setHovered(true)}
-        onHoverEnd={() => setHovered(false)}
-        whileHover={{ scale: 1.03 }}
-        whileTap={{ scale: 0.97 }}
-        className="bg-white text-slate-800 border border-slate-200/90 hover:border-indigo-300 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl shadow-slate-900/10 flex items-center gap-2.5 transition-all cursor-pointer group"
-        aria-label="Open SyncPilot AI Assistant"
-      >
-        <div className="h-6 w-6 rounded-full bg-indigo-50 border border-indigo-100 group-hover:bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 transition-colors">
-          <Sparkles className="h-3.5 w-3.5" />
-        </div>
-        <div className="text-left">
-          <span className="text-xs font-bold text-slate-900 tracking-tight block leading-none">SyncPilot</span>
-          <span className="text-[10px] font-medium text-slate-500 hidden sm:inline leading-none">AI Career Guide</span>
-        </div>
-      </motion.button>
+      <MetalFx preset="silver" variant="button" strength={0.4} theme="light">
+        <motion.button
+          onClick={onClick}
+          onHoverStart={() => setHovered(true)}
+          onHoverEnd={() => setHovered(false)}
+          whileHover={{ scale: 1.03 }}
+          whileTap={{ scale: 0.97 }}
+          className="bg-white text-slate-800 border border-slate-200/90 hover:border-indigo-300 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl shadow-slate-900/10 flex items-center gap-2.5 transition-all cursor-pointer group"
+          aria-label="Open SyncPilot AI Assistant"
+        >
+          <div className="h-6 w-6 rounded-full bg-indigo-50 border border-indigo-100 group-hover:bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 transition-colors">
+            <Sparkles className="h-3.5 w-3.5" />
+          </div>
+          <div className="text-left">
+            <span className="text-xs font-bold text-slate-900 tracking-tight block leading-none">SyncPilot</span>
+            <span className="text-[10px] font-medium text-slate-500 hidden sm:inline leading-none">AI Career Guide</span>
+          </div>
+        </motion.button>
+      </MetalFx>
     </div>
   );
 }

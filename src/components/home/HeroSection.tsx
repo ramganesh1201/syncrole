@@ -7,6 +7,7 @@ import {
 } from "lucide-react";
 import AuroraBackground from "@/components/AuroraBackground";
 import { useNavigate } from "@tanstack/react-router";
+import { MetalFx } from "metal-fx";
 
 /* ─── Target Role Benchmarks ────────────────────────────────── */
 
@@ -306,12 +307,14 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
             transition={{ delay: 0.45 }}
             className="flex flex-wrap items-center justify-center gap-3 mb-12"
           >
-            <button
-              onClick={() => nav({ to: "/auth" })}
-              className="inline-flex items-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 text-sm transition-all shadow-lg hover:shadow-violet-600/25 active:scale-98 cursor-pointer"
-            >
-              <Target className="h-4 w-4" /> Generate Placement Score <ArrowRight className="h-4 w-4" />
-            </button>
+            <MetalFx preset="chromatic" variant="button" strength={0.4} theme="dark">
+              <button
+                onClick={() => nav({ to: "/auth" })}
+                className="inline-flex items-center gap-2 rounded-xl bg-violet-600 hover:bg-violet-500 text-white font-semibold px-6 py-3 text-sm transition-all shadow-lg hover:shadow-violet-600/25 active:scale-98 cursor-pointer"
+              >
+                <Target className="h-4 w-4" /> Generate Placement Score <ArrowRight className="h-4 w-4" />
+              </button>
+            </MetalFx>
             <button
               onClick={onOpenDemo}
               className="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 text-foreground font-semibold px-5 py-3 text-sm border border-white/10 transition active:scale-98 cursor-pointer"
