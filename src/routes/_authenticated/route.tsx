@@ -25,6 +25,7 @@ export const Route = createFileRoute("/_authenticated")({
 function AuthedLayout() {
   const router = useRouter();
   const { user, loading } = useAuth();
+  const { openSyncPilot } = useSyncPilot();
   const [profile, setProfile] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 

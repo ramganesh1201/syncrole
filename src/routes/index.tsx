@@ -65,6 +65,7 @@ export const Route = createFileRoute("/")({
 /* -------------------------------------------------------------------------- */
 function Navbar() {
   const { user } = useAuth();
+  const { openSyncPilot } = useSyncPilot();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
