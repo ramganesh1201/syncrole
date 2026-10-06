@@ -22,7 +22,7 @@ const PANEL_DIMS: Record<SyncPilotMode, { width: string; height: string; bottom:
 function LoadingFallback() {
   return (
     <div className="h-full flex items-center justify-center bg-white text-slate-500">
-      <ThinkingOrb state="working" size={24} />
+      <ThinkingOrb state="working" size={20} />
     </div>
   );
 }
