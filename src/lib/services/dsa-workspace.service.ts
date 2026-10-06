@@ -73,12 +73,13 @@ export class DSAWorkspaceService {
     // Check if test cases exist for this problem
     let executionStatus: "enabled" | "unavailable" = "unavailable";
     if (hasInternalEngine) {
-      const { count } = await supabase
+      const testCasesRes = await supabase
         .from("dsa_test_cases")
         .select("id", { count: "exact", head: true })
         .eq("problem_id", problemId);
       
-      if (count && count > 0) {
+      const count = testCasesRes?.count ?? 0;
+      if (count > 0) {
         executionStatus = "enabled";
       }
     }

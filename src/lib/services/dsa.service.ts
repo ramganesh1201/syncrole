@@ -169,7 +169,7 @@ export class DSAService {
   }
 
   private static async handleTopicProgress(userId: string, topicId: string, timestamp: string) {
-    const [{ count: topicTotal }, { count: topicSolved }] = await Promise.all([
+    const [topicTotalRes, topicSolvedRes] = await Promise.all([
       supabase.from("dsa_problems").select("*", { count: "exact", head: true }).eq("topic_id", topicId),
       supabase.from("user_problem_progress")
               .select("id, dsa_problems!inner(topic_id)", { count: "exact", head: true })
@@ -177,7 +177,9 @@ export class DSAService {
               .eq("solved", true)
               .eq("dsa_problems.topic_id", topicId)
     ]);
-    const completedPercent = topicTotal ? Math.round(((topicSolved || 0) / topicTotal) * 100) : 0;
+    const topicTotal = topicTotalRes?.count ?? 0;
+    const topicSolved = topicSolvedRes?.count ?? 0;
+    const completedPercent = topicTotal ? Math.round((topicSolved / topicTotal) * 100) : 0;
     
     await supabase.from("user_topic_progress").upsert({
       user_id: userId,
@@ -189,10 +191,11 @@ export class DSAService {
   }
 
   private static async handleXPAndAchievements(userId: string, problemMeta: any) {
-    const { count: totalSolvedCount } = await supabase.from("user_problem_progress")
+    const totalSolvedRes = await supabase.from("user_problem_progress")
       .select("id", { count: "exact", head: true })
       .eq("user_id", userId)
       .eq("solved", true);
+    const totalSolvedCount = totalSolvedRes?.count ?? 0;
       
     const xp = problemMeta.xp_reward || 10;
     

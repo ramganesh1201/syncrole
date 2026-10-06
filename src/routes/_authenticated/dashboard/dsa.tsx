@@ -153,7 +153,7 @@ function DSAPage() {
       weeklyActiveMinutes: Math.round(weeklyActiveSecs / 60),
       attemptedCount,
       solvedCount,
-      totalSubmissions: subCountRes.count ?? 0,
+      totalSubmissions: subCountRes?.count ?? 0,
       fastestRuntimeMs,
     });
 
