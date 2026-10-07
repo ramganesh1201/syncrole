@@ -136,18 +136,6 @@ function Navbar() {
 
         {/* Right side (Desktop Search & Mobile/Desktop Action) */}
         <div className="flex items-center gap-2">
-          {/* Mobile SyncPilot Top Navbar Button */}
-          <SafeMetalFx preset="chromatic" variant="button" strength={0.4} theme="light">
-            <button
-              onClick={openSyncPilot}
-              className="lg:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 active:scale-95 transition text-xs font-semibold cursor-pointer min-h-[38px]"
-              aria-label="Open SyncPilot AI Assistant"
-            >
-              <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-              <span className="text-[11px] font-bold">SyncPilot</span>
-            </button>
-          </SafeMetalFx>
-
           {/* Desktop Search bar */}
           <form onSubmit={handleSearchSubmit} className="hidden sm:block relative">
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-slate-400" />

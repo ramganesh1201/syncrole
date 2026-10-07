@@ -1,5 +1,4 @@
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 import { SafeMetalFx } from "@/components/ui/safe-metal";
 
@@ -8,43 +7,30 @@ type Props = {
 };
 
 export function SyncPilotButton({ onClick }: Props) {
-  const [hovered, setHovered] = useState(false);
-
   return (
-    <div className="fixed bottom-5 right-5 sm:bottom-6 sm:right-6 z-[9998] hidden md:flex items-center justify-end pointer-events-auto">
-      {/* Tooltip on Hover */}
-      <AnimatePresence>
-        {hovered && (
-          <motion.div
-            initial={{ opacity: 0, x: 6, scale: 0.96 }}
-            animate={{ opacity: 1, x: 0, scale: 1 }}
-            exit={{ opacity: 0, x: 6, scale: 0.96 }}
-            transition={{ duration: 0.15 }}
-            className="mr-2.5 hidden sm:block bg-slate-900 text-white rounded-xl px-3 py-1.5 shadow-md border border-slate-800 text-left"
-          >
-            <div className="text-xs font-bold whitespace-nowrap">SyncPilot</div>
-            <div className="text-[10px] text-slate-400">AI Career Assistant</div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Floating Assistant Button (Desktop Only) */}
-      <SafeMetalFx preset="silver" variant="button" strength={0.4} theme="light">
+    <div className="pointer-events-auto">
+      <SafeMetalFx preset="silver" variant="button" strength={0.3} theme="light">
         <motion.button
           onClick={onClick}
-          onHoverStart={() => setHovered(true)}
-          onHoverEnd={() => setHovered(false)}
-          whileHover={{ scale: 1.03 }}
-          whileTap={{ scale: 0.97 }}
-          className="bg-white text-slate-800 border border-slate-200/90 hover:border-indigo-300 rounded-full px-4 py-2.5 shadow-lg hover:shadow-xl shadow-slate-900/10 flex items-center gap-2.5 transition-all cursor-pointer group"
+          whileHover={{ y: -1.5, scale: 1.015 }}
+          whileTap={{ scale: 0.985 }}
+          transition={{ duration: 0.15, ease: "easeOut" }}
+          className="bg-white text-slate-900 border border-slate-200/90 hover:border-indigo-300/80 rounded-2xl px-3.5 py-2.5 shadow-md hover:shadow-lg shadow-slate-900/5 hover:shadow-slate-900/10 flex items-center gap-3 transition-all cursor-pointer group select-none"
           aria-label="Open SyncPilot AI Assistant"
         >
-          <div className="h-6 w-6 rounded-full bg-indigo-50 border border-indigo-100 group-hover:bg-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 transition-colors">
-            <Sparkles className="h-3.5 w-3.5" />
+          {/* Branded rounded icon container */}
+          <div className="h-8 w-8 rounded-xl bg-indigo-50/90 border border-indigo-100 group-hover:bg-indigo-100/80 group-hover:border-indigo-200 text-indigo-600 flex items-center justify-center shrink-0 transition-colors">
+            <Sparkles className="h-4 w-4" />
           </div>
-          <div className="text-left">
-            <span className="text-xs font-bold text-slate-900 tracking-tight block leading-none">SyncPilot</span>
-            <span className="text-[10px] font-medium text-slate-500 hidden sm:inline leading-none">AI Career Guide</span>
+
+          {/* Typography stack */}
+          <div className="text-left flex flex-col justify-center">
+            <span className="text-[13px] font-semibold text-slate-900 tracking-tight leading-snug group-hover:text-indigo-950 transition-colors">
+              SyncPilot
+            </span>
+            <span className="text-[11px] font-medium text-slate-500 leading-none mt-0.5">
+              AI Career Guide
+            </span>
           </div>
         </motion.button>
       </SafeMetalFx>

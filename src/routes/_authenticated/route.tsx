@@ -137,17 +137,6 @@ function AuthedLayout() {
           </nav>
 
           <div className="flex items-center gap-2">
-            <SafeMetalFx preset="chromatic" variant="button" strength={0.4} theme="light">
-              <button
-                onClick={openSyncPilot}
-                className="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 active:scale-95 transition text-xs font-semibold cursor-pointer min-h-[36px]"
-                aria-label="Open SyncPilot AI Assistant"
-              >
-                <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-                <span className="text-[11px] font-bold">SyncPilot</span>
-              </button>
-            </SafeMetalFx>
-
             <NotificationCenter>
               <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-xs" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
