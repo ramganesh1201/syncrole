@@ -168,7 +168,7 @@ function SyncPilotLauncherInner() {
 
   return (
     <>
-      {/* FAB - visible when panel is closed */}
+      {/* FAB - visible when panel is closed (Desktop only) */}
       <AnimatePresence>
         {panelState === "closed" && (
           <motion.div
@@ -176,7 +176,7 @@ function SyncPilotLauncherInner() {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className="fixed z-[9998] bottom-[1.5rem] right-[1.5rem] block"
+            className="fixed z-[9998] bottom-[1.5rem] right-[1.5rem] hidden md:block"
           >
             <SyncPilotButton onClick={handleOpen} />
           </motion.div>
