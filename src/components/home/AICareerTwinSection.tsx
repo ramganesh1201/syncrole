@@ -377,7 +377,7 @@ export default function AICareerTwinSection({ data }: { data: any }) {
               </div>
 
               <div className="space-y-1.5">
-                {memoryRecords.map((m, i) => (
+                {memoryRecords.map((m: { label: string; xp: string; time: string }, i: number) => (
                   <div key={i} className="flex items-center justify-between text-xs py-1 border-b border-white/5 last:border-0">
                     <div className="flex items-center gap-1.5 text-foreground font-medium">
                       <ChevronRight className="w-3 h-3 text-cyan-400 shrink-0" />

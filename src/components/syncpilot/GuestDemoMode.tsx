@@ -6,6 +6,8 @@ import {
 import { useNavigate } from "@tanstack/react-router";
 import { useChatScroll } from "@/hooks/useChatScroll";
 
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
+
 type Props = {
   onClose: () => void;
 };
@@ -29,35 +31,28 @@ function MessageBubble({ role, content }: { role: "user" | "assistant"; content:
     >
       {!isUser && (
         <div
-          className="flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center shrink-0 shadow-sm"
+          className="flex-shrink-0 h-7 w-7 rounded-full flex items-center justify-center shrink-0 shadow-sm mt-0.5"
           style={{ background: "linear-gradient(135deg, oklch(0.75 0.2 200), oklch(0.72 0.22 295))" }}
         >
           <Brain className="h-3.5 w-3.5 text-white" />
         </div>
       )}
       <div
-        className={`max-w-[85%] sm:max-w-[80%] rounded-2xl px-3.5 py-2.5 text-[13px] leading-relaxed break-words overflow-hidden ${
+        className={`max-w-[88%] sm:max-w-[82%] rounded-2xl px-4 py-3 text-[13px] leading-relaxed break-words overflow-hidden ${
           isUser
             ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-tr-xs shadow-sm"
-            : "glass rounded-tl-xs text-foreground border border-white/10"
+            : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs"
         }`}
       >
-        {/* Render content with basic formatting */}
-        {content.split("\n").map((line, i) => {
-          if (line.startsWith("**") && line.endsWith("**"))
-            return <p key={i} className="font-semibold">{line.slice(2, -2)}</p>;
-          if (line.startsWith("# "))
-            return <p key={i} className="font-bold text-cyan-400 mt-1">{line.slice(2)}</p>;
-          if (line.startsWith("- ") || line.startsWith("• "))
-            return <p key={i} className="pl-2 before:content-['•'] before:mr-1.5 before:text-cyan-400">{line.slice(2)}</p>;
-          if (line === "")
-            return <br key={i} />;
-          return <p key={i}>{line}</p>;
-        })}
+        {isUser ? (
+          <p>{content}</p>
+        ) : (
+          <MarkdownRenderer content={content} />
+        )}
       </div>
       {isUser && (
-        <div className="flex-shrink-0 h-7 w-7 rounded-full glass flex items-center justify-center shrink-0 border border-white/10">
-          <User className="h-3.5 w-3.5 text-slate-300" />
+        <div className="flex-shrink-0 h-7 w-7 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center shrink-0 mt-0.5">
+          <User className="h-3.5 w-3.5 text-slate-600" />
         </div>
       )}
     </motion.div>

@@ -29,6 +29,8 @@ import {
   Play,
   Calendar,
   Fingerprint,
+  Clock,
+  GraduationCap,
 } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useAuth } from "@/hooks/use-auth";

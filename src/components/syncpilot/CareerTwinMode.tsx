@@ -8,6 +8,7 @@ import {
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
 import { useChatScroll } from "@/hooks/useChatScroll";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type Props = {
   onClose: () => void;
@@ -72,34 +73,17 @@ function MessageBubble({ role, content, timestamp }: { role: "user" | "assistant
         className={`max-w-[88%] sm:max-w-[82%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
           isUser
             ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-medium rounded-tr-xs shadow-xs"
-            : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs space-y-1.5"
+            : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs"
         }`}
       >
         {isUser ? (
           <p>{content}</p>
         ) : (
-          content.split("\n").map((line, i) => {
-            if (line.startsWith("**") && line.endsWith("**")) {
-              return <p key={i} className="font-bold text-slate-900 mt-1">{line.slice(2, -2)}</p>;
-            }
-            if (line.startsWith("# ") || line.startsWith("## ")) {
-              return <p key={i} className="font-bold text-indigo-600 text-sm mt-2">{line.replace(/^#+\s*/, "")}</p>;
-            }
-            if (line.startsWith("- ") || line.startsWith("• ")) {
-              return (
-                <div key={i} className="flex items-start gap-1.5 pl-1 my-0.5">
-                  <span className="text-indigo-600 font-bold">•</span>
-                  <span>{line.slice(2)}</span>
-                </div>
-              );
-            }
-            if (line === "") return <div key={i} className="h-1.5" />;
-            return <p key={i}>{line}</p>;
-          })
+          <MarkdownRenderer content={content} />
         )}
 
         {timestamp && (
-          <div className={`mt-1 text-[10px] text-right ${isUser ? "text-white/70" : "text-slate-400"}`}>
+          <div className={`mt-1.5 text-[10px] text-right ${isUser ? "text-white/70" : "text-slate-400"}`}>
             {new Date(timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
           </div>
         )}

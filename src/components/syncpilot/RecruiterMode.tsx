@@ -9,6 +9,7 @@ import {
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
 import { useChatScroll } from "@/hooks/useChatScroll";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type Props = {
   onClose: () => void;
@@ -93,29 +94,16 @@ function MessageBubble({ role, content }: { role: "user" | "assistant"; content:
           <Briefcase className="h-3.5 w-3.5" />
         </div>
       )}
-      <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
+      <div className={`max-w-[88%] sm:max-w-[82%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
         isUser 
           ? "bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600 text-white font-medium rounded-tr-xs shadow-xs" 
-          : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs space-y-1.5"
+          : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs"
       }`}>
-        {content.split("\n").map((line, i) => {
-          if (line.startsWith("**") && line.endsWith("**")) {
-            return <p key={i} className="font-bold text-slate-900 mt-1">{line.slice(2, -2)}</p>;
-          }
-          if (line.startsWith("# ") || line.startsWith("## ")) {
-            return <p key={i} className="font-bold text-purple-700 text-sm mt-2">{line.replace(/^#+\s*/, "")}</p>;
-          }
-          if (line.startsWith("- ") || line.startsWith("• ")) {
-            return (
-              <div key={i} className="flex items-start gap-1.5 pl-1 my-0.5">
-                <span className="text-purple-600 font-bold">•</span>
-                <span>{line.slice(2)}</span>
-              </div>
-            );
-          }
-          if (line === "") return <div key={i} className="h-1.5" />;
-          return <p key={i}>{line}</p>;
-        })}
+        {isUser ? (
+          <p>{content}</p>
+        ) : (
+          <MarkdownRenderer content={content} />
+        )}
       </div>
       {isUser && (
         <div className="h-7 w-7 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">

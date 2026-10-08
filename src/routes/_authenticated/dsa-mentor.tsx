@@ -1042,11 +1042,15 @@ function DSAMentorPage() {
         </div>
 
         {/* Try asking: Quick Prompts Row */}
-        <div className="px-4 md:px-6 pt-3 pb-2 border-t border-slate-200/80 bg-slate-50/40 space-y-2">
-          <div className="text-[11px] font-mono text-slate-500 font-medium">
-            Try asking:
+        <div className="px-4 md:px-6 pt-3 pb-2.5 border-t border-slate-200/80 bg-slate-50/50 space-y-2">
+          <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-medium">
+            <span className="flex items-center gap-1.5">
+              <Sparkles className="w-3 h-3 text-purple-600" />
+              <span>Try asking:</span>
+            </span>
+            <span className="text-[10px] text-slate-400 hidden sm:inline">Scroll for more</span>
           </div>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5 -mx-4 px-4 md:-mx-6 md:px-6">
             {[
               {
                 text: "Explain DP with an example",
@@ -1054,9 +1058,9 @@ function DSAMentorPage() {
                 iconColor: "text-amber-500",
               },
               {
-                text: "Solve 0/1 Knapsack",
-                icon: Lock,
-                iconColor: "text-amber-500",
+                text: "Solve step by step",
+                icon: GitBranch,
+                iconColor: "text-blue-500",
               },
               {
                 text: "Why does my DP code fail?",
@@ -1069,9 +1073,9 @@ function DSAMentorPage() {
                 iconColor: "text-cyan-600",
               },
               {
-                text: "Optimize this DP solution",
+                text: "Optimize this solution",
                 icon: Zap,
-                iconColor: "text-purple-600",
+                iconColor: "text-emerald-600",
               },
             ].map((qp) => {
               const IconComponent = qp.icon;
@@ -1080,10 +1084,10 @@ function DSAMentorPage() {
                   key={qp.text}
                   onClick={() => void handleSend(qp.text)}
                   disabled={chatBusy}
-                  className="bg-white hover:bg-purple-50/80 disabled:opacity-50 text-slate-700 hover:text-purple-900 border border-slate-200/80 px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors cursor-pointer flex items-center gap-2 shadow-xs"
+                  className="shrink-0 bg-white hover:bg-purple-50/90 focus:bg-purple-50 focus:border-purple-400 disabled:opacity-50 text-slate-700 hover:text-purple-950 border border-slate-200/90 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shadow-2xs hover:shadow-xs active:scale-[0.98]"
                 >
                   <IconComponent className={cn("w-3.5 h-3.5 shrink-0", qp.iconColor)} />
-                  <span>{qp.text}</span>
+                  <span className="whitespace-nowrap">{qp.text}</span>
                 </button>
               );
             })}

@@ -8,6 +8,7 @@ import {
 import { useSyncPilot, SyncPilotMode } from "@/hooks/useSyncPilot";
 import { ConversationHistory } from "./ConversationHistory";
 import { useChatScroll } from "@/hooks/useChatScroll";
+import { MarkdownRenderer } from "@/components/ui/markdown-renderer";
 
 type Props = {
   onClose: () => void;
@@ -400,14 +401,16 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
                       <Brain className="h-3.5 w-3.5" />
                     </div>
                   )}
-                  <div className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
+                  <div className={`max-w-[88%] sm:max-w-[82%] rounded-2xl px-4 py-3 text-xs leading-relaxed break-words overflow-hidden ${
                     isUser
                       ? "bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 text-white font-medium rounded-tr-xs shadow-xs"
-                      : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs space-y-1.5"
+                      : "bg-white border border-slate-200/90 text-slate-800 rounded-tl-xs shadow-xs"
                   }`}>
-                    {m.content.split("\n").map((line: string, li: number) => (
-                      <p key={li} className={line === "" ? "h-1.5" : ""}>{line}</p>
-                    ))}
+                    {isUser ? (
+                      <p>{m.content}</p>
+                    ) : (
+                      <MarkdownRenderer content={m.content} />
+                    )}
                   </div>
                   {isUser && (
                     <div className="h-7 w-7 rounded-xl bg-slate-100 border border-slate-200 text-slate-600 flex items-center justify-center shrink-0 mt-0.5">
