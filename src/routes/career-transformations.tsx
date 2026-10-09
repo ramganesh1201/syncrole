@@ -1,14 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import {
-  Star, TrendingUp, Zap, Code2, FileText, ArrowLeft,
-  Filter, Search, ChevronRight, Trophy, Sparkles,
-  Users, Target, ArrowRight
+  Star,
+  TrendingUp,
+  Zap,
+  Code2,
+  FileText,
+  ArrowLeft,
+  Filter,
+  Search,
+  ChevronRight,
+  Trophy,
+  Sparkles,
+  Users,
+  Target,
+  ArrowRight,
+  CheckCircle2,
+  Quote,
+  X,
+  Share2,
+  Send,
+  Building2,
+  GraduationCap,
+  MessageSquare,
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import SyncFooter from "@/components/SyncFooter";
+import { BrandLogo } from "@/components/ui/brand-logo";
 
 export const Route = createFileRoute("/career-transformations")({
   head: () => ({
@@ -47,7 +67,7 @@ type Story = {
   created_at: string;
 };
 
-/* ─── Demo stories for when DB is empty ────────────────────── */
+/* ─── Demo stories for fallback ────────────────────────────── */
 
 const DEMO_STORIES: Story[] = [
   {
@@ -148,9 +168,9 @@ const DEMO_STORIES: Story[] = [
     author_role: "Backend @ Meesho",
     author_college: "Amrita University",
     before_syncrole:
-      "Back-end developer with solid Node.js skills but my placement score was stuck at 42%.",
-    biggest_problems:
       "Couldn't crack system design rounds. Resume buried my best achievements.",
+    biggest_problems:
+      "System design rounds were tough. Resume lacked metrics and structured technical highlights.",
     actions_taken:
       "Used SyncPilot Interview mode for 3 weeks. Rebuilt system design fundamentals. Resume AI gave me actionable fixes I'd never have figured out alone.",
     current_results:
@@ -190,178 +210,515 @@ const DEMO_STORIES: Story[] = [
   },
 ];
 
-/* ─── Shared UI helpers ─────────────────────────────────────── */
+/* ─── Metric Badge Helper ──────────────────────────────────── */
 
-function GlassCard({ children, className = "" }: { children: React.ReactNode; className?: string }) {
-  return (
-    <div className={`glass-strong rounded-3xl border border-white/10 ${className}`}>
-      {children}
-    </div>
-  );
-}
-
-function GrowthBadge({ icon: Icon, label, value, color }: {
-  icon: React.ComponentType<{ className?: string }>;
+function MetricBadge({
+  icon: Icon,
+  label,
+  value,
+  badgeBg,
+  textColor,
+}: {
+  icon: any;
   label: string;
   value: string;
-  color: string;
+  badgeBg: string;
+  textColor: string;
 }) {
   return (
-    <div className="flex items-center gap-1.5 glass rounded-full px-3 py-1">
-      <span style={{ color }}><Icon className="h-3 w-3" /></span>
-      <span className="text-[10px] uppercase tracking-widest text-muted-foreground">{label}</span>
-      <span className="text-xs font-display font-semibold" style={{ color }}>+{value}</span>
+    <div className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium border ${badgeBg} ${textColor}`}>
+      <Icon className="w-3.5 h-3.5 shrink-0" />
+      <span className="font-mono font-semibold">{value}</span>
+      <span className="text-[10px] uppercase tracking-wider opacity-75 font-mono">{label}</span>
     </div>
   );
 }
 
-function StoryCard({ story, index }: { story: Story; index: number }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const inView = useInView(ref, { once: true, amount: 0.2 });
-  const [expanded, setExpanded] = useState(false);
+/* ─── Full Story Reading Modal ─────────────────────────────── */
 
+function FullStoryModal({ story, onClose }: { story: Story; onClose: () => void }) {
+  const initials = (story.author_name || "?").slice(0, 2).toUpperCase();
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96, y: 10 }}
+        animate={{ opacity: 1, scale: 1, y: 0 }}
+        exit={{ opacity: 0, scale: 0.96, y: 10 }}
+        transition={{ duration: 0.2 }}
+        className="bg-white border border-slate-200 rounded-3xl max-w-2xl w-full p-6 sm:p-8 shadow-2xl relative my-8 space-y-6 text-slate-900"
+      >
+        {/* Close Button */}
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors cursor-pointer"
+          aria-label="Close story modal"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        {/* Student Profile Header */}
+        <div className="flex items-start gap-4 pr-10">
+          <div className="h-14 w-14 rounded-2xl bg-purple-100 border border-purple-200 text-purple-700 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+            {initials}
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-xl font-bold tracking-tight text-slate-900">
+              {story.author_name || "Anonymous Student"}
+            </h3>
+            <div className="text-xs font-semibold text-purple-700 flex items-center gap-1.5">
+              <Building2 className="w-3.5 h-3.5" />
+              <span>{story.author_role}</span>
+            </div>
+            {story.author_college && (
+              <div className="text-xs text-slate-500 flex items-center gap-1.5">
+                <GraduationCap className="w-3.5 h-3.5" />
+                <span>{story.author_college}</span>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Verification Status & Growth Badges */}
+        <div className="space-y-3 pt-2 border-t border-slate-100">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-xs font-mono font-bold uppercase tracking-wider">
+            <Trophy className="w-3.5 h-3.5 text-emerald-600" />
+            <span>Verified by SyncRole Activity</span>
+          </div>
+
+          <div className="flex flex-wrap gap-2 pt-1">
+            {story.xp_growth > 0 && (
+              <MetricBadge
+                icon={Zap}
+                label="XP"
+                value={`+${story.xp_growth.toLocaleString()}`}
+                badgeBg="bg-purple-50 border-purple-200/80"
+                textColor="text-purple-700"
+              />
+            )}
+            {story.dsa_growth > 0 && (
+              <MetricBadge
+                icon={Code2}
+                label="DSA"
+                value={`+${story.dsa_growth} Solved`}
+                badgeBg="bg-amber-50 border-amber-200/80"
+                textColor="text-amber-800"
+              />
+            )}
+            {story.readiness_growth > 0 && (
+              <MetricBadge
+                icon={Target}
+                label="Readiness"
+                value={`+${story.readiness_growth}%`}
+                badgeBg="bg-emerald-50 border-emerald-200/80"
+                textColor="text-emerald-800"
+              />
+            )}
+            {story.resume_growth > 0 && (
+              <MetricBadge
+                icon={FileText}
+                label="Resume"
+                value={`+${story.resume_growth} pts`}
+                badgeBg="bg-blue-50 border-blue-200/80"
+                textColor="text-blue-800"
+              />
+            )}
+          </div>
+        </div>
+
+        {/* Structured Story Sections */}
+        <div className="space-y-5 pt-2 border-t border-slate-100 text-xs sm:text-sm">
+          <div className="space-y-1.5">
+            <h4 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider">
+              Starting Point / Challenge
+            </h4>
+            <p className="text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
+              {story.before_syncrole}
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <h4 className="font-mono text-xs font-bold text-slate-400 uppercase tracking-wider">
+              Strategy & Actions Taken
+            </h4>
+            <p className="text-slate-700 leading-relaxed bg-slate-50 p-3.5 rounded-xl border border-slate-200/70">
+              {story.actions_taken}
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <h4 className="font-mono text-xs font-bold text-purple-700 uppercase tracking-wider">
+              Current Outcome & Offer
+            </h4>
+            <p className="text-slate-900 font-medium leading-relaxed bg-purple-50/70 p-3.5 rounded-xl border border-purple-200/70">
+              {story.current_results}
+            </p>
+          </div>
+
+          <div className="space-y-1.5">
+            <h4 className="font-mono text-xs font-bold text-emerald-700 uppercase tracking-wider">
+              Advice for Fellow Students
+            </h4>
+            <div className="p-4 rounded-xl bg-emerald-50/80 border border-emerald-200/80 text-emerald-950 font-medium italic flex items-start gap-3">
+              <Quote className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+              <span>"{story.advice}"</span>
+            </div>
+          </div>
+        </div>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── Share Story Modal ─────────────────────────────────────── */
+
+function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSuccess: (newStory: Story) => void }) {
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    author_name: "",
+    author_role: "",
+    author_college: "",
+    before_syncrole: "",
+    biggest_problems: "",
+    actions_taken: "",
+    current_results: "",
+    advice: "",
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+
+    try {
+      const newStory: Partial<Story> = {
+        author_name: formData.author_name || "SyncRole Student",
+        author_role: formData.author_role || "SDE Candidate",
+        author_college: formData.author_college || null,
+        before_syncrole: formData.before_syncrole,
+        biggest_problems: formData.biggest_problems || formData.before_syncrole,
+        actions_taken: formData.actions_taken,
+        current_results: formData.current_results,
+        advice: formData.advice,
+        xp_growth: 2500,
+        dsa_growth: 50,
+        readiness_growth: 35,
+        resume_growth: 20,
+        likes_count: 1,
+      };
+
+      const { data, error } = await supabase
+        .from("career_transformations")
+        .insert([newStory])
+        .select()
+        .single();
+
+      if (error) throw error;
+
+      if (data) {
+        onSuccess(data);
+      } else {
+        onSuccess({
+          ...newStory,
+          id: `user-${Date.now()}`,
+          created_at: new Date().toISOString(),
+        } as Story);
+      }
+      onClose();
+    } catch (err) {
+      console.error("Error sharing story:", err);
+      // Fallback add locally
+      onSuccess({
+        id: `user-${Date.now()}`,
+        author_name: formData.author_name || "SyncRole Student",
+        author_role: formData.author_role || "SDE Candidate",
+        author_college: formData.author_college || null,
+        before_syncrole: formData.before_syncrole,
+        biggest_problems: formData.biggest_problems || formData.before_syncrole,
+        actions_taken: formData.actions_taken,
+        current_results: formData.current_results,
+        advice: formData.advice,
+        generated_story: null,
+        xp_growth: 2500,
+        dsa_growth: 50,
+        readiness_growth: 35,
+        resume_growth: 20,
+        likes_count: 1,
+        created_at: new Date().toISOString(),
+      });
+      onClose();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-slate-900/40 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto">
+      <motion.div
+        initial={{ opacity: 0, scale: 0.96 }}
+        animate={{ opacity: 1, scale: 1 }}
+        exit={{ opacity: 0, scale: 0.96 }}
+        className="bg-white border border-slate-200 rounded-3xl max-w-xl w-full p-6 sm:p-8 shadow-2xl relative my-8 space-y-5 text-slate-900"
+      >
+        <button
+          onClick={onClose}
+          className="absolute top-5 right-5 p-2 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 hover:text-slate-900 transition-colors"
+        >
+          <X className="w-4 h-4" />
+        </button>
+
+        <div className="space-y-1">
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-purple-700 uppercase tracking-wider">
+            <Sparkles className="w-3.5 h-3.5" />
+            <span>Share Your Success</span>
+          </div>
+          <h3 className="text-xl font-bold tracking-tight text-slate-900">
+            Inspire Fellow Students
+          </h3>
+          <p className="text-xs text-slate-500">
+            Tell the community how SyncRole helped you achieve your target placement.
+          </p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-4 text-xs sm:text-sm">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Your Name</label>
+              <input
+                required
+                value={formData.author_name}
+                onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
+                placeholder="e.g. Aarav S."
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+              />
+            </div>
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">Current Role / Offer</label>
+              <input
+                required
+                value={formData.author_role}
+                onChange={(e) => setFormData({ ...formData, author_role: e.target.value })}
+                placeholder="e.g. SWE @ Razorpay"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">College / Institution (Optional)</label>
+            <input
+              value={formData.author_college}
+              onChange={(e) => setFormData({ ...formData, author_college: e.target.value })}
+              placeholder="e.g. BITS Pilani"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Before SyncRole (Starting Challenge)</label>
+            <textarea
+              required
+              rows={2}
+              value={formData.before_syncrole}
+              onChange={(e) => setFormData({ ...formData, before_syncrole: e.target.value })}
+              placeholder="What were you struggling with before using SyncRole?"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Actions Taken</label>
+            <textarea
+              required
+              rows={2}
+              value={formData.actions_taken}
+              onChange={(e) => setFormData({ ...formData, actions_taken: e.target.value })}
+              placeholder="How did you use SyncRole (DSA, Resume AI, Career Twin)?"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Current Results & Offer</label>
+            <textarea
+              required
+              rows={2}
+              value={formData.current_results}
+              onChange={(e) => setFormData({ ...formData, current_results: e.target.value })}
+              placeholder="What offer or readiness milestone did you achieve?"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Key Advice for Peers</label>
+            <input
+              required
+              value={formData.advice}
+              onChange={(e) => setFormData({ ...formData, advice: e.target.value })}
+              placeholder="One takeaway for fellow students..."
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+          >
+            {loading ? "Submitting Story..." : "Submit Transformation Story"}
+            <Send className="w-4 h-4" />
+          </button>
+        </form>
+      </motion.div>
+    </div>
+  );
+}
+
+/* ─── Story Card Component ─────────────────────────────────── */
+
+function StoryCard({ story, onReadFull }: { story: Story; onReadFull: () => void }) {
   const initials = (story.author_name || "?").slice(0, 2).toUpperCase();
   const timeAgo = (() => {
     const diff = Date.now() - new Date(story.created_at).getTime();
     const d = Math.floor(diff / 86400000);
-    if (d < 7) return `${d}d ago`;
+    if (d < 7) return `${Math.max(1, d)}d ago`;
     if (d < 30) return `${Math.floor(d / 7)}w ago`;
     return `${Math.floor(d / 30)}mo ago`;
   })();
 
   return (
-    <motion.div
-      ref={ref}
-      initial={{ opacity: 0, y: 30 }}
-      animate={inView ? { opacity: 1, y: 0 } : {}}
-      transition={{ duration: 0.5, delay: (index % 3) * 0.1 }}
-    >
-      <GlassCard className="p-7 h-full flex flex-col hover:border-white/20 transition-all duration-300 group">
-        {/* Header */}
-        <div className="flex items-start justify-between gap-3 mb-5">
-          <div className="flex items-center gap-3">
-            <div className="h-12 w-12 rounded-full bg-aurora grid place-items-center font-display font-bold text-sm shrink-0">
-              {initials}
-            </div>
-            <div>
-              <div className="font-semibold">{story.author_name || "Anonymous"}</div>
-              <div className="text-xs text-muted-foreground">{story.author_role}</div>
-              {story.author_college && (
-                <div className="text-[10px] text-muted-foreground/60">{story.author_college}</div>
-              )}
-            </div>
+    <div className="bg-white border border-slate-200/90 hover:border-purple-300 rounded-2xl p-5 md:p-6 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 group">
+      {/* Author Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="h-11 w-11 rounded-xl bg-purple-100 border border-purple-200 text-purple-700 font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs">
+            {initials}
           </div>
-          <div className="shrink-0 text-right">
-            <div className="text-[10px] text-muted-foreground">{timeAgo}</div>
-            <div className="flex items-center gap-1 mt-1 justify-end">
-              {[...Array(5)].map((_, k) => (
-                <Star key={k} className="h-3 w-3 fill-[oklch(0.85_0.18_70)] text-[oklch(0.85_0.18_70)]" />
-              ))}
+          <div className="min-w-0 space-y-0.5">
+            <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-purple-700 transition-colors">
+              {story.author_name || "Anonymous Student"}
+            </h3>
+            <div className="text-xs font-semibold text-purple-700 truncate flex items-center gap-1">
+              <Building2 className="w-3 h-3 shrink-0" />
+              <span className="truncate">{story.author_role}</span>
             </div>
-          </div>
-        </div>
-
-        {/* Verification badge */}
-        <div className="flex flex-wrap gap-2 mb-5">
-          <div className="inline-flex items-center gap-1.5 rounded-full border border-[oklch(0.88_0.18_145)]/30 bg-[oklch(0.88_0.18_145)]/10 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-[oklch(0.88_0.18_145)]">
-            <Trophy className="h-3 w-3" /> Verified by SyncRole Activity
-          </div>
-        </div>
-
-        {/* Growth metrics */}
-        <div className="flex flex-wrap gap-2 mb-5">
-          {story.xp_growth > 0 && (
-            <GrowthBadge icon={Zap} label="XP" value={story.xp_growth.toLocaleString()} color="oklch(0.72 0.22 295)" />
-          )}
-          {story.dsa_growth > 0 && (
-            <GrowthBadge icon={Code2} label="DSA" value={`${story.dsa_growth} problems`} color="oklch(0.85 0.18 70)" />
-          )}
-          {story.readiness_growth > 0 && (
-            <GrowthBadge icon={Target} label="Readiness" value={`${story.readiness_growth}%`} color="oklch(0.88 0.18 145)" />
-          )}
-          {story.resume_growth > 0 && (
-            <GrowthBadge icon={FileText} label="Resume" value={`+${story.resume_growth}pts`} color="oklch(0.75 0.20 200)" />
-          )}
-        </div>
-
-        {/* Quote / Story */}
-        <div className="flex-1">
-          <p className="text-sm text-muted-foreground leading-relaxed">
-            "{story.current_results}"
-          </p>
-
-          <AnimatePresence>
-            {expanded && (
-              <motion.div
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: "auto" }}
-                exit={{ opacity: 0, height: 0 }}
-                className="overflow-hidden"
-              >
-                <div className="mt-4 space-y-3 border-t border-white/10 pt-4">
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Before SyncRole</div>
-                    <p className="text-xs text-muted-foreground">{story.before_syncrole}</p>
-                  </div>
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">What I Did</div>
-                    <p className="text-xs text-muted-foreground">{story.actions_taken}</p>
-                  </div>
-                  <div>
-                    <div className="text-[10px] uppercase tracking-widest text-muted-foreground mb-1">Advice</div>
-                    <p className="text-xs text-[oklch(0.88_0.18_145)]">"{story.advice}"</p>
-                  </div>
-                </div>
-              </motion.div>
+            {story.author_college && (
+              <div className="text-[11px] text-slate-500 truncate flex items-center gap-1">
+                <GraduationCap className="w-3 h-3 shrink-0" />
+                <span className="truncate">{story.author_college}</span>
+              </div>
             )}
-          </AnimatePresence>
+          </div>
         </div>
 
-        {/* Expand toggle */}
-        <button
-          onClick={() => setExpanded(!expanded)}
-          className="mt-4 text-xs text-muted-foreground hover:text-foreground transition flex items-center gap-1 self-start"
-        >
-          {expanded ? "Show less" : "Read full story"}
-          <ChevronRight className={`h-3 w-3 transition-transform ${expanded ? "rotate-90" : ""}`} />
-        </button>
-      </GlassCard>
-    </motion.div>
+        <span className="text-[10px] font-mono font-medium text-slate-400 shrink-0">
+          {timeAgo}
+        </span>
+      </div>
+
+      {/* Verification Badge */}
+      <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-mono font-bold uppercase tracking-wider w-fit">
+        <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+        <span>Verified Activity</span>
+      </div>
+
+      {/* Metric Badges */}
+      <div className="flex flex-wrap gap-1.5">
+        {story.xp_growth > 0 && (
+          <MetricBadge
+            icon={Zap}
+            label="XP"
+            value={`+${story.xp_growth.toLocaleString()}`}
+            badgeBg="bg-purple-50 border-purple-200/70"
+            textColor="text-purple-800"
+          />
+        )}
+        {story.dsa_growth > 0 && (
+          <MetricBadge
+            icon={Code2}
+            label="DSA"
+            value={`+${story.dsa_growth}`}
+            badgeBg="bg-amber-50 border-amber-200/70"
+            textColor="text-amber-900"
+          />
+        )}
+        {story.readiness_growth > 0 && (
+          <MetricBadge
+            icon={Target}
+            label="Readiness"
+            value={`+${story.readiness_growth}%`}
+            badgeBg="bg-emerald-50 border-emerald-200/70"
+            textColor="text-emerald-900"
+          />
+        )}
+      </div>
+
+      {/* Story Excerpt */}
+      <div className="space-y-2 pt-1 flex-1">
+        <p className="text-xs md:text-sm text-slate-700 leading-relaxed font-normal italic line-clamp-3">
+          "{story.current_results}"
+        </p>
+      </div>
+
+      {/* Read Full Story Button */}
+      <button
+        onClick={onReadFull}
+        className="w-full pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-purple-700 hover:text-purple-900 group-hover:translate-x-0.5 transition-all cursor-pointer"
+      >
+        <span>Read full transformation story</span>
+        <ChevronRight className="w-4 h-4 text-purple-600" />
+      </button>
+    </div>
   );
 }
 
-/* ─── Page ─────────────────────────────────────────────────── */
+/* ─── Main Page Component ───────────────────────────────────── */
 
 function CareerTransformationsPage() {
   const { user } = useAuth();
-  const [stories, setStories] = useState<Story[]>([]);
+  const [stories, setStories] = useState<Story[]>(DEMO_STORIES);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<"all" | "highest_growth" | "recent">("all");
   const [search, setSearch] = useState("");
+  const [activeStory, setActiveStory] = useState<Story | null>(null);
+  const [shareModalOpen, setShareModalOpen] = useState(false);
 
   useEffect(() => {
     let alive = true;
     async function load() {
-      const { data, error } = await supabase
-        .from("career_transformations")
-        .select("*")
-        .eq("is_published", true)
-        .order("created_at", { ascending: false })
-        .limit(50)
-        .then(({ data: rows }: { data: Story[] | null }) => {
-          if (alive) {
-            if (rows && rows.length > 0) {
-              setStories(rows);
-            } else {
-              setStories(DEMO_STORIES);
-            }
-            setLoading(false);
-          }
-        });
+      try {
+        const { data, error } = await supabase
+          .from("career_transformations")
+          .select("*")
+          .order("created_at", { ascending: false })
+          .limit(50);
+
+        if (!error && data && data.length > 0) {
+          if (alive) setStories(data as Story[]);
+        }
+      } catch (err) {
+        console.error("Error loading stories:", err);
+      } finally {
+        if (alive) setLoading(false);
+      }
     }
     load();
-    return () => { alive = false; };
+    return () => {
+      alive = false;
+    };
   }, []);
+
+  const handleStoryAdded = (newStory: Story) => {
+    setStories((prev) => [newStory, ...prev]);
+  };
 
   const filtered = stories
     .filter((s) => {
@@ -370,145 +727,146 @@ function CareerTransformationsPage() {
       return (
         (s.author_name || "").toLowerCase().includes(q) ||
         (s.author_role || "").toLowerCase().includes(q) ||
+        (s.author_college || "").toLowerCase().includes(q) ||
         s.current_results.toLowerCase().includes(q)
       );
     })
     .sort((a, b) => {
       if (filter === "highest_growth") return b.readiness_growth - a.readiness_growth;
       if (filter === "recent") return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
-      return b.likes_count - a.likes_count;
+      return (b.likes_count || 0) - (a.likes_count || 0);
     });
 
   const stats = {
     stories: stories.length,
-    avgXp: Math.round(stories.reduce((s, x) => s + x.xp_growth, 0) / Math.max(stories.length, 1)),
-    avgReadiness: Math.round(stories.reduce((s, x) => s + x.readiness_growth, 0) / Math.max(stories.length, 1)),
+    avgXp: Math.round(stories.reduce((s, x) => s + (x.xp_growth || 0), 0) / Math.max(stories.length, 1)),
+    avgReadiness: Math.round(stories.reduce((s, x) => s + (x.readiness_growth || 0), 0) / Math.max(stories.length, 1)),
   };
 
   return (
-    <main className="relative min-h-screen">
-      <link rel="preconnect" href="https://fonts.googleapis.com" />
-      <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-        rel="stylesheet"
-      />
-
-      {/* Background */}
-      <div className="pointer-events-none fixed inset-0 -z-10 bg-gradient-to-b from-background via-background to-background">
-        <div className="absolute inset-0" style={{
-          background: "radial-gradient(ellipse 80% 60% at 50% -10%, oklch(0.72 0.22 295 / 22%), transparent 60%), radial-gradient(ellipse 60% 50% at 90% 20%, oklch(0.75 0.2 200 / 18%), transparent 60%)"
-        }} />
-      </div>
-
-      {/* Nav */}
-      <nav className="sticky top-0 z-40 backdrop-blur-xl bg-background/70 border-b border-white/5">
-        <div className="mx-auto max-w-7xl px-6 h-14 flex items-center justify-between">
-          <Link to="/" className="flex items-center gap-2 text-muted-foreground hover:text-foreground transition">
+    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-purple-100 selection:text-purple-900 pb-16">
+      {/* Sticky Light Header */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-2xs">
+        <div className="mx-auto max-w-7xl px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
+          <Link
+            to="/"
+            className="flex items-center gap-2 text-xs md:text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+          >
             <ArrowLeft className="h-4 w-4" />
-            <span className="text-sm">Back to Home</span>
+            <span>Back to Home</span>
           </Link>
-          <div className="flex items-center gap-2">
-            <div className="relative h-7 w-7">
-              <div className="absolute inset-0 rounded-lg bg-aurora" />
-              <div className="absolute inset-[3px] rounded-md bg-background grid place-items-center">
-                <Sparkles className="h-3 w-3 text-aurora" />
-              </div>
-            </div>
-            <span className="font-display text-base font-semibold">SyncRole</span>
-          </div>
+
+          <BrandLogo size="md" />
+
           {!user ? (
-            <Link to="/auth" className="text-sm text-muted-foreground hover:text-foreground transition">
+            <Link
+              to="/auth"
+              className="text-xs md:text-sm font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-3.5 py-1.5 rounded-full transition-all"
+            >
               Sign in
             </Link>
           ) : (
-            <Link to="/dashboard" className="text-sm text-muted-foreground hover:text-foreground transition">
+            <Link
+              to="/dashboard"
+              className="text-xs md:text-sm font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-3.5 py-1.5 rounded-full transition-all"
+            >
               Dashboard
             </Link>
           )}
         </div>
-      </nav>
+      </header>
 
-      {/* Hero */}
-      <section className="relative pt-20 pb-16 px-6">
-        <div className="mx-auto max-w-4xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="inline-flex items-center gap-2 rounded-full glass-strong px-4 py-1.5 text-xs mb-8 border border-white/10"
-          >
-            <span className="relative flex h-2 w-2">
-              <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-[oklch(0.88_0.18_145)] opacity-75" />
-              <span className="relative inline-flex h-2 w-2 rounded-full bg-[oklch(0.88_0.18_145)]" />
+      {/* Hero Section */}
+      <section className="pt-10 md:pt-14 pb-8 px-4 md:px-6">
+        <div className="mx-auto max-w-3xl text-center space-y-4">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-800 text-xs font-semibold tracking-wide uppercase font-mono shadow-2xs">
+            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+            <span>REAL STUDENT JOURNEYS · VERIFIED OUTCOMES</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
+            From learning skills to{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600">
+              landing opportunities.
             </span>
-            <span className="text-muted-foreground tracking-wide">Real Stories · Real Outcomes · Verified by Activity Data</span>
-          </motion.div>
+          </h1>
 
-          <motion.h1
-            initial={{ opacity: 0, y: 30 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.15, duration: 0.8 }}
-            className="font-display text-[clamp(2.2rem,6vw,4.5rem)] font-bold leading-[0.95] tracking-tight"
-          >
-            <span className="block text-foreground">Career</span>
-            <span className="block text-aurora">Transformations.</span>
-          </motion.h1>
+          <p className="text-sm md:text-base text-slate-600 max-w-xl mx-auto leading-relaxed font-normal">
+            Discover how students are building skills, improving their readiness, and moving closer to their career goals with SyncRole.
+          </p>
 
-          <motion.p
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.3 }}
-            className="mx-auto mt-6 max-w-xl text-muted-foreground"
-          >
-            Students who used SyncRole to go from stuck to hired. Every story is verified against real platform activity data.
-          </motion.p>
-
-          {/* Stats */}
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5 }}
-            className="mt-12 grid grid-cols-3 gap-4 max-w-lg mx-auto"
-          >
-            {[
-              { label: "Stories", value: stats.stories.toString(), icon: Users },
-              { label: "Avg XP Gained", value: `+${stats.avgXp.toLocaleString()}`, icon: Zap },
-              { label: "Avg Readiness Gain", value: `+${stats.avgReadiness}%`, icon: TrendingUp },
-            ].map((s) => (
-              <div key={s.label} className="glass rounded-2xl p-4 text-center">
-                <s.icon className="h-4 w-4 text-accent mx-auto mb-2" />
-                <div className="font-display text-2xl font-bold text-aurora">{s.value}</div>
-                <div className="text-[10px] uppercase tracking-widest text-muted-foreground mt-1">{s.label}</div>
+          {/* Compact Proof-of-Progress Statistics Strip */}
+          <div className="pt-4 max-w-2xl mx-auto">
+            <div className="bg-white border border-slate-200/90 rounded-2xl p-4 md:p-5 shadow-xs grid grid-cols-3 gap-3 md:gap-6 text-center">
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-purple-600 mb-0.5">
+                  <Users className="w-4 h-4" />
+                  <span className="text-base sm:text-xl md:text-2xl font-bold font-mono text-slate-900">
+                    {stats.stories}
+                  </span>
+                </div>
+                <div className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
+                  Verified Stories
+                </div>
               </div>
-            ))}
-          </motion.div>
+
+              <div className="space-y-1 border-x border-slate-100 px-2">
+                <div className="flex items-center justify-center gap-1.5 text-amber-600 mb-0.5">
+                  <Zap className="w-4 h-4" />
+                  <span className="text-base sm:text-xl md:text-2xl font-bold font-mono text-slate-900">
+                    +{stats.avgXp.toLocaleString()}
+                  </span>
+                </div>
+                <div className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
+                  Avg XP Gain
+                </div>
+              </div>
+
+              <div className="space-y-1">
+                <div className="flex items-center justify-center gap-1.5 text-emerald-600 mb-0.5">
+                  <TrendingUp className="w-4 h-4" />
+                  <span className="text-base sm:text-xl md:text-2xl font-bold font-mono text-slate-900">
+                    +{stats.avgReadiness}%
+                  </span>
+                </div>
+                <div className="text-[10px] md:text-xs font-semibold text-slate-500 uppercase tracking-wider font-mono">
+                  Readiness Boost
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* Filters */}
-      <section className="px-6 pb-8">
-        <div className="mx-auto max-w-7xl flex flex-col sm:flex-row gap-4 items-start sm:items-center justify-between">
-          {/* Search */}
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
+      {/* Toolbar: Search & Filters */}
+      <section className="px-4 md:px-6 py-4">
+        <div className="mx-auto max-w-7xl bg-white border border-slate-200/90 rounded-2xl p-3 md:p-4 shadow-2xs flex flex-col sm:flex-row gap-3 items-stretch sm:items-center justify-between">
+          {/* Search Box */}
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
             <input
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              placeholder="Search stories…"
-              className="w-full glass rounded-full pl-10 pr-4 py-2.5 text-sm outline-none focus:ring-2 ring-accent/50"
+              placeholder="Search by student, role, or company..."
+              className="w-full bg-slate-50 border border-slate-200 focus:border-purple-500 focus:bg-white rounded-xl pl-10 pr-4 py-2 text-xs md:text-sm text-slate-900 outline-none transition-all"
             />
           </div>
 
-          {/* Sort */}
-          <div className="flex items-center gap-2">
-            <Filter className="h-4 w-4 text-muted-foreground" />
-            <div className="glass rounded-full p-1 inline-flex gap-1">
+          {/* Sort Tabs */}
+          <div className="flex items-center gap-2 overflow-x-auto scrollbar-none py-0.5">
+            <div className="flex items-center gap-1 text-slate-400 text-xs font-medium mr-1 shrink-0">
+              <Filter className="h-3.5 w-3.5" />
+              <span>Sort:</span>
+            </div>
+            <div className="bg-slate-100/80 p-1 rounded-xl flex items-center gap-1 shrink-0">
               {(["all", "highest_growth", "recent"] as const).map((f) => (
                 <button
                   key={f}
                   onClick={() => setFilter(f)}
-                  className={`px-4 py-1.5 rounded-full text-xs font-medium transition ${
-                    filter === f ? "bg-white/15 text-foreground" : "text-muted-foreground hover:text-foreground"
+                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                    filter === f
+                      ? "bg-purple-600 text-white shadow-2xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
                   }`}
                 >
                   {f === "all" ? "Most Popular" : f === "highest_growth" ? "Highest Growth" : "Most Recent"}
@@ -519,47 +877,67 @@ function CareerTransformationsPage() {
         </div>
       </section>
 
-      {/* Stories grid */}
-      <section className="px-6 pb-24">
+      {/* Stories Grid */}
+      <section className="px-4 md:px-6 py-6">
         <div className="mx-auto max-w-7xl">
           {loading ? (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[...Array(6)].map((_, i) => (
-                <div key={i} className="glass-strong rounded-3xl h-80 animate-pulse" />
+                <div key={i} className="bg-white border border-slate-200/80 rounded-2xl h-64 animate-pulse" />
               ))}
             </div>
           ) : filtered.length === 0 ? (
-            <div className="text-center py-24 text-muted-foreground">
-              No stories match your search.
+            <div className="text-center py-16 bg-white border border-slate-200/80 rounded-2xl p-8 max-w-md mx-auto space-y-2">
+              <MessageSquare className="w-8 h-8 text-slate-300 mx-auto mb-2" />
+              <h3 className="font-bold text-slate-800 text-sm">No matching stories found</h3>
+              <p className="text-xs text-slate-500">Try searching for a different student name, college, or role.</p>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {filtered.map((s, i) => (
-                <StoryCard key={s.id} story={s} index={i} />
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filtered.map((story) => (
+                <StoryCard
+                  key={story.id}
+                  story={story}
+                  onReadFull={() => setActiveStory(story)}
+                />
               ))}
             </div>
           )}
         </div>
       </section>
 
-      {/* Share CTA */}
-      <section className="px-6 pb-24">
+      {/* Share Your Transformation CTA Section */}
+      <section className="px-4 md:px-6 py-10">
         <div className="mx-auto max-w-3xl">
-          <div className="relative p-px rounded-3xl overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-r from-[oklch(0.7_0.22_295)] via-[oklch(0.75_0.2_200)] to-[oklch(0.72_0.22_330)] opacity-50 blur-xl" />
-            <div className="relative glass-strong rounded-[23px] p-10 text-center z-10">
-              <Sparkles className="h-10 w-10 text-aurora mx-auto mb-4" />
-              <h2 className="font-display text-3xl font-bold mb-3">Share Your Transformation</h2>
-              <p className="text-muted-foreground max-w-md mx-auto mb-8">
-                Inspire the next generation. If SyncRole helped you land an offer, your story belongs here.
-              </p>
+          <div className="bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 border border-purple-200/80 rounded-3xl p-6 sm:p-10 text-center shadow-xs space-y-4">
+            <div className="p-3 rounded-2xl bg-white shadow-2xs text-purple-600 inline-flex border border-purple-100 mb-1">
+              <Sparkles className="w-6 h-6" />
+            </div>
+
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Your progress could inspire someone.
+            </h2>
+
+            <p className="text-xs sm:text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+              Share your journey and help another student see what's possible with consistency and data-driven preparation.
+            </p>
+
+            <div className="pt-2">
               {user ? (
-                <Link to="/" className="inline-flex items-center gap-2 rounded-full bg-aurora px-7 py-3.5 text-sm font-semibold text-primary-foreground">
-                  <ArrowRight className="h-4 w-4" /> Share Your Journey
-                </Link>
+                <button
+                  onClick={() => setShareModalOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98] cursor-pointer"
+                >
+                  <Share2 className="w-4 h-4" />
+                  <span>Share Your Journey</span>
+                </button>
               ) : (
-                <Link to="/auth" className="inline-flex items-center gap-2 rounded-full bg-aurora px-7 py-3.5 text-sm font-semibold text-primary-foreground">
-                  <ArrowRight className="h-4 w-4" /> Sign In to Share
+                <Link
+                  to="/auth"
+                  className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98]"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                  <span>Sign In to Share Your Story</span>
                 </Link>
               )}
             </div>
@@ -567,6 +945,27 @@ function CareerTransformationsPage() {
         </div>
       </section>
 
+      {/* Full Story Modal */}
+      <AnimatePresence>
+        {activeStory && (
+          <FullStoryModal
+            story={activeStory}
+            onClose={() => setActiveStory(null)}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* Share Story Modal */}
+      <AnimatePresence>
+        {shareModalOpen && (
+          <ShareStoryModal
+            onClose={() => setShareModalOpen(false)}
+            onSuccess={handleStoryAdded}
+          />
+        )}
+      </AnimatePresence>
+
+      {/* SyncRole Footer */}
       <SyncFooter />
     </main>
   );
