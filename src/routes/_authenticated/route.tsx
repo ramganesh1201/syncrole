@@ -3,7 +3,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
-import { SyncPilotLauncher } from "@/components/syncpilot/SyncPilotLauncher";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
 import { SafeMetalFx } from "@/components/ui/safe-metal";
 import { NotificationCenter } from "@/components/dashboard/NotificationCenter";

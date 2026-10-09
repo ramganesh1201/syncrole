@@ -37,7 +37,13 @@ function SyncPilotLauncherInner() {
   } = useSyncPilot();
   const { user } = useAuth();
 
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
+
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 768);
     checkMobile();
@@ -170,7 +176,7 @@ function SyncPilotLauncherInner() {
     <>
       {/* FAB - visible when panel is closed (Desktop only) */}
       <AnimatePresence>
-        {panelState === "closed" && (
+        {panelState === "closed" && !isMobile && (
           <motion.div
             key="fab"
             initial={{ opacity: 0 }}
