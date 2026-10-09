@@ -214,51 +214,64 @@ function MobileBottomNav() {
   ];
 
   return (
-    <nav className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/95 backdrop-blur-xl px-2.5 py-1.5 shadow-xs flex items-center justify-around h-[64px] pb-[calc(0.5rem+env(safe-area-inset-bottom))] box-content">
-      {navItems.map((item) => {
-        if (item.isCenter) {
+    <nav
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/98 backdrop-blur-xl border-t border-slate-200/80 shadow-sm"
+      style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
+      aria-label="Mobile navigation"
+    >
+      <div className="flex items-center justify-around px-2 pt-1.5 pb-1 h-[56px]">
+        {navItems.map((item) => {
+          if (item.isCenter) {
+            return (
+              <button
+                key={item.label}
+                onClick={() => item.action?.()}
+                className={`relative -top-3 h-12 w-12 rounded-full grid place-items-center shadow-lg transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                  isSyncPilotOpen
+                    ? "bg-slate-900 text-blue-300 ring-2 ring-blue-400/50"
+                    : "bg-blue-600 text-white hover:bg-blue-700"
+                }`}
+                aria-label="Open SyncPilot AI Assistant"
+                aria-pressed={isSyncPilotOpen}
+              >
+                <item.icon className="h-5 w-5" />
+              </button>
+            );
+          }
+
+          const IconComp = item.icon;
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href!);
+
           return (
-            <button
+            <Link
               key={item.label}
-              onClick={() => item.action?.()}
-              className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 ${
-                isSyncPilotOpen
-                  ? "bg-slate-900 text-blue-300 ring-2 ring-blue-500/40"
-                  : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110"
+              to={item.href as any}
+              className={`relative flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[44px] min-h-[44px] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                isActive
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
               }`}
-              aria-label="Open SyncPilot AI Assistant"
             >
-              <item.icon className="h-5 w-5" />
-            </button>
+              <div className="relative">
+                <IconComp
+                  className={`h-[18px] w-[18px] ${
+                    isActive ? "text-blue-600" : "text-slate-400"
+                  }`}
+                />
+                {item.isNew && (
+                  <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
+                )}
+              </div>
+              <span className={`text-[10px] tracking-tight mt-0.5 ${
+                isActive ? "font-semibold" : "font-medium"
+              }`}>{item.label}</span>
+            </Link>
           );
-        }
-
-        const IconComp = item.icon;
-        const isActive =
-          item.href === "/"
-            ? pathname === "/"
-            : pathname.startsWith(item.href!);
-
-        return (
-          <Link
-            key={item.label}
-            to={item.href as any}
-            className={`relative flex flex-col items-center justify-center px-2 py-1 min-w-[52px] min-h-[44px] rounded-xl transition-all duration-150 ${
-              isActive
-                ? "text-blue-600 font-bold"
-                : "text-slate-500 hover:text-slate-800 font-medium"
-            }`}
-          >
-            <div className="relative">
-              <IconComp className={`h-5 w-5 ${isActive ? "text-blue-600 scale-105" : "text-slate-400"}`} />
-              {item.isNew && (
-                <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
-              )}
-            </div>
-            <span className="text-[10px] tracking-tight mt-0.5">{item.label}</span>
-          </Link>
-        );
-      })}
+        })}
+      </div>
     </nav>
   );
 }

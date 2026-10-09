@@ -1,6 +1,6 @@
 import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
-import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight } from "lucide-react";
+import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight, Compass } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
 import { useEffect, useState } from "react";
 import { useSyncPilot } from "@/hooks/useSyncPilot";
@@ -358,78 +358,89 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   const { openSyncPilot, panelState } = useSyncPilot();
   const isSyncPilotOpen = panelState !== "closed";
 
+  // Mobile-only tabs: Dashboard, Career, SyncPilot, Profile
+  // Workspace and GATE Hub are desktop-only features and are excluded from mobile nav
   const tabs = [
     { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
-    { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
+    { label: "Career", href: "/career-identity", icon: Compass },
     { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
-    { label: "GATE Hub", href: "/gate", icon: GraduationCap },
     { label: "Profile", href: "/profile", icon: User },
   ];
 
   return (
-    <nav className="fixed bottom-0 inset-x-0 z-50 bg-white/95 backdrop-blur-xl border-t border-slate-200/90 shadow-lg px-3 py-1.5 flex items-center justify-around pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:hidden h-[64px] box-content">
-      {tabs.map((tab) => {
-        if (tab.isCenter) {
-          return (
-            <button
-              key={tab.label}
-              onClick={() => tab.action?.()}
-              className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 ${
-                isSyncPilotOpen
-                  ? "bg-slate-900 text-purple-300 ring-2 ring-purple-500/40"
-                  : "bg-gradient-to-tr from-purple-600 to-indigo-600 text-white hover:brightness-110"
-              }`}
-              aria-label="Open SyncPilot AI Assistant"
-            >
-              <tab.icon className="h-5 w-5" />
-            </button>
-          );
-        }
+    <nav
+      className="fixed bottom-0 inset-x-0 z-50 bg-white/98 backdrop-blur-xl border-t border-slate-200/80 shadow-sm md:hidden"
+      style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
+      aria-label="Mobile navigation"
+    >
+      <div className="flex items-center justify-around px-2 pt-1.5 pb-1 h-[56px]">
+        {tabs.map((tab) => {
+          if (tab.isCenter) {
+            return (
+              <button
+                key={tab.label}
+                onClick={() => tab.action?.()}
+                className={`relative -top-3 h-12 w-12 rounded-full grid place-items-center shadow-lg transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+                  isSyncPilotOpen
+                    ? "bg-slate-900 text-purple-300 ring-2 ring-purple-400/50"
+                    : "bg-purple-600 text-white hover:bg-purple-700"
+                }`}
+                aria-label="Open SyncPilot AI Assistant"
+                aria-pressed={isSyncPilotOpen}
+              >
+                <tab.icon className="h-5 w-5" />
+              </button>
+            );
+          }
 
-        const isWorkspaceTab = tab.href === "/dashboard/workspace";
-        const isDashboardTab = tab.href === "/dashboard";
-        const isProfileTab = tab.href === "/profile";
-        const isGateTab = tab.href === "/gate";
+          const isDashboardTab = tab.href === "/dashboard";
+          const isCareerTab = tab.href === "/career-identity";
+          const isProfileTab = tab.href === "/profile";
 
-        let isActive = false;
-        if (isWorkspaceTab) {
-          isActive = pathname.startsWith("/dashboard/workspace");
-        } else if (isDashboardTab) {
-          isActive =
-            (pathname === "/dashboard" ||
+          let isActive = false;
+          if (isDashboardTab) {
+            isActive =
+              pathname === "/dashboard" ||
               pathname === "/dashboard/" ||
-              pathname === "/" ||
               (pathname.startsWith("/dashboard/") && !pathname.startsWith("/dashboard/workspace")) ||
               pathname.startsWith("/dsa-") ||
-              pathname.startsWith("/resume-intelligence"));
-        } else if (isProfileTab) {
-          isActive =
-            pathname.startsWith("/profile") ||
-            pathname.startsWith("/settings") ||
-            pathname.startsWith("/career-identity") ||
-            pathname.startsWith("/role-explorer") ||
-            pathname.startsWith("/help");
-        } else if (isGateTab) {
-          isActive = pathname.startsWith("/gate");
-        } else {
-          isActive = pathname.startsWith(tab.href!);
-        }
+              pathname.startsWith("/resume-intelligence");
+          } else if (isCareerTab) {
+            isActive =
+              pathname.startsWith("/career-identity") ||
+              pathname.startsWith("/role-explorer") ||
+              pathname.startsWith("/dsa-companies");
+          } else if (isProfileTab) {
+            isActive =
+              pathname.startsWith("/profile") ||
+              pathname.startsWith("/settings") ||
+              pathname.startsWith("/help");
+          } else {
+            isActive = pathname.startsWith(tab.href!);
+          }
 
-        const Icon = tab.icon;
+          const Icon = tab.icon;
 
-        return (
-          <Link
-            key={tab.label}
-            to={tab.href!}
-            className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition py-1 px-2.5 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
-              isActive ? "text-purple-700 font-bold" : "text-slate-500 hover:text-slate-800"
-            }`}
-          >
-            <Icon className={`h-4 w-4 transition-transform ${isActive ? "text-purple-600 scale-110" : "text-slate-400"}`} />
-            <span>{tab.label}</span>
-          </Link>
-        );
-      })}
+          return (
+            <Link
+              key={tab.label}
+              to={tab.href!}
+              className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors py-1.5 px-3 rounded-xl min-w-[44px] min-h-[44px] justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+                isActive
+                  ? "text-purple-700 bg-purple-50"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
+              }`}
+            >
+              <Icon
+                className={`h-[18px] w-[18px] transition-none ${
+                  isActive ? "text-purple-600" : "text-slate-400"
+                }`}
+              />
+              <span className={isActive ? "font-semibold" : ""}>{tab.label}</span>
+            </Link>
+          );
+        })}
+      </div>
     </nav>
   );
 }

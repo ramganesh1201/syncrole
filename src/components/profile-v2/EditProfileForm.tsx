@@ -32,7 +32,7 @@ export const EditProfileForm = React.memo(function EditProfileForm({
 }: EditProfileFormProps) {
 
   return (
-    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xl max-w-4xl mx-auto overflow-hidden flex flex-col h-full max-h-[90vh]">
+    <div className="bg-white md:rounded-2xl rounded-t-2xl border border-slate-200/90 shadow-2xl md:max-w-4xl w-full mx-auto overflow-hidden flex flex-col md:max-h-[90vh] h-full md:h-auto">
       {/* Header Bar */}
       <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
         <div className="flex items-center gap-3">

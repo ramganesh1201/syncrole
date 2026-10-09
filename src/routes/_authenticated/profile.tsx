@@ -320,17 +320,29 @@ function ProfilePage() {
         </div>
       </div>
 
-      {/* In-Context Edit Profile Modal Overlay (Zero scroll jump!) */}
+      {/* In-Context Edit Profile Modal Overlay */}
+      {/* z-[60] ensures modal sits above the mobile bottom nav (z-50) */}
       {isEditExpanded && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-xs p-4 sm:p-6 overflow-y-auto">
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.96 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.96 }}
+        <div
+          className="fixed inset-0 z-[60] flex flex-col bg-slate-900/50 backdrop-blur-xs md:items-center md:justify-center md:p-6 md:overflow-y-auto"
+          onClick={(e) => { if (e.target === e.currentTarget) setIsEditExpanded(false); }}
+        >
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 20 }}
             transition={{ duration: 0.15 }}
-            className="w-full max-w-4xl my-auto"
+            className="
+              flex flex-col
+              md:block md:w-full md:max-w-4xl md:my-auto
+              w-full
+              mt-auto md:mt-0
+              max-h-[calc(100dvh-env(safe-area-inset-bottom))]
+              md:max-h-none
+            "
+            style={{ paddingBottom: 'env(safe-area-inset-bottom)' }}
           >
-            <EditProfileForm 
+            <EditProfileForm
               user={user}
               profile={profile}
               handleChange={handleChange}
