@@ -1,7 +1,26 @@
-import { useState } from "react";
-import { createFileRoute } from "@tanstack/react-router";
+import { useState, useMemo } from "react";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
-import { HelpCircle, Book, MessageSquare, Bug, ChevronDown, Send, X, Loader2 } from "lucide-react";
+import { 
+  HelpCircle, 
+  Search, 
+  ChevronDown, 
+  MessageSquare, 
+  Bug, 
+  Send, 
+  X, 
+  Loader2, 
+  ArrowLeft,
+  Sparkles,
+  BookOpen,
+  Code2,
+  FileText,
+  GitBranch,
+  Shield,
+  ExternalLink,
+  CheckCircle2,
+  AlertCircle
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/use-auth";
@@ -10,47 +29,167 @@ export const Route = createFileRoute("/_authenticated/help")({
   component: HelpPage,
 });
 
-const FAQS = [
+interface FAQ {
+  id: string;
+  category: "scoring" | "dsa" | "resume_github" | "syncpilot" | "gate" | "account";
+  question: string;
+  summary: string;
+  answer: string;
+  relatedLink?: {
+    label: string;
+    href: string;
+  };
+}
+
+const CATEGORIES = [
+  { id: "all", label: "All Topics" },
+  { id: "scoring", label: "Readiness & Scores" },
+  { id: "dsa", label: "DSA Practice" },
+  { id: "resume_github", label: "Resume & GitHub" },
+  { id: "syncpilot", label: "SyncPilot AI" },
+  { id: "gate", label: "GATE Hub" },
+  { id: "account", label: "Account & Profile" },
+] as const;
+
+const FAQS: FAQ[] = [
   {
-    question: "How does the Placement Score work?",
-    answer: "The Placement Score is a comprehensive metric calculated from your Resume ATS score, DSA problem-solving depth, GitHub repository activity, completed Projects, and core Skills. It predicts your readiness for top-tier tech interviews.",
+    id: "placement-score",
+    category: "scoring",
+    question: "How is the Placement Readiness Score calculated?",
+    summary: "A holistic 0–100 index combining DSA solving, ATS resume strength, GitHub commits, and projects.",
+    answer: "Your Placement Readiness Score is computed from four core pillars: (1) DSA solving depth and topic mastery across Easy/Medium/Hard problems, (2) ATS Resume score parsed from your uploaded PDF, (3) GitHub commit consistency, repository breadth, and stars, and (4) verified projects and coding profile links. SyncRole evaluates these factors against current tech hiring benchmarks.",
+    relatedLink: {
+      label: "View Dashboard Analytics",
+      href: "/dashboard",
+    },
   },
   {
-    question: "How GitHub Intelligence works",
-    answer: "By linking your GitHub username in your Profile, SyncRole fetches your real repositories, commit history, language statistics, and star counts. This data is used to provide accurate, recruiter-facing intelligence on your coding activity.",
+    id: "syncpilot-modes",
+    category: "syncpilot",
+    question: "What are the different modes in SyncPilot AI?",
+    summary: "Career Twin for personalized planning, Interview Chamber for mocks, and Recruiter Mode for profile audits.",
+    answer: "SyncPilot operates across three targeted modes: (1) Career Twin provides personalized guidance, milestone tracking, and daily mission roadmaps. (2) Interview Chamber conducts interactive technical or behavioral mock interviews with instant feedback. (3) Recruiter Mode reviews your resume, GitHub signal, and skills from the perspective of an engineering hiring manager.",
   },
   {
-    question: "How SyncPilot works",
-    answer: "SyncPilot is your AI Career Twin. It operates in multiple modes: Career Twin (for personalized advice), Interview Chamber (for mock technical interviews), and Recruiter Mode (to simulate how a hiring manager sees your profile based on your data).",
+    id: "resume-ats",
+    category: "resume_github",
+    question: "How does Resume Intelligence audit my resume?",
+    summary: "Automated ATS compliance check, section breakdown, impact bullet metrics, and keyword gap analysis.",
+    answer: "When you upload your PDF resume, SyncRole extracts the textual content and evaluates it against industry ATS guidelines. It checks layout readability, action-verb usage, quantified metrics (e.g., % improvements or scale), section ordering, and identifies missing keywords relevant to your target engineering roles.",
+    relatedLink: {
+      label: "Open Resume Intelligence",
+      href: "/resume-intelligence",
+    },
   },
   {
-    question: "Uploading and Analyzing Resumes",
-    answer: "Navigate to the Resume Intelligence page to upload your PDF resume. Our system parses the content to evaluate ATS compatibility, formatting, and impact, providing actionable feedback to improve your chances of passing automated screens.",
-  }
+    id: "github-sync",
+    category: "resume_github",
+    question: "How does GitHub Intelligence gather commit data?",
+    summary: "Connect your GitHub username in your Profile to sync real repositories, top languages, and commit momentum.",
+    answer: "By specifying your GitHub username in your Profile, SyncRole fetches public repository statistics, recent commit cadence, most frequent programming languages, and star activity. This verified signal demonstrates real-world software delivery to recruiters without manual status updates.",
+    relatedLink: {
+      label: "Update GitHub in Profile",
+      href: "/profile",
+    },
+  },
+  {
+    id: "dsa-roadmap",
+    category: "dsa",
+    question: "How does DSA tracking and topic mastery work?",
+    summary: "Curated problem lists across patterns, topic heatmaps, company frequency tags, and daily missions.",
+    answer: "The DSA Command Center tracks your progress across foundational computer science patterns (Arrays, Two Pointers, Trees, Graphs, Dynamic Programming). Each solved problem increments your XP and topic mastery percentage, updating your daily streak and company readiness metrics.",
+    relatedLink: {
+      label: "Explore DSA Problems",
+      href: "/dsa-problems",
+    },
+  },
+  {
+    id: "gate-hub",
+    category: "gate",
+    question: "What is available in the GATE 2027 Information Hub?",
+    summary: "Official syllabus, timeline milestones, paper patterns, and academic reference resources.",
+    answer: "The GATE Hub contains source-verified examination data for GATE CSE, DA, and supported engineering papers. You can inspect subject weightages, official dates, question formats (MCQ/MSQ/NAT), eligibility criteria, and curated academic preparation links.",
+    relatedLink: {
+      label: "Visit GATE 2027 Hub",
+      href: "/gate",
+    },
+  },
+  {
+    id: "profile-visibility",
+    category: "account",
+    question: "Who can see my SyncRole profile and achievements?",
+    summary: "By default, your profile is private until you enable public recruiter visibility in Settings.",
+    answer: "Your preparations, notes, and progress remain private to you. In Settings > Privacy, you can toggle 'Public Recruiter Visibility' to allow verified partner companies and hiring managers to discover your Career Identity, projects, and verified scores.",
+    relatedLink: {
+      label: "Manage Privacy Settings",
+      href: "/settings",
+    },
+  },
+  {
+    id: "daily-missions",
+    category: "scoring",
+    question: "How do Daily Missions and XP streaks work?",
+    summary: "Complete 3 daily actions (DSA problem, resume update, quiz) to keep your streak and earn placement XP.",
+    answer: "Daily Missions are tailored recommendations generated by your AI Coach to keep preparation consistent. Completing daily missions awards XP, raises your placement level, and reinforces learning habits ahead of campus and off-campus recruitment drives.",
+    relatedLink: {
+      label: "Check Today's Missions",
+      href: "/dashboard",
+    },
+  },
 ];
 
-function FAQItem({ question, answer }: { question: string; answer: string }) {
-  const [isOpen, setIsOpen] = useState(false);
-  
+function FAQAccordionItem({ 
+  faq, 
+  isOpen, 
+  onToggle 
+}: { 
+  faq: FAQ; 
+  isOpen: boolean; 
+  onToggle: () => void;
+}) {
   return (
-    <div className="rounded-lg bg-black/20 border border-white/5 overflow-hidden transition-colors hover:border-white/10">
-      <button 
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex items-center justify-between p-4 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-aurora"
+    <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden transition-all duration-200 hover:border-slate-300">
+      <button
+        onClick={onToggle}
+        className="w-full flex items-start justify-between p-4 sm:p-5 text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-2xl gap-4 cursor-pointer"
+        aria-expanded={isOpen}
       >
-        <span className="text-white font-medium">{question}</span>
-        <ChevronDown className={`w-4 h-4 text-white/50 transition-transform duration-200 ${isOpen ? "rotate-180" : ""}`} />
+        <div className="space-y-1 min-w-0">
+          <h3 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+            {faq.question}
+          </h3>
+          <p className="text-xs text-slate-500 leading-normal line-clamp-1 sm:line-clamp-none">
+            {faq.summary}
+          </p>
+        </div>
+        <div className={`w-8 h-8 rounded-xl bg-slate-50 border border-slate-200/70 text-slate-500 flex items-center justify-center shrink-0 transition-transform duration-200 ${isOpen ? "rotate-180 bg-blue-50 text-blue-600 border-blue-200" : ""}`}>
+          <ChevronDown className="w-4 h-4" />
+        </div>
       </button>
+
       <AnimatePresence>
         {isOpen && (
           <motion.div
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
             className="overflow-hidden"
           >
-            <div className="p-4 pt-0 text-sm text-muted-foreground leading-relaxed">
-              {answer}
+            <div className="px-4 pb-4 sm:px-5 sm:pb-5 pt-0 border-t border-slate-100 text-xs sm:text-sm text-slate-600 leading-relaxed space-y-3">
+              <p className="pt-3">{faq.answer}</p>
+              
+              {faq.relatedLink && (
+                <div className="pt-1">
+                  <Link
+                    to={faq.relatedLink.href as any}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200/60 transition-colors"
+                  >
+                    <span>{faq.relatedLink.label}</span>
+                    <ExternalLink className="w-3 h-3" />
+                  </Link>
+                </div>
+              )}
             </div>
           </motion.div>
         )}
@@ -62,167 +201,398 @@ function FAQItem({ question, answer }: { question: string; answer: string }) {
 function HelpPage() {
   const { user } = useAuth();
   
+  // Search and Category State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState<string>("all");
+  const [openFaqId, setOpenFaqId] = useState<string | null>("placement-score");
+
   // Modals state
   const [supportModalOpen, setSupportModalOpen] = useState(false);
   const [bugModalOpen, setBugModalOpen] = useState(false);
-  
+  const [submitting, setSubmitting] = useState(false);
+
   // Forms state
-  const [loading, setLoading] = useState(false);
-  
-  const [supportForm, setSupportForm] = useState({ subject: "", category: "Technical Issue", description: "", email: user?.email || "" });
-  const [bugForm, setBugForm] = useState({ title: "", description: "", expected: "", location: "" });
+  const [supportForm, setSupportForm] = useState({ 
+    subject: "", 
+    category: "Technical Question", 
+    description: "", 
+    email: user?.email || "" 
+  });
+  const [bugForm, setBugForm] = useState({ 
+    title: "", 
+    description: "", 
+    expected: "", 
+    location: "" 
+  });
+
+  // Filtered FAQs
+  const filteredFaqs = useMemo(() => {
+    const q = searchQuery.trim().toLowerCase();
+    return FAQS.filter((faq) => {
+      const matchesCategory = selectedCategory === "all" || faq.category === selectedCategory;
+      if (!matchesCategory) return false;
+
+      if (!q) return true;
+      return (
+        faq.question.toLowerCase().includes(q) ||
+        faq.summary.toLowerCase().includes(q) ||
+        faq.answer.toLowerCase().includes(q)
+      );
+    });
+  }, [searchQuery, selectedCategory]);
 
   const handleSupportSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!supportForm.subject.trim() || !supportForm.description.trim()) {
-      toast.error("Subject and description are required.");
+      toast.error("Please fill in the subject and description.");
       return;
     }
-    
-    setLoading(true);
-    // Simulate processing delay for client-side action
+
+    setSubmitting(true);
     setTimeout(() => {
-      setLoading(false);
+      setSubmitting(false);
       setSupportModalOpen(false);
-      
-      const body = `Category: ${supportForm.category}\nEmail: ${supportForm.email}\n\nDescription:\n${supportForm.description}`;
-      window.location.href = `mailto:support@syncrole.com?subject=${encodeURIComponent(supportForm.subject)}&body=${encodeURIComponent(body)}`;
-      
-      toast.success("Opening your email client to send the support request.", {
-        description: "No backend support service is active, utilizing client-side mailto."
+
+      const body = `User Email: ${supportForm.email || user?.email || "Not provided"}\nCategory: ${supportForm.category}\n\nDetails:\n${supportForm.description}`;
+      window.location.href = `mailto:support@syncrole.com?subject=${encodeURIComponent(`[SyncRole Support] ${supportForm.subject}`)}&body=${encodeURIComponent(body)}`;
+
+      toast.success("Support request prepared in your mail client.", {
+        description: "Review and send from your preferred email application."
       });
-      setSupportForm({ subject: "", category: "Technical Issue", description: "", email: user?.email || "" });
-    }, 800);
+      setSupportForm({ subject: "", category: "Technical Question", description: "", email: user?.email || "" });
+    }, 500);
   };
 
   const handleBugSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bugForm.title.trim() || !bugForm.description.trim()) {
-      toast.error("Bug title and description are required.");
+      toast.error("Please provide a title and bug description.");
       return;
     }
-    
-    setLoading(true);
+
+    setSubmitting(true);
     setTimeout(() => {
-      setLoading(false);
+      setSubmitting(false);
       setBugModalOpen(false);
-      
-      const body = `URL/Location: ${bugForm.location}\nUser Agent: ${navigator.userAgent}\n\nWhat happened:\n${bugForm.description}\n\nExpected behavior:\n${bugForm.expected}`;
-      window.location.href = `mailto:bugs@syncrole.com?subject=${encodeURIComponent(`Bug: ${bugForm.title}`)}&body=${encodeURIComponent(body)}`;
-      
-      toast.success("Opening your email client to send the bug report.", {
-        description: "No backend bug tracking is active, utilizing client-side mailto."
+
+      const body = `Page/Location: ${bugForm.location || window.location.pathname}\nUser Agent: ${navigator.userAgent}\n\nWhat happened:\n${bugForm.description}\n\nExpected:\n${bugForm.expected || "N/A"}`;
+      window.location.href = `mailto:bugs@syncrole.com?subject=${encodeURIComponent(`[Bug Report] ${bugForm.title}`)}&body=${encodeURIComponent(body)}`;
+
+      toast.success("Bug report draft opened in your mail client.", {
+        description: "Thank you for helping us improve SyncRole!"
       });
       setBugForm({ title: "", description: "", expected: "", location: "" });
-    }, 800);
+    }, 500);
   };
 
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-6 py-8 md:py-12 space-y-10 pb-32">
-      {/* Header */}
-      <div className="space-y-3">
-        <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-          <HelpCircle className="w-8 h-8 text-aurora" /> Help & Support
-        </h1>
-        <p className="text-muted-foreground text-lg max-w-2xl">Find answers, get help, and learn how to use SyncRole effectively.</p>
-      </div>
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8 pb-36">
 
-      <div className="grid md:grid-cols-2 gap-6 items-start">
-        {/* Documentation & FAQs */}
-        <div className="glass rounded-2xl p-6 md:p-8 border border-white/5 space-y-6 shadow-lg md:col-span-2 lg:col-span-1">
-          <h2 className="font-semibold text-xl border-b border-white/5 pb-4 flex items-center gap-2">
-            <Book className="w-5 h-5 text-aurora" /> Documentation & FAQs
-          </h2>
-          <div className="space-y-3">
-            {FAQS.map((faq, idx) => (
-              <FAQItem key={idx} question={faq.question} answer={faq.answer} />
-            ))}
+        {/* Top Header & Breadcrumb */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <Link 
+              to="/dashboard" 
+              className="inline-flex items-center gap-1 hover:text-slate-900 transition-colors p-1 -ml-1 rounded-lg hover:bg-slate-100"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Dashboard</span>
+            </Link>
+          </div>
+
+          <div className="space-y-1.5">
+            <div className="flex items-center gap-2.5">
+              <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+                <HelpCircle className="w-5 h-5" />
+              </div>
+              <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+                Help & Support Center
+              </h1>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
+              Search guide documentation, understand placement metrics, or get in touch with our team.
+            </p>
           </div>
         </div>
 
-        <div className="space-y-6 md:col-span-2 lg:col-span-1">
-          {/* Contact Support */}
-          <div className="glass rounded-2xl p-6 md:p-8 border border-white/5 space-y-5 shadow-lg">
-            <h2 className="font-semibold text-xl border-b border-white/5 pb-4 flex items-center gap-2">
-              <MessageSquare className="w-5 h-5 text-aurora" /> Contact Support
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Need personal assistance or have a specific question about your account? Our support team is here to help.
-            </p>
-            <Button 
-              onClick={() => setSupportModalOpen(true)}
-              className="w-full bg-white/10 hover:bg-white/20 text-white border border-white/5 h-11"
-            >
-              Open Support Ticket
-            </Button>
-          </div>
-
-          {/* Report a Bug */}
-          <div className="glass rounded-2xl p-6 md:p-8 border border-white/5 space-y-5 shadow-lg">
-            <h2 className="font-semibold text-xl border-b border-white/5 pb-4 flex items-center gap-2">
-              <Bug className="w-5 h-5 text-aurora" /> Report a Problem
-            </h2>
-            <p className="text-sm text-muted-foreground leading-relaxed">
-              Spotted something weird or unexpected? Let us know so we can fix it and improve SyncRole.
-            </p>
-            <Button 
-              onClick={() => setBugModalOpen(true)}
-              variant="outline" 
-              className="w-full border-aurora/30 text-aurora hover:bg-aurora/10 h-11"
-            >
-              Submit Bug Report
-            </Button>
+        {/* REAL-TIME SEARCH BAR */}
+        <div className="relative">
+          <div className="relative flex items-center">
+            <Search className="absolute left-4 w-4 h-4 text-slate-400 pointer-events-none" />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search topics, score criteria, DSA, resume AI..."
+              className="w-full h-12 bg-white border border-slate-200/90 rounded-2xl pl-11 pr-10 text-xs sm:text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 shadow-2xs transition-all"
+            />
+            {searchQuery && (
+              <button
+                onClick={() => setSearchQuery("")}
+                className="absolute right-3.5 w-6 h-6 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 flex items-center justify-center transition-colors"
+                aria-label="Clear search"
+              >
+                <X className="w-3.5 h-3.5" />
+              </button>
+            )}
           </div>
         </div>
+
+        {/* CATEGORY FILTER PILLS */}
+        <div className="overflow-x-auto pb-1 scrollbar-hide -mx-4 px-4 sm:mx-0 sm:px-0">
+          <div className="flex items-center gap-1.5 min-w-max">
+            {CATEGORIES.map((cat) => {
+              const active = selectedCategory === cat.id;
+              return (
+                <button
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className={`text-xs font-semibold px-3.5 py-2 rounded-xl transition-all cursor-pointer min-h-[38px] ${
+                    active
+                      ? "bg-blue-600 text-white shadow-2xs"
+                      : "bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-100/80 border border-slate-200/80"
+                  }`}
+                >
+                  {cat.label}
+                </button>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* FAQS ACCORDION LIST */}
+        <section className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Frequently Asked Questions ({filteredFaqs.length})
+            </h2>
+            {searchQuery && (
+              <span className="text-xs text-blue-600 font-semibold">
+                Filtering by "{searchQuery}"
+              </span>
+            )}
+          </div>
+
+          {filteredFaqs.length > 0 ? (
+            <div className="space-y-3">
+              {filteredFaqs.map((faq) => (
+                <FAQAccordionItem
+                  key={faq.id}
+                  faq={faq}
+                  isOpen={openFaqId === faq.id}
+                  onToggle={() => setOpenFaqId(openFaqId === faq.id ? null : faq.id)}
+                />
+              ))}
+            </div>
+          ) : (
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-8 text-center space-y-3 shadow-2xs">
+              <div className="w-12 h-12 rounded-2xl bg-slate-50 border border-slate-200/70 text-slate-400 mx-auto flex items-center justify-center">
+                <AlertCircle className="w-6 h-6" />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-bold text-slate-800">No matching help topics</p>
+                <p className="text-xs text-slate-500 max-w-sm mx-auto">
+                  We couldn't find any questions matching "{searchQuery}". Try a different keyword or reach out to our team below.
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setSearchQuery("");
+                  setSelectedCategory("all");
+                }}
+                className="h-9 text-xs font-semibold rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer"
+              >
+                Clear Search & Filters
+              </Button>
+            </div>
+          )}
+        </section>
+
+        {/* SUPPORT & BUG REPORT CARDS */}
+        <section className="space-y-3 pt-4">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Need Direct Assistance?
+            </h2>
+          </div>
+
+          <div className="grid sm:grid-cols-2 gap-4">
+            {/* Contact Support Card */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shadow-2xs">
+                  <MessageSquare className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">Contact Support Team</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Have questions regarding your account, scoring discrepancies, or feature access? File a ticket directly.
+                </p>
+              </div>
+              <Button
+                onClick={() => setSupportModalOpen(true)}
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold h-10 shadow-xs cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <MessageSquare className="w-3.5 h-3.5" />
+                <span>Open Support Ticket</span>
+              </Button>
+            </div>
+
+            {/* Report Bug Card */}
+            <div className="bg-white rounded-2xl border border-slate-200/90 p-5 sm:p-6 shadow-2xs space-y-4 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="w-10 h-10 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shadow-2xs">
+                  <Bug className="w-5 h-5" />
+                </div>
+                <h3 className="text-base font-bold text-slate-900">Report an Issue</h3>
+                <p className="text-xs text-slate-500 leading-relaxed">
+                  Encountered a layout glitch, broken button, or unexpected evaluation output? Help us fix it quickly.
+                </p>
+              </div>
+              <Button
+                onClick={() => setBugModalOpen(true)}
+                variant="outline"
+                className="w-full border-slate-200 bg-white hover:bg-slate-50 text-slate-700 hover:text-slate-900 rounded-xl text-xs font-semibold h-10 shadow-2xs cursor-pointer flex items-center justify-center gap-1.5"
+              >
+                <Bug className="w-3.5 h-3.5" />
+                <span>Submit Bug Report</span>
+              </Button>
+            </div>
+          </div>
+        </section>
+
       </div>
 
-      {/* Support Modal */}
+      {/* SUPPORT TICKET MODAL */}
       <AnimatePresence>
         {supportModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !loading && setSupportModalOpen(false)} />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="relative w-full max-w-lg glass-strong border border-white/10 rounded-2xl p-6 shadow-2xl overflow-hidden"
-              role="dialog" aria-modal="true" aria-labelledby="support-title"
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs"
+              onClick={() => !submitting && setSupportModalOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200/95 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="support-dialog-title"
             >
-              <button onClick={() => setSupportModalOpen(false)} disabled={loading} className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-white/60 transition disabled:opacity-50">
-                <X className="w-4 h-4" />
-              </button>
-              
-              <h2 id="support-title" className="text-xl font-bold mb-6 flex items-center gap-2"><MessageSquare className="w-5 h-5 text-aurora" /> Open Support Ticket</h2>
-              
-              <form onSubmit={handleSupportSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-white/70">Subject *</label>
-                  <input required disabled={loading} value={supportForm.subject} onChange={e => setSupportForm({...supportForm, subject: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors" placeholder="Brief summary of your issue" />
+              {/* Modal Header */}
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                    <MessageSquare className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h2 id="support-dialog-title" className="text-sm font-bold text-slate-900 font-display">
+                      Open Support Ticket
+                    </h2>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Our support team will respond to your email.
+                    </p>
+                  </div>
                 </div>
-                
-                <div className="grid grid-cols-2 gap-4">
+                <button
+                  onClick={() => setSupportModalOpen(false)}
+                  disabled={submitting}
+                  className="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Form */}
+              <form onSubmit={handleSupportSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700">Subject *</label>
+                  <input
+                    required
+                    disabled={submitting}
+                    value={supportForm.subject}
+                    onChange={(e) => setSupportForm({ ...supportForm, subject: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    placeholder="e.g. Issue connecting GitHub account"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/70">Category</label>
-                    <select disabled={loading} value={supportForm.category} onChange={e => setSupportForm({...supportForm, category: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors appearance-none cursor-pointer">
-                      <option className="bg-slate-900">Technical Issue</option>
-                      <option className="bg-slate-900">Account Issue</option>
-                      <option className="bg-slate-900">Feature Question</option>
-                      <option className="bg-slate-900">Other</option>
+                    <label className="text-xs font-semibold text-slate-700">Category</label>
+                    <select
+                      disabled={submitting}
+                      value={supportForm.category}
+                      onChange={(e) => setSupportForm({ ...supportForm, category: e.target.value })}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 cursor-pointer"
+                    >
+                      <option>Technical Question</option>
+                      <option>Scoring & Evaluation</option>
+                      <option>Account Credentials</option>
+                      <option>Feature Request</option>
+                      <option>Other</option>
                     </select>
                   </div>
+
                   <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/70">Email address</label>
-                    <input type="email" disabled={loading} value={supportForm.email} onChange={e => setSupportForm({...supportForm, email: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors" placeholder="name@example.com" />
+                    <label className="text-xs font-semibold text-slate-700">Your Email</label>
+                    <input
+                      type="email"
+                      disabled={submitting}
+                      value={supportForm.email}
+                      onChange={(e) => setSupportForm({ ...supportForm, email: e.target.value })}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      placeholder="name@example.com"
+                    />
                   </div>
                 </div>
-                
+
                 <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-white/70">Description *</label>
-                  <textarea required disabled={loading} value={supportForm.description} onChange={e => setSupportForm({...supportForm, description: e.target.value})} rows={4} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors resize-none" placeholder="Please describe your issue in detail..." />
+                  <label className="text-xs font-semibold text-slate-700">Details & Description *</label>
+                  <textarea
+                    required
+                    rows={4}
+                    disabled={submitting}
+                    value={supportForm.description}
+                    onChange={(e) => setSupportForm({ ...supportForm, description: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 resize-none"
+                    placeholder="Describe what you need assistance with..."
+                  />
                 </div>
-                
-                <div className="pt-4 flex items-center justify-end gap-3">
-                  <Button type="button" variant="ghost" onClick={() => setSupportModalOpen(false)} disabled={loading} className="text-white/70 hover:text-white hover:bg-white/5">Cancel</Button>
-                  <Button type="submit" disabled={loading} className="bg-aurora text-black hover:bg-aurora/90 font-medium">
-                    {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</> : <><Send className="w-4 h-4 mr-2" /> Submit Request</>}
+
+                {/* Modal Footer */}
+                <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setSupportModalOpen(false)}
+                    disabled={submitting}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-700 text-white shadow-xs cursor-pointer flex items-center gap-1.5"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Preparing...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Send className="w-3.5 h-3.5" />
+                        <span>Send Ticket</span>
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>
@@ -231,48 +601,129 @@ function HelpPage() {
         )}
       </AnimatePresence>
 
-      {/* Bug Report Modal */}
+      {/* BUG REPORT MODAL */}
       <AnimatePresence>
         {bugModalOpen && (
-          <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => !loading && setBugModalOpen(false)} />
-            <motion.div 
-              initial={{ opacity: 0, scale: 0.95, y: 10 }} animate={{ opacity: 1, scale: 1, y: 0 }} exit={{ opacity: 0, scale: 0.95, y: 10 }}
-              className="relative w-full max-w-lg glass-strong border border-white/10 rounded-2xl p-6 shadow-2xl overflow-hidden"
-              role="dialog" aria-modal="true" aria-labelledby="bug-title"
+          <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              className="absolute inset-0 bg-slate-900/50 backdrop-blur-xs"
+              onClick={() => !submitting && setBugModalOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, scale: 0.96, y: 12 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.96, y: 12 }}
+              transition={{ duration: 0.15 }}
+              className="relative w-full max-w-lg bg-white border border-slate-200/95 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[calc(100dvh-2rem)]"
+              role="dialog"
+              aria-modal="true"
+              aria-labelledby="bug-dialog-title"
             >
-              <button onClick={() => setBugModalOpen(false)} disabled={loading} className="absolute top-4 right-4 p-2 rounded-full hover:bg-white/10 text-white/60 transition disabled:opacity-50">
-                <X className="w-4 h-4" />
-              </button>
-              
-              <h2 id="bug-title" className="text-xl font-bold mb-6 flex items-center gap-2"><Bug className="w-5 h-5 text-aurora" /> Submit Bug Report</h2>
-              
-              <form onSubmit={handleBugSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-white/70">Bug Title *</label>
-                  <input required disabled={loading} value={bugForm.title} onChange={e => setBugForm({...bugForm, title: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors" placeholder="Short description of the bug" />
-                </div>
-                
-                <div className="space-y-1.5">
-                  <label className="text-xs font-medium text-white/70">What happened? *</label>
-                  <textarea required disabled={loading} value={bugForm.description} onChange={e => setBugForm({...bugForm, description: e.target.value})} rows={3} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors resize-none" placeholder="Steps to reproduce or what you observed..." />
-                </div>
-                
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/70">Expected behavior</label>
-                    <input disabled={loading} value={bugForm.expected} onChange={e => setBugForm({...bugForm, expected: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors" placeholder="What should have happened" />
+              {/* Modal Header */}
+              <div className="px-6 py-4 bg-slate-50 border-b border-slate-200 flex items-center justify-between shrink-0">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-8 h-8 rounded-lg bg-slate-800 text-white flex items-center justify-center shadow-xs">
+                    <Bug className="w-4 h-4" />
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-xs font-medium text-white/70">Page / Location</label>
-                    <input disabled={loading} value={bugForm.location} onChange={e => setBugForm({...bugForm, location: e.target.value})} className="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-sm text-white focus:outline-none focus:border-aurora/50 transition-colors" placeholder="e.g. /dashboard or Profile Page" />
+                  <div>
+                    <h2 id="bug-dialog-title" className="text-sm font-bold text-slate-900 font-display">
+                      Submit Bug Report
+                    </h2>
+                    <p className="text-[11px] text-slate-500 font-medium">
+                      Report unexpected errors or broken interface components.
+                    </p>
                   </div>
                 </div>
-                
-                <div className="pt-4 flex items-center justify-end gap-3">
-                  <Button type="button" variant="ghost" onClick={() => setBugModalOpen(false)} disabled={loading} className="text-white/70 hover:text-white hover:bg-white/5">Cancel</Button>
-                  <Button type="submit" disabled={loading} className="border-aurora/30 text-aurora hover:bg-aurora hover:text-black font-medium transition-colors">
-                    {loading ? <><Loader2 className="w-4 h-4 mr-2 animate-spin" /> Processing...</> : <><Bug className="w-4 h-4 mr-2" /> Report Bug</>}
+                <button
+                  onClick={() => setBugModalOpen(false)}
+                  disabled={submitting}
+                  className="w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200/70 flex items-center justify-center transition-colors cursor-pointer"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+
+              {/* Modal Form */}
+              <form onSubmit={handleBugSubmit} className="p-6 space-y-4 overflow-y-auto flex-1">
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700">Bug Summary *</label>
+                  <input
+                    required
+                    disabled={submitting}
+                    value={bugForm.title}
+                    onChange={(e) => setBugForm({ ...bugForm, title: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                    placeholder="Short description of what failed"
+                  />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-700">Page / Route</label>
+                    <input
+                      disabled={submitting}
+                      value={bugForm.location}
+                      onChange={(e) => setBugForm({ ...bugForm, location: e.target.value })}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      placeholder="e.g. /dsa-mentor or Profile"
+                    />
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-semibold text-slate-700">Expected Result</label>
+                    <input
+                      disabled={submitting}
+                      value={bugForm.expected}
+                      onChange={(e) => setBugForm({ ...bugForm, expected: e.target.value })}
+                      className="w-full bg-white border border-slate-200 rounded-xl px-3.5 py-2.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20"
+                      placeholder="What should have happened"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-1.5">
+                  <label className="text-xs font-semibold text-slate-700">What Happened & Steps *</label>
+                  <textarea
+                    required
+                    rows={4}
+                    disabled={submitting}
+                    value={bugForm.description}
+                    onChange={(e) => setBugForm({ ...bugForm, description: e.target.value })}
+                    className="w-full bg-white border border-slate-200 rounded-xl p-3.5 text-xs text-slate-900 placeholder-slate-400 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 resize-none"
+                    placeholder="Describe step-by-step what occurred and any error text..."
+                  />
+                </div>
+
+                {/* Modal Footer */}
+                <div className="pt-3 flex items-center justify-end gap-2.5 border-t border-slate-100">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setBugModalOpen(false)}
+                    disabled={submitting}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl border-slate-200 text-slate-700 hover:bg-slate-50 cursor-pointer"
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    type="submit"
+                    disabled={submitting}
+                    className="h-9 px-4 text-xs font-semibold rounded-xl bg-slate-900 hover:bg-slate-800 text-white shadow-xs cursor-pointer flex items-center gap-1.5"
+                  >
+                    {submitting ? (
+                      <>
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                        <span>Sending...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Bug className="w-3.5 h-3.5" />
+                        <span>Report Bug</span>
+                      </>
+                    )}
                   </Button>
                 </div>
               </form>
@@ -280,7 +731,7 @@ function HelpPage() {
           </div>
         )}
       </AnimatePresence>
+
     </div>
   );
 }
-

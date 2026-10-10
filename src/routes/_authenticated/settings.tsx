@@ -1,39 +1,118 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { Bell, Lock, Monitor, Shield, Sparkles, Volume2, UserCog, Check, Loader2 } from "lucide-react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { motion, AnimatePresence } from "framer-motion";
+import { 
+  UserCog, 
+  ArrowLeft, 
+  Lock, 
+  Shield, 
+  Bell, 
+  Sparkles, 
+  Volume2, 
+  User, 
+  Check, 
+  Loader2, 
+  ChevronRight, 
+  Mail, 
+  HelpCircle, 
+  KeyRound,
+  Eye,
+  Smartphone,
+  Save,
+  CheckCircle2,
+  Compass
+} from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
-import type { User } from "@supabase/supabase-js";
+import { useAuth } from "@/hooks/use-auth";
 
 export const Route = createFileRoute("/_authenticated/settings")({
   component: SettingsPage,
 });
 
-function SettingsPage() {
-  const [saving, setSaving] = useState(false);
-  const [user, setUser] = useState<User | null>(null);
-  const [loginMethod, setLoginMethod] = useState<"google" | "email" | "both">("email");
-  const [resettingPassword, setResettingPassword] = useState(false);
+interface UserSettings {
+  emailNotifs: boolean;
+  pushNotifs: boolean;
+  soundEffects: boolean;
+  syncPilotProactive: boolean;
+  profilePublic: boolean;
+  twoFactor: boolean;
+}
 
-  useEffect(() => {
-    async function loadUser() {
-      const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setUser(data.user);
-        const providers = data.user.app_metadata?.providers || [];
-        const hasGoogle = providers.includes("google");
-        const hasEmail = providers.includes("email");
-        if (hasGoogle && hasEmail) setLoginMethod("both");
-        else if (hasGoogle) setLoginMethod("google");
-        else setLoginMethod("email");
+const DEFAULT_SETTINGS: UserSettings = {
+  emailNotifs: true,
+  pushNotifs: true,
+  soundEffects: true,
+  syncPilotProactive: true,
+  profilePublic: false,
+  twoFactor: false,
+};
+
+function SettingsPage() {
+  const router = useRouter();
+  const { user } = useAuth();
+  const [saving, setSaving] = useState(false);
+  const [resettingPassword, setResettingPassword] = useState(false);
+  const [loginMethod, setLoginMethod] = useState<"google" | "email" | "both">("email");
+  const [profile, setProfile] = useState<any>(null);
+  const [hasChanges, setHasChanges] = useState(false);
+
+  // Settings state initialized from localStorage if available
+  const [settings, setSettings] = useState<UserSettings>(() => {
+    if (typeof window !== "undefined") {
+      try {
+        const stored = localStorage.getItem("syncrole_user_settings");
+        if (stored) {
+          return { ...DEFAULT_SETTINGS, ...JSON.parse(stored) };
+        }
+      } catch (e) {
+        // Fallback to defaults
       }
     }
-    loadUser();
-  }, []);
+    return DEFAULT_SETTINGS;
+  });
+
+  useEffect(() => {
+    async function loadData() {
+      if (!user) return;
+      const providers = user.app_metadata?.providers || [];
+      const hasGoogle = providers.includes("google");
+      const hasEmail = providers.includes("email");
+      if (hasGoogle && hasEmail) setLoginMethod("both");
+      else if (hasGoogle) setLoginMethod("google");
+      else setLoginMethod("email");
+
+      // Load profile info
+      const { data } = await supabase.from("profiles").select("full_name, avatar_url, target_role, college").eq("user_id", user.id).single();
+      if (data) setProfile(data);
+    }
+    loadData();
+  }, [user]);
+
+  const handleToggle = (key: keyof UserSettings) => {
+    setSettings((prev) => {
+      const updated = { ...prev, [key]: !prev[key] };
+      setHasChanges(true);
+      return updated;
+    });
+  };
+
+  const handleSave = () => {
+    setSaving(true);
+    setTimeout(() => {
+      try {
+        localStorage.setItem("syncrole_user_settings", JSON.stringify(settings));
+        setHasChanges(false);
+        toast.success("Settings saved successfully!");
+      } catch (e) {
+        toast.error("Failed to persist settings.");
+      } finally {
+        setSaving(false);
+      }
+    }, 400);
+  };
 
   const handleCreatePassword = async () => {
     if (!user?.email) return;
@@ -51,281 +130,410 @@ function SettingsPage() {
     }
   };
 
-  // Mock states for UI demonstration. In production, these would connect to Supabase/localStorage.
-  const [settings, setSettings] = useState({
-    theme: "dark",
-    emailNotifs: true,
-    pushNotifs: true,
-    soundEffects: true,
-    syncPilotProactive: true,
-    profilePublic: false,
-    twoFactor: false,
-  });
-
-  const handleToggle = (key: string) => {
-    setSettings((prev: any) => ({ ...prev, [key]: !prev[key] }));
-  };
-
-  const handleSave = () => {
-    setSaving(true);
-    setTimeout(() => {
-      setSaving(false);
-      toast.success("Settings saved successfully!");
-    }, 600);
-  };
-
   return (
-    <div className="max-w-4xl mx-auto px-4 md:px-8 py-10 space-y-10 pb-36">
-      
-      {/* Header */}
-      <div className="space-y-3">
-        <h1 className="text-3xl font-display font-bold text-white flex items-center gap-3">
-          <UserCog className="w-8 h-8 text-indigo-400" /> Settings
-        </h1>
-        <p className="text-muted-foreground text-sm max-w-2xl">
-          Manage your account preferences, configure SyncPilot behaviors, and control your security settings.
-        </p>
-      </div>
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-6 sm:py-10 space-y-8 pb-36">
+        
+        {/* Top Header & Breadcrumb */}
+        <div className="space-y-4">
+          <div className="flex items-center gap-2 text-xs font-semibold text-slate-500">
+            <Link 
+              to="/profile" 
+              className="inline-flex items-center gap-1 hover:text-slate-900 transition-colors p-1 -ml-1 rounded-lg hover:bg-slate-100"
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span>Back to Profile</span>
+            </Link>
+          </div>
 
-      <Tabs defaultValue="appearance" className="w-full">
-        {/* Responsive Tab List */}
-        <div className="w-full overflow-x-auto pb-2 scrollbar-hide">
-          <TabsList className="glass border border-white/10 bg-slate-950/50 p-1.5 w-max min-w-full justify-start rounded-xl gap-1">
-            <TabsTrigger value="appearance" className="rounded-lg py-2 px-4 data-[state=active]:bg-white/10 data-[state=active]:text-indigo-400 transition-colors">
-              <Monitor className="w-4 h-4 mr-2" /> Appearance
-            </TabsTrigger>
-            <TabsTrigger value="notifications" className="rounded-lg py-2 px-4 data-[state=active]:bg-white/10 data-[state=active]:text-indigo-400 transition-colors">
-              <Bell className="w-4 h-4 mr-2" /> Notifications
-            </TabsTrigger>
-            <TabsTrigger value="syncpilot" className="rounded-lg py-2 px-4 data-[state=active]:bg-white/10 data-[state=active]:text-indigo-400 transition-colors">
-              <Sparkles className="w-4 h-4 mr-2" /> SyncPilot
-            </TabsTrigger>
-            <TabsTrigger value="privacy" className="rounded-lg py-2 px-4 data-[state=active]:bg-white/10 data-[state=active]:text-indigo-400 transition-colors">
-              <Shield className="w-4 h-4 mr-2" /> Privacy
-            </TabsTrigger>
-            <TabsTrigger value="security" className="rounded-lg py-2 px-4 data-[state=active]:bg-white/10 data-[state=active]:text-indigo-400 transition-colors">
-              <Lock className="w-4 h-4 mr-2" /> Security
-            </TabsTrigger>
-          </TabsList>
+          <div className="flex items-start justify-between gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0 shadow-2xs">
+                  <UserCog className="w-5 h-5" />
+                </div>
+                <h1 className="text-2xl sm:text-3xl font-display font-bold text-slate-900 tracking-tight">
+                  Account Settings
+                </h1>
+              </div>
+              <p className="text-xs sm:text-sm text-slate-500 max-w-xl">
+                Manage your credentials, AI coach preferences, and notifications.
+              </p>
+            </div>
+
+            {/* In-flow Save Button (Desktop / Tablet) */}
+            <div className="hidden sm:block">
+              <Button
+                onClick={handleSave}
+                disabled={saving || !hasChanges}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold px-4 h-10 shadow-xs transition-all disabled:opacity-50 cursor-pointer flex items-center gap-1.5"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save Changes</span>
+                  </>
+                )}
+              </Button>
+            </div>
+          </div>
         </div>
 
-        <div className="mt-8">
-          <motion.div initial={{ opacity: 0, y: 5 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.3, ease: "easeOut" }}>
-            
-            {/* Appearance Tab */}
-            <TabsContent value="appearance" className="space-y-6 outline-none focus-visible:ring-0 m-0">
-              <div className="glass rounded-2xl p-6 sm:p-8 border border-white/5 space-y-8 bg-slate-900/60 shadow-lg">
-                <div className="border-b border-white/5 pb-4">
-                  <h3 className="font-semibold text-lg text-white tracking-tight">Appearance</h3>
-                  <p className="text-sm text-slate-500 mt-1">Customize the visual and auditory experience of SyncRole.</p>
+        {/* SECTION 1: ACCOUNT & AUTHENTICATION */}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Account & Credentials
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden divide-y divide-slate-100">
+            {/* User Details Row */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3.5 min-w-0">
+                <div className="w-11 h-11 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 font-bold flex items-center justify-center text-sm shrink-0">
+                  {profile?.full_name?.charAt(0) || user?.email?.charAt(0)?.toUpperCase() || "U"}
                 </div>
-                
-                <div className="flex flex-row items-center justify-between border-t border-white/5 pt-6 gap-4">
-                  <div className="flex items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0">
-                      <Volume2 className="w-5 h-5 text-indigo-400" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-200 text-sm">Sound Effects</p>
-                      <p className="text-sm text-slate-500 mt-1">Play sounds when unlocking achievements</p>
-                    </div>
-                  </div>
-                  <Switch 
-                    checked={settings.soundEffects} 
-                    onCheckedChange={() => handleToggle("soundEffects")}
-                    aria-label="Toggle Sound Effects"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-slate-900 truncate">
+                    {profile?.full_name || "SyncRole Student"}
+                  </p>
+                  <p className="text-xs text-slate-500 truncate flex items-center gap-1.5 mt-0.5">
+                    <Mail className="w-3 h-3 text-slate-400 shrink-0" />
+                    <span>{user?.email || "No email available"}</span>
+                  </p>
                 </div>
               </div>
-            </TabsContent>
 
-            {/* Notifications Tab */}
-            <TabsContent value="notifications" className="space-y-6 outline-none focus-visible:ring-0 m-0">
-              <div className="glass rounded-2xl p-6 sm:p-8 border border-white/5 space-y-8 bg-slate-900/60 shadow-lg">
-                <div className="border-b border-white/5 pb-4">
-                  <h3 className="font-semibold text-lg text-white tracking-tight">Notification Preferences</h3>
-                  <p className="text-sm text-slate-500 mt-1">Control how you want to be notified about career updates.</p>
+              <Link
+                to="/profile"
+                className="shrink-0 text-xs font-semibold text-blue-600 hover:text-blue-700 bg-blue-50 hover:bg-blue-100 px-3 py-1.5 rounded-lg border border-blue-200/60 transition-colors inline-flex items-center gap-1"
+              >
+                <span>Edit Profile</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+
+            {/* Login Method Row */}
+            <div className="p-4 sm:p-5 space-y-3">
+              <div className="flex items-center justify-between gap-4">
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Current Sign-in Method</p>
+                  <p className="text-xs text-slate-500 mt-0.5">How your credentials authenticate into SyncRole</p>
                 </div>
-                
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-200 text-sm">Email Notifications</p>
-                    <p className="text-sm text-slate-500 mt-1">Receive weekly reports and placement updates</p>
-                  </div>
-                  <Switch 
-                    checked={settings.emailNotifs} 
-                    onCheckedChange={() => handleToggle("emailNotifs")} 
-                    aria-label="Toggle Email Notifications"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
-                </div>
-                
-                <div className="flex flex-row items-center justify-between border-t border-white/5 pt-6 gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-200 text-sm">In-App Notifications</p>
-                    <p className="text-sm text-slate-500 mt-1">Live alerts for DSA progress and XP</p>
-                  </div>
-                  <Switch 
-                    checked={settings.pushNotifs} 
-                    onCheckedChange={() => handleToggle("pushNotifs")} 
-                    aria-label="Toggle In-App Notifications"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
+                <div className="shrink-0">
+                  {loginMethod === "google" && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-blue-50 text-blue-700 border border-blue-200/80">
+                      Google OAuth
+                    </span>
+                  )}
+                  {loginMethod === "email" && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-700 border border-slate-200">
+                      Email & Password
+                    </span>
+                  )}
+                  {loginMethod === "both" && (
+                    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                      Google + Password
+                    </span>
+                  )}
                 </div>
               </div>
-            </TabsContent>
 
-            {/* SyncPilot Tab */}
-            <TabsContent value="syncpilot" className="space-y-6 outline-none focus-visible:ring-0 m-0">
-              <div className="glass rounded-2xl p-6 sm:p-8 border border-indigo-500/10 space-y-8 bg-slate-900/60 shadow-lg">
-                <div className="border-b border-white/5 pb-4">
-                  <h3 className="font-semibold text-lg text-white tracking-tight">SyncPilot Preferences</h3>
-                  <p className="text-sm text-slate-500 mt-1">Configure your personal AI career coach.</p>
-                </div>
-                
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div className="flex items-start sm:items-center gap-4">
-                    <div className="w-10 h-10 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center shrink-0 mt-1 sm:mt-0">
-                      <Sparkles className="w-5 h-5 text-indigo-400" />
-                    </div>
-                    <div>
-                      <p className="font-semibold text-slate-200 text-sm">Proactive Intelligence</p>
-                      <p className="text-sm text-slate-500 mt-1">Allow SyncPilot to analyze your code and suggest improvements automatically</p>
-                    </div>
+              {/* Password Setup for Google Users */}
+              {loginMethod === "google" && (
+                <div className="mt-2 p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="space-y-0.5">
+                    <p className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <KeyRound className="w-3.5 h-3.5 text-blue-600" />
+                      Set up an email password
+                    </p>
+                    <p className="text-[11px] text-slate-500 leading-normal">
+                      Establish a backup password to sign in directly with your email.
+                    </p>
                   </div>
-                  <Switch 
-                    checked={settings.syncPilotProactive} 
-                    onCheckedChange={() => handleToggle("syncPilotProactive")} 
-                    aria-label="Toggle SyncPilot Proactive Intelligence"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
+                  <Button
+                    onClick={handleCreatePassword}
+                    disabled={resettingPassword}
+                    variant="outline"
+                    className="h-8 px-3 text-xs font-semibold border-slate-200 bg-white hover:bg-slate-100 text-slate-800 shrink-0 rounded-lg shadow-2xs"
+                  >
+                    {resettingPassword ? (
+                      <span className="flex items-center gap-1.5">
+                        <Loader2 className="w-3 h-3 animate-spin" />
+                        <span>Sending Link...</span>
+                      </span>
+                    ) : (
+                      "Set Password"
+                    )}
+                  </Button>
+                </div>
+              )}
+
+              {/* Password Configured Badge */}
+              {loginMethod === "both" && (
+                <div className="mt-2 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200/80 flex items-center gap-2.5 text-xs text-emerald-800 font-medium">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <span>Your account supports both Google login and email password authentication.</span>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 2: SYNCPILOT & AI PREFERENCES */}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              SyncPilot & Platform Intelligence
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden divide-y divide-slate-100">
+            {/* Proactive Intelligence Toggle */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/70 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                  <Sparkles className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Proactive Intelligence</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Allow SyncPilot to analyze code logic and suggest optimizations during practice sessions.
+                  </p>
                 </div>
               </div>
-            </TabsContent>
+              <Switch
+                checked={settings.syncPilotProactive}
+                onCheckedChange={() => handleToggle("syncPilotProactive")}
+                aria-label="Toggle SyncPilot Proactive Intelligence"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
 
-            {/* Privacy Tab */}
-            <TabsContent value="privacy" className="space-y-6 outline-none focus-visible:ring-0 m-0">
-              <div className="glass rounded-2xl p-6 sm:p-8 border border-white/5 space-y-8 bg-slate-900/60 shadow-lg">
-                <div className="border-b border-white/5 pb-4">
-                  <h3 className="font-semibold text-lg text-white tracking-tight">Privacy & Visibility</h3>
-                  <p className="text-sm text-slate-500 mt-1">Manage who can see your profile and activity.</p>
+            {/* Sound Effects Toggle */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Volume2 className="w-4.5 h-4.5" />
                 </div>
-                
-                <div className="flex flex-row items-center justify-between gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-200 text-sm">Public Profile</p>
-                    <p className="text-sm text-slate-500 mt-1">Allow recruiters to discover your Career Identity</p>
-                  </div>
-                  <Switch 
-                    checked={settings.profilePublic} 
-                    onCheckedChange={() => handleToggle("profilePublic")} 
-                    aria-label="Toggle Public Profile Visibility"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Milestone Audio Feedback</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Play subtle sound cues when earning daily mission XP or clearing test cases.
+                  </p>
                 </div>
               </div>
-            </TabsContent>
+              <Switch
+                checked={settings.soundEffects}
+                onCheckedChange={() => handleToggle("soundEffects")}
+                aria-label="Toggle Audio Feedback"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
 
-            {/* Security Tab */}
-            <TabsContent value="security" className="space-y-6 outline-none focus-visible:ring-0 m-0">
-              <div className="glass rounded-2xl p-6 sm:p-8 border border-white/5 space-y-8 bg-slate-900/60 shadow-lg">
-                <div className="border-b border-white/5 pb-4">
-                  <h3 className="font-semibold text-lg text-white tracking-tight">Account Security</h3>
-                  <p className="text-sm text-slate-500 mt-1">Manage your login methods and security protocols.</p>
+            {/* Career Identity Quick Link */}
+            <Link
+              to="/career-identity"
+              className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors group"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/70 text-blue-600 flex items-center justify-center shrink-0">
+                  <Compass className="w-4.5 h-4.5" />
                 </div>
-                
-                <div className="space-y-3">
-                  <p className="font-semibold text-slate-200 text-sm">Current Login Method</p>
-                  <div className="flex items-center gap-3 p-4 bg-black/20 rounded-xl border border-white/5 text-slate-300">
-                    {loginMethod === "google" && <span className="text-sm font-medium">Google Account</span>}
-                    {loginMethod === "email" && <span className="text-sm font-medium">Email & Password</span>}
-                    {loginMethod === "both" && <span className="text-sm font-medium">Google Account + Email & Password</span>}
-                  </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Career Identity & Target Goals
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Configure your dream companies, target roles, and readiness path.
+                  </p>
                 </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700 transition-colors shrink-0" />
+            </Link>
+          </div>
+        </section>
 
-                {loginMethod === "google" && (
-                  <div className="p-6 rounded-xl bg-indigo-500/10 border border-indigo-500/20 space-y-4">
-                    <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-6">
-                      <div className="space-y-2 max-w-md">
-                        <h4 className="font-semibold text-indigo-300 flex items-center gap-2">
-                          <Lock className="w-4 h-4" /> Use Email & Password Login
-                        </h4>
-                        <p className="text-sm text-indigo-200/70 leading-relaxed">
-                          You currently sign in exclusively with Google. Establish a password so you can also log in using your email address if you lose access to Google.
-                        </p>
-                      </div>
-                      <Button 
-                        onClick={handleCreatePassword} 
-                        disabled={resettingPassword}
-                        className="shrink-0 bg-indigo-500 hover:bg-indigo-600 text-white font-semibold transition-all min-w-[150px]"
-                        aria-label="Create a password for email login"
-                      >
-                        {resettingPassword ? (
-                          <span className="flex items-center gap-2"><Loader2 className="w-4 h-4 animate-spin" /> Sending...</span>
-                        ) : (
-                          "Create Password"
-                        )}
-                      </Button>
-                    </div>
-                  </div>
+        {/* SECTION 3: NOTIFICATION PREFERENCES */}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Notifications & Alerts
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden divide-y divide-slate-100">
+            {/* Email Notifications */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Mail className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Weekly Readiness Summaries</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Receive email digests tracking your DSA streaks and weekly score momentum.
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.emailNotifs}
+                onCheckedChange={() => handleToggle("emailNotifs")}
+                aria-label="Toggle Weekly Email Summaries"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
+
+            {/* In-App Notifications */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Bell className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">In-App Practice Alerts</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Show real-time notifications for daily streak reminders and XP awards.
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.pushNotifs}
+                onCheckedChange={() => handleToggle("pushNotifs")}
+                aria-label="Toggle In-App Alerts"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 4: PRIVACY & RECRUITER VISIBILITY */}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Privacy & Security
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden divide-y divide-slate-100">
+            {/* Public Profile Visibility */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Eye className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Public Recruiter Visibility</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Allow partner recruiters to discover your verified achievements and Placement Score.
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.profilePublic}
+                onCheckedChange={() => handleToggle("profilePublic")}
+                aria-label="Toggle Public Recruiter Visibility"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
+
+            {/* Two-Factor Authentication */}
+            <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
+              <div className="flex items-start gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 flex items-center justify-center shrink-0 mt-0.5">
+                  <Shield className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900">Enhanced Sign-In Verification</p>
+                  <p className="text-xs text-slate-500 mt-0.5 leading-relaxed">
+                    Prompt for additional email OTP confirmation on new unrecognized browser logins.
+                  </p>
+                </div>
+              </div>
+              <Switch
+                checked={settings.twoFactor}
+                onCheckedChange={() => handleToggle("twoFactor")}
+                aria-label="Toggle Enhanced Verification"
+                className="data-[state=checked]:bg-blue-600 shrink-0"
+              />
+            </div>
+          </div>
+        </section>
+
+        {/* SECTION 5: HELP & SUPPORT SHORTCUT */}
+        <section className="space-y-3">
+          <div className="px-1">
+            <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+              Support & Documentation
+            </h2>
+          </div>
+
+          <div className="bg-white rounded-2xl border border-slate-200/90 shadow-2xs overflow-hidden divide-y divide-slate-100">
+            <Link
+              to="/help"
+              className="p-4 sm:p-5 flex items-center justify-between gap-4 hover:bg-slate-50/80 transition-colors group"
+            >
+              <div className="flex items-center gap-3.5">
+                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200/70 text-blue-600 flex items-center justify-center shrink-0">
+                  <HelpCircle className="w-4.5 h-4.5" />
+                </div>
+                <div>
+                  <p className="text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">
+                    Help Center & FAQs
+                  </p>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Read feature guides, understand score calculations, or file a support ticket.
+                  </p>
+                </div>
+              </div>
+              <ChevronRight className="w-4 h-4 text-slate-400 group-hover:text-slate-700 transition-colors shrink-0" />
+            </Link>
+          </div>
+        </section>
+
+        {/* Mobile Persistent Save Bar (when changes are pending) */}
+        {/* Placed with safe clearance above the 56px bottom navigation */}
+        <AnimatePresence>
+          {hasChanges && (
+            <motion.div
+              initial={{ y: 40, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 40, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="fixed bottom-[calc(56px+env(safe-area-inset-bottom)+0.75rem)] inset-x-4 z-40 sm:hidden bg-white/95 backdrop-blur-xl border border-slate-200/95 shadow-xl rounded-2xl p-3 flex items-center justify-between gap-3"
+            >
+              <div className="min-w-0">
+                <p className="text-xs font-bold text-slate-900">Unsaved Preferences</p>
+                <p className="text-[10px] text-slate-500 truncate">Tap to apply changes to your account</p>
+              </div>
+              <Button
+                onClick={handleSave}
+                disabled={saving}
+                className="bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-semibold px-4 h-9 shadow-xs shrink-0 cursor-pointer flex items-center gap-1.5"
+              >
+                {saving ? (
+                  <>
+                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Save</span>
+                  </>
                 )}
-
-                {loginMethod === "both" && (
-                  <div className="p-5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-start gap-4">
-                    <div className="p-2 rounded-lg bg-emerald-500/20 shrink-0">
-                      <Check className="w-4 h-4 text-emerald-400" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-emerald-400">Password configured</h4>
-                      <p className="text-sm text-emerald-200/70 mt-1 leading-relaxed">
-                        Your account supports both email/password login and any connected OAuth providers.
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex flex-row items-center justify-between border-t border-white/5 pt-6 gap-4">
-                  <div>
-                    <p className="font-semibold text-slate-200 text-sm">Two-Factor Authentication</p>
-                    <p className="text-sm text-slate-500 mt-1">Add an extra layer of security to your account</p>
-                  </div>
-                  <Switch 
-                    checked={settings.twoFactor} 
-                    onCheckedChange={() => handleToggle("twoFactor")} 
-                    aria-label="Toggle Two-Factor Authentication"
-                    className="data-[state=checked]:bg-indigo-500"
-                  />
-                </div>
-              </div>
-            </TabsContent>
-          </motion.div>
-        </div>
-      </Tabs>
-
-      {/* Floating Save Bar */}
-      <motion.div 
-        initial={{ y: 100 }} 
-        animate={{ y: 0 }} 
-        transition={{ type: "spring", stiffness: 260, damping: 20 }}
-        className="fixed bottom-20 sm:bottom-6 left-1/2 -translate-x-1/2 bg-slate-950/90 backdrop-blur-xl border border-white/10 p-4 rounded-2xl flex items-center justify-between gap-6 shadow-2xl z-50 w-[calc(100%-2rem)] sm:w-auto min-w-0 sm:min-w-[400px]"
-      >
-        <p className="text-sm font-semibold text-slate-400 hidden sm:block">Unsaved changes will be lost</p>
-        <Button 
-          onClick={handleSave} 
-          disabled={saving} 
-          className="bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl font-bold tracking-wide transition-all min-w-[140px] ml-auto sm:ml-0 shadow-lg shadow-indigo-500/20 disabled:opacity-70"
-          aria-label={saving ? "Saving settings" : "Save settings"}
-        >
-          {saving ? (
-            <span className="flex items-center justify-center gap-2">
-              <Loader2 className="w-4 h-4 animate-spin" /> Saving...
-            </span>
-          ) : (
-            "Save Settings"
+              </Button>
+            </motion.div>
           )}
-        </Button>
-      </motion.div>
+        </AnimatePresence>
+
+      </div>
     </div>
   );
 }
