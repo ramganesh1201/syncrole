@@ -260,15 +260,15 @@ export const EditProfileForm = React.memo(function EditProfileForm({
       </div>
       
       {/* Footer Bar */}
-      <div className="px-6 py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-3 shrink-0">
+      <div className="px-4 py-3 sm:px-6 sm:py-4 bg-slate-50 border-t border-slate-200 flex items-center justify-end gap-2.5 sm:gap-3 shrink-0">
         {onClose && (
-          <Button variant="outline" onClick={onClose} className="h-10 px-5 border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs rounded-xl cursor-pointer">
+          <Button variant="outline" onClick={onClose} className="h-10 px-4 sm:px-5 border-slate-200 text-slate-700 hover:bg-slate-100 font-semibold text-xs rounded-xl cursor-pointer">
             Cancel
           </Button>
         )}
-        <Button onClick={handleSave} disabled={saving} className="h-10 px-6 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5">
+        <Button onClick={handleSave} disabled={saving} className="h-10 px-4 sm:px-6 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl shadow-xs cursor-pointer flex items-center gap-1.5">
           <Save className="w-4 h-4" />
-          {saving ? "Saving Changes..." : "Save Profile Settings"}
+          {saving ? "Saving..." : <span>Save Profile<span className="hidden sm:inline"> Settings</span></span>}
         </Button>
       </div>
     </div>

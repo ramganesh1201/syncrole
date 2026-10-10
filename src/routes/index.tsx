@@ -226,10 +226,10 @@ function MobileBottomNav() {
               <button
                 key={item.label}
                 onClick={() => item.action?.()}
-                className={`relative -top-3 h-12 w-12 rounded-full grid place-items-center shadow-lg transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                   isSyncPilotOpen
-                    ? "bg-slate-900 text-blue-300 ring-2 ring-blue-400/50"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50"
+                    : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110 shadow-indigo-600/25"
                 }`}
                 aria-label="Open SyncPilot AI Assistant"
                 aria-pressed={isSyncPilotOpen}

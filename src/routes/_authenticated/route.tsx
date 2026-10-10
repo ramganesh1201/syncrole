@@ -137,15 +137,15 @@ function AuthedLayout() {
 
           <div className="flex items-center gap-2">
             <NotificationCenter>
-              <button className="relative h-9 w-9 grid place-items-center rounded-full bg-slate-100/90 hover:bg-slate-200/80 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-xs" aria-label="Notifications">
+              <button className="relative h-9 w-9 grid place-items-center rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-2xs" aria-label="Notifications">
                 <Bell className="h-4 w-4" />
               </button>
             </NotificationCenter>
 
             <Link to="/profile" className="md:hidden">
-              <Avatar className="h-8 w-8 border border-slate-200 cursor-pointer shadow-xs">
+              <Avatar className="h-8 w-8 border border-slate-200/90 cursor-pointer shadow-2xs">
                 <AvatarImage src={profile?.avatar_url || ""} />
-                <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-bold">
+                <AvatarFallback className="bg-blue-50 text-xs text-blue-700 font-bold">
                   {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
@@ -154,9 +154,9 @@ function AuthedLayout() {
             <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none ml-2">
-                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition transform hover:scale-105 hover:border-purple-300 shadow-xs">
+                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition transform hover:scale-105 hover:border-blue-300 shadow-2xs">
                     <AvatarImage src={profile?.avatar_url || ""} />
-                    <AvatarFallback className="bg-purple-100 text-xs text-purple-700 font-bold">
+                    <AvatarFallback className="bg-blue-50 text-xs text-blue-700 font-bold">
                       {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
@@ -380,10 +380,10 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
               <button
                 key={tab.label}
                 onClick={() => tab.action?.()}
-                className={`relative -top-3 h-12 w-12 rounded-full grid place-items-center shadow-lg transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+                className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                   isSyncPilotOpen
-                    ? "bg-slate-900 text-purple-300 ring-2 ring-purple-400/50"
-                    : "bg-purple-600 text-white hover:bg-purple-700"
+                    ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50"
+                    : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110 shadow-indigo-600/25"
                 }`}
                 aria-label="Open SyncPilot AI Assistant"
                 aria-pressed={isSyncPilotOpen}
@@ -425,18 +425,18 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
             <Link
               key={tab.label}
               to={tab.href!}
-              className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors py-1.5 px-3 rounded-xl min-w-[44px] min-h-[44px] justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-purple-400 ${
+              className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors py-1 px-3 rounded-xl min-w-[44px] min-h-[44px] justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
                 isActive
-                  ? "text-purple-700 bg-purple-50"
+                  ? "text-blue-600 bg-blue-50/90 font-semibold"
                   : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
               }`}
             >
               <Icon
                 className={`h-[18px] w-[18px] transition-none ${
-                  isActive ? "text-purple-600" : "text-slate-400"
+                  isActive ? "text-blue-600" : "text-slate-400"
                 }`}
               />
-              <span className={isActive ? "font-semibold" : ""}>{tab.label}</span>
+              <span>{tab.label}</span>
             </Link>
           );
         })}

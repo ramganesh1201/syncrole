@@ -143,10 +143,11 @@ function AuthPage() {
       </div>
 
       {/* Top Header / Navigation Bar */}
-      <header className="relative z-10 w-full max-w-7xl mx-auto px-6 py-6 flex items-center justify-between">
-        <BrandLogo size="lg" variant="dark" />
+      <header className="relative z-10 w-full max-w-7xl mx-auto px-4 py-3.5 md:px-6 md:py-6 flex items-center justify-between">
+        <BrandLogo size="md" variant="dark" className="hidden sm:flex" />
+        <BrandLogo size="sm" variant="dark" className="sm:hidden" />
 
-        <div className="flex items-center gap-4 text-xs font-semibold">
+        <div className="flex items-center gap-3 text-xs font-semibold">
           <span className="text-slate-500 hidden sm:inline">
             {mode === "signin" ? "Not a member yet?" : mode === "signup" ? "Already registered?" : "Remembered your password?"}
           </span>
@@ -154,7 +155,7 @@ function AuthPage() {
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             disabled={busy}
-            className="px-4 py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-indigo-600 hover:text-indigo-700 shadow-xs transition active:scale-[0.98] cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-blue-600 hover:text-blue-700 shadow-2xs transition active:scale-[0.98] cursor-pointer disabled:opacity-50"
           >
             {mode === "signin" ? "Create account" : "Sign in"}
           </button>

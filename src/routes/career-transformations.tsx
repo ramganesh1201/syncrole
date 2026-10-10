@@ -751,14 +751,14 @@ function CareerTransformationsPage() {
   return (
     <main className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-purple-100 selection:text-purple-900 pb-24 sm:pb-16">
       {/* Sticky Light Header */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-2xs">
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/95 border-b border-slate-200/80 shadow-2xs pt-[env(safe-area-inset-top)]">
         <div className="mx-auto max-w-7xl px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
           <Link
             to="/"
-            className="flex items-center gap-2 text-xs md:text-sm font-medium text-slate-600 hover:text-slate-900 transition-colors"
+            className="flex items-center gap-1.5 text-xs md:text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
-            <span>Back to Home</span>
+            <span>Back</span>
           </Link>
 
           <BrandLogo size="md" />
@@ -766,14 +766,14 @@ function CareerTransformationsPage() {
           {!user ? (
             <Link
               to="/auth"
-              className="text-xs md:text-sm font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-3.5 py-1.5 rounded-full transition-all"
+              className="text-xs md:text-sm font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 px-3.5 py-1.5 rounded-xl transition-all"
             >
               Sign in
             </Link>
           ) : (
             <Link
               to="/dashboard"
-              className="text-xs md:text-sm font-semibold text-purple-700 hover:text-purple-900 bg-purple-50 hover:bg-purple-100 border border-purple-200/80 px-3.5 py-1.5 rounded-full transition-all"
+              className="text-xs md:text-sm font-semibold text-blue-700 hover:text-blue-900 bg-blue-50 hover:bg-blue-100 border border-blue-200/80 px-3.5 py-1.5 rounded-xl transition-all"
             >
               Dashboard
             </Link>
@@ -1008,10 +1008,10 @@ function CareerTransformationsMobileNav() {
               <button
                 key={item.label}
                 onClick={() => item.action?.()}
-                className={`relative -top-3 h-12 w-12 rounded-full grid place-items-center shadow-lg transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+                className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
                   isSyncPilotOpen
-                    ? "bg-slate-900 text-blue-300 ring-2 ring-blue-400/50"
-                    : "bg-blue-600 text-white hover:bg-blue-700"
+                    ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50"
+                    : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110 shadow-indigo-600/25"
                 }`}
                 aria-label="Open SyncPilot AI Assistant"
                 aria-pressed={isSyncPilotOpen}

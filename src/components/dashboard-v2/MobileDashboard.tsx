@@ -180,11 +180,11 @@ export function MobileDashboard({
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-slate-900 font-sans pb-28 px-4 pt-4 space-y-4">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-28 px-4 pt-3 space-y-4 max-w-lg mx-auto">
       {/* 1. GREETING & ACTIVE TARGET */}
       <section className="space-y-2">
         <div className="flex items-center justify-between">
-          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">
+          <h1 className="text-2xl font-bold text-slate-900 tracking-tight">
             {greetingTime}, {firstName}! 👋
           </h1>
         </div>
@@ -194,7 +194,7 @@ export function MobileDashboard({
 
         <div className="flex items-center gap-2 flex-wrap pt-1">
           {hasTarget ? (
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200 text-xs font-semibold text-slate-800 shadow-xs">
+            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-white border border-slate-200/80 text-xs font-semibold text-slate-800 shadow-2xs">
               <MobileCompanyLogo companyId={selectedCompanyId} />
               <span className="capitalize">{readiness.companyName}</span>
               <span className="text-slate-300">•</span>
@@ -203,9 +203,9 @@ export function MobileDashboard({
           ) : (
             <Link
               to="/career-identity"
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-indigo-50 border border-indigo-200 text-xs font-semibold text-indigo-700"
+              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-200/80 text-xs font-semibold text-blue-700"
             >
-              <Target className="h-3.5 w-3.5 text-indigo-600" />
+              <Target className="h-3.5 w-3.5 text-blue-600" />
               <span>Set your dream target</span>
             </Link>
           )}
@@ -213,13 +213,13 @@ export function MobileDashboard({
       </section>
 
       {/* 2. READINESS + XP + STREAK CARD */}
-      <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
+      <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-xs">
         <div className="grid grid-cols-2 gap-4">
           <div className="space-y-1.5">
             <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
               PLACEMENT READINESS
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {readiness.readinessScore}%
             </div>
             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -238,7 +238,7 @@ export function MobileDashboard({
             <div className="text-[10px] font-bold uppercase tracking-wider text-slate-400 font-mono">
               XP & LEVEL
             </div>
-            <div className="text-2xl font-extrabold text-slate-900">
+            <div className="text-2xl font-bold text-slate-900">
               {xp?.total_xp || 285}
             </div>
             <div className="text-[10px] text-slate-500 font-medium">
@@ -257,13 +257,13 @@ export function MobileDashboard({
       </section>
 
       {/* 3. AI COACH GUIDANCE CARD */}
-      <section className="bg-gradient-to-br from-indigo-50/90 to-blue-50/60 border border-indigo-100/90 rounded-2xl p-5 space-y-3 shadow-xs">
+      <section className="bg-indigo-50/50 border border-indigo-100/90 rounded-2xl p-4.5 space-y-3 shadow-2xs">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 text-xs font-bold text-indigo-700 uppercase tracking-wider">
+          <div className="flex items-center gap-2 text-xs font-bold text-indigo-900 uppercase tracking-wider">
             <Sparkles className="h-4 w-4 text-indigo-600" />
             <span>AI Coach Guidance</span>
           </div>
-          <span className="text-[10px] bg-indigo-100 text-indigo-700 font-bold px-2 py-0.5 rounded-full">
+          <span className="text-[10px] bg-indigo-100/80 text-indigo-800 font-bold px-2 py-0.5 rounded-full border border-indigo-200/50">
             Recommended
           </span>
         </div>
@@ -282,7 +282,7 @@ export function MobileDashboard({
               onContinueJourney();
             }
           }}
-          className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 shadow-xs flex items-center justify-center gap-2 transition active:scale-[0.99]"
+          className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 shadow-2xs flex items-center justify-center gap-2 transition active:scale-[0.99] cursor-pointer"
         >
           <span>
             {orchestration?.primaryRoutingTarget?.label || "Start Task: Update Your Skills"}
@@ -359,7 +359,7 @@ export function MobileDashboard({
                     className={`px-3 py-1.5 rounded-xl text-[11px] font-semibold flex items-center gap-1 transition ${
                       isDone
                         ? "bg-slate-100 text-slate-400 cursor-not-allowed border border-slate-200"
-                        : "bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs hover:brightness-105 active:scale-95"
+                        : "bg-blue-600 hover:bg-blue-700 text-white shadow-2xs active:scale-95 cursor-pointer"
                     }`}
                   >
                     <span>{isDone ? "Done" : "Continue"}</span>
@@ -498,9 +498,9 @@ export function MobileDashboard({
       </section>
 
       {/* 8. GATE HUB QUICK ACCESS */}
-      <section className="bg-gradient-to-r from-slate-900 to-indigo-950 text-white rounded-2xl p-5 space-y-3 shadow-md">
+      <section className="bg-slate-900 border border-slate-800 text-white rounded-2xl p-5 space-y-3 shadow-xs">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-xl bg-white/10 text-indigo-300">
+          <div className="p-2 rounded-xl bg-white/10 text-blue-300">
             <GraduationCap className="h-5 w-5" />
           </div>
           <div>
@@ -511,7 +511,7 @@ export function MobileDashboard({
 
         <button
           onClick={() => nav({ to: "/gate" })}
-          className="w-full py-2 rounded-xl bg-white/15 hover:bg-white/20 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition"
+          className="w-full py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition active:scale-[0.99] cursor-pointer"
         >
           <span>Explore GATE Hub</span>
           <ChevronRight className="h-3.5 w-3.5" />

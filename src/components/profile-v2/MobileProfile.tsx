@@ -112,13 +112,13 @@ export function MobileProfile({
     "System Design & Architecture";
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] text-slate-900 font-sans pb-28 px-4 pt-4 space-y-4">
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans pb-28 px-4 pt-3 space-y-4 max-w-lg mx-auto">
       {/* 1. IDENTITY CARD */}
-      <section className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs relative space-y-4">
+      <section className="bg-white border border-slate-200/80 rounded-2xl p-5 shadow-xs relative space-y-4">
         <div className="flex items-center gap-4">
           {/* Avatar */}
           <div className="relative shrink-0">
-            <div className="w-16 h-16 rounded-full border-2 border-purple-200 p-0.5 bg-purple-50 overflow-hidden shadow-2xs">
+            <div className="w-16 h-16 rounded-full border border-slate-200 p-0.5 bg-slate-100 overflow-hidden shadow-2xs">
               {profile?.avatar_url ? (
                 <img
                   src={profile.avatar_url}
@@ -126,7 +126,7 @@ export function MobileProfile({
                   className="w-full h-full rounded-full object-cover"
                 />
               ) : (
-                <div className="w-full h-full rounded-full bg-gradient-to-tr from-purple-600 to-indigo-600 flex items-center justify-center text-xl font-extrabold text-white">
+                <div className="w-full h-full rounded-full bg-gradient-to-tr from-blue-600 to-indigo-600 flex items-center justify-center text-xl font-extrabold text-white">
                   {profile?.full_name?.charAt(0) || user?.email?.charAt(0) || "U"}
                 </div>
               )}
@@ -135,15 +135,15 @@ export function MobileProfile({
 
           <div className="min-w-0 flex-1 space-y-1">
             <div className="flex items-center justify-between">
-              <h1 className="text-lg font-extrabold text-slate-900 leading-tight truncate">
+              <h1 className="text-lg font-bold text-slate-900 leading-tight truncate">
                 {profile?.full_name || "SyncRole Candidate"}
               </h1>
-              <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[10px] font-bold">
+              <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200/80 text-emerald-700 text-[10px] font-bold">
                 Available
               </span>
             </div>
 
-            <p className="text-xs font-semibold text-purple-700 truncate">
+            <p className="text-xs font-semibold text-blue-600 truncate">
               {profile?.target_role || "Full Stack Developer"}
             </p>
 
@@ -172,7 +172,7 @@ export function MobileProfile({
                 href={`https://github.com/${profile.github_username}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 transition"
+                className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition flex items-center justify-center"
                 aria-label="GitHub profile"
               >
                 <Github className="h-4 w-4" />
@@ -183,7 +183,7 @@ export function MobileProfile({
                 href={profile.linkedin.startsWith("http") ? profile.linkedin : `https://${profile.linkedin}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 transition"
+                className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition flex items-center justify-center"
                 aria-label="LinkedIn profile"
               >
                 <Linkedin className="h-4 w-4" />
@@ -194,7 +194,7 @@ export function MobileProfile({
                 href={profile.portfolio.startsWith("http") ? profile.portfolio : `https://${profile.portfolio}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 hover:bg-slate-100 transition"
+                className="h-8 w-8 rounded-xl bg-slate-50 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-100 transition flex items-center justify-center"
                 aria-label="Portfolio website"
               >
                 <Globe className="h-4 w-4" />
@@ -204,7 +204,7 @@ export function MobileProfile({
 
           <button
             onClick={onEditClick}
-            className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition flex items-center gap-1.5"
+            className="px-3.5 py-1.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 transition flex items-center gap-1.5 shadow-2xs cursor-pointer active:scale-95"
           >
             <Settings className="h-3.5 w-3.5" />
             <span>Edit Profile</span>
@@ -213,7 +213,7 @@ export function MobileProfile({
       </section>
 
       {/* 2. PROGRESSIVE DISCLOSURE TABS */}
-      <div className="flex items-center gap-1 bg-white p-1 rounded-xl border border-slate-200 shadow-2xs">
+      <div className="flex items-center gap-1 bg-slate-100/80 p-1 rounded-xl border border-slate-200/60 shadow-2xs">
         {[
           { id: "overview", label: "Overview", icon: BarChart3 },
           { id: "skills", label: "Skills", icon: Code2 },
@@ -228,11 +228,11 @@ export function MobileProfile({
               onClick={() => setActiveTab(tab.id as any)}
               className={`flex-1 py-1.5 px-2 rounded-lg text-xs font-semibold flex items-center justify-center gap-1.5 transition ${
                 isActive
-                  ? "bg-purple-50 text-purple-700 border border-purple-200/80 shadow-2xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-50"
+                  ? "bg-white text-slate-900 shadow-xs border border-slate-200/50"
+                  : "text-slate-500 hover:text-slate-800 hover:bg-white/50"
               }`}
             >
-              <Icon className={`h-3.5 w-3.5 ${isActive ? "text-purple-600" : "text-slate-400"}`} />
+              <Icon className={`h-3.5 w-3.5 ${isActive ? "text-blue-600" : "text-slate-400"}`} />
               <span>{tab.label}</span>
             </button>
           );
@@ -243,52 +243,52 @@ export function MobileProfile({
       {activeTab === "overview" && (
         <div className="space-y-4">
           {/* Readiness Metric Grid */}
-          <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
+          <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
                 OVERVIEW METRICS
               </h2>
-              <span className="text-[10px] font-bold text-purple-700 bg-purple-50 px-2 py-0.5 rounded-full border border-purple-200">
+              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200/80">
                 Active Cycle
               </span>
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
                   <span>Profile Score</span>
                   <Zap className="h-3.5 w-3.5 text-blue-600" />
                 </div>
-                <div className="text-xl font-extrabold text-slate-900">{readiness}%</div>
+                <div className="text-xl font-bold text-slate-900">{readiness}%</div>
                 <div className="text-[10px] text-emerald-700 font-bold">Excellent</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
                   <span>XP & Level</span>
                   <Award className="h-3.5 w-3.5 text-amber-500" />
                 </div>
-                <div className="text-xl font-extrabold text-slate-900">Lv. {levelNum}</div>
-                <div className="text-[10px] text-purple-700 font-bold">{totalXp} Total XP</div>
+                <div className="text-xl font-bold text-slate-900">Lv. {levelNum}</div>
+                <div className="text-[10px] text-blue-700 font-bold">{totalXp} Total XP</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
                   <span>Repositories</span>
-                  <Folder className="h-3.5 w-3.5 text-indigo-600" />
+                  <Folder className="h-3.5 w-3.5 text-slate-700" />
                 </div>
-                <div className="text-xl font-extrabold text-slate-900">
+                <div className="text-xl font-bold text-slate-900">
                   {githubAnalysis?.repo_count || (profile?.portfolio ? 1 : 0)}
                 </div>
-                <div className="text-[10px] text-indigo-600 font-bold">GitHub Active</div>
+                <div className="text-[10px] text-slate-600 font-semibold">GitHub Active</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-1">
                 <div className="flex items-center justify-between text-[10px] font-semibold text-slate-500">
                   <span>Daily Streak</span>
                   <Flame className="h-3.5 w-3.5 text-orange-500" />
                 </div>
-                <div className="text-xl font-extrabold text-slate-900">{currentStreak} Days</div>
+                <div className="text-xl font-bold text-slate-900">{currentStreak} Days</div>
                 <div className="text-[10px] text-orange-600 font-bold">Consistent</div>
               </div>
             </div>
@@ -296,7 +296,7 @@ export function MobileProfile({
             <button
               onClick={onUploadClick}
               disabled={uploading}
-              className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-2 transition"
+              className="w-full py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-2 transition shadow-2xs active:scale-[0.99] cursor-pointer"
             >
               <FileText className="h-3.5 w-3.5" />
               <span>{uploading ? "Uploading PDF..." : "Upload / Update Resume"}</span>
@@ -304,10 +304,10 @@ export function MobileProfile({
           </section>
 
           {/* AI Career Insight */}
-          <section className="bg-gradient-to-br from-purple-50/90 to-indigo-50/70 border border-purple-200/80 rounded-2xl p-5 space-y-3 shadow-xs">
+          <section className="bg-indigo-50/60 border border-indigo-100/90 rounded-2xl p-4.5 space-y-3 shadow-2xs">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-purple-700 uppercase tracking-wider">
-                <Sparkles className="h-4 w-4 text-purple-600" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 uppercase tracking-wider">
+                <Sparkles className="h-4 w-4 text-indigo-600" />
                 <span>AI Career Insight</span>
               </div>
             </div>
@@ -316,16 +316,16 @@ export function MobileProfile({
               &ldquo;{summaryText}&rdquo;
             </p>
 
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-purple-100">
-              <div className="p-2.5 rounded-xl bg-white border border-purple-100">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-indigo-100/80">
+              <div className="p-2.5 rounded-xl bg-white border border-indigo-100/70 shadow-2xs">
                 <div className="text-[10px] font-bold text-emerald-700 uppercase flex items-center gap-1">
                   <CheckCircle2 className="h-3 w-3" /> Key Strength
                 </div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">{primaryStrength}</div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white border border-purple-100">
-                <div className="text-[10px] font-bold text-purple-700 uppercase flex items-center gap-1">
+              <div className="p-2.5 rounded-xl bg-white border border-indigo-100/70 shadow-2xs">
+                <div className="text-[10px] font-bold text-indigo-700 uppercase flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" /> Recommended
                 </div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">{nextStep}</div>
@@ -334,7 +334,7 @@ export function MobileProfile({
 
             <Link
               to="/career-identity"
-              className="w-full py-2.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 text-white text-xs font-bold shadow-xs flex items-center justify-center gap-1.5 transition active:scale-[0.99]"
+              className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold shadow-xs flex items-center justify-center gap-1.5 transition active:scale-[0.99]"
             >
               <span>Get Detailed Career Report</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -344,12 +344,12 @@ export function MobileProfile({
       )}
 
       {activeTab === "skills" && (
-        <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
+        <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-xs">
           <div className="flex items-center justify-between">
             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
               TECHNICAL SKILLS
             </h2>
-            <button onClick={onEditClick} className="text-xs text-purple-700 font-semibold hover:underline">
+            <button onClick={onEditClick} className="text-xs text-blue-600 font-semibold hover:text-blue-800 transition cursor-pointer">
               Edit Skills
             </button>
           </div>
@@ -361,10 +361,10 @@ export function MobileProfile({
               const icon = getSkillIcon(skill);
 
               return (
-                <div key={skill} className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                <div key={skill} className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/70 space-y-2">
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <div className="h-7 w-7 rounded-lg bg-purple-100 border border-purple-200 grid place-items-center text-purple-700">
+                    <div className="flex items-center gap-2.5">
+                      <div className="h-7 w-7 rounded-lg bg-blue-50 border border-blue-100 grid place-items-center text-blue-600">
                         {icon}
                       </div>
                       <span className="text-xs font-bold text-slate-900">{skill}</span>
@@ -373,12 +373,12 @@ export function MobileProfile({
                       <span className="px-2 py-0.5 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-700 text-[9px] font-bold">
                         {levelBadge}
                       </span>
-                      <span className="text-xs font-bold text-purple-700">{progress}%</span>
+                      <span className="text-xs font-bold text-slate-800">{progress}%</span>
                     </div>
                   </div>
                   <div className="h-1.5 w-full bg-slate-200 rounded-full overflow-hidden">
                     <div
-                      className="h-full bg-gradient-to-r from-purple-600 to-indigo-600 rounded-full"
+                      className="h-full bg-blue-600 rounded-full"
                       style={{ width: `${progress}%` }}
                     />
                   </div>
@@ -392,7 +392,7 @@ export function MobileProfile({
       {activeTab === "career" && (
         <div className="space-y-4">
           {/* Resume & GitHub Intelligence */}
-          <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
+          <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
                 RESUME & GITHUB INTELLIGENCE
@@ -403,15 +403,15 @@ export function MobileProfile({
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
-                <div className="text-2xl font-extrabold text-slate-900">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 text-center">
+                <div className="text-2xl font-bold text-slate-900">
                   {resumeAnalysis?.ats_score || placementStats?.resume_score || 78}%
                 </div>
                 <div className="text-[10px] font-semibold text-slate-500 mt-0.5">ATS Resume Match</div>
               </div>
 
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center">
-                <div className="text-2xl font-extrabold text-slate-900">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 text-center">
+                <div className="text-2xl font-bold text-slate-900">
                   {githubAnalysis?.star_count || 0}
                 </div>
                 <div className="text-[10px] font-semibold text-slate-500 mt-0.5">GitHub Stars</div>
@@ -421,7 +421,7 @@ export function MobileProfile({
             <div className="flex gap-2">
               <Link
                 to="/resume-intelligence"
-                className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-1.5 transition"
+                className="flex-1 py-2.5 rounded-xl bg-slate-900 text-white text-xs font-semibold hover:bg-slate-800 flex items-center justify-center gap-1.5 transition shadow-2xs"
               >
                 <ArrowUpRight className="h-3.5 w-3.5" />
                 <span>Resume Intel</span>
@@ -441,13 +441,13 @@ export function MobileProfile({
           </section>
 
           {/* Portfolio & Featured Projects */}
-          <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3 shadow-xs">
+          <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-3 shadow-xs">
             <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
               PORTFOLIO & PROJECTS
             </h2>
 
             {profile?.portfolio ? (
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 space-y-2">
                 <div className="flex items-center justify-between">
                   <h4 className="text-xs font-bold text-slate-900">Main Portfolio Website</h4>
                   <span className="px-2 py-0.5 rounded-md bg-emerald-100 text-emerald-700 text-[9px] font-bold">
@@ -459,16 +459,16 @@ export function MobileProfile({
                   href={profile.portfolio.startsWith("http") ? profile.portfolio : `https://${profile.portfolio}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs font-bold text-purple-700 hover:underline pt-1"
+                  className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 hover:text-blue-800 pt-1"
                 >
                   <span>View Live Demo</span>
                   <ExternalLink className="h-3 w-3" />
                 </a>
               </div>
             ) : (
-              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center space-y-2">
+              <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/70 text-center space-y-2">
                 <p className="text-xs text-slate-600">No portfolio link added yet.</p>
-                <button onClick={onEditClick} className="text-xs font-bold text-purple-700 hover:underline">
+                <button onClick={onEditClick} className="text-xs font-semibold text-blue-600 hover:text-blue-800 cursor-pointer">
                   + Link Portfolio Website
                 </button>
               </div>
@@ -478,7 +478,7 @@ export function MobileProfile({
       )}
 
       {activeTab === "activity" && (
-        <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
+        <section className="bg-white border border-slate-200/80 rounded-2xl p-5 space-y-4 shadow-xs">
           <h2 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">
             ACTIVITY TIMELINE
           </h2>
@@ -491,13 +491,13 @@ export function MobileProfile({
             </div>
 
             <div className="relative space-y-0.5 pt-2">
-              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-purple-600 ring-4 ring-white" />
+              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-blue-600 ring-4 ring-white" />
               <div className="text-xs font-bold text-slate-900">Solved 3 DSA problems</div>
               <p className="text-[10px] text-slate-500">Arrays & Linked Lists · 5 hours ago</p>
             </div>
 
             <div className="relative space-y-0.5 pt-2">
-              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-blue-600 ring-4 ring-white" />
+              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-indigo-600 ring-4 ring-white" />
               <div className="text-xs font-bold text-slate-900">Resume updated (v2.1)</div>
               <p className="text-[10px] text-slate-500">ATS match score calculation · 1 day ago</p>
             </div>
