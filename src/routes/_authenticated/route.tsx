@@ -358,43 +358,46 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   const { openSyncPilot, panelState } = useSyncPilot();
   const isSyncPilotOpen = panelState !== "closed";
 
-  // Mobile-only tabs: Dashboard, Career, SyncPilot, Profile
-  // Workspace and GATE Hub are desktop-only features and are excluded from mobile nav
+  // Five balanced destinations in logical order
   const tabs = [
     { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
-    { label: "Career", href: "/career-identity", icon: Compass },
+    { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
     { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
+    { label: "GATE Hub", href: "/gate", icon: GraduationCap },
     { label: "Profile", href: "/profile", icon: User },
   ];
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-white/98 backdrop-blur-xl border-t border-slate-200/80 shadow-sm md:hidden"
-      style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
+      className="fixed bottom-0 inset-x-0 z-50 bg-white/98 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-1px_3px_rgba(0,0,0,0.03)] md:hidden"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around px-2 pt-1.5 pb-1 h-[56px]">
+      <div className="grid grid-cols-5 items-center h-[60px] px-1 max-w-lg mx-auto">
         {tabs.map((tab) => {
           if (tab.isCenter) {
             return (
-              <button
-                key={tab.label}
-                onClick={() => tab.action?.()}
-                className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
-                  isSyncPilotOpen
-                    ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50"
-                    : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110 shadow-indigo-600/25"
-                }`}
-                aria-label="Open SyncPilot AI Assistant"
-                aria-pressed={isSyncPilotOpen}
-              >
-                <tab.icon className="h-5 w-5" />
-              </button>
+              <div key={tab.label} className="flex items-center justify-center h-full w-full">
+                <button
+                  type="button"
+                  onClick={() => tab.action?.()}
+                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                    isSyncPilotOpen
+                      ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50 shadow-xs"
+                      : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm shadow-indigo-600/20 hover:brightness-105"
+                  }`}
+                  aria-label="Open SyncPilot AI Assistant"
+                  aria-pressed={isSyncPilotOpen}
+                >
+                  <tab.icon className="h-5 w-5 stroke-[2]" />
+                </button>
+              </div>
             );
           }
 
+          const isWorkspaceTab = tab.href === "/dashboard/workspace";
           const isDashboardTab = tab.href === "/dashboard";
-          const isCareerTab = tab.href === "/career-identity";
+          const isGateTab = tab.href === "/gate";
           const isProfileTab = tab.href === "/profile";
 
           let isActive = false;
@@ -405,16 +408,17 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
               (pathname.startsWith("/dashboard/") && !pathname.startsWith("/dashboard/workspace")) ||
               pathname.startsWith("/dsa-") ||
               pathname.startsWith("/resume-intelligence");
-          } else if (isCareerTab) {
-            isActive =
-              pathname.startsWith("/career-identity") ||
-              pathname.startsWith("/role-explorer") ||
-              pathname.startsWith("/dsa-companies");
+          } else if (isWorkspaceTab) {
+            isActive = pathname.startsWith("/dashboard/workspace");
+          } else if (isGateTab) {
+            isActive = pathname.startsWith("/gate");
           } else if (isProfileTab) {
             isActive =
               pathname.startsWith("/profile") ||
               pathname.startsWith("/settings") ||
-              pathname.startsWith("/help");
+              pathname.startsWith("/help") ||
+              pathname.startsWith("/career-identity") ||
+              pathname.startsWith("/role-explorer");
           } else {
             isActive = pathname.startsWith(tab.href!);
           }
@@ -425,18 +429,24 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
             <Link
               key={tab.label}
               to={tab.href!}
-              className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition-colors py-1 px-3 rounded-xl min-w-[44px] min-h-[44px] justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+              className={`flex flex-col items-center justify-center h-full w-full py-1 text-center select-none outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl transition-colors active:scale-95 ${
                 isActive
-                  ? "text-blue-600 bg-blue-50/90 font-semibold"
-                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-slate-800"
               }`}
             >
               <Icon
-                className={`h-[18px] w-[18px] transition-none ${
-                  isActive ? "text-blue-600" : "text-slate-400"
+                className={`h-5 w-5 transition-none ${
+                  isActive ? "text-blue-600 stroke-[2.2]" : "text-slate-400 stroke-[2]"
                 }`}
               />
-              <span>{tab.label}</span>
+              <span
+                className={`text-[10px] tracking-tight mt-1 leading-none truncate max-w-full px-0.5 ${
+                  isActive ? "font-semibold text-blue-600" : "font-medium text-slate-500"
+                }`}
+              >
+                {tab.label}
+              </span>
             </Link>
           );
         })}

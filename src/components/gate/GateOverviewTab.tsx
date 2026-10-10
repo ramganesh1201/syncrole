@@ -20,6 +20,7 @@ import {
   X,
 } from 'lucide-react';
 import GateSyncPilotHelper from './GateSyncPilotHelper';
+import { useGateLiveClock, resolveGateLiveSchedule } from '@/lib/gate/gateDateUtils';
 
 interface GateOverviewTabProps {
   paper: GatePaperInfo;
@@ -58,10 +59,16 @@ export default function GateOverviewTab({
     return matchesSearch && matchesCategory;
   });
 
-  // Calculate Dynamic GATE 2027 Status
-  const currentDate = new Date('2026-09-27T19:19:16+05:30'); // System Date: 27 Sep 2026
-  const currentEvent = events.find((e) => e.status === 'ongoing') || events[1];
-  const nextEvent = events.find((e) => e.status === 'upcoming') || events[2];
+  // Real-Time Dynamic GATE 2027 Schedule & Live Clock
+  const now = useGateLiveClock();
+  const {
+    enrichedEvents,
+    ongoingEvent,
+    nextMilestone,
+    examEvent,
+    targetMilestone,
+    countdown,
+  } = resolveGateLiveSchedule(events, now);
 
   const prepRoadmapSteps = [
     { num: '01', title: 'Understand', desc: 'Purpose, eligibility & exam pattern rules' },
@@ -337,37 +344,118 @@ export default function GateOverviewTab({
           <h2 className="text-2xl font-bold text-slate-900">GATE 2027 — What's Happening Now?</h2>
         </div>
 
-        <div className="bg-white border border-teal-200 p-6 rounded-2xl shadow-xs space-y-4">
+        {/* Real-Time Status & Live Countdown Card */}
+        <div className="bg-white border border-teal-200 p-6 rounded-2xl shadow-xs space-y-6">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-800 text-xs font-bold font-mono">
-                  <span className="h-2 w-2 rounded-full bg-teal-600 animate-pulse" />
-                  CURRENT STATUS: REGISTRATION
-                </span>
-                <span className="text-xs font-semibold text-slate-500">
-                  Reflected as of {currentDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                {ongoingEvent ? (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-900 text-xs font-bold font-mono">
+                    <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                    ACTIVE NOW: {ongoingEvent.eventType.toUpperCase()}
+                  </span>
+                ) : (
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-teal-100 text-teal-900 text-xs font-bold font-mono">
+                    <span className="h-2 w-2 rounded-full bg-teal-600" />
+                    STATUS: {nextMilestone ? `UPCOMING ${nextMilestone.eventType.toUpperCase()}` : 'EXAM CYCLE ACTIVE'}
+                  </span>
+                )}
+                <span className="text-xs font-semibold text-slate-500 font-mono">
+                  Live as of {now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })} IST
                 </span>
               </div>
-              <h3 className="text-lg font-bold text-slate-900">{currentEvent.title}</h3>
+              <h3 className="text-lg font-bold text-slate-900">
+                {ongoingEvent ? ongoingEvent.title : nextMilestone ? nextMilestone.title : 'GATE 2027 CBT Examinations'}
+              </h3>
             </div>
 
             <div className="flex items-center gap-2">
-              <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200">
-                Window: {currentEvent.dateLabel}
+              <span className="text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-lg border border-slate-200 font-mono">
+                {ongoingEvent ? `Active Window: ${ongoingEvent.dateLabel}` : nextMilestone ? `Target: ${nextMilestone.dateLabel}` : 'Schedule in progress'}
               </span>
             </div>
           </div>
 
+          {/* Real-Time Countdown to Target Milestone */}
+          {targetMilestone && (
+            <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white p-5 rounded-xl space-y-3 shadow-sm">
+              <div className="flex flex-wrap items-center justify-between gap-2 text-xs">
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4 text-teal-400" />
+                  <span className="font-mono uppercase font-bold tracking-wider text-teal-300">
+                    Live Countdown to {targetMilestone.title}
+                  </span>
+                </div>
+                <span className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
+                  targetMilestone.isTentative
+                    ? 'bg-amber-500/20 text-amber-300 border-amber-400/30'
+                    : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
+                }`}>
+                  {targetMilestone.isTentative ? 'Tentative Schedule' : 'Official Announced Date'}
+                </span>
+              </div>
+
+              {countdown.isTentative ? (
+                <div className="text-sm font-medium text-amber-200 bg-white/5 p-3 rounded-lg border border-white/10">
+                  {countdown.formatted} — Verified updates will appear automatically upon IIT Madras release.
+                </div>
+              ) : countdown.isPassed ? (
+                <div className="text-sm font-semibold text-emerald-300 bg-white/5 p-3 rounded-lg border border-white/10 flex items-center gap-2">
+                  <CheckCircle2 className="h-4 w-4 text-emerald-400" />
+                  <span>This examination milestone is currently underway or completed.</span>
+                </div>
+              ) : (
+                <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center">
+                  <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10">
+                    <div className="text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
+                      {countdown.days}
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-semibold text-teal-300 uppercase tracking-wider">
+                      Days
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10">
+                    <div className="text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
+                      {String(countdown.hours).padStart(2, '0')}
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-semibold text-teal-300 uppercase tracking-wider">
+                      Hours
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10">
+                    <div className="text-2xl sm:text-3xl font-black font-mono text-white tracking-tight">
+                      {String(countdown.minutes).padStart(2, '0')}
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-semibold text-teal-300 uppercase tracking-wider">
+                      Minutes
+                    </div>
+                  </div>
+                  <div className="bg-white/10 backdrop-blur-xs p-3 rounded-xl border border-white/10">
+                    <div className="text-2xl sm:text-3xl font-black font-mono text-emerald-400 tracking-tight">
+                      {String(countdown.seconds).padStart(2, '0')}
+                    </div>
+                    <div className="text-[10px] sm:text-xs font-semibold text-teal-300 uppercase tracking-wider">
+                      Seconds
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
           <div className="grid md:grid-cols-2 gap-4">
             <div className="bg-slate-50 border border-slate-200 p-4 rounded-xl space-y-1">
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">
-                IMMEDIATE NEXT EVENT
+                {nextMilestone ? 'IMMEDIATE NEXT MILESTONE' : 'EXAMINATION SCHEDULE'}
               </div>
-              <div className="text-sm font-bold text-slate-900">{nextEvent.title}</div>
-              <div className="text-xs text-teal-700 font-medium font-mono">{nextEvent.dateLabel}</div>
+              <div className="text-sm font-bold text-slate-900">
+                {nextMilestone ? nextMilestone.title : examEvent ? examEvent.title : 'Official GATE 2027 Schedule'}
+              </div>
+              <div className="text-xs text-teal-700 font-medium font-mono">
+                {nextMilestone ? nextMilestone.dateLabel : examEvent ? examEvent.dateLabel : 'Announced on portal'}
+              </div>
               <p className="text-[11px] text-slate-500 pt-1">
-                Extended registration allows candidate application submission with prescribed late fees.
+                {nextMilestone?.description || 'All milestone dates are synchronized with official IIT Madras publications.'}
               </p>
             </div>
 
@@ -375,8 +463,8 @@ export default function GateOverviewTab({
               <div className="text-xs font-bold uppercase tracking-wider text-slate-500 font-mono">
                 IMPORTANT CANDIDATE ACTION
               </div>
-              <div className="text-sm font-bold text-slate-900">Check Photo & Document Rules</div>
-              <div className="text-xs text-slate-600">Ensure photograph background and signature conform to official guidelines.</div>
+              <div className="text-sm font-bold text-slate-900">Verify Candidate Credentials on GOAPS</div>
+              <div className="text-xs text-slate-600">Ensure photograph background, signature, and category documentation conform to official guidelines.</div>
               <a
                 href="https://gate2027.iitm.ac.in/"
                 target="_blank"
@@ -406,48 +494,60 @@ export default function GateOverviewTab({
           </div>
         </div>
 
-        {/* Visual Timeline Cards */}
+        {/* Visual Timeline Cards with Real-Time Dynamic Statuses */}
         <div className="space-y-3">
-          {events.map((evt) => {
+          {enrichedEvents.map((evt) => {
             const isCurrent = evt.status === 'ongoing';
             const isCompleted = evt.status === 'completed';
+            const isTentative = evt.status === 'tentative';
+
             return (
               <div
                 key={evt.id}
                 className={`bg-white border p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition shadow-xs ${
                   isCurrent
-                    ? 'border-teal-400 bg-teal-50/30 ring-1 ring-teal-300'
+                    ? 'border-emerald-400 bg-emerald-50/30 ring-1 ring-emerald-300'
                     : 'border-slate-200/90 hover:border-slate-300'
                 }`}
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className={`mt-0.5 inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-bold flex-shrink-0 ${
+                    className={`mt-0.5 inline-flex items-center justify-center h-6 w-6 rounded-full text-xs font-bold shrink-0 ${
                       isCurrent
-                        ? 'bg-teal-600 text-white'
+                        ? 'bg-emerald-600 text-white'
                         : isCompleted
                         ? 'bg-slate-200 text-slate-600'
+                        : isTentative
+                        ? 'bg-amber-100 text-amber-700'
                         : 'bg-blue-100 text-blue-700'
                     }`}
                   >
-                    {isCurrent ? '●' : isCompleted ? '✓' : '○'}
+                    {isCurrent ? '●' : isCompleted ? '✓' : isTentative ? '?' : '○'}
                   </span>
 
                   <div className="space-y-0.5">
-                    <div className="flex items-center gap-2">
+                    <div className="flex flex-wrap items-center gap-2">
                       <span className="font-bold text-sm text-slate-900">{evt.title}</span>
                       <span
                         className={`text-[10px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
                           isCurrent
-                            ? 'bg-teal-100 text-teal-800 border-teal-300'
+                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300'
                             : isCompleted
                             ? 'bg-slate-100 text-slate-600 border-slate-200'
+                            : isTentative
+                            ? 'bg-amber-50 text-amber-700 border-amber-200'
                             : 'bg-blue-50 text-blue-700 border-blue-200'
                         }`}
                       >
                         {isCurrent ? 'Active / Current' : evt.status}
                       </span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">
+                        {evt.isTentative ? 'Tentative' : 'Officially Confirmed'}
+                      </span>
                     </div>
+                    {evt.description && (
+                      <p className="text-xs text-slate-600">{evt.description}</p>
+                    )}
                     <div className="text-xs text-slate-500 font-mono">
                       Event Type: <span className="capitalize">{evt.eventType.replace('_', ' ')}</span>
                     </div>

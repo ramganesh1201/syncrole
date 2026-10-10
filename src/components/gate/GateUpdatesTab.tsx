@@ -1,4 +1,5 @@
 import { GateEvent, GateUpdate } from '@/lib/gate/gateTypes';
+import { useGateLiveClock, enrichEventsWithDynamicStatus } from '@/lib/gate/gateDateUtils';
 import {
   Calendar,
   CheckCircle2,
@@ -16,6 +17,9 @@ interface GateUpdatesTabProps {
 }
 
 export default function GateUpdatesTab({ events, updates, lastVerifiedAt }: GateUpdatesTabProps) {
+  const now = useGateLiveClock();
+  const dynamicEvents = enrichEventsWithDynamicStatus(events, now);
+
   return (
     <div className="space-y-12 text-slate-800 font-sans">
       {/* Editorial Header */}
@@ -50,11 +54,11 @@ export default function GateUpdatesTab({ events, updates, lastVerifiedAt }: Gate
 
         {/* Timeline Items */}
         <div className="space-y-3">
-          {events.map((evt) => (
+          {dynamicEvents.map((evt) => (
             <div
               key={evt.id}
               className={`bg-white border p-4 rounded-xl flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs ${
-                evt.status === 'ongoing' ? 'border-teal-400 bg-teal-50/20' : 'border-slate-200/90'
+                evt.status === 'ongoing' ? 'border-emerald-400 bg-emerald-50/20' : 'border-slate-200/90'
               }`}
             >
               <div className="space-y-1">

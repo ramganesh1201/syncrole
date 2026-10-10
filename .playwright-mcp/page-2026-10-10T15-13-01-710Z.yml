@@ -1,0 +1,149 @@
+- generic [active] [ref=f1e1]:
+  - generic [ref=f1e2]:
+    - generic [ref=f1e3]:
+      - banner [ref=f1e4]:
+        - generic [ref=f1e5]:
+          - link "SyncRole" [ref=f1e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f1e11]: GATE 2027
+      - navigation [ref=f1e13]:
+        - button "Home" [ref=f1e14]
+        - button "Syllabus" [ref=f1e19]
+        - button "Dates" [ref=f1e23]
+        - button "Updates" [ref=f1e27]
+        - button "More" [ref=f1e32]
+      - main [ref=f1e38]:
+        - generic [ref=f1e71]:
+          - generic [ref=f1e72]:
+            - heading "GATE 2027 Important Dates" [level=1] [ref=f1e73]
+            - paragraph [ref=f1e74]: Official timeline milestones & schedule verified from IIT Madras.
+            - generic [ref=f1e75]: "Last Verified: 9/25/2026 • Live IST Time"
+          - generic [ref=f1e76]:
+            - generic [ref=f1e77]:
+              - generic [ref=f1e78]: COUNTDOWN TO CORRECTION
+              - generic [ref=f1e79]: OFFICIAL ANNOUNCED
+            - generic [ref=f1e80]:
+              - heading "Application Rectification Window" [level=3] [ref=f1e81]
+              - generic [ref=f1e82]: 14–21 Oct 2026
+            - generic [ref=f1e83]:
+              - generic [ref=f1e84]:
+                - generic [ref=f1e85]: "3"
+                - generic [ref=f1e86]: Days
+              - generic [ref=f1e87]:
+                - generic [ref=f1e88]: "03"
+                - generic [ref=f1e89]: Hours
+              - generic [ref=f1e90]:
+                - generic [ref=f1e91]: "16"
+                - generic [ref=f1e92]: Mins
+              - generic [ref=f1e93]:
+                - generic [ref=f1e94]: "59"
+                - generic [ref=f1e95]: Secs
+          - generic [ref=f1e96]:
+            - generic [ref=f1e97]: EXAMINATION TIMELINE (8 MILESTONES)
+            - generic [ref=f1e98]:
+              - generic [ref=f1e99]:
+                - generic [ref=f1e101]:
+                  - heading "GATE 2027 Registration Window Opens" [level=4] [ref=f1e102]
+                  - generic [ref=f1e103]:
+                    - generic [ref=f1e104]: completed
+                    - generic [ref=f1e105]: Official
+                - generic [ref=f1e106]: 28 Aug 2026
+                - paragraph [ref=f1e107]: Online application portal (GOAPS) opened for candidate enrollment and paper selection.
+                - link "Verify official release" [ref=f1e108] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e114]:
+                - generic [ref=f1e116]:
+                  - heading "Regular Application Window (Without Late Fee)" [level=4] [ref=f1e117]
+                  - generic [ref=f1e118]:
+                    - generic [ref=f1e119]: completed
+                    - generic [ref=f1e120]: Official
+                - generic [ref=f1e121]: 27 Sep 2026
+                - paragraph [ref=f1e122]: Standard application fee window without additional late penalty charges.
+                - link "Verify official release" [ref=f1e123] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e129]:
+                - generic [ref=f1e131]:
+                  - heading "Extended Registration Deadline (With Late Fee)" [level=4] [ref=f1e132]
+                  - generic [ref=f1e133]:
+                    - generic [ref=f1e134]: completed
+                    - generic [ref=f1e135]: Official
+                - generic [ref=f1e136]: 05 Oct 2026
+                - paragraph [ref=f1e137]: Final application submission opportunity with prescribed late fees.
+                - link "Verify official release" [ref=f1e138] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e144]:
+                - generic [ref=f1e146]:
+                  - heading "Application Rectification Window" [level=4] [ref=f1e147]
+                  - generic [ref=f1e148]:
+                    - generic [ref=f1e149]: upcoming
+                    - generic [ref=f1e150]: Official
+                - generic [ref=f1e151]: 14–21 Oct 2026
+                - paragraph [ref=f1e152]: Candidates can rectify defective photograph, signature, and category documentation.
+                - link "Verify official release" [ref=f1e153] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e159]:
+                - generic [ref=f1e161]:
+                  - heading "Admit Card Release & City Allotment" [level=4] [ref=f1e162]
+                  - generic [ref=f1e163]:
+                    - generic [ref=f1e164]: upcoming
+                    - generic [ref=f1e165]: Official
+                - generic [ref=f1e166]: 04 Jan 2027
+                - paragraph [ref=f1e167]: Official hall tickets made available for download with confirmed exam venue and timing.
+                - link "Verify official release" [ref=f1e168] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e174]:
+                - generic [ref=f1e176]:
+                  - heading "GATE 2027 Examinations (Computer Based Test)" [level=4] [ref=f1e177]
+                  - generic [ref=f1e178]:
+                    - generic [ref=f1e179]: upcoming
+                    - generic [ref=f1e180]: Official
+                - generic [ref=f1e181]: 06–21 Feb 2027 (Feb 6, 7, 13, 14, 20, 21)
+                - paragraph [ref=f1e182]: National CBT examination conducted across two daily sessions (Forenoon & Afternoon).
+                - link "Verify official release" [ref=f1e183] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/question_paper_pattern
+              - generic [ref=f1e189]:
+                - generic [ref=f1e191]:
+                  - heading "GATE 2027 Official Results Announcement" [level=4] [ref=f1e192]
+                  - generic [ref=f1e193]:
+                    - generic [ref=f1e194]: upcoming
+                    - generic [ref=f1e195]: Official
+                - generic [ref=f1e196]: 19 Mar 2027
+                - paragraph [ref=f1e197]: Scorecard qualification status, cutoffs, and All India Rank (AIR) published on GOAPS.
+                - link "Verify official release" [ref=f1e198] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+              - generic [ref=f1e204]:
+                - generic [ref=f1e206]:
+                  - heading "Official Scorecard Download Period" [level=4] [ref=f1e207]
+                  - generic [ref=f1e208]:
+                    - generic [ref=f1e209]: tentative
+                    - generic [ref=f1e210]: Tentative
+                - generic [ref=f1e211]: Late March 2027 (Tentative)
+                - paragraph [ref=f1e212]: Free download of official normalized scorecards for qualified candidates.
+                - link "Verify official release" [ref=f1e213] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/notifications
+    - contentinfo [ref=f1e43]:
+      - generic [ref=f1e44]:
+        - generic [ref=f1e45]:
+          - generic [ref=f1e46]:
+            - generic [ref=f1e47]:
+              - generic [ref=f1e48]: SyncRole
+              - generic [ref=f1e49]: •
+              - generic [ref=f1e50]: GATE 2027 Hub
+            - paragraph [ref=f1e51]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=f1e52]:
+            - link "← Back to SyncRole Platform" [ref=f1e53] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=f1e54] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=f1e60]:
+          - generic [ref=f1e65]:
+            - text: "Official Source Verified:"
+            - strong [ref=f1e66]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=f1e67]:
+            - text: "Last Verified:"
+            - strong [ref=f1e68]: Sep 25, 2026
+        - generic [ref=f1e69]:
+          - strong [ref=f1e70]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"

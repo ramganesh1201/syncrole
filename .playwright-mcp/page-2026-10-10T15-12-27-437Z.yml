@@ -1,0 +1,103 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "SyncRole" [ref=e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=e11]: GATE 2027
+      - navigation [ref=e71]:
+        - button "Home" [ref=e72]
+        - button "Syllabus" [ref=e77]
+        - button "Dates" [ref=e81]
+        - button "Updates" [ref=e85]
+        - button "More" [ref=e90]
+      - main [ref=e30]:
+        - generic [ref=e96]:
+          - generic [ref=e97]:
+            - generic [ref=e98]:
+              - heading "GATE 2027 Official Syllabus" [level=1] [ref=e99]
+              - generic [ref=e100]: 30 Papers Available
+            - paragraph [ref=e101]: Official subject breakdowns for all 30 GATE 2027 test papers.
+            - button "SELECTED TEST PAPER GATE CSE — Computer Science & Information Technology Change Paper ▾" [ref=e102]:
+              - generic [ref=e108]:
+                - generic [ref=e109]: SELECTED TEST PAPER
+                - generic [ref=e110]: GATE CSE — Computer Science & Information Technology
+              - generic [ref=e111]: Change Paper ▾
+          - generic [ref=e112]:
+            - generic [ref=e114]:
+              - generic [ref=e115]: GATE CSE 2027 SYLLABUS
+              - heading "Computer Science & Information Technology" [level=2] [ref=e116]
+              - generic [ref=e117]: "Verified Source: IIT Madras Official GATE 2027 Repository"
+            - generic [ref=e118]:
+              - button "Download Syllabus PDF" [ref=e119] [cursor=pointer]
+              - link "View Online" [ref=e124] [cursor=pointer]:
+                - /url: https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/CS_GATE2027_Syllabus.pdf
+          - generic [ref=e130]:
+            - generic [ref=e131]: SUBJECT TOPICS (4 SECTIONS)
+            - generic [ref=e132]:
+              - button "Engineering & Discrete Mathematics (2)" [ref=e133]:
+                - generic [ref=e134]:
+                  - generic [ref=e137]: Engineering & Discrete Mathematics
+                  - generic [ref=e138]: (2)
+              - generic [ref=e141]:
+                - generic [ref=e142]:
+                  - generic [ref=e143]:
+                    - heading "Discrete Mathematics & Logic" [level=4] [ref=e144]
+                    - generic [ref=e145]: 3 – 6% of paper
+                  - paragraph [ref=e146]: Propositional & predicate logic, sets, relations, functions, partial orders, lattice & groups.
+                  - generic [ref=e147]:
+                    - text: "Key Syllabus Coverage Checklist:"
+                    - generic [ref=e148]:
+                      - generic [ref=e149]: Truth tables & logical equivalences
+                      - generic [ref=e154]: Equivalence relations & Hasse diagrams
+                      - generic [ref=e159]: Group theory basics
+                - generic [ref=e164]:
+                  - generic [ref=e165]:
+                    - heading "Linear Algebra & Calculus" [level=4] [ref=e166]
+                    - generic [ref=e167]: 5 – 8% of paper
+                  - paragraph [ref=e168]: Matrices, determinants, system of linear equations, eigenvalues, eigenvectors, limits & integration.
+                  - generic [ref=e169]:
+                    - text: "Key Syllabus Coverage Checklist:"
+                    - generic [ref=e170]:
+                      - generic [ref=e171]: Eigenvalue & eigenvector computation
+                      - generic [ref=e176]: Matrix rank & linear independence
+                      - generic [ref=e181]: Limits and series convergence
+            - button "Programming, Data Structures & Algorithms (3)" [ref=e187]:
+              - generic [ref=e188]:
+                - generic [ref=e191]: Programming, Data Structures & Algorithms
+                - generic [ref=e192]: (3)
+            - button "Operating Systems & System Architecture (2)" [ref=e196]:
+              - generic [ref=e197]:
+                - generic [ref=e200]: Operating Systems & System Architecture
+                - generic [ref=e201]: (2)
+            - button "Databases & Computer Networks (2)" [ref=e205]:
+              - generic [ref=e206]:
+                - generic [ref=e209]: Databases & Computer Networks
+                - generic [ref=e210]: (2)
+    - contentinfo [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e40]: SyncRole
+              - generic [ref=e41]: •
+              - generic [ref=e42]: GATE 2027 Hub
+            - paragraph [ref=e43]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=e44]:
+            - link "← Back to SyncRole Platform" [ref=e45] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=e46] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=e52]:
+          - generic [ref=e57]:
+            - text: "Official Source Verified:"
+            - strong [ref=e58]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=e59]:
+            - text: "Last Verified:"
+            - strong [ref=e60]: Sep 25, 2026
+        - generic [ref=e61]:
+          - strong [ref=e62]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"

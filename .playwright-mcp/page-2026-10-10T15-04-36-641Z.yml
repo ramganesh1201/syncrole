@@ -1,0 +1,86 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e3]:
+      - banner [ref=e4]:
+        - generic [ref=e5]:
+          - link "SyncRole" [ref=e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=e11]:
+            - generic [ref=e12]: GATE 2027
+            - generic [ref=e13]: Public Discovery Hub
+          - generic [ref=e15]:
+            - generic [ref=e16]: Select GATE Test Paper
+            - combobox "Select GATE Test Paper" [ref=e17] [cursor=pointer]:
+              - option "CSE — Computer Science & Information Technology" [selected]
+              - option "DA — Data Science & Artificial Intelligence"
+              - option "ECE — Electronics & Communication Engineering"
+              - option "EE — Electrical Engineering"
+              - option "ME — Mechanical Engineering"
+              - option "CE — Civil Engineering"
+              - option "CH — Chemical Engineering"
+              - option "BT — Biotechnology"
+              - option "IN — Instrumentation Engineering"
+              - option "AE — Aerospace Engineering"
+              - option "AG — Agricultural Engineering"
+              - option "AR — Architecture and Planning"
+              - option "BM — Biomedical Engineering"
+              - option "CY — Chemistry"
+              - option "ES — Environmental Science & Engineering"
+              - option "EY — Ecology and Evolution"
+              - option "GE — Geomatics Engineering"
+              - option "GG — Geology & Geophysics"
+              - option "MA — Mathematics"
+              - option "MN — Mining Engineering"
+              - option "MT — Metallurgical Engineering"
+              - option "NM — Naval Architecture & Marine Engineering"
+              - option "PE — Petroleum Engineering"
+              - option "PH — Physics"
+              - option "PI — Production & Industrial Engineering"
+              - option "RA — Robotics & Automation"
+              - option "ST — Statistics"
+              - option "XE — Engineering Sciences"
+              - option "XH — Humanities & Social Sciences"
+              - option "XL — Life Sciences"
+        - generic [ref=e19]:
+          - button "Overview" [ref=e20] [cursor=pointer]
+          - button "What is GATE?" [ref=e21] [cursor=pointer]
+          - button "Current Status" [ref=e22] [cursor=pointer]
+          - button "Important Dates" [ref=e23] [cursor=pointer]
+          - button "Exam Pattern" [ref=e24] [cursor=pointer]
+          - button "Choose Paper" [ref=e25] [cursor=pointer]
+          - button "Syllabus" [ref=e26] [cursor=pointer]
+          - button "Roadmap" [ref=e27] [cursor=pointer]
+          - button "Official Updates" [ref=e28] [cursor=pointer]
+          - button "Official Sources" [ref=e29] [cursor=pointer]
+      - main [ref=e30]:
+        - generic [ref=e31]: Loading verified GATE 2027 information...
+    - contentinfo [ref=e35]:
+      - generic [ref=e36]:
+        - generic [ref=e37]:
+          - generic [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e40]: SyncRole
+              - generic [ref=e41]: •
+              - generic [ref=e42]: GATE 2027 Hub
+            - paragraph [ref=e43]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=e44]:
+            - link "← Back to SyncRole Platform" [ref=e45] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=e46] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=e52]:
+          - generic [ref=e57]:
+            - text: "Official Source Verified:"
+            - strong [ref=e58]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=e59]:
+            - text: "Last Verified:"
+            - strong [ref=e60]: Sep 25, 2026
+        - generic [ref=e61]:
+          - strong [ref=e62]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"
+  - button "Open SyncPilot AI Assistant" [ref=e65] [cursor=pointer]:
+    - generic [ref=e69]:
+      - generic [ref=e70]: SyncPilot
+      - text: AI Career Guide

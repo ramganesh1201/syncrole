@@ -1,0 +1,1098 @@
+- generic [active] [ref=f3e1]:
+  - generic [ref=f3e2]:
+    - generic [ref=f3e3]:
+      - banner [ref=f3e4]:
+        - generic [ref=f3e5]:
+          - link "SyncRole" [ref=f3e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f3e11]:
+            - generic [ref=f3e12]: GATE 2027
+            - generic [ref=f3e13]: Public Discovery Hub
+          - generic [ref=f3e15]:
+            - generic [ref=f3e16]: Select GATE Test Paper
+            - combobox "Select GATE Test Paper" [ref=f3e17] [cursor=pointer]:
+              - option "CSE — Computer Science & Information Technology" [selected]
+              - option "DA — Data Science & Artificial Intelligence"
+              - option "ECE — Electronics & Communication Engineering"
+              - option "EE — Electrical Engineering"
+              - option "ME — Mechanical Engineering"
+              - option "CE — Civil Engineering"
+              - option "CH — Chemical Engineering"
+              - option "BT — Biotechnology"
+              - option "IN — Instrumentation Engineering"
+              - option "AE — Aerospace Engineering"
+              - option "AG — Agricultural Engineering"
+              - option "AR — Architecture and Planning"
+              - option "BM — Biomedical Engineering"
+              - option "CY — Chemistry"
+              - option "ES — Environmental Science & Engineering"
+              - option "EY — Ecology and Evolution"
+              - option "GE — Geomatics Engineering"
+              - option "GG — Geology & Geophysics"
+              - option "MA — Mathematics"
+              - option "MN — Mining Engineering"
+              - option "MT — Metallurgical Engineering"
+              - option "NM — Naval Architecture & Marine Engineering"
+              - option "PE — Petroleum Engineering"
+              - option "PH — Physics"
+              - option "PI — Production & Industrial Engineering"
+              - option "RA — Robotics & Automation"
+              - option "ST — Statistics"
+              - option "XE — Engineering Sciences"
+              - option "XH — Humanities & Social Sciences"
+              - option "XL — Life Sciences"
+        - generic [ref=f3e19]:
+          - button "Overview" [ref=f3e20] [cursor=pointer]
+          - button "What is GATE?" [ref=f3e21] [cursor=pointer]
+          - button "Current Status" [ref=f3e22] [cursor=pointer]
+          - button "Important Dates" [ref=f3e23] [cursor=pointer]
+          - button "Exam Pattern" [ref=f3e24] [cursor=pointer]
+          - button "Choose Paper" [ref=f3e25] [cursor=pointer]
+          - button "Syllabus" [ref=f3e26] [cursor=pointer]
+          - button "Roadmap" [ref=f3e27] [cursor=pointer]
+          - button "Official Updates" [ref=f3e28] [cursor=pointer]
+          - button "Official Sources" [ref=f3e29] [cursor=pointer]
+      - main [ref=f3e30]:
+        - generic [ref=f3e71]:
+          - generic [ref=f3e72]:
+            - generic [ref=f3e73]:
+              - generic [ref=f3e74]:
+                - generic [ref=f3e79]:
+                  - text: Official GATE 2027 Data Sourced from
+                  - link "gate2027.iitm.ac.in" [ref=f3e80] [cursor=pointer]:
+                    - /url: https://gate2027.iitm.ac.in/
+                - generic [ref=f3e81]:
+                  - generic [ref=f3e82]:
+                    - text: "Last Verified:"
+                    - strong [ref=f3e83]: Sep 25, 2026
+                  - generic [ref=f3e84]: •
+                  - generic [ref=f3e85]: Free Public Access (No Login Required)
+              - generic [ref=f3e86]:
+                - generic [ref=f3e87]: Official Exam Hub • GATE 2027
+                - heading "GATE 2027 — Graduate Aptitude Test in Engineering" [level=1] [ref=f3e89]
+                - paragraph [ref=f3e90]: A national-level examination assessing comprehensive understanding of undergraduate subjects across Engineering, Technology, Science, Architecture, Commerce, Arts and Humanities.
+                - generic [ref=f3e91]:
+                  - link "Official GATE 2027 Website" [ref=f3e92] [cursor=pointer]:
+                    - /url: https://gate2027.iitm.ac.in/
+                  - button "Explore GATE CSE Syllabus" [ref=f3e98] [cursor=pointer]
+                  - link "View Important Dates" [ref=f3e102] [cursor=pointer]:
+                    - /url: "#dates"
+              - generic [ref=f3e106]:
+                - generic [ref=f3e107]:
+                  - generic [ref=f3e108]: "30"
+                  - generic [ref=f3e109]: Test Papers / Disciplines
+                  - generic [ref=f3e110]: Allowed 1 or 2 papers
+                - generic [ref=f3e111]:
+                  - generic [ref=f3e112]: 3 Hours
+                  - generic [ref=f3e113]: Exam Duration
+                  - generic [ref=f3e114]: 180 Mins Single Session
+                - generic [ref=f3e115]:
+                  - generic [ref=f3e116]: "100"
+                  - generic [ref=f3e117]: Total Marks
+                  - generic [ref=f3e118]: 15% GA + 85% Subject
+                - generic [ref=f3e119]:
+                  - generic [ref=f3e120]: CBT
+                  - generic [ref=f3e121]: Exam Mode
+                  - generic [ref=f3e122]: Computer Based Test
+            - generic [ref=f3e123]:
+              - generic [ref=f3e124]:
+                - generic [ref=f3e125]: Educational Foundations
+                - heading "What is GATE?" [level=2] [ref=f3e126]
+                - paragraph [ref=f3e127]: GATE is a national-level examination that assesses comprehensive understanding of undergraduate-level engineering, technology, architecture, science, commerce, arts, and humanities subjects.
+              - generic [ref=f3e128]:
+                - generic [ref=f3e129]:
+                  - generic [ref=f3e130]: What GATE can be used for
+                  - list [ref=f3e135]:
+                    - listitem [ref=f3e136]:
+                      - generic [ref=f3e138]:
+                        - strong [ref=f3e139]: "Postgraduate Admissions:"
+                        - text: M.Tech, M.E., M.Des, and Ph.D. programs at IISc, IITs, NITs, IIITs, and other top institutes.
+                    - listitem [ref=f3e140]:
+                      - generic [ref=f3e142]:
+                        - strong [ref=f3e143]: "Financial Assistance / Stipend:"
+                        - text: MHRD / AICTE monthly stipend (e.g., ₹12,400/month for M.Tech) where applicable.
+                    - listitem [ref=f3e144]:
+                      - generic [ref=f3e146]:
+                        - strong [ref=f3e147]: "PSU Recruitment:"
+                        - text: Direct shortlisting for Group-A roles at PSUs (IOCL, ONGC, NTPC, HPCL, BHEL, PowerGrid, BARC).
+                    - listitem [ref=f3e148]:
+                      - generic [ref=f3e150]:
+                        - strong [ref=f3e151]: "Global Study Options:"
+                        - text: GATE scores are accepted for Master’s programs by Asian & European universities (NUS, NTU, TU Munich).
+                  - generic [ref=f3e155]:
+                    - strong [ref=f3e156]: "Factual Note:"
+                    - text: Qualifying GATE satisfies baseline academic criteria. It does NOT automatically guarantee admission or a PSU job without subsequent counseling or interview selection.
+                - generic [ref=f3e157]:
+                  - generic [ref=f3e158]: Who can apply for GATE 2027?
+                  - list [ref=f3e164]:
+                    - listitem [ref=f3e165]:
+                      - generic [ref=f3e167]:
+                        - strong [ref=f3e168]: "Undergraduate Students:"
+                        - text: Currently studying in the 3rd year or higher of any undergraduate degree (B.E. / B.Tech / B.Sc / B.Arch / MCA / M.Sc).
+                    - listitem [ref=f3e169]:
+                      - generic [ref=f3e171]:
+                        - strong [ref=f3e172]: "Graduates:"
+                        - text: Already completed any government-approved degree in Engineering, Technology, Architecture, Science, Commerce, or Arts.
+                    - listitem [ref=f3e173]:
+                      - generic [ref=f3e175]:
+                        - strong [ref=f3e176]: "No Upper Age Limit:"
+                        - text: Candidates of any age can appear without restrictions on the number of attempts.
+                    - listitem [ref=f3e177]:
+                      - generic [ref=f3e179]:
+                        - strong [ref=f3e180]: "International Candidates:"
+                        - text: Candidates from foreign countries who meet equivalent educational criteria are eligible.
+                  - generic [ref=f3e181]:
+                    - strong [ref=f3e182]: "Official Verification:"
+                    - text: Always verify candidate category certificate templates and degree eligibility directly on the official organizing portal before final form submission.
+              - generic [ref=f3e183]:
+                - heading "Frequently Asked Questions" [level=3] [ref=f3e184]
+                - generic [ref=f3e185]:
+                  - generic [ref=f3e186]:
+                    - button "What is GATE 2027?" [ref=f3e187] [cursor=pointer]
+                    - generic [ref=f3e191]: The Graduate Aptitude Test in Engineering (GATE) is a national-level examination conducted jointly by the Indian Institute of Science (IISc) and seven IITs (with IIT Madras organizing GATE 2027) on behalf of the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India.
+                  - button "Who is eligible to appear for GATE 2027?" [ref=f3e193] [cursor=pointer]
+                  - button "What opportunities does GATE open?" [ref=f3e198] [cursor=pointer]
+                  - button "Does qualifying GATE guarantee a job or admission?" [ref=f3e203] [cursor=pointer]
+            - generic [ref=f3e207]:
+              - generic [ref=f3e208]:
+                - generic [ref=f3e209]: Real-Time Timeline Monitor
+                - heading "GATE 2027 — What's Happening Now?" [level=2] [ref=f3e210]
+              - generic [ref=f3e211]:
+                - generic [ref=f3e212]:
+                  - generic [ref=f3e213]:
+                    - generic [ref=f3e214]:
+                      - generic [ref=f3e215]: "STATUS: UPCOMING CORRECTION"
+                      - generic [ref=f3e217]: Live as of 08:44:50 pm IST
+                    - heading "Application Rectification Window" [level=3] [ref=f3e218]
+                  - generic [ref=f3e219]: "Target: 14–21 Oct 2026"
+                - generic [ref=f3e221]:
+                  - generic [ref=f3e222]:
+                    - generic [ref=f3e223]: Live Countdown to Application Rectification Window
+                    - generic [ref=f3e228]: Official Announced Date
+                  - generic [ref=f3e229]:
+                    - generic [ref=f3e230]:
+                      - generic [ref=f3e231]: "3"
+                      - generic [ref=f3e232]: Days
+                    - generic [ref=f3e233]:
+                      - generic [ref=f3e234]: "03"
+                      - generic [ref=f3e235]: Hours
+                    - generic [ref=f3e236]:
+                      - generic [ref=f3e237]: "15"
+                      - generic [ref=f3e238]: Minutes
+                    - generic [ref=f3e239]:
+                      - generic [ref=f3e240]: "09"
+                      - generic [ref=f3e241]: Seconds
+                - generic [ref=f3e242]:
+                  - generic [ref=f3e243]:
+                    - generic [ref=f3e244]: IMMEDIATE NEXT MILESTONE
+                    - generic [ref=f3e245]: Application Rectification Window
+                    - generic [ref=f3e246]: 14–21 Oct 2026
+                    - paragraph [ref=f3e247]: Candidates can rectify defective photograph, signature, and category documentation.
+                  - generic [ref=f3e248]:
+                    - generic [ref=f3e249]: IMPORTANT CANDIDATE ACTION
+                    - generic [ref=f3e250]: Verify Candidate Credentials on GOAPS
+                    - generic [ref=f3e251]: Ensure photograph background, signature, and category documentation conform to official guidelines.
+                    - link "Verify on GOAPS Portal" [ref=f3e252] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/
+            - generic [ref=f3e258]:
+              - generic [ref=f3e259]:
+                - generic [ref=f3e260]:
+                  - generic [ref=f3e261]: Verified Chronology
+                  - heading "Important Dates — GATE 2027" [level=2] [ref=f3e262]
+                - generic [ref=f3e263]:
+                  - text: "Source:"
+                  - link "Official GATE 2027 Portal" [ref=f3e264] [cursor=pointer]:
+                    - /url: https://gate2027.iitm.ac.in/
+              - generic [ref=f3e265]:
+                - generic [ref=f3e266]:
+                  - generic [ref=f3e267]:
+                    - generic [ref=f3e268]: ✓
+                    - generic [ref=f3e269]:
+                      - generic [ref=f3e270]:
+                        - generic [ref=f3e271]: GATE 2027 Registration Window Opens
+                        - generic [ref=f3e272]: completed
+                        - generic [ref=f3e273]: Officially Confirmed
+                      - paragraph [ref=f3e274]: Online application portal (GOAPS) opened for candidate enrollment and paper selection.
+                      - generic [ref=f3e275]: "Event Type: registration"
+                  - generic [ref=f3e276]: 28 Aug 2026
+                - generic [ref=f3e277]:
+                  - generic [ref=f3e278]:
+                    - generic [ref=f3e279]: ✓
+                    - generic [ref=f3e280]:
+                      - generic [ref=f3e281]:
+                        - generic [ref=f3e282]: Regular Application Window (Without Late Fee)
+                        - generic [ref=f3e283]: completed
+                        - generic [ref=f3e284]: Officially Confirmed
+                      - paragraph [ref=f3e285]: Standard application fee window without additional late penalty charges.
+                      - generic [ref=f3e286]: "Event Type: registration"
+                  - generic [ref=f3e287]: 27 Sep 2026
+                - generic [ref=f3e288]:
+                  - generic [ref=f3e289]:
+                    - generic [ref=f3e290]: ✓
+                    - generic [ref=f3e291]:
+                      - generic [ref=f3e292]:
+                        - generic [ref=f3e293]: Extended Registration Deadline (With Late Fee)
+                        - generic [ref=f3e294]: completed
+                        - generic [ref=f3e295]: Officially Confirmed
+                      - paragraph [ref=f3e296]: Final application submission opportunity with prescribed late fees.
+                      - generic [ref=f3e297]: "Event Type: registration"
+                  - generic [ref=f3e298]: 05 Oct 2026
+                - generic [ref=f3e299]:
+                  - generic [ref=f3e300]:
+                    - generic [ref=f3e301]: ○
+                    - generic [ref=f3e302]:
+                      - generic [ref=f3e303]:
+                        - generic [ref=f3e304]: Application Rectification Window
+                        - generic [ref=f3e305]: upcoming
+                        - generic [ref=f3e306]: Officially Confirmed
+                      - paragraph [ref=f3e307]: Candidates can rectify defective photograph, signature, and category documentation.
+                      - generic [ref=f3e308]: "Event Type: correction"
+                  - generic [ref=f3e309]: 14–21 Oct 2026
+                - generic [ref=f3e310]:
+                  - generic [ref=f3e311]:
+                    - generic [ref=f3e312]: ○
+                    - generic [ref=f3e313]:
+                      - generic [ref=f3e314]:
+                        - generic [ref=f3e315]: Admit Card Release & City Allotment
+                        - generic [ref=f3e316]: upcoming
+                        - generic [ref=f3e317]: Officially Confirmed
+                      - paragraph [ref=f3e318]: Official hall tickets made available for download with confirmed exam venue and timing.
+                      - generic [ref=f3e319]: "Event Type: admit card"
+                  - generic [ref=f3e320]: 04 Jan 2027
+                - generic [ref=f3e321]:
+                  - generic [ref=f3e322]:
+                    - generic [ref=f3e323]: ○
+                    - generic [ref=f3e324]:
+                      - generic [ref=f3e325]:
+                        - generic [ref=f3e326]: GATE 2027 Examinations (Computer Based Test)
+                        - generic [ref=f3e327]: upcoming
+                        - generic [ref=f3e328]: Officially Confirmed
+                      - paragraph [ref=f3e329]: National CBT examination conducted across two daily sessions (Forenoon & Afternoon).
+                      - generic [ref=f3e330]: "Event Type: exam"
+                  - generic [ref=f3e331]: 06–21 Feb 2027 (Feb 6, 7, 13, 14, 20, 21)
+                - generic [ref=f3e332]:
+                  - generic [ref=f3e333]:
+                    - generic [ref=f3e334]: ○
+                    - generic [ref=f3e335]:
+                      - generic [ref=f3e336]:
+                        - generic [ref=f3e337]: GATE 2027 Official Results Announcement
+                        - generic [ref=f3e338]: upcoming
+                        - generic [ref=f3e339]: Officially Confirmed
+                      - paragraph [ref=f3e340]: Scorecard qualification status, cutoffs, and All India Rank (AIR) published on GOAPS.
+                      - generic [ref=f3e341]: "Event Type: result"
+                  - generic [ref=f3e342]: 19 Mar 2027
+                - generic [ref=f3e343]:
+                  - generic [ref=f3e344]:
+                    - generic [ref=f3e345]: "?"
+                    - generic [ref=f3e346]:
+                      - generic [ref=f3e347]:
+                        - generic [ref=f3e348]: Official Scorecard Download Period
+                        - generic [ref=f3e349]: tentative
+                        - generic [ref=f3e350]: Tentative
+                      - paragraph [ref=f3e351]: Free download of official normalized scorecards for qualified candidates.
+                      - generic [ref=f3e352]: "Event Type: scorecard"
+                  - generic [ref=f3e353]: Late March 2027 (Tentative)
+              - generic [ref=f3e354]:
+                - generic [ref=f3e355]: All dates are subject to official organizing institute announcements.
+                - generic [ref=f3e356]: "Last Verified: 9/25/2026"
+            - generic [ref=f3e357]:
+              - generic [ref=f3e358]:
+                - generic [ref=f3e359]: Test Design & Marking Rules
+                - heading "How the GATE 2027 Exam Works" [level=2] [ref=f3e360]
+              - generic [ref=f3e361]:
+                - generic [ref=f3e362]:
+                  - generic [ref=f3e363]: 01 • Mode & Duration
+                  - generic [ref=f3e364]: Computer Based Test (CBT)
+                  - paragraph [ref=f3e365]: Conducted online at designated test centers across India. Total duration is 3 Hours (180 minutes) in English medium.
+                - generic [ref=f3e366]:
+                  - generic [ref=f3e367]: 02 • Weightage Breakdown
+                  - generic [ref=f3e368]: 65 Questions • 100 Marks
+                  - paragraph [ref=f3e369]: "General Aptitude (GA): 15% (15 Marks, 10 Questions). Core Subject Discipline: 85% (85 Marks, 55 Questions)."
+                - generic [ref=f3e370]:
+                  - generic [ref=f3e371]: 03 • Question Types
+                  - generic [ref=f3e372]: MCQ • MSQ • NAT
+                  - paragraph [ref=f3e373]: Multiple Choice (MCQ), Multiple Select (MSQ), and Numerical Answer Type (NAT) questions.
+              - generic [ref=f3e374]:
+                - generic [ref=f3e375]: Question Format & Negative Marking Rules
+                - generic [ref=f3e376]:
+                  - generic [ref=f3e377]:
+                    - generic [ref=f3e378]: MCQ (Multiple Choice)
+                    - generic [ref=f3e379]: 4 options provided with exactly 1 correct answer.
+                    - generic [ref=f3e380]: "Negative Marking: 1/3 mark deducted for 1-mark Q; 2/3 mark deducted for 2-mark Q."
+                  - generic [ref=f3e381]:
+                    - generic [ref=f3e382]: MSQ (Multiple Select)
+                    - generic [ref=f3e383]: One or more correct options out of 4 options provided.
+                    - generic [ref=f3e384]: Zero Negative Marking. No partial credit for incomplete selection.
+                  - generic [ref=f3e385]:
+                    - generic [ref=f3e386]: NAT (Numerical Answer Type)
+                    - generic [ref=f3e387]: Numerical value entered using on-screen virtual keyboard.
+                    - generic [ref=f3e388]: Zero Negative Marking. Entered value must lie within official tolerance range.
+            - generic [ref=f3e389]:
+              - generic [ref=f3e390]:
+                - generic [ref=f3e391]:
+                  - generic [ref=f3e392]: Branch Context Selection
+                  - heading "Choose Your Paper" [level=2] [ref=f3e393]
+                  - paragraph [ref=f3e394]: Selecting a paper updates the active syllabus breakdown, combinations, and resources.
+                - textbox "Search paper or code..." [ref=f3e396]
+              - generic [ref=f3e397]:
+                - button "All" [ref=f3e398] [cursor=pointer]
+                - button "Computer & Data Science" [ref=f3e399] [cursor=pointer]
+                - button "Electrical & Electronics" [ref=f3e400] [cursor=pointer]
+                - button "Mechanical & Civil" [ref=f3e401] [cursor=pointer]
+                - button "Process & Bio Sciences" [ref=f3e402] [cursor=pointer]
+              - generic [ref=f3e403]:
+                - button "GATE CSE Active Context Computer Science & Information Technology Core GATE paper covering Data Structures, Algorithms, OS, DBMS, Computer Networks, TOC, Compilers, Architecture & Math. 65 Qs • 100 Marks Explore" [ref=f3e404] [cursor=pointer]:
+                  - generic [ref=f3e405]:
+                    - generic [ref=f3e406]:
+                      - generic [ref=f3e407]: GATE CSE
+                      - generic [ref=f3e408]: Active Context
+                    - generic [ref=f3e409]: Computer Science & Information Technology
+                    - paragraph [ref=f3e410]: Core GATE paper covering Data Structures, Algorithms, OS, DBMS, Computer Networks, TOC, Compilers, Architecture & Math.
+                  - generic [ref=f3e411]:
+                    - generic [ref=f3e412]: 65 Qs • 100 Marks
+                    - generic [ref=f3e413]: Explore
+                - button "GATE DA Data Science & Artificial Intelligence Specialized GATE paper focusing on Probability, Statistics, Linear Algebra, Machine Learning, AI Search & Data Warehousing. 65 Qs • 100 Marks Explore" [ref=f3e416] [cursor=pointer]:
+                  - generic [ref=f3e417]:
+                    - generic [ref=f3e418]: GATE DA
+                    - generic [ref=f3e420]: Data Science & Artificial Intelligence
+                    - paragraph [ref=f3e421]: Specialized GATE paper focusing on Probability, Statistics, Linear Algebra, Machine Learning, AI Search & Data Warehousing.
+                  - generic [ref=f3e422]:
+                    - generic [ref=f3e423]: 65 Qs • 100 Marks
+                    - generic [ref=f3e424]: Explore
+                - button "GATE ECE Electronics & Communication Engineering Paper covering Network Theory, Signals & Systems, Electronic Devices, Analog/Digital Circuits, Control Systems & Communications. 65 Qs • 100 Marks Explore" [ref=f3e427] [cursor=pointer]:
+                  - generic [ref=f3e428]:
+                    - generic [ref=f3e429]: GATE ECE
+                    - generic [ref=f3e431]: Electronics & Communication Engineering
+                    - paragraph [ref=f3e432]: Paper covering Network Theory, Signals & Systems, Electronic Devices, Analog/Digital Circuits, Control Systems & Communications.
+                  - generic [ref=f3e433]:
+                    - generic [ref=f3e434]: 65 Qs • 100 Marks
+                    - generic [ref=f3e435]: Explore
+                - button "GATE EE Electrical Engineering Paper covering Electric Circuits, Electromagnetic Fields, Signals, Electrical Machines, Power Systems & Power Electronics. 65 Qs • 100 Marks Explore" [ref=f3e438] [cursor=pointer]:
+                  - generic [ref=f3e439]:
+                    - generic [ref=f3e440]: GATE EE
+                    - generic [ref=f3e442]: Electrical Engineering
+                    - paragraph [ref=f3e443]: Paper covering Electric Circuits, Electromagnetic Fields, Signals, Electrical Machines, Power Systems & Power Electronics.
+                  - generic [ref=f3e444]:
+                    - generic [ref=f3e445]: 65 Qs • 100 Marks
+                    - generic [ref=f3e446]: Explore
+                - button "GATE ME Mechanical Engineering Paper covering Engineering Mechanics, Strength of Materials, Thermodynamics, Fluid Mechanics & Manufacturing Engineering. 65 Qs • 100 Marks Explore" [ref=f3e449] [cursor=pointer]:
+                  - generic [ref=f3e450]:
+                    - generic [ref=f3e451]: GATE ME
+                    - generic [ref=f3e453]: Mechanical Engineering
+                    - paragraph [ref=f3e454]: Paper covering Engineering Mechanics, Strength of Materials, Thermodynamics, Fluid Mechanics & Manufacturing Engineering.
+                  - generic [ref=f3e455]:
+                    - generic [ref=f3e456]: 65 Qs • 100 Marks
+                    - generic [ref=f3e457]: Explore
+                - button "GATE CE Civil Engineering Paper covering Structural Engineering, Geotechnical Engineering, Water Resources, Environmental & Transportation Engineering. 65 Qs • 100 Marks Explore" [ref=f3e460] [cursor=pointer]:
+                  - generic [ref=f3e461]:
+                    - generic [ref=f3e462]: GATE CE
+                    - generic [ref=f3e464]: Civil Engineering
+                    - paragraph [ref=f3e465]: Paper covering Structural Engineering, Geotechnical Engineering, Water Resources, Environmental & Transportation Engineering.
+                  - generic [ref=f3e466]:
+                    - generic [ref=f3e467]: 65 Qs • 100 Marks
+                    - generic [ref=f3e468]: Explore
+                - button "GATE CH Chemical Engineering Paper covering Process Calculations, Thermodynamics, Fluid Mechanics, Heat Transfer, Mass Transfer & Reaction Engineering. 65 Qs • 100 Marks Explore" [ref=f3e471] [cursor=pointer]:
+                  - generic [ref=f3e472]:
+                    - generic [ref=f3e473]: GATE CH
+                    - generic [ref=f3e475]: Chemical Engineering
+                    - paragraph [ref=f3e476]: Paper covering Process Calculations, Thermodynamics, Fluid Mechanics, Heat Transfer, Mass Transfer & Reaction Engineering.
+                  - generic [ref=f3e477]:
+                    - generic [ref=f3e478]: 65 Qs • 100 Marks
+                    - generic [ref=f3e479]: Explore
+                - button "GATE BT Biotechnology Paper covering Microbiology, Biochemistry, Molecular Biology, Recombinant DNA Tech, Bioprocess Engineering & Bioinformatics. 65 Qs • 100 Marks Explore" [ref=f3e482] [cursor=pointer]:
+                  - generic [ref=f3e483]:
+                    - generic [ref=f3e484]: GATE BT
+                    - generic [ref=f3e486]: Biotechnology
+                    - paragraph [ref=f3e487]: Paper covering Microbiology, Biochemistry, Molecular Biology, Recombinant DNA Tech, Bioprocess Engineering & Bioinformatics.
+                  - generic [ref=f3e488]:
+                    - generic [ref=f3e489]: 65 Qs • 100 Marks
+                    - generic [ref=f3e490]: Explore
+                - button "GATE IN Instrumentation Engineering Paper covering Sensors, Transducers, Industrial Instrumentation, Signals, Control Systems & Analog Circuits. 65 Qs • 100 Marks Explore" [ref=f3e493] [cursor=pointer]:
+                  - generic [ref=f3e494]:
+                    - generic [ref=f3e495]: GATE IN
+                    - generic [ref=f3e497]: Instrumentation Engineering
+                    - paragraph [ref=f3e498]: Paper covering Sensors, Transducers, Industrial Instrumentation, Signals, Control Systems & Analog Circuits.
+                  - generic [ref=f3e499]:
+                    - generic [ref=f3e500]: 65 Qs • 100 Marks
+                    - generic [ref=f3e501]: Explore
+                - button "GATE AE Aerospace Engineering Paper covering Aerodynamics, Flight Mechanics, Aerospace Propulsion, Aircraft Structures & Space Dynamics. 65 Qs • 100 Marks Explore" [ref=f3e504] [cursor=pointer]:
+                  - generic [ref=f3e505]:
+                    - generic [ref=f3e506]: GATE AE
+                    - generic [ref=f3e508]: Aerospace Engineering
+                    - paragraph [ref=f3e509]: Paper covering Aerodynamics, Flight Mechanics, Aerospace Propulsion, Aircraft Structures & Space Dynamics.
+                  - generic [ref=f3e510]:
+                    - generic [ref=f3e511]: 65 Qs • 100 Marks
+                    - generic [ref=f3e512]: Explore
+                - button "GATE AG Agricultural Engineering Paper covering Farm Machinery, Soil & Water Conservation, Irrigation Engineering & Post-Harvest Processing. 65 Qs • 100 Marks Explore" [ref=f3e515] [cursor=pointer]:
+                  - generic [ref=f3e516]:
+                    - generic [ref=f3e517]: GATE AG
+                    - generic [ref=f3e519]: Agricultural Engineering
+                    - paragraph [ref=f3e520]: Paper covering Farm Machinery, Soil & Water Conservation, Irrigation Engineering & Post-Harvest Processing.
+                  - generic [ref=f3e521]:
+                    - generic [ref=f3e522]: 65 Qs • 100 Marks
+                    - generic [ref=f3e523]: Explore
+                - button "GATE AR Architecture and Planning Sectional paper covering Part A Common Architecture & Planning, Part B1 Architecture, Part B2 Planning. 65 Qs • 100 Marks Explore" [ref=f3e526] [cursor=pointer]:
+                  - generic [ref=f3e527]:
+                    - generic [ref=f3e528]: GATE AR
+                    - generic [ref=f3e530]: Architecture and Planning
+                    - paragraph [ref=f3e531]: Sectional paper covering Part A Common Architecture & Planning, Part B1 Architecture, Part B2 Planning.
+                  - generic [ref=f3e532]:
+                    - generic [ref=f3e533]: 65 Qs • 100 Marks
+                    - generic [ref=f3e534]: Explore
+                - button "GATE BM Biomedical Engineering Paper covering Biomedical Instrumentation, Medical Imaging, Bio-Signal Processing, Biomaterials & Biomechanics. 65 Qs • 100 Marks Explore" [ref=f3e537] [cursor=pointer]:
+                  - generic [ref=f3e538]:
+                    - generic [ref=f3e539]: GATE BM
+                    - generic [ref=f3e541]: Biomedical Engineering
+                    - paragraph [ref=f3e542]: Paper covering Biomedical Instrumentation, Medical Imaging, Bio-Signal Processing, Biomaterials & Biomechanics.
+                  - generic [ref=f3e543]:
+                    - generic [ref=f3e544]: 65 Qs • 100 Marks
+                    - generic [ref=f3e545]: Explore
+                - button "GATE CY Chemistry Paper covering Physical Chemistry, Inorganic Chemistry, and Organic Chemistry concepts & analytical techniques. 65 Qs • 100 Marks Explore" [ref=f3e548] [cursor=pointer]:
+                  - generic [ref=f3e549]:
+                    - generic [ref=f3e550]: GATE CY
+                    - generic [ref=f3e552]: Chemistry
+                    - paragraph [ref=f3e553]: Paper covering Physical Chemistry, Inorganic Chemistry, and Organic Chemistry concepts & analytical techniques.
+                  - generic [ref=f3e554]:
+                    - generic [ref=f3e555]: 65 Qs • 100 Marks
+                    - generic [ref=f3e556]: Explore
+                - button "GATE ES Environmental Science & Engineering Paper covering Environmental Chemistry, Microbiology, Water Treatment, Air Pollution, and Waste Management. 65 Qs • 100 Marks Explore" [ref=f3e559] [cursor=pointer]:
+                  - generic [ref=f3e560]:
+                    - generic [ref=f3e561]: GATE ES
+                    - generic [ref=f3e563]: Environmental Science & Engineering
+                    - paragraph [ref=f3e564]: Paper covering Environmental Chemistry, Microbiology, Water Treatment, Air Pollution, and Waste Management.
+                  - generic [ref=f3e565]:
+                    - generic [ref=f3e566]: 65 Qs • 100 Marks
+                    - generic [ref=f3e567]: Explore
+                - button "GATE EY Ecology and Evolution Paper covering Population Ecology, Evolutionary Biology, Behavioural Ecology & Conservation Biology. 65 Qs • 100 Marks Explore" [ref=f3e570] [cursor=pointer]:
+                  - generic [ref=f3e571]:
+                    - generic [ref=f3e572]: GATE EY
+                    - generic [ref=f3e574]: Ecology and Evolution
+                    - paragraph [ref=f3e575]: Paper covering Population Ecology, Evolutionary Biology, Behavioural Ecology & Conservation Biology.
+                  - generic [ref=f3e576]:
+                    - generic [ref=f3e577]: 65 Qs • 100 Marks
+                    - generic [ref=f3e578]: Explore
+                - button "GATE GE Geomatics Engineering Sectional paper covering Part A Common (GNSS, Remote Sensing, GIS) + Part B1 Surveying or B2 Photogrammetry. 65 Qs • 100 Marks Explore" [ref=f3e581] [cursor=pointer]:
+                  - generic [ref=f3e582]:
+                    - generic [ref=f3e583]: GATE GE
+                    - generic [ref=f3e585]: Geomatics Engineering
+                    - paragraph [ref=f3e586]: Sectional paper covering Part A Common (GNSS, Remote Sensing, GIS) + Part B1 Surveying or B2 Photogrammetry.
+                  - generic [ref=f3e587]:
+                    - generic [ref=f3e588]: 65 Qs • 100 Marks
+                    - generic [ref=f3e589]: Explore
+                - button "GATE GG Geology & Geophysics Sectional paper covering Part A Common + Part B Section 1 Geology or Section 2 Geophysics. 65 Qs • 100 Marks Explore" [ref=f3e592] [cursor=pointer]:
+                  - generic [ref=f3e593]:
+                    - generic [ref=f3e594]: GATE GG
+                    - generic [ref=f3e596]: Geology & Geophysics
+                    - paragraph [ref=f3e597]: Sectional paper covering Part A Common + Part B Section 1 Geology or Section 2 Geophysics.
+                  - generic [ref=f3e598]:
+                    - generic [ref=f3e599]: 65 Qs • 100 Marks
+                    - generic [ref=f3e600]: Explore
+                - button "GATE MA Mathematics Paper covering Calculus, Linear Algebra, Real & Complex Analysis, ODEs, PDEs, Algebra, and Numerical Analysis. 65 Qs • 100 Marks Explore" [ref=f3e603] [cursor=pointer]:
+                  - generic [ref=f3e604]:
+                    - generic [ref=f3e605]: GATE MA
+                    - generic [ref=f3e607]: Mathematics
+                    - paragraph [ref=f3e608]: Paper covering Calculus, Linear Algebra, Real & Complex Analysis, ODEs, PDEs, Algebra, and Numerical Analysis.
+                  - generic [ref=f3e609]:
+                    - generic [ref=f3e610]: 65 Qs • 100 Marks
+                    - generic [ref=f3e611]: Explore
+                - button "GATE MN Mining Engineering Paper covering Mine Surveying, Geomechanics, Surface & Underground Mining, Mine Ventilation & Safety. 65 Qs • 100 Marks Explore" [ref=f3e614] [cursor=pointer]:
+                  - generic [ref=f3e615]:
+                    - generic [ref=f3e616]: GATE MN
+                    - generic [ref=f3e618]: Mining Engineering
+                    - paragraph [ref=f3e619]: Paper covering Mine Surveying, Geomechanics, Surface & Underground Mining, Mine Ventilation & Safety.
+                  - generic [ref=f3e620]:
+                    - generic [ref=f3e621]: 65 Qs • 100 Marks
+                    - generic [ref=f3e622]: Explore
+                - button "GATE MT Metallurgical Engineering Paper covering Extractive Metallurgy, Physical Metallurgy, Mechanical Metallurgy & Thermodynamics. 65 Qs • 100 Marks Explore" [ref=f3e625] [cursor=pointer]:
+                  - generic [ref=f3e626]:
+                    - generic [ref=f3e627]: GATE MT
+                    - generic [ref=f3e629]: Metallurgical Engineering
+                    - paragraph [ref=f3e630]: Paper covering Extractive Metallurgy, Physical Metallurgy, Mechanical Metallurgy & Thermodynamics.
+                  - generic [ref=f3e631]:
+                    - generic [ref=f3e632]: 65 Qs • 100 Marks
+                    - generic [ref=f3e633]: Explore
+                - button "GATE NM Naval Architecture & Marine Engineering Paper covering Hydrostatics, Ship Stability, Resistance & Propulsion, Ship Structures & Marine Machinery. 65 Qs • 100 Marks Explore" [ref=f3e636] [cursor=pointer]:
+                  - generic [ref=f3e637]:
+                    - generic [ref=f3e638]: GATE NM
+                    - generic [ref=f3e640]: Naval Architecture & Marine Engineering
+                    - paragraph [ref=f3e641]: Paper covering Hydrostatics, Ship Stability, Resistance & Propulsion, Ship Structures & Marine Machinery.
+                  - generic [ref=f3e642]:
+                    - generic [ref=f3e643]: 65 Qs • 100 Marks
+                    - generic [ref=f3e644]: Explore
+                - button "GATE PE Petroleum Engineering Paper covering Petroleum Geology, Reservoir Engineering, Drilling Engineering & Production Operations. 65 Qs • 100 Marks Explore" [ref=f3e647] [cursor=pointer]:
+                  - generic [ref=f3e648]:
+                    - generic [ref=f3e649]: GATE PE
+                    - generic [ref=f3e651]: Petroleum Engineering
+                    - paragraph [ref=f3e652]: Paper covering Petroleum Geology, Reservoir Engineering, Drilling Engineering & Production Operations.
+                  - generic [ref=f3e653]:
+                    - generic [ref=f3e654]: 65 Qs • 100 Marks
+                    - generic [ref=f3e655]: Explore
+                - button "GATE PH Physics Paper covering Mathematical Physics, Classical Mechanics, Electrodynamics, Quantum Mechanics & Solid State Physics. 65 Qs • 100 Marks Explore" [ref=f3e658] [cursor=pointer]:
+                  - generic [ref=f3e659]:
+                    - generic [ref=f3e660]: GATE PH
+                    - generic [ref=f3e662]: Physics
+                    - paragraph [ref=f3e663]: Paper covering Mathematical Physics, Classical Mechanics, Electrodynamics, Quantum Mechanics & Solid State Physics.
+                  - generic [ref=f3e664]:
+                    - generic [ref=f3e665]: 65 Qs • 100 Marks
+                    - generic [ref=f3e666]: Explore
+                - button "GATE PI Production & Industrial Engineering Paper covering Casting, Machining, Metrology, Operations Research, Production Planning & Quality Control. 65 Qs • 100 Marks Explore" [ref=f3e669] [cursor=pointer]:
+                  - generic [ref=f3e670]:
+                    - generic [ref=f3e671]: GATE PI
+                    - generic [ref=f3e673]: Production & Industrial Engineering
+                    - paragraph [ref=f3e674]: Paper covering Casting, Machining, Metrology, Operations Research, Production Planning & Quality Control.
+                  - generic [ref=f3e675]:
+                    - generic [ref=f3e676]: 65 Qs • 100 Marks
+                    - generic [ref=f3e677]: Explore
+                - button "GATE RA Robotics & Automation NEW GATE 2027 paper covering Robot Kinematics, Dynamics, Actuators, Sensors, Control Systems & Computer Vision. 65 Qs • 100 Marks Explore" [ref=f3e680] [cursor=pointer]:
+                  - generic [ref=f3e681]:
+                    - generic [ref=f3e682]: GATE RA
+                    - generic [ref=f3e684]: Robotics & Automation
+                    - paragraph [ref=f3e685]: NEW GATE 2027 paper covering Robot Kinematics, Dynamics, Actuators, Sensors, Control Systems & Computer Vision.
+                  - generic [ref=f3e686]:
+                    - generic [ref=f3e687]: 65 Qs • 100 Marks
+                    - generic [ref=f3e688]: Explore
+                - button "GATE ST Statistics Paper covering Probability Theory, Estimation, Hypothesis Testing, Multivariate Analysis & Stochastic Processes. 65 Qs • 100 Marks Explore" [ref=f3e691] [cursor=pointer]:
+                  - generic [ref=f3e692]:
+                    - generic [ref=f3e693]: GATE ST
+                    - generic [ref=f3e695]: Statistics
+                    - paragraph [ref=f3e696]: Paper covering Probability Theory, Estimation, Hypothesis Testing, Multivariate Analysis & Stochastic Processes.
+                  - generic [ref=f3e697]:
+                    - generic [ref=f3e698]: 65 Qs • 100 Marks
+                    - generic [ref=f3e699]: Explore
+                - 'button "GATE XE Engineering Sciences Sectional paper: Section A Engg Math (Compulsory) + Choice of 2 Sections B to H (Fluid Mech, SOM, Thermo, Materials, etc.). 65 Qs • 100 Marks Explore" [ref=f3e702] [cursor=pointer]':
+                  - generic [ref=f3e703]:
+                    - generic [ref=f3e704]: GATE XE
+                    - generic [ref=f3e706]: Engineering Sciences
+                    - paragraph [ref=f3e707]: "Sectional paper: Section A Engg Math (Compulsory) + Choice of 2 Sections B to H (Fluid Mech, SOM, Thermo, Materials, etc.)."
+                  - generic [ref=f3e708]:
+                    - generic [ref=f3e709]: 65 Qs • 100 Marks
+                    - generic [ref=f3e710]: Explore
+                - 'button "GATE XH Humanities & Social Sciences Sectional paper: Section B1 Reasoning (Compulsory) + Choice of 1 Discipline C1-C6 (Economics, English, Psych, Socio, etc.). 65 Qs • 100 Marks Explore" [ref=f3e713] [cursor=pointer]':
+                  - generic [ref=f3e714]:
+                    - generic [ref=f3e715]: GATE XH
+                    - generic [ref=f3e717]: Humanities & Social Sciences
+                    - paragraph [ref=f3e718]: "Sectional paper: Section B1 Reasoning (Compulsory) + Choice of 1 Discipline C1-C6 (Economics, English, Psych, Socio, etc.)."
+                  - generic [ref=f3e719]:
+                    - generic [ref=f3e720]: 65 Qs • 100 Marks
+                    - generic [ref=f3e721]: Explore
+                - 'button "GATE XL Life Sciences Sectional paper: Section P Chemistry (Compulsory) + Choice of 2 Sections Q to U (Biochemistry, Botany, Zoology, Microbio, Food Tech). 65 Qs • 100 Marks Explore" [ref=f3e724] [cursor=pointer]':
+                  - generic [ref=f3e725]:
+                    - generic [ref=f3e726]: GATE XL
+                    - generic [ref=f3e728]: Life Sciences
+                    - paragraph [ref=f3e729]: "Sectional paper: Section P Chemistry (Compulsory) + Choice of 2 Sections Q to U (Biochemistry, Botany, Zoology, Microbio, Food Tech)."
+                  - generic [ref=f3e730]:
+                    - generic [ref=f3e731]: 65 Qs • 100 Marks
+                    - generic [ref=f3e732]: Explore
+            - generic [ref=f3e735]:
+              - generic [ref=f3e736]:
+                - generic [ref=f3e737]: Dual Paper Options
+                - heading "Can I choose two papers in GATE 2027?" [level=2] [ref=f3e738]
+              - generic [ref=f3e739]:
+                - paragraph [ref=f3e740]:
+                  - text: Yes. Candidates can opt to appear in either
+                  - strong [ref=f3e741]: ONE
+                  - text: or
+                  - strong [ref=f3e742]: TWO
+                  - text: test papers from the permitted combinations specified by the GATE 2027 committee.
+                - generic [ref=f3e743]:
+                  - generic [ref=f3e744]:
+                    - text: "Permitted Secondary Combinations for Primary Paper:"
+                    - generic [ref=f3e745]: GATE CSE
+                  - generic [ref=f3e746]: GATE DA
+                - link "View Official GATE 2027 Two-Paper Combinations Matrix" [ref=f3e749] [cursor=pointer]:
+                  - /url: https://gate2027.iitm.ac.in/
+            - generic [ref=f3e755]:
+              - generic [ref=f3e756]:
+                - generic [ref=f3e757]: Academic Process
+                - heading "Preparation Roadmap" [level=2] [ref=f3e758]
+              - generic [ref=f3e759]:
+                - generic [ref=f3e760]:
+                  - generic [ref=f3e761]:
+                    - generic [ref=f3e762]: "01"
+                    - generic [ref=f3e763]: Understand
+                  - paragraph [ref=f3e764]: Purpose, eligibility & exam pattern rules
+                - generic [ref=f3e765]:
+                  - generic [ref=f3e766]:
+                    - generic [ref=f3e767]: "02"
+                    - generic [ref=f3e768]: Choose
+                  - paragraph [ref=f3e769]: Primary paper & permitted 2-paper combination
+                - generic [ref=f3e770]:
+                  - generic [ref=f3e771]:
+                    - generic [ref=f3e772]: "03"
+                    - generic [ref=f3e773]: Learn
+                  - paragraph [ref=f3e774]: Official GATE 2027 subject syllabus topics
+                - generic [ref=f3e775]:
+                  - generic [ref=f3e776]:
+                    - generic [ref=f3e777]: "04"
+                    - generic [ref=f3e778]: Practice
+                  - paragraph [ref=f3e779]: Topic-wise previous year questions (PYQs)
+                - generic [ref=f3e780]:
+                  - generic [ref=f3e781]:
+                    - generic [ref=f3e782]: "05"
+                    - generic [ref=f3e783]: Analyze
+                  - paragraph [ref=f3e784]: Identify weak areas and revise core concepts
+                - generic [ref=f3e785]:
+                  - generic [ref=f3e786]:
+                    - generic [ref=f3e787]: "06"
+                    - generic [ref=f3e788]: Revise
+                  - paragraph [ref=f3e789]: Build speed, accuracy & exam-day consistency
+            - generic [ref=f3e790]:
+              - generic [ref=f3e791]:
+                - generic [ref=f3e792]:
+                  - generic [ref=f3e793]: Verified Notifications Log
+                  - heading "Latest GATE 2027 Updates" [level=2] [ref=f3e794]
+                - generic [ref=f3e795]: Strictly GATE 2027 Data
+              - generic [ref=f3e796]:
+                - generic [ref=f3e797] [cursor=pointer]:
+                  - generic [ref=f3e798]:
+                    - generic [ref=f3e799]:
+                      - generic [ref=f3e800]: guidelines update
+                      - heading "DigiLocker Integration Update for Document Verification" [level=3] [ref=f3e801]
+                    - generic [ref=f3e802]: Sep 19, 2026
+                  - paragraph [ref=f3e803]: The GATE 2027 organizing committee (IIT Madras) updated instructions regarding category certificate and degree verification via DigiLocker for streamlined application processing.
+                  - generic [ref=f3e804]:
+                    - generic [ref=f3e805]: View Details & Candidate Impact →
+                    - generic [ref=f3e806]: "Official Source: gate2027.iitm.ac.in"
+                - generic [ref=f3e807] [cursor=pointer]:
+                  - generic [ref=f3e808]:
+                    - generic [ref=f3e809]:
+                      - generic [ref=f3e810]: official announcement
+                      - heading "Candidate Photograph & Signature Upload Specifications" [level=3] [ref=f3e811]
+                    - generic [ref=f3e812]: Sep 17, 2026
+                  - paragraph [ref=f3e813]: Clarification issued on background color, resolution, and facial capture constraints for photo submission during GATE 2027 registration.
+                  - generic [ref=f3e814]:
+                    - generic [ref=f3e815]: View Details & Candidate Impact →
+                    - generic [ref=f3e816]: "Official Source: gate2027.iitm.ac.in"
+                - generic [ref=f3e817] [cursor=pointer]:
+                  - generic [ref=f3e818]:
+                    - generic [ref=f3e819]:
+                      - generic [ref=f3e820]: syllabus update
+                      - heading "Introduction of Robotics & Automation (RA) Test Paper" [level=3] [ref=f3e821]
+                    - generic [ref=f3e822]: Sep 1, 2026
+                  - paragraph [ref=f3e823]: GATE 2027 formally introduces Robotics & Automation (RA) as an official 30th test paper with dedicated syllabus specifications.
+                  - generic [ref=f3e824]:
+                    - generic [ref=f3e825]: View Details & Candidate Impact →
+                    - generic [ref=f3e826]: "Official Source: gate2027.iitm.ac.in"
+                - generic [ref=f3e827] [cursor=pointer]:
+                  - generic [ref=f3e828]:
+                    - generic [ref=f3e829]:
+                      - generic [ref=f3e830]: official announcement
+                      - heading "GATE 2027 Official Notification & Website Launched" [level=3] [ref=f3e831]
+                    - generic [ref=f3e832]: Aug 28, 2026
+                  - paragraph [ref=f3e833]: The official GATE 2027 organizing institute (IIT Madras) released the formal exam notification, key dates schedule, and information brochure.
+                  - generic [ref=f3e834]:
+                    - generic [ref=f3e835]: View Details & Candidate Impact →
+                    - generic [ref=f3e836]: "Official Source: gate2027.iitm.ac.in"
+            - generic [ref=f3e837]:
+              - generic [ref=f3e838]:
+                - generic [ref=f3e839]: Verified Links & Archives
+                - heading "Official GATE 2027 Sources" [level=2] [ref=f3e840]
+              - generic [ref=f3e841]:
+                - generic [ref=f3e842]:
+                  - generic [ref=f3e843]: Official Primary Sources
+                  - list [ref=f3e844]:
+                    - listitem [ref=f3e845]:
+                      - link "GATE 2027 Official Portal (IIT Madras)" [ref=f3e846] [cursor=pointer]:
+                        - /url: https://gate2027.iitm.ac.in/
+                    - listitem [ref=f3e852]:
+                      - link "Official GATE 2027 Notifications Feed" [ref=f3e853] [cursor=pointer]:
+                        - /url: https://gate2027.iitm.ac.in/notifications
+                    - listitem [ref=f3e859]:
+                      - link "Official GATE 2027 Paper Syllabus Documents" [ref=f3e860] [cursor=pointer]:
+                        - /url: https://gate2027.iitm.ac.in/exam_papers_and_syllabus
+                - generic [ref=f3e866]:
+                  - generic [ref=f3e867]: Additional Curated Learning Portals
+                  - list [ref=f3e868]:
+                    - listitem [ref=f3e869]:
+                      - link "NPTEL Engineering Video Lecture Series" [ref=f3e870] [cursor=pointer]:
+                        - /url: https://nptel.ac.in/
+                    - listitem [ref=f3e876]:
+                      - link "MIT OpenCourseWare (Engineering & CS)" [ref=f3e877] [cursor=pointer]:
+                        - /url: https://ocw.mit.edu/
+            - generic [ref=f3e884]:
+              - generic [ref=f3e885]:
+                - generic [ref=f3e886]: SyncPilot AI Context Helper — GATE CSE
+                - generic [ref=f3e890]: Optional Guidance
+              - paragraph [ref=f3e891]: "Need quick clarification or concept breakdown? Click a prompt to open SyncPilot with this exact topic context:"
+              - generic [ref=f3e892]:
+                - button "\"Explain GATE CSE simply for GATE CSE\"" [ref=f3e893]
+                - button "\"Why is GATE CSE important in GATE CSE?\"" [ref=f3e898]
+                - button "\"What are common traps or mistakes in GATE CSE?\"" [ref=f3e903]
+          - generic [ref=f3e908]:
+            - generic [ref=f3e909]:
+              - generic [ref=f3e910]:
+                - generic [ref=f3e911]: Official GATE 2027 Syllabus & Learning Breakdown
+                - heading "GATE 2027 Test Papers & Official Syllabus" [level=2] [ref=f3e914]
+                - paragraph [ref=f3e915]: Explore verified official syllabus breakdowns for all 30 GATE 2027 test papers. Sourced directly from IIT Madras.
+              - link "Official GATE 2027 Syllabus Source ↗" [ref=f3e916] [cursor=pointer]:
+                - /url: https://gate2027.iitm.ac.in/exam_papers_and_syllabus
+            - generic [ref=f3e921]:
+              - generic [ref=f3e922]:
+                - generic [ref=f3e923]:
+                  - generic [ref=f3e924]: GATE 2027 PAPERS (30)
+                  - generic [ref=f3e930]: Verified
+                - textbox "Search code or paper name..." [ref=f3e932]
+                - generic [ref=f3e933]:
+                  - button "CSE ACTIVE Computer Science & Information Technology" [ref=f3e934] [cursor=pointer]:
+                    - generic [ref=f3e935]:
+                      - generic [ref=f3e936]:
+                        - generic [ref=f3e937]: CSE
+                        - generic [ref=f3e938]: ACTIVE
+                      - generic [ref=f3e939]: Computer Science & Information Technology
+                  - button "DA Data Science & Artificial Intelligence" [ref=f3e942] [cursor=pointer]:
+                    - generic [ref=f3e943]:
+                      - generic [ref=f3e944]: DA
+                      - generic [ref=f3e946]: Data Science & Artificial Intelligence
+                  - button "ECE Electronics & Communication Engineering" [ref=f3e947] [cursor=pointer]:
+                    - generic [ref=f3e948]:
+                      - generic [ref=f3e949]: ECE
+                      - generic [ref=f3e951]: Electronics & Communication Engineering
+                  - button "EE Electrical Engineering" [ref=f3e952] [cursor=pointer]:
+                    - generic [ref=f3e953]:
+                      - generic [ref=f3e954]: EE
+                      - generic [ref=f3e956]: Electrical Engineering
+                  - button "ME Mechanical Engineering" [ref=f3e957] [cursor=pointer]:
+                    - generic [ref=f3e958]:
+                      - generic [ref=f3e959]: ME
+                      - generic [ref=f3e961]: Mechanical Engineering
+                  - button "CE Civil Engineering" [ref=f3e962] [cursor=pointer]:
+                    - generic [ref=f3e963]:
+                      - generic [ref=f3e964]: CE
+                      - generic [ref=f3e966]: Civil Engineering
+                  - button "CH Chemical Engineering" [ref=f3e967] [cursor=pointer]:
+                    - generic [ref=f3e968]:
+                      - generic [ref=f3e969]: CH
+                      - generic [ref=f3e971]: Chemical Engineering
+                  - button "BT Biotechnology" [ref=f3e972] [cursor=pointer]:
+                    - generic [ref=f3e973]:
+                      - generic [ref=f3e974]: BT
+                      - generic [ref=f3e976]: Biotechnology
+                  - button "IN Instrumentation Engineering" [ref=f3e977] [cursor=pointer]:
+                    - generic [ref=f3e978]:
+                      - generic [ref=f3e979]: IN
+                      - generic [ref=f3e981]: Instrumentation Engineering
+                  - button "AE Aerospace Engineering" [ref=f3e982] [cursor=pointer]:
+                    - generic [ref=f3e983]:
+                      - generic [ref=f3e984]: AE
+                      - generic [ref=f3e986]: Aerospace Engineering
+                  - button "AG Agricultural Engineering" [ref=f3e987] [cursor=pointer]:
+                    - generic [ref=f3e988]:
+                      - generic [ref=f3e989]: AG
+                      - generic [ref=f3e991]: Agricultural Engineering
+                  - button "AR Architecture and Planning" [ref=f3e992] [cursor=pointer]:
+                    - generic [ref=f3e993]:
+                      - generic [ref=f3e994]: AR
+                      - generic [ref=f3e996]: Architecture and Planning
+                  - button "BM Biomedical Engineering" [ref=f3e997] [cursor=pointer]:
+                    - generic [ref=f3e998]:
+                      - generic [ref=f3e999]: BM
+                      - generic [ref=f3e1001]: Biomedical Engineering
+                  - button "CY Chemistry" [ref=f3e1002] [cursor=pointer]:
+                    - generic [ref=f3e1003]:
+                      - generic [ref=f3e1004]: CY
+                      - generic [ref=f3e1006]: Chemistry
+                  - button "ES Environmental Science & Engineering" [ref=f3e1007] [cursor=pointer]:
+                    - generic [ref=f3e1008]:
+                      - generic [ref=f3e1009]: ES
+                      - generic [ref=f3e1011]: Environmental Science & Engineering
+                  - button "EY Ecology and Evolution" [ref=f3e1012] [cursor=pointer]:
+                    - generic [ref=f3e1013]:
+                      - generic [ref=f3e1014]: EY
+                      - generic [ref=f3e1016]: Ecology and Evolution
+                  - button "GE Geomatics Engineering" [ref=f3e1017] [cursor=pointer]:
+                    - generic [ref=f3e1018]:
+                      - generic [ref=f3e1019]: GE
+                      - generic [ref=f3e1021]: Geomatics Engineering
+                  - button "GG Geology & Geophysics" [ref=f3e1022] [cursor=pointer]:
+                    - generic [ref=f3e1023]:
+                      - generic [ref=f3e1024]: GG
+                      - generic [ref=f3e1026]: Geology & Geophysics
+                  - button "MA Mathematics" [ref=f3e1027] [cursor=pointer]:
+                    - generic [ref=f3e1028]:
+                      - generic [ref=f3e1029]: MA
+                      - generic [ref=f3e1031]: Mathematics
+                  - button "MN Mining Engineering" [ref=f3e1032] [cursor=pointer]:
+                    - generic [ref=f3e1033]:
+                      - generic [ref=f3e1034]: MN
+                      - generic [ref=f3e1036]: Mining Engineering
+                  - button "MT Metallurgical Engineering" [ref=f3e1037] [cursor=pointer]:
+                    - generic [ref=f3e1038]:
+                      - generic [ref=f3e1039]: MT
+                      - generic [ref=f3e1041]: Metallurgical Engineering
+                  - button "NM Naval Architecture & Marine Engineering" [ref=f3e1042] [cursor=pointer]:
+                    - generic [ref=f3e1043]:
+                      - generic [ref=f3e1044]: NM
+                      - generic [ref=f3e1046]: Naval Architecture & Marine Engineering
+                  - button "PE Petroleum Engineering" [ref=f3e1047] [cursor=pointer]:
+                    - generic [ref=f3e1048]:
+                      - generic [ref=f3e1049]: PE
+                      - generic [ref=f3e1051]: Petroleum Engineering
+                  - button "PH Physics" [ref=f3e1052] [cursor=pointer]:
+                    - generic [ref=f3e1053]:
+                      - generic [ref=f3e1054]: PH
+                      - generic [ref=f3e1056]: Physics
+                  - button "PI Production & Industrial Engineering" [ref=f3e1057] [cursor=pointer]:
+                    - generic [ref=f3e1058]:
+                      - generic [ref=f3e1059]: PI
+                      - generic [ref=f3e1061]: Production & Industrial Engineering
+                  - button "RA Robotics & Automation" [ref=f3e1062] [cursor=pointer]:
+                    - generic [ref=f3e1063]:
+                      - generic [ref=f3e1064]: RA
+                      - generic [ref=f3e1066]: Robotics & Automation
+                  - button "ST Statistics" [ref=f3e1067] [cursor=pointer]:
+                    - generic [ref=f3e1068]:
+                      - generic [ref=f3e1069]: ST
+                      - generic [ref=f3e1071]: Statistics
+                  - button "XE Engineering Sciences" [ref=f3e1072] [cursor=pointer]:
+                    - generic [ref=f3e1073]:
+                      - generic [ref=f3e1074]: XE
+                      - generic [ref=f3e1076]: Engineering Sciences
+                  - button "XH Humanities & Social Sciences" [ref=f3e1077] [cursor=pointer]:
+                    - generic [ref=f3e1078]:
+                      - generic [ref=f3e1079]: XH
+                      - generic [ref=f3e1081]: Humanities & Social Sciences
+                  - button "XL Life Sciences" [ref=f3e1082] [cursor=pointer]:
+                    - generic [ref=f3e1083]:
+                      - generic [ref=f3e1084]: XL
+                      - generic [ref=f3e1086]: Life Sciences
+              - generic [ref=f3e1087]:
+                - generic [ref=f3e1088]:
+                  - generic [ref=f3e1089]:
+                    - generic [ref=f3e1090]:
+                      - generic [ref=f3e1091]: GATE 2027 TEST PAPER
+                      - heading "GATE CSE — Computer Science & Information Technology" [level=3] [ref=f3e1092]
+                    - link "Official PDF" [ref=f3e1093] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/CS_GATE2027_Syllabus.pdf
+                  - paragraph [ref=f3e1099]: Core GATE paper covering Data Structures, Algorithms, OS, DBMS, Computer Networks, TOC, Compilers, Architecture & Math.
+                  - generic [ref=f3e1100]:
+                    - generic [ref=f3e1101]:
+                      - generic [ref=f3e1102]: Exam Duration
+                      - generic [ref=f3e1103]: 180 Minutes (3 Hours)
+                    - generic [ref=f3e1104]:
+                      - generic [ref=f3e1105]: Total Questions
+                      - generic [ref=f3e1106]: 65 Questions
+                    - generic [ref=f3e1107]:
+                      - generic [ref=f3e1108]: Total Marks
+                      - generic [ref=f3e1109]: 100 Marks
+                - generic [ref=f3e1110]:
+                  - generic [ref=f3e1111]:
+                    - generic [ref=f3e1112]: SUBJECT TOPICS (4 SUBJECT SECTIONS)
+                    - textbox "Search syllabus topic..." [ref=f3e1114]
+                  - generic [ref=f3e1115]:
+                    - button "Engineering & Discrete Mathematics(2)" [ref=f3e1116] [cursor=pointer]:
+                      - text: Engineering & Discrete Mathematics
+                      - generic [ref=f3e1117]: (2)
+                    - button "Programming, Data Structures & Algorithms(3)" [ref=f3e1118] [cursor=pointer]:
+                      - text: Programming, Data Structures & Algorithms
+                      - generic [ref=f3e1119]: (3)
+                    - button "Operating Systems & System Architecture(2)" [ref=f3e1120] [cursor=pointer]:
+                      - text: Operating Systems & System Architecture
+                      - generic [ref=f3e1121]: (2)
+                    - button "Databases & Computer Networks(2)" [ref=f3e1122] [cursor=pointer]:
+                      - text: Databases & Computer Networks
+                      - generic [ref=f3e1123]: (2)
+                  - generic [ref=f3e1124]:
+                    - generic [ref=f3e1125]:
+                      - generic [ref=f3e1126]: TOPICS IN ENGINEERING & DISCRETE MATHEMATICS
+                      - button "Discrete Mathematics & Logic" [ref=f3e1127] [cursor=pointer]
+                      - button "Linear Algebra & Calculus" [ref=f3e1131] [cursor=pointer]
+                    - generic [ref=f3e1134]:
+                      - generic [ref=f3e1135]:
+                        - generic [ref=f3e1136]: Engineering & Discrete Mathematics / Discrete Mathematics & Logic
+                        - heading "Discrete Mathematics & Logic" [level=4] [ref=f3e1137]
+                        - generic [ref=f3e1138]: "Estimated Weightage: 3 – 6% of paper"
+                      - generic [ref=f3e1139]:
+                        - generic [ref=f3e1140]: "Concept Overview:"
+                        - paragraph [ref=f3e1141]: Propositional & predicate logic, sets, relations, functions, partial orders, lattice & groups.
+                        - generic [ref=f3e1142]:
+                          - strong [ref=f3e1143]: "Why it matters:"
+                          - text: Essential core topic for GATE CSE 2027 examination. Mastering this topic guarantees scoring momentum in direct numericals and conceptual questions.
+                      - generic [ref=f3e1144]:
+                        - generic [ref=f3e1145]: "Key Syllabus Coverage Checklist:"
+                        - generic [ref=f3e1146]:
+                          - generic [ref=f3e1147]: Truth tables & logical equivalences
+                          - generic [ref=f3e1152]: Equivalence relations & Hasse diagrams
+                          - generic [ref=f3e1157]: Group theory basics
+          - generic [ref=f3e1162]:
+            - generic [ref=f3e1163]:
+              - generic [ref=f3e1164]: UPDATES & OFFICIAL PROVENANCE
+              - heading "Official GATE 2027 Timeline & Announcements Log" [level=2] [ref=f3e1167]
+              - paragraph [ref=f3e1168]: Track official examination milestones, verified date releases, and announcement logs sourced directly from the official organizing institute portal (IIT Madras).
+            - generic [ref=f3e1169]:
+              - generic [ref=f3e1170]:
+                - generic [ref=f3e1171]:
+                  - generic [ref=f3e1172]: GATE 2027 TIMELINE
+                  - heading "Official Examination Milestones" [level=3] [ref=f3e1173]
+                - generic [ref=f3e1174]: Directly Verified
+              - generic [ref=f3e1178]:
+                - generic [ref=f3e1179]:
+                  - generic [ref=f3e1180]:
+                    - generic [ref=f3e1181]:
+                      - generic [ref=f3e1182]: GATE 2027 Registration Window Opens
+                      - generic [ref=f3e1183]: completed
+                    - generic [ref=f3e1184]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1185]: verified
+                  - generic [ref=f3e1186]:
+                    - generic [ref=f3e1187]: 28 Aug 2026
+                    - link "Verify ↗" [ref=f3e1188] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1190]:
+                  - generic [ref=f3e1191]:
+                    - generic [ref=f3e1192]:
+                      - generic [ref=f3e1193]: Regular Application Window (Without Late Fee)
+                      - generic [ref=f3e1194]: completed
+                    - generic [ref=f3e1195]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1196]: verified
+                  - generic [ref=f3e1197]:
+                    - generic [ref=f3e1198]: 27 Sep 2026
+                    - link "Verify ↗" [ref=f3e1199] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1201]:
+                  - generic [ref=f3e1202]:
+                    - generic [ref=f3e1203]:
+                      - generic [ref=f3e1204]: Extended Registration Deadline (With Late Fee)
+                      - generic [ref=f3e1205]: completed
+                    - generic [ref=f3e1206]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1207]: verified
+                  - generic [ref=f3e1208]:
+                    - generic [ref=f3e1209]: 05 Oct 2026
+                    - link "Verify ↗" [ref=f3e1210] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1212]:
+                  - generic [ref=f3e1213]:
+                    - generic [ref=f3e1214]:
+                      - generic [ref=f3e1215]: Application Rectification Window
+                      - generic [ref=f3e1216]: upcoming
+                    - generic [ref=f3e1217]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1218]: verified
+                  - generic [ref=f3e1219]:
+                    - generic [ref=f3e1220]: 14–21 Oct 2026
+                    - link "Verify ↗" [ref=f3e1221] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1223]:
+                  - generic [ref=f3e1224]:
+                    - generic [ref=f3e1225]:
+                      - generic [ref=f3e1226]: Admit Card Release & City Allotment
+                      - generic [ref=f3e1227]: upcoming
+                    - generic [ref=f3e1228]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1229]: verified
+                  - generic [ref=f3e1230]:
+                    - generic [ref=f3e1231]: 04 Jan 2027
+                    - link "Verify ↗" [ref=f3e1232] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1234]:
+                  - generic [ref=f3e1235]:
+                    - generic [ref=f3e1236]:
+                      - generic [ref=f3e1237]: GATE 2027 Examinations (Computer Based Test)
+                      - generic [ref=f3e1238]: upcoming
+                    - generic [ref=f3e1239]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1240]: verified
+                  - generic [ref=f3e1241]:
+                    - generic [ref=f3e1242]: 06–21 Feb 2027 (Feb 6, 7, 13, 14, 20, 21)
+                    - link "Verify ↗" [ref=f3e1243] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/question_paper_pattern
+                - generic [ref=f3e1245]:
+                  - generic [ref=f3e1246]:
+                    - generic [ref=f3e1247]:
+                      - generic [ref=f3e1248]: GATE 2027 Official Results Announcement
+                      - generic [ref=f3e1249]: upcoming
+                    - generic [ref=f3e1250]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1251]: verified
+                  - generic [ref=f3e1252]:
+                    - generic [ref=f3e1253]: 19 Mar 2027
+                    - link "Verify ↗" [ref=f3e1254] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1256]:
+                  - generic [ref=f3e1257]:
+                    - generic [ref=f3e1258]:
+                      - generic [ref=f3e1259]: Official Scorecard Download Period
+                      - generic [ref=f3e1260]: tentative
+                    - generic [ref=f3e1261]:
+                      - text: "Verified Status:"
+                      - strong [ref=f3e1262]: verified
+                  - generic [ref=f3e1263]:
+                    - generic [ref=f3e1264]: Late March 2027 (Tentative)
+                    - link "Verify ↗" [ref=f3e1265] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+            - generic [ref=f3e1267]:
+              - generic [ref=f3e1268]:
+                - generic [ref=f3e1269]: LATEST OFFICIAL UPDATES
+                - heading "Verified Announcement Log" [level=3] [ref=f3e1270]
+              - generic [ref=f3e1271]:
+                - generic [ref=f3e1272]:
+                  - generic [ref=f3e1273]:
+                    - generic [ref=f3e1274]:
+                      - generic [ref=f3e1275]: guidelines update
+                      - heading "DigiLocker Integration Update for Document Verification" [level=4] [ref=f3e1276]
+                    - generic [ref=f3e1277]: Sep 19, 2026
+                  - paragraph [ref=f3e1278]: The GATE 2027 organizing committee (IIT Madras) updated instructions regarding category certificate and degree verification via DigiLocker for streamlined application processing.
+                  - generic [ref=f3e1279]:
+                    - generic [ref=f3e1280]: Direct Official Sourced
+                    - link "Official Source" [ref=f3e1284] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1290]:
+                  - generic [ref=f3e1291]:
+                    - generic [ref=f3e1292]:
+                      - generic [ref=f3e1293]: official announcement
+                      - heading "Candidate Photograph & Signature Upload Specifications" [level=4] [ref=f3e1294]
+                    - generic [ref=f3e1295]: Sep 17, 2026
+                  - paragraph [ref=f3e1296]: Clarification issued on background color, resolution, and facial capture constraints for photo submission during GATE 2027 registration.
+                  - generic [ref=f3e1297]:
+                    - generic [ref=f3e1298]: Direct Official Sourced
+                    - link "Official Source" [ref=f3e1302] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/notifications
+                - generic [ref=f3e1308]:
+                  - generic [ref=f3e1309]:
+                    - generic [ref=f3e1310]:
+                      - generic [ref=f3e1311]: syllabus update
+                      - heading "Introduction of Robotics & Automation (RA) Test Paper" [level=4] [ref=f3e1312]
+                    - generic [ref=f3e1313]: Sep 1, 2026
+                  - paragraph [ref=f3e1314]: GATE 2027 formally introduces Robotics & Automation (RA) as an official 30th test paper with dedicated syllabus specifications.
+                  - generic [ref=f3e1315]:
+                    - generic [ref=f3e1316]: Direct Official Sourced
+                    - link "Official Source" [ref=f3e1320] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/exam_papers_and_syllabus
+                - generic [ref=f3e1326]:
+                  - generic [ref=f3e1327]:
+                    - generic [ref=f3e1328]:
+                      - generic [ref=f3e1329]: official announcement
+                      - heading "GATE 2027 Official Notification & Website Launched" [level=4] [ref=f3e1330]
+                    - generic [ref=f3e1331]: Aug 28, 2026
+                  - paragraph [ref=f3e1332]: The official GATE 2027 organizing institute (IIT Madras) released the formal exam notification, key dates schedule, and information brochure.
+                  - generic [ref=f3e1333]:
+                    - generic [ref=f3e1334]: Direct Official Sourced
+                    - link "Official Source" [ref=f3e1338] [cursor=pointer]:
+                      - /url: https://gate2027.iitm.ac.in/
+    - contentinfo [ref=f3e35]:
+      - generic [ref=f3e36]:
+        - generic [ref=f3e37]:
+          - generic [ref=f3e38]:
+            - generic [ref=f3e39]:
+              - generic [ref=f3e40]: SyncRole
+              - generic [ref=f3e41]: •
+              - generic [ref=f3e42]: GATE 2027 Hub
+            - paragraph [ref=f3e43]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=f3e44]:
+            - link "← Back to SyncRole Platform" [ref=f3e45] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=f3e46] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=f3e52]:
+          - generic [ref=f3e57]:
+            - text: "Official Source Verified:"
+            - strong [ref=f3e58]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=f3e59]:
+            - text: "Last Verified:"
+            - strong [ref=f3e60]: Sep 25, 2026
+        - generic [ref=f3e61]:
+          - strong [ref=f3e62]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"

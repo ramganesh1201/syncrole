@@ -1,0 +1,42 @@
+- generic [active] [ref=f2e1]:
+  - generic [ref=f2e2]:
+    - generic [ref=f2e3]:
+      - banner [ref=f2e4]:
+        - generic [ref=f2e5]:
+          - link "SyncRole" [ref=f2e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f2e11]: GATE 2027
+      - navigation [ref=f2e13]:
+        - button "Home" [ref=f2e14]
+        - button "Syllabus" [ref=f2e19]
+        - button "Dates" [ref=f2e23]
+        - button "Updates" [ref=f2e27]
+        - button "More" [ref=f2e32]
+      - main [ref=f2e38]:
+        - generic [ref=f2e39]: Loading verified GATE 2027 information...
+    - contentinfo [ref=f2e43]:
+      - generic [ref=f2e44]:
+        - generic [ref=f2e45]:
+          - generic [ref=f2e46]:
+            - generic [ref=f2e47]:
+              - generic [ref=f2e48]: SyncRole
+              - generic [ref=f2e49]: •
+              - generic [ref=f2e50]: GATE 2027 Hub
+            - paragraph [ref=f2e51]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=f2e52]:
+            - link "← Back to SyncRole Platform" [ref=f2e53] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=f2e54] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=f2e60]:
+          - generic [ref=f2e65]:
+            - text: "Official Source Verified:"
+            - strong [ref=f2e66]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=f2e67]:
+            - text: "Last Verified:"
+            - strong [ref=f2e68]: Sep 25, 2026
+        - generic [ref=f2e69]:
+          - strong [ref=f2e70]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"

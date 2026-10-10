@@ -991,33 +991,35 @@ function CareerTransformationsMobileNav() {
     { label: "Home", href: "/", icon: Home },
     { label: "Explore", href: "/career-transformations", icon: Compass },
     { label: "SyncPilot", action: openSyncPilot, icon: Sparkles, isCenter: true },
-    { label: "GATE Hub", href: "/gate", icon: Shield, isNew: true },
+    { label: "GATE Hub", href: "/gate", icon: Shield },
     { label: "Profile", href: user ? "/profile" : "/auth", icon: UserCheck },
   ];
 
   return (
     <nav
-      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/98 backdrop-blur-xl border-t border-slate-200/80 shadow-sm"
-      style={{ paddingBottom: "calc(0.5rem + env(safe-area-inset-bottom))" }}
+      className="sm:hidden fixed bottom-0 inset-x-0 z-40 bg-white/98 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-1px_3px_rgba(0,0,0,0.03)]"
+      style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Mobile navigation"
     >
-      <div className="flex items-center justify-around px-2 pt-1.5 pb-1 h-[56px]">
+      <div className="grid grid-cols-5 items-center h-[60px] px-1 max-w-lg mx-auto">
         {navItems.map((item) => {
           if (item.isCenter) {
             return (
-              <button
-                key={item.label}
-                onClick={() => item.action?.()}
-                className={`relative -top-2.5 h-11 w-11 rounded-full grid place-items-center shadow-md transition active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
-                  isSyncPilotOpen
-                    ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50"
-                    : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white hover:brightness-110 shadow-indigo-600/25"
-                }`}
-                aria-label="Open SyncPilot AI Assistant"
-                aria-pressed={isSyncPilotOpen}
-              >
-                <item.icon className="h-5 w-5" />
-              </button>
+              <div key={item.label} className="flex items-center justify-center h-full w-full">
+                <button
+                  type="button"
+                  onClick={() => item.action?.()}
+                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                    isSyncPilotOpen
+                      ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50 shadow-xs"
+                      : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm shadow-indigo-600/20 hover:brightness-105"
+                  }`}
+                  aria-label="Open SyncPilot AI Assistant"
+                  aria-pressed={isSyncPilotOpen}
+                >
+                  <item.icon className="h-5 w-5 stroke-[2]" />
+                </button>
+              </div>
             );
           }
 
@@ -1031,25 +1033,24 @@ function CareerTransformationsMobileNav() {
             <Link
               key={item.label}
               to={item.href as any}
-              className={`relative flex flex-col items-center justify-center py-1.5 px-2.5 min-w-[44px] min-h-[44px] rounded-xl transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400 ${
+              className={`flex flex-col items-center justify-center h-full w-full py-1 text-center select-none outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl transition-colors active:scale-95 ${
                 isActive
-                  ? "text-blue-600 bg-blue-50"
-                  : "text-slate-500 hover:text-slate-800 hover:bg-slate-50/80"
+                  ? "text-blue-600"
+                  : "text-slate-500 hover:text-slate-800"
               }`}
             >
-              <div className="relative">
-                <IconComp
-                  className={`h-[18px] w-[18px] ${
-                    isActive ? "text-blue-600" : "text-slate-400"
-                  }`}
-                />
-                {item.isNew && (
-                  <span className="absolute -top-0.5 -right-1 h-2 w-2 rounded-full bg-blue-600 ring-2 ring-white" />
-                )}
-              </div>
-              <span className={`text-[10px] tracking-tight mt-0.5 ${
-                isActive ? "font-semibold" : "font-medium"
-              }`}>{item.label}</span>
+              <IconComp
+                className={`h-5 w-5 transition-none ${
+                  isActive ? "text-blue-600 stroke-[2.2]" : "text-slate-400 stroke-[2]"
+                }`}
+              />
+              <span
+                className={`text-[10px] tracking-tight mt-1 leading-none truncate max-w-full px-0.5 ${
+                  isActive ? "font-semibold text-blue-600" : "font-medium text-slate-500"
+                }`}
+              >
+                {item.label}
+              </span>
             </Link>
           );
         })}

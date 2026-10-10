@@ -1,0 +1,42 @@
+- generic [active] [ref=f15e1]:
+  - generic [ref=f15e2]:
+    - generic [ref=f15e3]:
+      - banner [ref=f15e4]:
+        - generic [ref=f15e5]:
+          - link "SyncRole" [ref=f15e7] [cursor=pointer]:
+            - /url: /
+          - generic [ref=f15e11]: GATE 2027
+      - navigation [ref=f15e13]:
+        - button "Home" [ref=f15e14]
+        - button "Syllabus" [ref=f15e19]
+        - button "Dates" [ref=f15e23]
+        - button "Updates" [ref=f15e27]
+        - button "More" [ref=f15e32]
+      - main [ref=f15e38]:
+        - generic [ref=f15e39]: Loading verified GATE 2027 information...
+    - contentinfo [ref=f15e43]:
+      - generic [ref=f15e44]:
+        - generic [ref=f15e45]:
+          - generic [ref=f15e46]:
+            - generic [ref=f15e47]:
+              - generic [ref=f15e48]: SyncRole
+              - generic [ref=f15e49]: •
+              - generic [ref=f15e50]: GATE 2027 Hub
+            - paragraph [ref=f15e51]: Public information product for GATE 2027 aspirants. Source-backed syllabus breakdowns, verified dates, examination patterns, and curated academic learning links.
+          - generic [ref=f15e52]:
+            - link "← Back to SyncRole Platform" [ref=f15e53] [cursor=pointer]:
+              - /url: /
+            - link "Official GATE Portal" [ref=f15e54] [cursor=pointer]:
+              - /url: https://gate2027.iitm.ac.in/
+        - generic [ref=f15e60]:
+          - generic [ref=f15e65]:
+            - text: "Official Source Verified:"
+            - strong [ref=f15e66]: gate2027.iitm.ac.in
+            - text: (IIT Madras)
+          - generic [ref=f15e67]:
+            - text: "Last Verified:"
+            - strong [ref=f15e68]: Sep 25, 2026
+        - generic [ref=f15e69]:
+          - strong [ref=f15e70]: "Legal Disclaimer:"
+          - text: GATE is an official examination conducted by the National Coordination Board (NCB)-GATE, Department of Higher Education, Ministry of Education, Government of India. SyncRole is an independent preparation and discovery platform. All examination logos, names, and official trademarks belong to their respective official authorities.
+  - region "Notifications alt+T"

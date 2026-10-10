@@ -21,6 +21,8 @@ export interface GateEvent {
   endDate?: string;
   dateLabel: string;
   status: 'upcoming' | 'ongoing' | 'completed' | 'tentative';
+  description?: string;
+  isTentative?: boolean;
   sourceId?: string;
   officialUrl?: string;
   lastCheckedAt: string;

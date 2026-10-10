@@ -21,7 +21,13 @@ import {
   Check,
   Globe,
   FileCheck,
+  Download,
 } from 'lucide-react';
+import {
+  useGateLiveClock,
+  resolveGateLiveSchedule,
+  downloadOrOpenGatePdf,
+} from '@/lib/gate/gateDateUtils';
 
 export type GateMobileTab = 'home' | 'syllabus' | 'dates' | 'updates' | 'more';
 
@@ -97,8 +103,11 @@ function GateMobileHomeScreen({
   updates: GateUpdate[];
   onNavigateScreen: (screen: GateMobileTab) => void;
 }) {
-  const ongoingEvent = events.find((e) => e.status === 'ongoing') || events[1] || events[0];
-  const upcomingEvent = events.find((e) => e.status === 'upcoming') || events[2];
+  const now = useGateLiveClock();
+  const { ongoingEvent, nextMilestone, targetMilestone, countdown } = resolveGateLiveSchedule(
+    events,
+    now
+  );
 
   return (
     <div className="space-y-5 text-slate-800 font-sans">
@@ -162,30 +171,61 @@ function GateMobileHomeScreen({
         </div>
       </section>
 
-      {/* Current Status Banner */}
-      {ongoingEvent && (
-        <section className="bg-gradient-to-r from-teal-900 to-slate-900 text-white rounded-2xl p-4 space-y-2 shadow-sm">
-          <div className="flex items-center justify-between">
-            <span className="text-[10px] font-extrabold uppercase tracking-wider text-teal-300 font-mono">
-              WHAT'S HAPPENING NOW
-            </span>
-            <span className="text-[10px] font-bold bg-teal-500/20 text-teal-200 border border-teal-400/30 px-2 py-0.5 rounded-full">
-              {ongoingEvent.status}
-            </span>
+      {/* Dynamic Live Status & Real-Time Countdown Card */}
+      <section className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-2xl p-4 space-y-3 shadow-sm">
+        <div className="flex items-center justify-between text-[10px]">
+          <span className="font-extrabold uppercase tracking-wider text-teal-300 font-mono">
+            {ongoingEvent ? "WHAT'S HAPPENING NOW" : 'NEXT OFFICIAL MILESTONE'}
+          </span>
+          <span className="font-bold bg-teal-500/20 text-teal-200 border border-teal-400/30 px-2 py-0.5 rounded-full font-mono">
+            {ongoingEvent ? 'ACTIVE WINDOW' : targetMilestone?.isTentative ? 'TENTATIVE' : 'UPCOMING'}
+          </span>
+        </div>
+
+        <div className="space-y-0.5">
+          <h3 className="text-xs font-bold text-white leading-snug">
+            {ongoingEvent ? ongoingEvent.title : targetMilestone ? targetMilestone.title : 'GATE 2027 Examinations'}
+          </h3>
+          <div className="text-[11px] text-teal-300 font-mono font-bold">
+            {ongoingEvent ? ongoingEvent.dateLabel : targetMilestone ? targetMilestone.dateLabel : 'Schedule active'}
           </div>
+        </div>
 
-          <h3 className="text-xs font-bold text-white">{ongoingEvent.title}</h3>
-          <p className="text-[11px] text-slate-300 leading-snug">{ongoingEvent.description}</p>
+        {targetMilestone && !countdown.isPassed && !countdown.isTentative && (
+          <div className="bg-white/10 p-2.5 rounded-xl border border-white/10 space-y-1">
+            <div className="text-[9px] font-mono text-teal-300 uppercase tracking-wider flex items-center justify-between">
+              <span>Countdown to {targetMilestone.title}</span>
+              <span className="text-white font-bold">Live IST</span>
+            </div>
+            <div className="grid grid-cols-4 gap-1.5 text-center font-mono">
+              <div className="bg-black/20 rounded p-1">
+                <div className="text-sm font-bold text-white">{countdown.days}</div>
+                <div className="text-[8px] text-slate-300">Days</div>
+              </div>
+              <div className="bg-black/20 rounded p-1">
+                <div className="text-sm font-bold text-white">{String(countdown.hours).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300">Hours</div>
+              </div>
+              <div className="bg-black/20 rounded p-1">
+                <div className="text-sm font-bold text-white">{String(countdown.minutes).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300">Mins</div>
+              </div>
+              <div className="bg-black/20 rounded p-1">
+                <div className="text-sm font-bold text-emerald-400">{String(countdown.seconds).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300">Secs</div>
+              </div>
+            </div>
+          </div>
+        )}
 
-          <button
-            onClick={() => onNavigateScreen('dates')}
-            className="mt-1 w-full py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition"
-          >
-            <span>View All Important Dates</span>
-            <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        </section>
-      )}
+        <button
+          onClick={() => onNavigateScreen('dates')}
+          className="w-full py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold flex items-center justify-center gap-1.5 transition active:scale-[0.99]"
+        >
+          <span>View All Important Dates</span>
+          <ChevronRight className="h-3.5 w-3.5" />
+        </button>
+      </section>
 
       {/* What is GATE Card */}
       <section className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3 shadow-xs">
@@ -323,6 +363,22 @@ function GateMobileSyllabusScreen({
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [isPaperPickerOpen, setIsPaperPickerOpen] = useState(false);
   const [openSubjectId, setOpenSubjectId] = useState<string>('');
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const pdfUrl =
+    paper.officialPdfUrl ||
+    `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
+      paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
+    }_GATE2027_Syllabus.pdf`;
+
+  const handleDownload = async () => {
+    setIsDownloading(true);
+    try {
+      await downloadOrOpenGatePdf(pdfUrl, paper.code);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   // Extract unique categories
   const categories = useMemo(() => {
@@ -491,30 +547,52 @@ function GateMobileSyllabusScreen({
         </div>
       )}
 
-      {/* Selected Paper Details & Official Source Link */}
-      <div className="bg-teal-50/90 border border-teal-200/90 rounded-2xl p-4 flex items-center justify-between text-xs shadow-xs">
-        <div className="space-y-0.5 min-w-0">
-          <div className="font-bold text-teal-950 truncate">
-            GATE {paper.code} — {paper.name}
-          </div>
-          <div className="text-[11px] text-teal-800 font-medium">
-            Source: Official GATE 2027 IIT Madras Repository
+      {/* Selected Paper Details & Mobile Download Action Card */}
+      <div className="bg-white border border-teal-200/90 rounded-2xl p-4 space-y-3.5 shadow-xs">
+        <div className="flex items-start justify-between gap-2">
+          <div className="space-y-0.5 min-w-0">
+            <span className="text-[10px] font-bold font-mono uppercase text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+              GATE {paper.code} 2027 SYLLABUS
+            </span>
+            <h2 className="font-extrabold text-sm text-slate-900 truncate pt-1">
+              {paper.name}
+            </h2>
+            <div className="text-[11px] text-slate-500 font-medium">
+              Verified Source: IIT Madras Official GATE 2027 Repository
+            </div>
           </div>
         </div>
-        <a
-          href={
-            paper.officialPdfUrl ||
-            `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
-              paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
-            }_GATE2027_Syllabus.pdf`
-          }
-          target="_blank"
-          rel="noreferrer"
-          className="px-3 py-1.5 rounded-xl bg-white border border-teal-300 text-teal-900 text-[11px] font-bold shadow-2xs hover:bg-teal-50 transition flex items-center gap-1 shrink-0"
-        >
-          <span>Official PDF</span>
-          <ExternalLink className="h-3 w-3" />
-        </a>
+
+        {/* Action Buttons: Download PDF (Primary, min 44px) + View Online (Secondary) */}
+        <div className="flex flex-col sm:flex-row items-stretch gap-2 pt-1">
+          <button
+            onClick={handleDownload}
+            disabled={isDownloading}
+            className="flex-1 py-2.5 px-4 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold shadow-xs flex items-center justify-center gap-2 transition active:scale-[0.98] disabled:opacity-75 cursor-pointer min-h-[44px]"
+          >
+            {isDownloading ? (
+              <>
+                <div className="h-4 w-4 rounded-full border-2 border-white border-t-transparent animate-spin shrink-0" />
+                <span>Downloading PDF...</span>
+              </>
+            ) : (
+              <>
+                <Download className="h-4 w-4 shrink-0 text-teal-200" />
+                <span>Download Syllabus PDF</span>
+              </>
+            )}
+          </button>
+
+          <a
+            href={pdfUrl}
+            target="_blank"
+            rel="noreferrer"
+            className="py-2.5 px-3.5 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition shrink-0 min-h-[44px]"
+          >
+            <span>View Online</span>
+            <ExternalLink className="h-3.5 w-3.5 text-slate-500 shrink-0" />
+          </a>
+        </div>
       </div>
 
       {/* Subject Accordions */}
@@ -607,7 +685,14 @@ function GateMobileDatesScreen({
   events: GateEvent[];
   lastVerifiedAt: string;
 }) {
-  const ongoingEvent = events.find((e) => e.status === 'ongoing') || events[1] || events[0];
+  const now = useGateLiveClock();
+  const {
+    enrichedEvents,
+    ongoingEvent,
+    nextMilestone,
+    targetMilestone,
+    countdown,
+  } = resolveGateLiveSchedule(events, now);
 
   return (
     <div className="space-y-4 text-slate-800 font-sans">
@@ -619,65 +704,138 @@ function GateMobileDatesScreen({
         <p className="text-xs text-slate-600">
           Official timeline milestones & schedule verified from IIT Madras.
         </p>
+        <div className="text-[11px] text-teal-800 font-mono font-medium pt-1">
+          Last Verified: {new Date(lastVerifiedAt).toLocaleDateString()} • Live IST Time
+        </div>
       </div>
 
-      {/* Current Status */}
-      {ongoingEvent && (
-        <div className="bg-gradient-to-r from-teal-900 to-slate-900 text-white rounded-2xl p-4 space-y-1.5 shadow-sm">
-          <div className="flex items-center justify-between text-[10px] font-mono uppercase font-bold text-teal-300">
-            <span>WHAT'S HAPPENING NOW</span>
-            <span className="bg-teal-500/20 text-teal-200 border border-teal-400/30 px-2 py-0.5 rounded-full">
-              {ongoingEvent.status}
+      {/* Real-Time Countdown to Target Milestone */}
+      {targetMilestone && (
+        <div className="bg-gradient-to-r from-teal-900 via-slate-900 to-teal-950 text-white rounded-2xl p-4 space-y-3 shadow-sm">
+          <div className="flex items-center justify-between text-[10px]">
+            <span className="font-extrabold uppercase tracking-wider text-teal-300 font-mono">
+              COUNTDOWN TO {targetMilestone.eventType.toUpperCase()}
+            </span>
+            <span className={`font-bold px-2 py-0.5 rounded-full border text-[9px] font-mono ${
+              targetMilestone.isTentative
+                ? 'bg-amber-500/20 text-amber-300 border-amber-400/30'
+                : 'bg-emerald-500/20 text-emerald-300 border-emerald-400/30'
+            }`}>
+              {targetMilestone.isTentative ? 'TENTATIVE' : 'OFFICIAL ANNOUNCED'}
             </span>
           </div>
-          <h3 className="text-xs font-bold text-white">{ongoingEvent.title}</h3>
-          <p className="text-[11px] text-slate-300 leading-snug">{ongoingEvent.description}</p>
+
+          <div className="space-y-0.5">
+            <h3 className="text-xs font-bold text-white">{targetMilestone.title}</h3>
+            <div className="text-[11px] text-teal-300 font-mono font-bold">
+              {targetMilestone.dateLabel}
+            </div>
+          </div>
+
+          {countdown.isTentative ? (
+            <div className="text-[11px] text-amber-200 bg-white/5 p-2.5 rounded-xl border border-white/10">
+              {countdown.formatted}
+            </div>
+          ) : countdown.isPassed ? (
+            <div className="text-[11px] text-emerald-300 bg-white/5 p-2.5 rounded-xl border border-white/10 flex items-center gap-1.5">
+              <CheckCircle2 className="h-3.5 w-3.5 text-emerald-400 shrink-0" />
+              <span>Milestone currently underway or completed</span>
+            </div>
+          ) : (
+            <div className="grid grid-cols-4 gap-1.5 text-center font-mono">
+              <div className="bg-black/20 rounded p-1.5">
+                <div className="text-base font-bold text-white">{countdown.days}</div>
+                <div className="text-[8px] text-slate-300 uppercase">Days</div>
+              </div>
+              <div className="bg-black/20 rounded p-1.5">
+                <div className="text-base font-bold text-white">{String(countdown.hours).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300 uppercase">Hours</div>
+              </div>
+              <div className="bg-black/20 rounded p-1.5">
+                <div className="text-base font-bold text-white">{String(countdown.minutes).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300 uppercase">Mins</div>
+              </div>
+              <div className="bg-black/20 rounded p-1.5">
+                <div className="text-base font-bold text-emerald-400">{String(countdown.seconds).padStart(2, '0')}</div>
+                <div className="text-[8px] text-slate-300 uppercase">Secs</div>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
-      {/* Vertical Timeline */}
+      {/* Current Status */}
+      {ongoingEvent && (
+        <div className="bg-emerald-50 border border-emerald-200 rounded-2xl p-4 space-y-1.5 shadow-2xs">
+          <div className="flex items-center justify-between text-[10px] font-mono uppercase font-bold text-emerald-900">
+            <span className="flex items-center gap-1.5">
+              <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+              ACTIVE RIGHT NOW
+            </span>
+            <span className="bg-emerald-100 text-emerald-800 border border-emerald-300 px-2 py-0.5 rounded-full">
+              {ongoingEvent.status}
+            </span>
+          </div>
+          <h3 className="text-xs font-bold text-emerald-950">{ongoingEvent.title}</h3>
+          <p className="text-[11px] text-emerald-800 leading-snug">{ongoingEvent.description}</p>
+        </div>
+      )}
+
+      {/* Vertical Timeline with Dynamic Live Status */}
       <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-4 shadow-xs">
         <div className="text-[10px] font-bold font-mono uppercase tracking-wider text-slate-400">
-          EXAMINATION TIMELINE
+          EXAMINATION TIMELINE ({enrichedEvents.length} MILESTONES)
         </div>
 
         <div className="space-y-4 relative pl-4 border-l-2 border-teal-200">
-          {events.map((evt) => {
+          {enrichedEvents.map((evt) => {
             const isOngoing = evt.status === 'ongoing';
             const isCompleted = evt.status === 'completed';
+            const isTentative = evt.status === 'tentative';
 
             return (
               <div key={evt.id} className="relative space-y-1">
                 <span
                   className={`absolute -left-[23px] top-0.5 h-3.5 w-3.5 rounded-full border-2 border-white ring-2 ${
                     isOngoing
-                      ? 'bg-teal-600 ring-teal-300 animate-pulse'
+                      ? 'bg-emerald-600 ring-emerald-300 animate-pulse'
                       : isCompleted
                       ? 'bg-slate-400 ring-slate-200'
+                      : isTentative
+                      ? 'bg-amber-500 ring-amber-200'
                       : 'bg-blue-600 ring-blue-200'
                   }`}
                 />
 
-                <div className="flex items-center justify-between gap-2">
+                <div className="flex flex-wrap items-center justify-between gap-1.5">
                   <h4 className="text-xs font-bold text-slate-900">{evt.title}</h4>
-                  <span
-                    className={`text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
-                      isOngoing
-                        ? 'bg-teal-50 text-teal-800 border-teal-200'
-                        : isCompleted
-                        ? 'bg-slate-100 text-slate-500 border-slate-200'
-                        : 'bg-blue-50 text-blue-700 border-blue-200'
-                    }`}
-                  >
-                    {evt.status}
-                  </span>
+                  <div className="flex items-center gap-1">
+                    <span
+                      className={`text-[9px] font-mono font-bold uppercase px-2 py-0.5 rounded border ${
+                        isOngoing
+                          ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                          : isCompleted
+                          ? 'bg-slate-100 text-slate-500 border-slate-200'
+                          : isTentative
+                          ? 'bg-amber-50 text-amber-700 border-amber-200'
+                          : 'bg-blue-50 text-blue-700 border-blue-200'
+                      }`}
+                    >
+                      {isOngoing ? 'Active Now' : evt.status}
+                    </span>
+                    <span className="text-[9px] font-mono text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-200">
+                      {evt.isTentative ? 'Tentative' : 'Official'}
+                    </span>
+                  </div>
                 </div>
 
                 <div className="text-[11px] font-bold font-mono text-teal-800">
                   {evt.dateLabel}
                 </div>
 
-                <p className="text-[11px] text-slate-600 leading-snug">{evt.description}</p>
+                {evt.description && (
+                  <p className="text-[11px] text-slate-600 leading-snug">{evt.description}</p>
+                )}
 
                 {evt.officialUrl && (
                   <a
