@@ -2,26 +2,33 @@ import { createFileRoute, useNavigate, useSearch } from '@tanstack/react-router'
 import { useEffect, useState } from 'react';
 import { GateService } from '@/lib/gate/gateService';
 import { GatePaperInfo, GateEvent, GateUpdate, GateSyllabusTopic } from '@/lib/gate/gateTypes';
-import GateHeader, { GateSectionId, GateMobileTab } from '@/components/gate/GateHeader';
+import GateHeader, { GateDesktopTab, GateMobileTab } from '@/components/gate/GateHeader';
 import GateOverviewTab from '@/components/gate/GateOverviewTab';
 import GateSyllabusResourcesTab from '@/components/gate/GateSyllabusResourcesTab';
+import GatePatternTab from '@/components/gate/GatePatternTab';
 import GateUpdatesTab from '@/components/gate/GateUpdatesTab';
 import GateFooter from '@/components/gate/GateFooter';
 import { GateMobileScreens } from '@/components/gate/GateMobileScreens';
 
 interface GateSearch {
   screen?: GateMobileTab;
+  tab?: GateDesktopTab;
   paper?: string;
 }
 
 export const Route = createFileRoute('/gate')({
   validateSearch: (search: Record<string, unknown>): GateSearch => {
     const validScreens: GateMobileTab[] = ['home', 'syllabus', 'dates', 'updates', 'more'];
+    const validTabs: GateDesktopTab[] = ['overview', 'syllabus', 'pattern', 'updates'];
     const screen = validScreens.includes(search.screen as GateMobileTab)
       ? (search.screen as GateMobileTab)
       : 'home';
+    const tab = validTabs.includes(search.tab as GateDesktopTab)
+      ? (search.tab as GateDesktopTab)
+      : 'overview';
     return {
       screen,
+      tab,
       paper: (search.paper as string) || undefined,
     };
   },
@@ -50,7 +57,7 @@ function GatePage() {
   const navigate = useNavigate({ from: '/gate' });
 
   const activeMobileScreen: GateMobileTab = search.screen || 'home';
-  const [activeSection, setActiveSection] = useState<GateSectionId>('overview');
+  const activeDesktopTab: GateDesktopTab = search.tab || 'overview';
   const [selectedPaper, setSelectedPaper] = useState<string>(search.paper || 'CSE');
 
   // Data state
@@ -69,6 +76,15 @@ function GatePage() {
       search: (prev) => ({ ...prev, paper: code }),
       replace: true,
     });
+  };
+
+  // Switch desktop tab with URL update
+  const handleSelectDesktopTab = (tab: GateDesktopTab) => {
+    navigate({
+      search: (prev) => ({ ...prev, tab }),
+      replace: true,
+    });
+    window.scrollTo({ top: 0, behavior: 'instant' });
   };
 
   // Switch mobile screen with scroll to top
@@ -111,21 +127,13 @@ function GatePage() {
 
   const activePaperObj = papers.find((p) => p.code === selectedPaper) || papers[0];
 
-  const handleSelectSection = (secId: GateSectionId) => {
-    setActiveSection(secId);
-    const element = document.getElementById(secId);
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
-    }
-  };
-
   return (
     <div className="min-h-screen bg-[#F7F9FC] text-slate-900 flex flex-col justify-between selection:bg-teal-100 selection:text-teal-900 font-sans">
       <div>
         {/* Persistent GATE Header (App Shell Header) */}
         <GateHeader
-          activeSection={activeSection}
-          onSelectSection={handleSelectSection}
+          activeDesktopTab={activeDesktopTab}
+          onSelectDesktopTab={handleSelectDesktopTab}
           activeMobileTab={activeMobileScreen}
           onSelectMobileTab={handleNavigateMobileScreen}
           selectedPaper={selectedPaper}
@@ -161,31 +169,43 @@ function GatePage() {
                 />
               </div>
 
-              {/* DESKTOP VIEW — FULL GATE HUB (Hidden on mobile) */}
-              <div className="hidden md:block space-y-16">
-                <GateOverviewTab
-                  paper={activePaperObj}
-                  papers={papers}
-                  events={events}
-                  updates={updates}
-                  onSelectPaper={handleSelectPaper}
-                  onJumpToSyllabus={() => handleSelectSection('syllabus')}
-                  lastVerifiedAt={lastVerifiedAt}
-                  isFallback={isFallback}
-                />
+              {/* DESKTOP VIEW — FOCUSED WORKSPACE TABS (Hidden on mobile) */}
+              <div className="hidden md:block">
+                {activeDesktopTab === 'overview' && (
+                  <GateOverviewTab
+                    paper={activePaperObj}
+                    papers={papers}
+                    events={events}
+                    updates={updates}
+                    onSelectPaper={handleSelectPaper}
+                    onJumpToSyllabus={() => handleSelectDesktopTab('syllabus')}
+                    onJumpToUpdates={() => handleSelectDesktopTab('updates')}
+                    onJumpToPattern={() => handleSelectDesktopTab('pattern')}
+                    lastVerifiedAt={lastVerifiedAt}
+                    isFallback={isFallback}
+                  />
+                )}
 
-                <GateSyllabusResourcesTab
-                  paper={activePaperObj}
-                  papers={papers}
-                  syllabus={syllabus}
-                  onSelectPaper={handleSelectPaper}
-                />
+                {activeDesktopTab === 'syllabus' && (
+                  <GateSyllabusResourcesTab
+                    paper={activePaperObj}
+                    papers={papers}
+                    syllabus={syllabus}
+                    onSelectPaper={handleSelectPaper}
+                  />
+                )}
 
-                <GateUpdatesTab
-                  events={events}
-                  updates={updates}
-                  lastVerifiedAt={lastVerifiedAt}
-                />
+                {activeDesktopTab === 'pattern' && (
+                  <GatePatternTab />
+                )}
+
+                {activeDesktopTab === 'updates' && (
+                  <GateUpdatesTab
+                    events={events}
+                    updates={updates}
+                    lastVerifiedAt={lastVerifiedAt}
+                  />
+                )}
               </div>
             </>
           )}

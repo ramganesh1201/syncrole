@@ -35,11 +35,13 @@ export type GateSectionId =
   | 'updates'
   | 'sources';
 
+export type GateDesktopTab = 'overview' | 'syllabus' | 'pattern' | 'updates';
+
 export type GateMobileTab = 'home' | 'syllabus' | 'dates' | 'updates' | 'more';
 
 interface GateHeaderProps {
-  activeSection: GateSectionId;
-  onSelectSection: (sectionId: GateSectionId) => void;
+  activeDesktopTab: GateDesktopTab;
+  onSelectDesktopTab: (tab: GateDesktopTab) => void;
   activeMobileTab: GateMobileTab;
   onSelectMobileTab: (tab: GateMobileTab) => void;
   selectedPaper: string;
@@ -48,8 +50,8 @@ interface GateHeaderProps {
 }
 
 export default function GateHeader({
-  activeSection,
-  onSelectSection,
+  activeDesktopTab,
+  onSelectDesktopTab,
   activeMobileTab,
   onSelectMobileTab,
   selectedPaper,
@@ -58,17 +60,11 @@ export default function GateHeader({
 }: GateHeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const desktopSections: { id: GateSectionId; label: string; icon: any }[] = [
-    { id: 'overview', label: 'Overview', icon: Home },
-    { id: 'about', label: 'What is GATE?', icon: Info },
-    { id: 'status', label: 'Current Status', icon: Clock },
-    { id: 'dates', label: 'Important Dates', icon: Calendar },
-    { id: 'pattern', label: 'Exam Pattern', icon: FileText },
-    { id: 'papers', label: 'Choose Paper', icon: Layers },
-    { id: 'syllabus', label: 'Syllabus', icon: BookOpen },
-    { id: 'roadmap', label: 'Roadmap', icon: Compass },
-    { id: 'updates', label: 'Official Updates', icon: Bell },
-    { id: 'sources', label: 'Official Sources', icon: ExternalLink },
+  const desktopTabs: { id: GateDesktopTab; label: string; icon: any }[] = [
+    { id: 'overview', label: 'Overview', icon: Compass },
+    { id: 'syllabus', label: 'Syllabus & Papers', icon: BookOpen },
+    { id: 'pattern', label: 'Exam Pattern & Rules', icon: FileText },
+    { id: 'updates', label: 'Updates & Timeline', icon: Bell },
   ];
 
   const mobileTabs: { id: GateMobileTab; label: string; icon: any }[] = [
@@ -129,25 +125,34 @@ export default function GateHeader({
           </div>
         </div>
 
-        {/* Secondary Sticky Navigation Bar for Desktop (hidden on mobile) */}
-        <div className="hidden md:block border-t border-slate-100 bg-slate-50/80 px-4 md:px-6">
-          <div className="mx-auto max-w-7xl flex items-center gap-1 overflow-x-auto custom-scrollbar py-1.5">
-            {desktopSections.map((sec) => {
-              const isActive = activeSection === sec.id;
-              return (
-                <button
-                  key={sec.id}
-                  onClick={() => onSelectSection(sec.id)}
-                  className={`px-3 py-1 rounded-md text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                    isActive
-                      ? 'bg-slate-900 text-white font-semibold shadow-xs'
-                      : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/50'
-                  }`}
-                >
-                  {sec.label}
-                </button>
-              );
-            })}
+        {/* Secondary Sticky Navigation Bar for Desktop Workspace Tabs (hidden on mobile) */}
+        <div className="hidden md:block border-t border-slate-200/80 bg-slate-50/90 px-4 md:px-6">
+          <div className="mx-auto max-w-7xl flex items-center justify-between gap-4 py-1.5">
+            <nav className="flex items-center gap-1.5" aria-label="GATE Hub Workspace Navigation">
+              {desktopTabs.map((tab) => {
+                const isActive = activeDesktopTab === tab.id;
+                const Icon = tab.icon;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => onSelectDesktopTab(tab.id)}
+                    className={`inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                      isActive
+                        ? 'bg-slate-900 text-white shadow-xs'
+                        : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+                    }`}
+                  >
+                    <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-teal-400' : 'text-slate-500'}`} />
+                    <span>{tab.label}</span>
+                  </button>
+                );
+              })}
+            </nav>
+
+            <div className="text-[11px] text-slate-500 font-mono hidden lg:flex items-center gap-2">
+              <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+              <span>IIT Madras Organizing Institute • GATE 2027</span>
+            </div>
           </div>
         </div>
       </header>

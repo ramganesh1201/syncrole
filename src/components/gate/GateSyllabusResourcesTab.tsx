@@ -1,5 +1,6 @@
 import { GatePaperInfo, GateSyllabusTopic, GateResource } from '@/lib/gate/gateTypes';
 import { GateService } from '@/lib/gate/gateService';
+import { downloadOrOpenGatePdf } from '@/lib/gate/gateDateUtils';
 import {
   ArrowRight,
   BookOpen,
@@ -10,6 +11,7 @@ import {
   Search,
   ShieldCheck,
   Check,
+  Download,
 } from 'lucide-react';
 import { useEffect, useState, useMemo } from 'react';
 
@@ -27,20 +29,32 @@ export default function GateSyllabusResourcesTab({
   onSelectPaper,
 }: GateSyllabusResourcesTabProps) {
   const [paperSearch, setPaperSearch] = useState('');
+  const [activeCategory, setActiveCategory] = useState<string>('All');
   const [topicSearch, setTopicSearch] = useState('');
   const [selectedSubjectId, setSelectedSubjectId] = useState<string>('');
   const [selectedTopicId, setSelectedTopicId] = useState<string>('');
   const [topicResources, setTopicResources] = useState<GateResource[]>([]);
   const [loadingResources, setLoadingResources] = useState<boolean>(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
-  // Filter 30 papers by search term
+  const categories = [
+    'All',
+    'Computer & Data Science',
+    'Electrical & Electronics',
+    'Mechanical & Civil',
+    'Process & Bio Sciences',
+    'Sciences & Humanities',
+  ];
+
+  // Filter 30 papers by search term & category
   const filteredPapers = useMemo(() => {
-    if (!paperSearch.trim()) return papers;
-    const q = paperSearch.toLowerCase();
-    return papers.filter(
-      (p) => p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q)
-    );
-  }, [papers, paperSearch]);
+    return papers.filter((p) => {
+      const q = paperSearch.toLowerCase().trim();
+      const matchesSearch = !q || p.code.toLowerCase().includes(q) || p.name.toLowerCase().includes(q);
+      const matchesCat = activeCategory === 'All' || p.category === activeCategory;
+      return matchesSearch && matchesCat;
+    });
+  }, [papers, paperSearch, activeCategory]);
 
   // Group syllabus topics by Subject for current paper
   const subjectsMap = useMemo(() => {
@@ -168,8 +182,25 @@ export default function GateSyllabusResourcesTab({
             />
           </div>
 
+          {/* Category Filter Chips */}
+          <div className="flex items-center gap-1 overflow-x-auto custom-scrollbar pb-1">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-2 py-0.5 rounded-md text-[10px] font-bold whitespace-nowrap transition cursor-pointer ${
+                  activeCategory === cat
+                    ? 'bg-slate-900 text-white'
+                    : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
           {/* Paper List Items */}
-          <div className="space-y-1 max-h-[600px] overflow-y-auto custom-scrollbar pr-1">
+          <div className="space-y-1 max-h-[560px] overflow-y-auto custom-scrollbar pr-1">
             {filteredPapers.map((p) => {
               const isSelected = p.code === paper.code;
               return (
@@ -208,29 +239,71 @@ export default function GateSyllabusResourcesTab({
         <div className="lg:col-span-8 space-y-5">
           {/* Active Paper Header Card */}
           <div className="bg-white border border-slate-200/90 rounded-2xl p-5 space-y-3 shadow-xs">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-100 pb-3">
-              <div>
-                <div className="text-[10px] font-bold font-mono text-teal-700 uppercase tracking-wider">
-                  GATE 2027 TEST PAPER
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+              <div className="space-y-0.5">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="text-[10px] font-bold font-mono text-teal-700 uppercase tracking-wider bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
+                    GATE {paper.code} 2027 TEST PAPER
+                  </span>
+                  {paper.allowedSecondPapers && paper.allowedSecondPapers.length > 0 && (
+                    <span className="text-[10px] font-mono text-slate-500 bg-slate-100 px-2 py-0.5 rounded border border-slate-200">
+                      Permitted 2nd Papers: {paper.allowedSecondPapers.join(', ')}
+                    </span>
+                  )}
                 </div>
-                <h3 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight">
-                  GATE {paper.code} — {paper.name}
-                </h3>
+                <h2 className="text-xl md:text-2xl font-black text-slate-900 tracking-tight pt-1">
+                  {paper.name}
+                </h2>
               </div>
-              <a
-                href={
-                  paper.officialPdfUrl ||
-                  `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
-                    paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
-                  }_GATE2027_Syllabus.pdf`
-                }
-                target="_blank"
-                rel="noreferrer"
-                className="px-3.5 py-1.5 rounded-xl bg-teal-50 border border-teal-200 text-teal-900 text-xs font-bold hover:bg-teal-100 transition flex items-center gap-1.5 shrink-0"
-              >
-                <span>Official PDF</span>
-                <ExternalLink className="h-3.5 w-3.5 text-teal-700" />
-              </a>
+
+              {/* Action buttons: Download Syllabus PDF + View Online */}
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={async () => {
+                    const url =
+                      paper.officialPdfUrl ||
+                      `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
+                        paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
+                      }_GATE2027_Syllabus.pdf`;
+                    setIsDownloading(true);
+                    try {
+                      await downloadOrOpenGatePdf(url, paper.code);
+                    } finally {
+                      setIsDownloading(false);
+                    }
+                  }}
+                  disabled={isDownloading}
+                  className="px-3.5 py-2 rounded-xl bg-teal-700 hover:bg-teal-800 text-white text-xs font-bold transition flex items-center gap-1.5 shrink-0 shadow-xs cursor-pointer disabled:opacity-75"
+                >
+                  {isDownloading ? (
+                    <>
+                      <div className="h-3.5 w-3.5 rounded-full border-2 border-white border-t-transparent animate-spin shrink-0" />
+                      <span>Downloading...</span>
+                    </>
+                  ) : (
+                    <>
+                      <Download className="h-3.5 w-3.5 text-teal-200" />
+                      <span>Download Syllabus PDF</span>
+                    </>
+                  )}
+                </button>
+
+                <a
+                  href={
+                    paper.officialPdfUrl ||
+                    `https://gate2027.iitm.ac.in/static/doc/GATE2027_Syllabus/${
+                      paper.code === 'CSE' ? 'CS' : paper.code === 'ECE' ? 'EC' : paper.code
+                    }_GATE2027_Syllabus.pdf`
+                  }
+                  target="_blank"
+                  rel="noreferrer"
+                  className="px-3 py-2 rounded-xl bg-slate-50 border border-slate-200 hover:bg-slate-100 text-slate-700 text-xs font-semibold flex items-center gap-1.5 shrink-0 transition"
+                  title="Open official PDF in new tab"
+                >
+                  <span>Official PDF</span>
+                  <ExternalLink className="h-3.5 w-3.5 text-slate-400" />
+                </a>
+              </div>
             </div>
 
             <p className="text-xs text-slate-600 leading-relaxed">
