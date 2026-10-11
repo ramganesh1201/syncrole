@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef, useId, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -237,6 +238,11 @@ export function QuickSearch({
 
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [isMac, setIsMac] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
   
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -291,16 +297,31 @@ export function QuickSearch({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-  // Lock mobile body scroll when mobile search modal is open
+  // Lock mobile body scroll and auto-focus when mobile search modal is open
   useEffect(() => {
     if (isMobileOpen) {
       const originalInlineOverflow = document.body.style.overflow;
       document.body.style.overflow = "hidden";
-      setTimeout(() => mobileInputRef.current?.focus(), 80);
+      const timer = setTimeout(() => {
+        mobileInputRef.current?.focus();
+      }, 60);
       return () => {
+        clearTimeout(timer);
         document.body.style.overflow = originalInlineOverflow || "";
       };
     }
+  }, [isMobileOpen]);
+
+  // Escape key closes mobile search modal
+  useEffect(() => {
+    if (!isMobileOpen) return;
+    const handleMobileEsc = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        closeMobile();
+      }
+    };
+    window.addEventListener("keydown", handleMobileEsc);
+    return () => window.removeEventListener("keydown", handleMobileEsc);
   }, [isMobileOpen]);
 
   // Search Scoring Algorithm
@@ -618,127 +639,132 @@ export function QuickSearch({
       {/* ------------------------------------------------------------- */}
       {/* MOBILE APP-LIKE QUICK SEARCH MODAL (Full Touch & PWA-Ready)   */}
       {/* ------------------------------------------------------------- */}
-      <AnimatePresence>
-        {isMobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={{ duration: 0.15, ease: "easeOut" }}
-            className="fixed inset-0 z-50 sm:hidden flex flex-col bg-white"
-          >
-            {/* Backdrop / Safe Area Top */}
-            <div
-              className="bg-white border-b border-slate-200/80 px-4 pt-3 pb-3 flex items-center gap-2 shadow-2xs"
-              style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))" }}
-            >
-              <div className="relative flex-1">
-                <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
-                <input
-                  ref={mobileInputRef}
-                  type="text"
-                  value={query}
-                  onChange={(e) => setQuery(e.target.value)}
-                  placeholder="Search skills, DSA, GATE..."
-                  className="w-full bg-slate-100 border border-slate-200 rounded-full pl-9.5 pr-8 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white"
-                  autoComplete="off"
-                  autoCorrect="off"
-                  spellCheck={false}
-                />
-                {query && (
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setQuery("");
-                      mobileInputRef.current?.focus();
-                    }}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
-                    aria-label="Clear query"
-                  >
-                    <X className="h-4 w-4" />
-                  </button>
-                )}
-              </div>
-
-              <button
-                type="button"
-                onClick={closeMobile}
-                className="px-2 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 active:scale-95 transition-transform"
+      {mounted &&
+        typeof document !== "undefined" &&
+        createPortal(
+          <AnimatePresence>
+            {isMobileOpen && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15, ease: "easeOut" }}
+                className="fixed inset-0 z-[70] sm:hidden flex flex-col bg-white h-[100dvh] w-screen max-w-full overflow-hidden"
               >
-                Cancel
-              </button>
-            </div>
-
-            {/* Mobile Scrollable Results Area */}
-            <div
-              className="flex-1 overflow-y-auto px-4 py-3 divide-y divide-slate-100"
-              style={{ paddingBottom: "max(1.5rem, env(safe-area-inset-bottom, 0px))" }}
-            >
-              <div className="pb-2 text-[11px] font-semibold tracking-wider uppercase text-slate-400">
-                {query.trim() ? "Matching Destinations" : "Recommended Destinations"}
-              </div>
-
-              {filteredDestinations.length > 0 ? (
-                <div className="space-y-1 pt-1">
-                  {filteredDestinations.map((dest) => {
-                    const IconComponent = dest.icon;
-                    return (
+                {/* Backdrop / Safe Area Top Bar */}
+                <div
+                  className="bg-white border-b border-slate-200/90 px-4 py-3 flex items-center gap-2.5 shadow-2xs shrink-0"
+                  style={{ paddingTop: "max(0.75rem, env(safe-area-inset-top, 0px))" }}
+                >
+                  <div className="relative flex-1">
+                    <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 pointer-events-none" />
+                    <input
+                      ref={mobileInputRef}
+                      type="text"
+                      value={query}
+                      onChange={(e) => setQuery(e.target.value)}
+                      placeholder="Search skills, DSA, GATE..."
+                      className="w-full bg-slate-100 border border-slate-200 rounded-full pl-9.5 pr-8 py-2 text-sm text-slate-900 placeholder-slate-400 outline-none focus:ring-2 focus:ring-blue-500/20 focus:bg-white"
+                      autoComplete="off"
+                      autoCorrect="off"
+                      spellCheck={false}
+                    />
+                    {query && (
                       <button
-                        key={dest.id}
                         type="button"
-                        onClick={() => handleSelect(dest)}
-                        className="w-full text-left flex items-center gap-3.5 py-3 px-2 rounded-xl active:bg-slate-100 transition-colors"
+                        onClick={() => {
+                          setQuery("");
+                          mobileInputRef.current?.focus();
+                        }}
+                        className="absolute right-2.5 top-1/2 -translate-y-1/2 p-1 text-slate-400 hover:text-slate-600 rounded-full"
+                        aria-label="Clear query"
                       >
-                        <div className="p-2.5 rounded-xl bg-slate-100 text-blue-600 shrink-0">
-                          <IconComponent className="h-5 w-5" />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center justify-between gap-1">
-                            <span className="text-sm font-semibold text-slate-900 truncate">
-                              {dest.title}
-                            </span>
-                            <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0">
-                              {dest.category}
-                            </span>
-                          </div>
-                          <p className="text-xs text-slate-500 line-clamp-1 mt-0.5">
-                            {dest.description}
-                          </p>
-                        </div>
-                        <ChevronRight className="h-4 w-4 text-slate-300 shrink-0" />
+                        <X className="h-4 w-4" />
                       </button>
-                    );
-                  })}
-                </div>
-              ) : (
-                <div className="py-12 text-center space-y-3">
-                  <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
-                    <Search className="h-5 w-5" />
+                    )}
                   </div>
-                  <div>
-                    <p className="text-sm font-semibold text-slate-800">
-                      No results for &ldquo;{query}&rdquo;
-                    </p>
-                    <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
-                      Search for DSA problems, GATE 2027 Hub, resume analysis, or career roadmaps.
-                    </p>
-                  </div>
+
                   <button
                     type="button"
-                    onClick={() => {
-                      setQuery("");
-                      mobileInputRef.current?.focus();
-                    }}
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 pt-2"
+                    onClick={closeMobile}
+                    className="px-2.5 py-1.5 text-xs font-semibold text-slate-600 hover:text-slate-900 active:scale-95 transition-transform shrink-0"
                   >
-                    Reset Search
+                    Cancel
                   </button>
                 </div>
-              )}
-            </div>
-          </motion.div>
+
+                {/* Mobile Scrollable Results Area */}
+                <div
+                  className="flex-1 min-h-0 overflow-y-auto px-4 py-3 divide-y divide-slate-100 overscroll-contain"
+                  style={{ paddingBottom: "max(2rem, env(safe-area-inset-bottom, 0px))" }}
+                >
+                  <div className="pb-2 text-[11px] font-semibold tracking-wider uppercase text-slate-400">
+                    {query.trim() ? "Matching Destinations" : "Recommended Destinations"}
+                  </div>
+
+                  {filteredDestinations.length > 0 ? (
+                    <div className="space-y-1 pt-1">
+                      {filteredDestinations.map((dest) => {
+                        const IconComponent = dest.icon;
+                        return (
+                          <button
+                            key={dest.id}
+                            type="button"
+                            onClick={() => handleSelect(dest)}
+                            className="w-full text-left flex items-start gap-3.5 py-3 px-2 rounded-xl active:bg-slate-100 transition-colors cursor-pointer min-h-[48px]"
+                          >
+                            <div className="mt-0.5 p-2.5 rounded-xl bg-slate-100 text-blue-600 shrink-0">
+                              <IconComponent className="h-5 w-5" />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1.5 flex-wrap">
+                                <span className="text-sm font-semibold text-slate-900 truncate">
+                                  {dest.title}
+                                </span>
+                                <span className="text-[10px] font-medium px-2 py-0.5 rounded-full bg-slate-100 text-slate-600 shrink-0">
+                                  {dest.category}
+                                </span>
+                              </div>
+                              <p className="text-xs text-slate-500 line-clamp-2 mt-0.5 leading-relaxed">
+                                {dest.description}
+                              </p>
+                            </div>
+                            <ChevronRight className="h-4 w-4 text-slate-300 self-center shrink-0 ml-1" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="py-12 text-center space-y-3">
+                      <div className="h-12 w-12 rounded-full bg-slate-100 text-slate-400 mx-auto flex items-center justify-center">
+                        <Search className="h-5 w-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-slate-800">
+                          No results for &ldquo;{query}&rdquo;
+                        </p>
+                        <p className="text-xs text-slate-500 mt-1 max-w-xs mx-auto">
+                          Search for DSA problems, GATE 2027 Hub, resume analysis, or career roadmaps.
+                        </p>
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setQuery("");
+                          mobileInputRef.current?.focus();
+                        }}
+                        className="inline-flex items-center gap-1 text-xs font-semibold text-blue-600 pt-2"
+                      >
+                        Reset Search
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </motion.div>
+            )}
+          </AnimatePresence>,
+          document.body
         )}
-      </AnimatePresence>
     </>
   );
 }
