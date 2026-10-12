@@ -174,15 +174,16 @@ function SyncPilotLauncherInner() {
 
   return (
     <>
-      {/* FAB - visible when panel is closed (Desktop only) */}
+      {/* Refined SyncPilot Assistant Launcher (Desktop, >= 768px) */}
       <AnimatePresence>
         {panelState === "closed" && !isMobile && (
           <motion.div
-            key="fab"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed z-[9998] bottom-[1.5rem] right-[1.5rem] hidden md:block"
+            key="fab-desktop"
+            initial={{ opacity: 0, y: 10, scale: 0.95 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 10, scale: 0.95 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="fixed z-[9998] bottom-6 right-6 hidden md:block"
           >
             <SyncPilotButton onClick={handleOpen} />
           </motion.div>
