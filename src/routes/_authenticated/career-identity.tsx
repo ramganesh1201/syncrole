@@ -32,7 +32,7 @@ export const Route = createFileRoute("/_authenticated/career-identity")({
   component: CareerIdentityPage,
 });
 
-/* ── Known Catalog Data for Dynamic Ranking ── */
+/* â”€â”€ Known Catalog Data for Dynamic Ranking â”€â”€ */
 const KNOWN_COMPANIES = [
   "Google",
   "Google Cloud",
@@ -98,7 +98,7 @@ const KNOWN_ROLES = [
   "Security Engineer",
 ];
 
-/* ── Dynamic Ranking Helper ── */
+/* â”€â”€ Dynamic Ranking Helper â”€â”€ */
 function rankMatches(items: string[], query: string): string[] {
   const trimmed = query.trim();
   if (!trimmed) return items.slice(0, 6);
@@ -126,7 +126,7 @@ function rankMatches(items: string[], query: string): string[] {
   return combined.slice(0, 6);
 }
 
-/* ── Accessible Autocomplete Component ── */
+/* â”€â”€ Accessible Autocomplete Component â”€â”€ */
 interface AutocompleteProps {
   label: string;
   placeholder: string;
@@ -308,7 +308,7 @@ function AutocompleteInput({
   );
 }
 
-/* ── Main Career Identity Page Component ── */
+/* â”€â”€ Main Career Identity Page Component â”€â”€ */
 function CareerIdentityPage() {
   const { user, loading: authLoading } = useAuth();
   const nav = useNavigate();
@@ -496,7 +496,7 @@ function CareerIdentityPage() {
 
   return (
     <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8 space-y-6 text-slate-900 font-sans text-left pb-24 md:pb-12">
-      {/* ── 1. PAGE HEADER ── */}
+      {/* â”€â”€ 1. PAGE HEADER â”€â”€ */}
       <div className="space-y-1.5 text-left">
         <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-100 text-blue-700 text-xs font-semibold px-3 py-1 rounded-full">
           <Sparkles className="w-3.5 h-3.5 text-blue-600" />
@@ -512,7 +512,7 @@ function CareerIdentityPage() {
         </p>
       </div>
 
-      {/* ── 2. CAREER TARGET WORKSPACE ── */}
+      {/* â”€â”€ 2. CAREER TARGET WORKSPACE â”€â”€ */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-7 shadow-2xs space-y-5">
         {/* Header & Save Action */}
         <div className="flex flex-wrap items-center justify-between gap-3 pb-4 border-b border-slate-100">
@@ -567,13 +567,13 @@ function CareerIdentityPage() {
             ))}
 
             {selectedRole && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-200/80 text-xs font-semibold text-indigo-900">
-                <Briefcase className="w-3 h-3 text-indigo-600" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF2FB] border border-[#2457E6]/20 text-xs font-semibold text-[#17233F]">
+                <Briefcase className="w-3 h-3 text-[#2457E6]" />
                 <span>{selectedRole}</span>
                 <button
                   type="button"
                   onClick={() => setSelectedRole("")}
-                  className="hover:text-indigo-700 text-indigo-500 p-0.5 rounded-full"
+                  className="hover:text-[#2457E6] text-[#2457E6]/70 p-0.5 rounded-full"
                   aria-label="Clear role"
                 >
                   <X className="w-3 h-3" />
@@ -682,14 +682,14 @@ function CareerIdentityPage() {
         </div>
       </div>
 
-      {/* ── 3. MAIN WORKSPACE GRID (READINESS · STRENGTHS/GAPS · MISSION) ── */}
+      {/* â”€â”€ 3. MAIN WORKSPACE GRID (READINESS Â· STRENGTHS/GAPS Â· MISSION) â”€â”€ */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         {/* LEFT COLUMN: CAREER READINESS (4 Cols) */}
         <div className="lg:col-span-4 bg-white border border-slate-200/80 rounded-2xl p-5 sm:p-6 space-y-5 shadow-2xs">
           <div className="flex items-center justify-between pb-3 border-b border-slate-100">
             <h3 className="text-sm font-bold text-slate-900">Career Readiness</h3>
             <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full">
-              Level {levelNum} • {levelName}
+              Level {levelNum} â€¢ {levelName}
             </span>
           </div>
 
@@ -722,7 +722,7 @@ function CareerIdentityPage() {
               <span className="font-bold text-slate-900">{dsaScore}%</span>
             </div>
             <div className="h-1.5 bg-slate-100 rounded-full overflow-hidden">
-              <div className="h-full bg-indigo-500 rounded-full" style={{ width: `${dsaScore}%` }} />
+              <div className="h-full bg-[#EEF2FB]0 rounded-full" style={{ width: `${dsaScore}%` }} />
             </div>
 
             <div className="flex items-center justify-between">
@@ -795,8 +795,8 @@ function CareerIdentityPage() {
           {/* Growth Areas Section */}
           <div className="space-y-2.5 text-left pt-2 border-t border-slate-100">
             <div className="flex items-center justify-between">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-indigo-700 flex items-center gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5 text-indigo-600" />
+              <span className="text-[11px] font-bold uppercase tracking-wider text-[#2457E6] flex items-center gap-1.5">
+                <TrendingUp className="w-3.5 h-3.5 text-[#2457E6]" />
                 <span>Growth Areas</span>
               </span>
               <span className="text-[10px] text-slate-400 font-medium">RECOMMENDED</span>
@@ -805,9 +805,9 @@ function CareerIdentityPage() {
               {growthList.map((item: string, idx: number) => (
                 <div
                   key={idx}
-                  className="bg-indigo-50/60 border border-indigo-100 rounded-xl p-2.5 text-xs text-slate-800 font-medium flex items-center gap-2"
+                  className="bg-[#EEF2FB]/60 border border-[#2457E6]/15 rounded-xl p-2.5 text-xs text-slate-800 font-medium flex items-center gap-2"
                 >
-                  <ArrowRight className="w-3.5 h-3.5 text-indigo-600 shrink-0" />
+                  <ArrowRight className="w-3.5 h-3.5 text-[#2457E6] shrink-0" />
                   <span className="truncate">{item}</span>
                 </div>
               ))}
@@ -890,10 +890,10 @@ function CareerIdentityPage() {
         </div>
       </div>
 
-      {/* ── 4. SUPPORTING ACTION: RESUME INTELLIGENCE ── */}
+      {/* â”€â”€ 4. SUPPORTING ACTION: RESUME INTELLIGENCE â”€â”€ */}
       <div className="bg-white border border-slate-200/80 rounded-2xl p-4 sm:p-5 shadow-2xs flex flex-col sm:flex-row items-center justify-between gap-4 text-left">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0">
+          <div className="h-10 w-10 rounded-xl bg-[#EEF2FB] border border-[#2457E6]/15 text-[#2457E6] flex items-center justify-center shrink-0">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -915,3 +915,4 @@ function CareerIdentityPage() {
     </main>
   );
 }
+

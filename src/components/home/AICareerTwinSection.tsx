@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
@@ -143,7 +143,7 @@ export default function AICareerTwinSection({ data }: { data: any }) {
           </h2>
 
           <p className="mt-3 text-sm md:text-base text-muted-foreground max-w-lg mx-auto font-normal leading-relaxed">
-            A continuous simulation of your employability — updated live from resume analysis, GitHub commits, DSA logs, and skill gaps.
+            A continuous simulation of your employability â€” updated live from resume analysis, GitHub commits, DSA logs, and skill gaps.
           </p>
 
           {/* Interactive Mode Pills */}
@@ -420,3 +420,4 @@ export default function AICareerTwinSection({ data }: { data: any }) {
     </section>
   );
 }
+

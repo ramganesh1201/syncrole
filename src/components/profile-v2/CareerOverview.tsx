@@ -24,13 +24,13 @@ export const CareerOverview = React.memo(function CareerOverview({ profile }: Ca
       label: "Engineering Domain", 
       value: profile?.career_goal ? profile.career_goal.charAt(0).toUpperCase() + profile.career_goal.slice(1) : "Software", 
       icon: Briefcase,
-      color: "text-purple-600 bg-purple-50 border-purple-200"
+      color: "text-[#2457E6] bg-[#EEF2FB] border-[#2457E6]/20"
     },
     { 
       label: "Company Fit", 
       value: profile?.company_preference || "MNC / Startup", 
       icon: Building2,
-      color: "text-indigo-600 bg-indigo-50 border-indigo-200"
+      color: "text-[#2457E6] bg-[#EEF2FB] border-[#2457E6]/20"
     },
     {
       label: "Experience Level",
@@ -81,3 +81,4 @@ export const CareerOverview = React.memo(function CareerOverview({ profile }: Ca
     </motion.div>
   );
 });
+

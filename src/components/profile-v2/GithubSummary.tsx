@@ -281,3 +281,4 @@ export const GithubSummary = React.memo(function GithubSummary({ profile, placem
     </motion.div>
   );
 });
+

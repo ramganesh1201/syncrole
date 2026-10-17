@@ -272,14 +272,14 @@ function FullStoryModal({ story, onClose }: { story: Story; onClose: () => void 
 
         {/* Student Profile Header */}
         <div className="flex items-start gap-4 pr-10">
-          <div className="h-14 w-14 rounded-2xl bg-purple-100 border border-purple-200 text-purple-700 font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
+          <div className="h-14 w-14 rounded-2xl bg-[#EEF2FB] border border-[#2457E6]/20 text-[#2457E6] font-bold text-lg flex items-center justify-center shrink-0 shadow-2xs">
             {initials}
           </div>
           <div className="space-y-1">
             <h3 className="text-xl font-bold tracking-tight text-slate-900">
               {story.author_name || "Anonymous Student"}
             </h3>
-            <div className="text-xs font-semibold text-purple-700 flex items-center gap-1.5">
+            <div className="text-xs font-semibold text-[#2457E6] flex items-center gap-1.5">
               <Building2 className="w-3.5 h-3.5" />
               <span>{story.author_role}</span>
             </div>
@@ -305,8 +305,8 @@ function FullStoryModal({ story, onClose }: { story: Story; onClose: () => void 
                 icon={Zap}
                 label="XP"
                 value={`+${story.xp_growth.toLocaleString()}`}
-                badgeBg="bg-purple-50 border-purple-200/80"
-                textColor="text-purple-700"
+                badgeBg="bg-[#EEF2FB] border-[#2457E6]/20"
+                textColor="text-[#2457E6]"
               />
             )}
             {story.dsa_growth > 0 && (
@@ -360,10 +360,10 @@ function FullStoryModal({ story, onClose }: { story: Story; onClose: () => void 
           </div>
 
           <div className="space-y-1.5">
-            <h4 className="font-mono text-xs font-bold text-purple-700 uppercase tracking-wider">
+            <h4 className="font-mono text-xs font-bold text-[#2457E6] uppercase tracking-wider">
               Current Outcome & Offer
             </h4>
-            <p className="text-slate-900 font-medium leading-relaxed bg-purple-50/70 p-3.5 rounded-xl border border-purple-200/70">
+            <p className="text-slate-900 font-medium leading-relaxed bg-[#EEF2FB] p-3.5 rounded-xl border border-[#E3E9F4]">
               {story.current_results}
             </p>
           </div>
@@ -480,7 +480,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
         </button>
 
         <div className="space-y-1">
-          <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-purple-700 uppercase tracking-wider">
+          <div className="inline-flex items-center gap-1.5 text-xs font-mono font-bold text-[#2457E6] uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Share Your Success</span>
           </div>
@@ -501,7 +501,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                 value={formData.author_name}
                 onChange={(e) => setFormData({ ...formData, author_name: e.target.value })}
                 placeholder="e.g. Aarav S."
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-[#2457E6]"
               />
             </div>
             <div>
@@ -511,7 +511,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
                 value={formData.author_role}
                 onChange={(e) => setFormData({ ...formData, author_role: e.target.value })}
                 placeholder="e.g. SWE @ Razorpay"
-                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+                className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-[#2457E6]"
               />
             </div>
           </div>
@@ -522,7 +522,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               value={formData.author_college}
               onChange={(e) => setFormData({ ...formData, author_college: e.target.value })}
               placeholder="e.g. BITS Pilani"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-[#2457E6]"
             />
           </div>
 
@@ -534,7 +534,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               value={formData.before_syncrole}
               onChange={(e) => setFormData({ ...formData, before_syncrole: e.target.value })}
               placeholder="What were you struggling with before using SyncRole?"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-[#2457E6]"
             />
           </div>
 
@@ -546,7 +546,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               value={formData.actions_taken}
               onChange={(e) => setFormData({ ...formData, actions_taken: e.target.value })}
               placeholder="How did you use SyncRole (DSA, Resume AI, Career Twin)?"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-[#2457E6]"
             />
           </div>
 
@@ -558,7 +558,7 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               value={formData.current_results}
               onChange={(e) => setFormData({ ...formData, current_results: e.target.value })}
               placeholder="What offer or readiness milestone did you achieve?"
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-purple-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl p-3 text-slate-900 outline-none focus:border-[#2457E6]"
             />
           </div>
 
@@ -569,14 +569,14 @@ function ShareStoryModal({ onClose, onSuccess }: { onClose: () => void; onSucces
               value={formData.advice}
               onChange={(e) => setFormData({ ...formData, advice: e.target.value })}
               placeholder="One takeaway for fellow students..."
-              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-purple-500"
+              className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-slate-900 outline-none focus:border-[#2457E6]"
             />
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+            className="w-full bg-[#2457E6] hover:bg-[#1e4acf] text-white font-semibold py-2.5 rounded-xl transition-all shadow-xs flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
           >
             {loading ? "Submitting Story..." : "Submit Transformation Story"}
             <Send className="w-4 h-4" />
@@ -600,18 +600,18 @@ function StoryCard({ story, onReadFull }: { story: Story; onReadFull: () => void
   })();
 
   return (
-    <div className="bg-white border border-slate-200/90 hover:border-purple-300 rounded-2xl p-5 md:p-6 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 group">
+    <div className="bg-white border border-slate-200/90 hover:border-[#2457E6]/30 rounded-2xl p-5 md:p-6 shadow-2xs hover:shadow-md transition-all duration-200 flex flex-col justify-between space-y-4 group">
       {/* Author Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3 min-w-0">
-          <div className="h-11 w-11 rounded-xl bg-purple-100 border border-purple-200 text-purple-700 font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs">
+          <div className="h-11 w-11 rounded-xl bg-[#EEF2FB] border border-[#2457E6]/20 text-[#2457E6] font-bold text-sm flex items-center justify-center shrink-0 shadow-2xs">
             {initials}
           </div>
           <div className="min-w-0 space-y-0.5">
-            <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-purple-700 transition-colors">
+            <h3 className="font-bold text-slate-900 text-sm truncate group-hover:text-[#2457E6] transition-colors">
               {story.author_name || "Anonymous Student"}
             </h3>
-            <div className="text-xs font-semibold text-purple-700 truncate flex items-center gap-1">
+            <div className="text-xs font-semibold text-[#2457E6] truncate flex items-center gap-1">
               <Building2 className="w-3 h-3 shrink-0" />
               <span className="truncate">{story.author_role}</span>
             </div>
@@ -642,8 +642,8 @@ function StoryCard({ story, onReadFull }: { story: Story; onReadFull: () => void
             icon={Zap}
             label="XP"
             value={`+${story.xp_growth.toLocaleString()}`}
-            badgeBg="bg-purple-50 border-purple-200/70"
-            textColor="text-purple-800"
+            badgeBg="bg-[#EEF2FB] border-[#E3E9F4]"
+            textColor="text-[#17233F]"
           />
         )}
         {story.dsa_growth > 0 && (
@@ -676,10 +676,10 @@ function StoryCard({ story, onReadFull }: { story: Story; onReadFull: () => void
       {/* Read Full Story Button */}
       <button
         onClick={onReadFull}
-        className="w-full pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-purple-700 hover:text-purple-900 group-hover:translate-x-0.5 transition-all cursor-pointer"
+        className="w-full pt-3 border-t border-slate-100 flex items-center justify-between text-xs font-semibold text-[#2457E6] hover:text-[#17233F] group-hover:translate-x-0.5 transition-all cursor-pointer"
       >
         <span>Read full transformation story</span>
-        <ChevronRight className="w-4 h-4 text-purple-600" />
+        <ChevronRight className="w-4 h-4 text-[#2457E6]" />
       </button>
     </div>
   );
@@ -749,7 +749,7 @@ function CareerTransformationsPage() {
   };
 
   return (
-    <main className="min-h-screen bg-[#F8FAFC] text-slate-900 font-sans selection:bg-purple-100 selection:text-purple-900 pb-24 sm:pb-16">
+    <main className="min-h-screen bg-[#F5F7FC] text-[#17233F] pb-24 sm:pb-16">
       {/* Sticky Light Header */}
       <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/95 border-b border-slate-200/80 shadow-2xs pt-[env(safe-area-inset-top)]">
         <div className="mx-auto max-w-7xl px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
@@ -791,7 +791,7 @@ function CareerTransformationsPage() {
 
           <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 tracking-tight leading-[1.15]">
             From learning skills to{" "}
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 via-indigo-600 to-blue-600">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#2457E6] to-[#1a45cc]">
               landing opportunities.
             </span>
           </h1>
@@ -804,7 +804,7 @@ function CareerTransformationsPage() {
           <div className="pt-4 max-w-2xl mx-auto">
             <div className="bg-white border border-slate-200/90 rounded-2xl p-4 md:p-5 shadow-xs grid grid-cols-3 gap-3 md:gap-6 text-center">
               <div className="space-y-1">
-                <div className="flex items-center justify-center gap-1.5 text-purple-600 mb-0.5">
+                <div className="flex items-center justify-center gap-1.5 text-[#2457E6] mb-0.5">
                   <Users className="w-4 h-4" />
                   <span className="text-base sm:text-xl md:text-2xl font-bold font-mono text-slate-900">
                     {stats.stories}
@@ -853,7 +853,7 @@ function CareerTransformationsPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by student, role, or company..."
-              className="w-full bg-slate-50 border border-slate-200 focus:border-purple-500 focus:bg-white rounded-xl pl-10 pr-4 py-2 text-xs md:text-sm text-slate-900 outline-none transition-all"
+              className="w-full bg-slate-50 border border-slate-200 focus:border-[#2457E6] focus:bg-white rounded-xl pl-10 pr-4 py-2 text-xs md:text-sm text-slate-900 outline-none transition-all"
             />
           </div>
 
@@ -870,7 +870,7 @@ function CareerTransformationsPage() {
                   onClick={() => setFilter(f)}
                   className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
                     filter === f
-                      ? "bg-purple-600 text-white shadow-2xs"
+                      ? "bg-[#2457E6] text-white shadow-xs"
                       : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/60"
                   }`}
                 >
@@ -914,8 +914,8 @@ function CareerTransformationsPage() {
       {/* Share Your Transformation CTA Section */}
       <section className="px-4 md:px-6 py-10">
         <div className="mx-auto max-w-3xl">
-          <div className="bg-gradient-to-br from-purple-50 via-indigo-50 to-blue-50 border border-purple-200/80 rounded-3xl p-6 sm:p-10 text-center shadow-xs space-y-4">
-            <div className="p-3 rounded-2xl bg-white shadow-2xs text-purple-600 inline-flex border border-purple-100 mb-1">
+          <div className="bg-gradient-to-br from-[#EEF2FB] to-[#EDF8F7] border border-[#E3E9F4] rounded-3xl p-6 sm:p-10 text-center shadow-xs space-y-4">
+            <div className="p-3 rounded-2xl bg-white shadow-2xs text-[#2457E6] inline-flex border border-[#E3E9F4] mb-1">
               <Sparkles className="w-6 h-6" />
             </div>
 
@@ -931,7 +931,7 @@ function CareerTransformationsPage() {
               {user ? (
                 <button
                   onClick={() => setShareModalOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98] cursor-pointer"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#2457E6] hover:bg-[#1e4acf] text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98] cursor-pointer"
                 >
                   <Share2 className="w-4 h-4" />
                   <span>Share Your Journey</span>
@@ -939,7 +939,7 @@ function CareerTransformationsPage() {
               ) : (
                 <Link
                   to="/auth"
-                  className="inline-flex items-center gap-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98]"
+                  className="inline-flex items-center gap-2 rounded-xl bg-[#2457E6] hover:bg-[#1e4acf] text-white px-6 py-3 text-xs sm:text-sm font-semibold transition-all shadow-xs active:scale-[0.98]"
                 >
                   <ArrowRight className="w-4 h-4" />
                   <span>Sign In to Share Your Story</span>
@@ -1009,10 +1009,10 @@ function CareerTransformationsMobileNav() {
                 <button
                   type="button"
                   onClick={() => item.action?.()}
-                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2457E6] ${
                     isSyncPilotOpen
-                      ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50 shadow-xs"
-                      : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm shadow-indigo-600/20 hover:brightness-105"
+                      ? "bg-[#17233F] text-[#93b4f7] ring-2 ring-[#2457E6]/40 shadow-xs"
+                      : "bg-gradient-to-tr from-[#2457E6] to-[#1a45cc] text-white shadow-sm shadow-[#2457E6]/25 hover:brightness-105"
                   }`}
                   aria-label="Open SyncPilot AI Assistant"
                   aria-pressed={isSyncPilotOpen}

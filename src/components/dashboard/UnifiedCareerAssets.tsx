@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { FileText, Github, Brain, Sparkles, ArrowRight, Activity, Upload, CheckCircle2 } from "lucide-react";
@@ -153,7 +153,7 @@ export function UnifiedCareerAssets({
               </h4>
               <p className="text-sm text-muted-foreground">
                 {gh
-                  ? `Repos: ${gh.repo_count || 0} • Stars: ${gh.star_count || 0} • Followers: ${gh.follower_count || 0}`
+                  ? `Repos: ${gh.repo_count || 0} â€¢ Stars: ${gh.star_count || 0} â€¢ Followers: ${gh.follower_count || 0}`
                   : "Link your GitHub username in your profile to analyze open source activity and repository quality."}
               </p>
             </div>
@@ -199,3 +199,4 @@ export function UnifiedCareerAssets({
     </div>
   );
 }
+

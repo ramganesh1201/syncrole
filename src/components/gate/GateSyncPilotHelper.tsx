@@ -1,4 +1,4 @@
-import { useSyncPilot } from '@/hooks/useSyncPilot';
+﻿import { useSyncPilot } from '@/hooks/useSyncPilot';
 import { HelpCircle, Sparkles } from 'lucide-react';
 
 interface GateSyncPilotHelperProps {
@@ -28,7 +28,7 @@ export default function GateSyncPilotHelper({ topicName, paperCode }: GateSyncPi
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2 text-xs font-semibold text-accent">
           <Sparkles className="h-4 w-4 text-accent" />
-          <span>SyncPilot AI Context Helper — {topicName}</span>
+          <span>SyncPilot AI Context Helper â€” {topicName}</span>
         </div>
         <span className="text-[10px] text-muted-foreground">Optional Guidance</span>
       </div>
@@ -52,3 +52,4 @@ export default function GateSyncPilotHelper({ topicName, paperCode }: GateSyncPi
     </div>
   );
 }
+

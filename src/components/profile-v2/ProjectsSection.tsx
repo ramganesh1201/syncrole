@@ -37,7 +37,7 @@ export const ProjectsSection = React.memo(function ProjectsSection({ profile, on
             
             <div className="p-5 flex flex-col flex-1 space-y-4">
               <div>
-                <p className="text-[10px] text-purple-600 font-extrabold uppercase tracking-wider font-mono mb-0.5">Personal Website</p>
+                <p className="text-[10px] text-[#2457E6] font-extrabold uppercase tracking-wider font-mono mb-0.5">Personal Website</p>
                 <h4 className="text-base font-bold text-slate-900">Main Portfolio</h4>
               </div>
               
@@ -69,8 +69,8 @@ export const ProjectsSection = React.memo(function ProjectsSection({ profile, on
         </div>
       ) : (
         <div className="bg-white border border-slate-200/90 border-dashed rounded-2xl p-8 text-center flex flex-col items-center justify-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-purple-50 flex items-center justify-center border border-purple-200">
-            <FolderDot className="w-6 h-6 text-purple-600" />
+          <div className="w-12 h-12 rounded-xl bg-[#EEF2FB] flex items-center justify-center border border-[#2457E6]/20">
+            <FolderDot className="w-6 h-6 text-[#2457E6]" />
           </div>
           
           <div className="max-w-md mx-auto space-y-1">
@@ -93,3 +93,4 @@ export const ProjectsSection = React.memo(function ProjectsSection({ profile, on
     </motion.div>
   );
 });
+

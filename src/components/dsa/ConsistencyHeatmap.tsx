@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+﻿import React, { useMemo } from "react";
 import {
   Tooltip,
   TooltipContent,
@@ -41,9 +41,9 @@ function getIntensityLevel(score: number): number {
 
 const levelColors = [
   "bg-slate-100 border-slate-200/70", // Level 0: light empty cell
-  "bg-purple-100 border-purple-200", // Level 1: low
+  "bg-purple-100 border-[#2457E6]/20", // Level 1: low
   "bg-purple-300 border-purple-400", // Level 2: moderate
-  "bg-purple-500 border-purple-600 text-white shadow-xs", // Level 3: strong
+  "bg-[#EEF2FB]0 border-purple-600 text-white shadow-xs", // Level 3: strong
   "bg-purple-700 border-purple-800 text-white shadow-sm", // Level 4: high
 ];
 
@@ -221,7 +221,7 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
                         <div className="font-semibold text-slate-900 flex items-center justify-between gap-2">
                           <span>{formatDisplayDate(cell.dateObj)}</span>
                           {cell.isToday && (
-                            <span className="text-[10px] text-purple-700 bg-purple-100 px-1.5 py-0.5 rounded border border-purple-200 font-bold">
+                            <span className="text-[10px] text-[#2457E6] bg-purple-100 px-1.5 py-0.5 rounded border border-[#2457E6]/20 font-bold">
                               Today
                             </span>
                           )}
@@ -234,7 +234,7 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
                         ) : (
                           <div className="space-y-1 mt-1.5 text-[11px] font-mono">
                             {activeMins > 0 && (
-                              <div className="text-purple-700 flex items-center gap-1.5 font-medium">
+                              <div className="text-[#2457E6] flex items-center gap-1.5 font-medium">
                                 <span className="w-1.5 h-1.5 rounded-full bg-purple-600" />
                                 {activeMins}m active practice
                               </div>
@@ -272,7 +272,7 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
       {/* Footer Legend */}
       <div className="flex items-center justify-between text-[10px] text-slate-500 pt-1 border-t border-slate-100 font-mono font-medium">
         <div className="flex items-center gap-1.5">
-          <Calendar className="w-3 h-3 text-purple-600" />
+          <Calendar className="w-3 h-3 text-[#2457E6]" />
           <span>90-Day Calendar</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -289,3 +289,4 @@ export const ConsistencyHeatmap: React.FC<ConsistencyHeatmapProps> = ({
     </div>
   );
 };
+

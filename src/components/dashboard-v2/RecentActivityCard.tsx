@@ -21,7 +21,7 @@ export function RecentActivityCard({ recentConversations }: RecentActivityCardPr
       subtitle: "Strong contribution detected",
       time: "5h ago",
       icon: Github,
-      iconColor: "text-slate-800 bg-slate-100 border-slate-200",
+      iconColor: "text-slate-800 bg-slate-100 border-[#E3E9F4]",
     },
     {
       id: 3,
@@ -29,7 +29,7 @@ export function RecentActivityCard({ recentConversations }: RecentActivityCardPr
       subtitle: "+40 XP earned",
       time: "1d ago",
       icon: Target,
-      iconColor: "text-indigo-700 bg-indigo-50 border-indigo-200",
+      iconColor: "text-[#2457E6] bg-[#EEF2FB] border-[#2457E6]/20",
     },
     {
       id: 4,
@@ -42,9 +42,9 @@ export function RecentActivityCard({ recentConversations }: RecentActivityCardPr
   ];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col h-full shadow-xs">
+    <div className="bg-white border border-[#E3E9F4] rounded-2xl p-6 flex flex-col h-full shadow-xs">
       <div className="flex items-center justify-between mb-5">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Recent Activity</h3>
+        <h3 className="text-xs font-bold text-[#8FA3C8] uppercase tracking-wider font-mono">Recent Activity</h3>
         <Link to="/profile" className="text-xs text-blue-600 font-semibold flex items-center gap-1 hover:underline">
           <span>View All</span>
           <ArrowRight className="w-3 h-3" />
@@ -60,12 +60,12 @@ export function RecentActivityCard({ recentConversations }: RecentActivityCardPr
                 <Icon className="w-4 h-4" />
               </div>
               <div className="flex-1 min-w-0">
-                <div className="text-xs font-bold text-slate-900 truncate">{activity.title}</div>
-                <div className={`text-[11px] mt-0.5 ${activity.subtitle.includes('+') ? 'text-emerald-700 font-semibold' : 'text-slate-500'}`}>
+                <div className="text-xs font-bold text-[#17233F] truncate">{activity.title}</div>
+                <div className={`text-[11px] mt-0.5 ${activity.subtitle.includes('+') ? 'text-emerald-700 font-semibold' : 'text-[#6B7799]'}`}>
                   {activity.subtitle}
                 </div>
               </div>
-              <div className="text-[10px] font-mono text-slate-400 shrink-0">
+              <div className="text-[10px] font-mono text-[#8FA3C8] shrink-0">
                 {activity.time}
               </div>
             </div>
@@ -75,3 +75,4 @@ export function RecentActivityCard({ recentConversations }: RecentActivityCardPr
     </div>
   );
 }
+

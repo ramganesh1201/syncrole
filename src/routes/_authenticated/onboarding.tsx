@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -18,7 +18,7 @@ import { toast } from "sonner";
 
 export const Route = createFileRoute("/_authenticated/onboarding")({
   component: Onboarding,
-  head: () => ({ meta: [{ title: "Get started — SyncRole" }] }),
+  head: () => ({ meta: [{ title: "Get started â€” SyncRole" }] }),
 });
 
 const GOALS = [
@@ -129,7 +129,7 @@ function Onboarding() {
         .insert({ user_id: u.user.id, code: "profile_completed" })
         .then(() => {});
       await supabase.rpc("recompute_placement", { _user: u.user.id });
-      toast.success("Welcome aboard 🚀");
+      toast.success("Welcome aboard ðŸš€");
       nav({ to: "/dashboard" });
     } catch (e: any) {
       toast.error(e.message);
@@ -298,12 +298,12 @@ function Onboarding() {
                       dashboard.
                     </p>
                     <div className="mt-6 grid grid-cols-2 gap-3 text-sm">
-                      <Summary label="College" value={form.college || "—"} />
+                      <Summary label="College" value={form.college || "â€”"} />
                       <Summary
                         label="Goal"
-                        value={GOALS.find((g) => g.v === form.career_goal)?.label || "—"}
+                        value={GOALS.find((g) => g.v === form.career_goal)?.label || "â€”"}
                       />
-                      <Summary label="Dream Target" value={form.dream_company?.toUpperCase() || "—"} />
+                      <Summary label="Dream Target" value={form.dream_company?.toUpperCase() || "â€”"} />
                       <Summary label="Skills" value={`${form.skills.length} selected`} />
                     </div>
                   </Section>
@@ -552,3 +552,4 @@ function ResumeUpload({ onUploaded }: { onUploaded: () => void }) {
     </label>
   );
 }
+

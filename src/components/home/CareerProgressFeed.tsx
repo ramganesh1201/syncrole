@@ -26,7 +26,7 @@ import {
 } from "lucide-react";
 import { ACHIEVEMENT_CATALOG, levelProgress } from "@/lib/syncrole";
 
-/* ─── Types ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type FeedEvent = {
   type: string;
@@ -46,7 +46,7 @@ interface CategoryStyle {
   badgeBg: string;
 }
 
-/* ─── Category Visual Styling Map ─────────────────────────────── */
+/* â”€â”€â”€ Category Visual Styling Map â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   dsa: {
@@ -99,11 +99,11 @@ const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   },
   github: {
     icon: Github,
-    color: "text-indigo-400",
-    bg: "bg-indigo-950/80",
-    border: "border-indigo-500/40",
-    glow: "shadow-[0_0_15px_rgba(99,102,241,0.25)]",
-    badgeBg: "bg-indigo-950/60 border-indigo-500/30 text-indigo-400",
+    color: "text-blue-400",
+    bg: "bg-slate-950/80",
+    border: "border-blue-500/40",
+    glow: "shadow-[0_0_15px_rgba(36,87,230,0.25)]",
+    badgeBg: "bg-slate-900/60 border-blue-500/30 text-blue-400",
   },
   profile: {
     icon: User,
@@ -123,7 +123,7 @@ const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   },
 };
 
-/* ─── Catalog Icon Resolver ──────────────────────────────────── */
+/* â”€â”€â”€ Catalog Icon Resolver â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const CATALOG_ICONS: Record<string, React.ComponentType<{ className?: string }>> = {
   Rocket: Sparkles,
@@ -168,7 +168,7 @@ const CATALOG_ICONS: Record<string, React.ComponentType<{ className?: string }>>
   PartyPopper: Trophy,
 };
 
-/* ─── Demo Fallbacks (Unauthenticated Visitors) ───────────────── */
+/* â”€â”€â”€ Demo Fallbacks (Unauthenticated Visitors) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const DEMO_FEED: FeedEvent[] = [
   {
@@ -230,7 +230,7 @@ const DEMO_ACHIEVEMENTS = [
   { code: "dsa_10", name: "Consistent Performer", status: "Locked", unlocked: false },
 ];
 
-/* ─── Main Component ─────────────────────────────────────────── */
+/* â”€â”€â”€ Main Component â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function CareerProgressFeed({ data }: { data: any }) {
   const isAuthed = !!data?.profile;
@@ -275,7 +275,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
         liveFeed.push({
           type: "dsa",
           label: `Solved ${total} DSA Problem${total > 1 ? "s" : ""}`,
-          sub: `Easy: ${l.easy || 0} · Medium: ${l.medium || 0} · Hard: ${l.hard || 0}`,
+          sub: `Easy: ${l.easy || 0} Â· Medium: ${l.medium || 0} Â· Hard: ${l.hard || 0}`,
           xp: total * 10,
           time: timeAgo(eventTime),
           rawTime: new Date(eventTime || Date.now()).getTime(),
@@ -384,10 +384,10 @@ export default function CareerProgressFeed({ data }: { data: any }) {
       } else if (typeof latest === "number") {
         placementGrowthStr = `${latest.toFixed(1)}%`;
       } else {
-        placementGrowthStr = "—";
+        placementGrowthStr = "â€”";
       }
     } else {
-      placementGrowthStr = "—";
+      placementGrowthStr = "â€”";
     }
   }
 
@@ -428,7 +428,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
   return (
     <section id="progress" ref={sectionRef} className="relative py-24 md:py-32 px-4 md:px-6 overflow-hidden">
       <div className="mx-auto max-w-7xl">
-        {/* ─── Header ───────────────────────────────────────────── */}
+        {/* â”€â”€â”€ Header â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -452,11 +452,11 @@ export default function CareerProgressFeed({ data }: { data: any }) {
           </h2>
 
           <p className="mt-4 text-sm md:text-base text-zinc-400 max-w-xl mx-auto font-normal leading-relaxed">
-            A chronological record of your career growth — XP earned, problems solved, milestones unlocked.
+            A chronological record of your career growth â€” XP earned, problems solved, milestones unlocked.
           </p>
         </motion.div>
 
-        {/* ─── Main Two-Column Layout ───────────────────────────── */}
+        {/* â”€â”€â”€ Main Two-Column Layout â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 mb-8">
           {/* Left Column: Recent Activity Feed */}
           <div className="lg:col-span-7 xl:col-span-8 space-y-4">
@@ -559,7 +559,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
                   {!isAuthed && (
                     <div className="text-right">
                       <div className="text-xs text-emerald-400 font-medium flex items-center justify-end gap-1">
-                        <TrendingUp className="w-3 h-3" /> ↑ 15%
+                        <TrendingUp className="w-3 h-3" /> â†‘ 15%
                       </div>
                       <div className="text-[10px] text-zinc-400 mt-0.5">vs last week</div>
                     </div>
@@ -579,7 +579,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
                   {!isAuthed && (
                     <div className="text-right">
                       <div className="text-xs text-emerald-400 font-medium flex items-center justify-end gap-1">
-                        <TrendingUp className="w-3 h-3" /> ↑ 3
+                        <TrendingUp className="w-3 h-3" /> â†‘ 3
                       </div>
                       <div className="text-[10px] text-zinc-400 mt-0.5">vs last week</div>
                     </div>
@@ -599,7 +599,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
                   {!isAuthed && (
                     <div className="text-right">
                       <div className="text-xs text-emerald-400 font-medium flex items-center justify-end gap-1">
-                        <TrendingUp className="w-3 h-3" /> ↑ 2.1%
+                        <TrendingUp className="w-3 h-3" /> â†‘ 2.1%
                       </div>
                       <div className="text-[10px] text-zinc-400 mt-0.5">vs last week</div>
                     </div>
@@ -613,13 +613,13 @@ export default function CareerProgressFeed({ data }: { data: any }) {
                   <div>
                     <div className="text-[10px] font-bold tracking-widest text-zinc-400 uppercase">DAILY AVG. ACTIVE TIME</div>
                     <div className="font-display text-2xl md:text-3xl font-extrabold text-white mt-0.5">
-                      {isAuthed ? "—" : "45m"}
+                      {isAuthed ? "â€”" : "45m"}
                     </div>
                   </div>
                   {!isAuthed && (
                     <div className="text-right">
                       <div className="text-xs text-emerald-400 font-medium flex items-center justify-end gap-1">
-                        <TrendingUp className="w-3 h-3" /> ↑ 10m
+                        <TrendingUp className="w-3 h-3" /> â†‘ 10m
                       </div>
                       <div className="text-[10px] text-zinc-400 mt-0.5">vs last week</div>
                     </div>
@@ -680,7 +680,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
           </div>
         </div>
 
-        {/* ─── Bottom Career Progress Summary Card ──────────────── */}
+        {/* â”€â”€â”€ Bottom Career Progress Summary Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -697,7 +697,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
                 Keep going, {displayName}!
               </h3>
               <p className="text-xs md:text-sm text-zinc-400 mt-1 font-normal">
-                Level {currentLevel} · {totalXp.toLocaleString()} Total XP earned. Keep building your streak!
+                Level {currentLevel} Â· {totalXp.toLocaleString()} Total XP earned. Keep building your streak!
               </p>
             </div>
           </div>
@@ -752,7 +752,7 @@ export default function CareerProgressFeed({ data }: { data: any }) {
   );
 }
 
-/* ─── Helpers ────────────────────────────────────────────────── */
+/* â”€â”€â”€ Helpers â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function timeAgo(ts: string | number | Date | null | undefined): string {
   if (!ts) return "recently";
@@ -767,4 +767,5 @@ function timeAgo(ts: string | number | Date | null | undefined): string {
   if (days < 30) return `${days}d ago`;
   return `${Math.floor(days / 30)}mo ago`;
 }
+
 

@@ -1,4 +1,4 @@
-import { useNavigate } from "@tanstack/react-router";
+﻿import { useNavigate } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, ShieldCheck, Zap, Target, Trophy, Flame } from "lucide-react";
 import {
@@ -112,3 +112,4 @@ export function AIMissionControlHero({
     </div>
   );
 }
+

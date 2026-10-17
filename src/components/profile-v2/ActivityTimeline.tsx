@@ -104,3 +104,4 @@ export const ActivityTimeline = React.memo(function ActivityTimeline({ placement
     </motion.div>
   );
 });
+

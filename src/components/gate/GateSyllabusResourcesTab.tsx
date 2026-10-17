@@ -1,4 +1,4 @@
-import { GatePaperInfo, GateSyllabusTopic, GateResource } from '@/lib/gate/gateTypes';
+﻿import { GatePaperInfo, GateSyllabusTopic, GateResource } from '@/lib/gate/gateTypes';
 import { GateService } from '@/lib/gate/gateService';
 import { downloadOrOpenGatePdf } from '@/lib/gate/gateDateUtils';
 import { getGatePaperMeta } from '@/lib/gate/gatePaperIcons';
@@ -159,7 +159,7 @@ export default function GateSyllabusResourcesTab({
           className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-teal-900 text-white text-xs md:text-sm font-semibold shadow-xs hover:bg-teal-800 transition shrink-0 self-start sm:self-auto"
         >
           <ShieldCheck className="h-4 w-4 text-teal-300" />
-          <span>Official IIT Madras Syllabus Source ↗</span>
+          <span>Official IIT Madras Syllabus Source â†—</span>
         </a>
       </div>
 
@@ -212,7 +212,7 @@ export default function GateSyllabusResourcesTab({
             ))}
           </div>
 
-          {/* Paper List Items — Distinctive Visual Identity Cards */}
+          {/* Paper List Items â€” Distinctive Visual Identity Cards */}
           <div className="space-y-1.5 max-h-[600px] overflow-y-auto custom-scrollbar pr-1">
             {filteredPapers.map((p) => {
               const isSelected = p.code === paper.code;
@@ -521,7 +521,7 @@ export default function GateSyllabusResourcesTab({
                                   rel="noreferrer"
                                   className="inline-flex items-center gap-1 text-teal-700 hover:underline font-semibold text-xs pt-1"
                                 >
-                                  <span>Open Resource ↗</span>
+                                  <span>Open Resource â†—</span>
                                 </a>
                               )}
                             </div>
@@ -543,3 +543,4 @@ export default function GateSyllabusResourcesTab({
     </div>
   );
 }
+

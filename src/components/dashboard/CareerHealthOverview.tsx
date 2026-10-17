@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+﻿import { Link } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import { Activity, FileText, Github, Brain, Sparkles, ArrowRight, CheckCircle2, AlertCircle } from "lucide-react";
 import { UserCareerContext } from "@/lib/career-intelligence";
@@ -33,7 +33,7 @@ export function CareerHealthOverview({
       title: "Resume & ATS Health",
       score: resumeScore,
       health: getHealthBadge(resumeScore),
-      description: resume ? `ATS Score: ${resumeScore}% • Keyword Match Verified` : "No resume uploaded yet",
+      description: resume ? `ATS Score: ${resumeScore}% â€¢ Keyword Match Verified` : "No resume uploaded yet",
       route: "/resume-intelligence",
       actionLabel: "View Resume Analysis",
       icon: FileText,
@@ -43,7 +43,7 @@ export function CareerHealthOverview({
       title: "DSA & Problem Solving",
       score: dsaScore,
       health: getHealthBadge(dsaScore),
-      description: `Algorithmic Score: ${dsaScore}% • Core CS Fundamentals`,
+      description: `Algorithmic Score: ${dsaScore}% â€¢ Core CS Fundamentals`,
       route: "/dashboard/dsa",
       actionLabel: "Open DSA Command Center",
       icon: Brain,
@@ -53,7 +53,7 @@ export function CareerHealthOverview({
       title: "GitHub & Open Source",
       score: githubScore,
       health: getHealthBadge(githubScore),
-      description: gh ? `Score: ${githubScore}% • ${gh.repo_count || 0} Repos • ${gh.star_count || 0} Stars` : "GitHub profile not connected",
+      description: gh ? `Score: ${githubScore}% â€¢ ${gh.repo_count || 0} Repos â€¢ ${gh.star_count || 0} Stars` : "GitHub profile not connected",
       route: "/profile",
       actionLabel: "View GitHub Settings",
       icon: Github,
@@ -63,7 +63,7 @@ export function CareerHealthOverview({
       title: "Skill Competency Match",
       score: skillScore,
       health: getHealthBadge(skillScore),
-      description: `Skill Score: ${skillScore}% • Target Role Alignment`,
+      description: `Skill Score: ${skillScore}% â€¢ Target Role Alignment`,
       route: "/profile",
       actionLabel: "Edit Profile Skills",
       icon: Sparkles,
@@ -121,3 +121,4 @@ export function CareerHealthOverview({
     </div>
   );
 }
+

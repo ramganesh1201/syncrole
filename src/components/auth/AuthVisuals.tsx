@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
 interface AuthVisualsProps {
@@ -15,8 +15,8 @@ export function AuthVisuals({ mode }: AuthVisualsProps) {
         transition={{ duration: 0.3 }}
         className="space-y-3 relative z-10"
       >
-        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-50/80 border border-indigo-100 text-indigo-700 text-xs font-semibold">
-          <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#EEF2FB]/80 border border-[#2457E6]/100 text-[#2457E6] text-xs font-semibold">
+          <Sparkles className="w-3.5 h-3.5 text-[#2457E6]" />
           <span>SYNCROLE CAREER OS</span>
         </div>
         
@@ -166,7 +166,7 @@ function CareerVectorCanvas({ mode }: { mode: "signin" | "signup" | "forgot" }) 
           </g>
         </g>
 
-        {/* Destination: READY ✨ (x: 460, y: 50) */}
+        {/* Destination: READY âœ¨ (x: 460, y: 50) */}
         <g transform="translate(460, 50)">
           <circle r="22" fill="#6366F1" opacity="0.16" className="animate-ping" />
           <circle r="17" fill="url(#pathGrad)" filter="url(#glowEffect)" />
@@ -177,7 +177,7 @@ function CareerVectorCanvas({ mode }: { mode: "signin" | "signup" | "forgot" }) 
           <g transform="translate(0, 32)">
             <rect x="-30" y="-10" width="60" height="20" rx="10" fill="#4F46E5" />
             <text x="0" y="3" textAnchor="middle" fill="#FFFFFF" fontSize="9" fontWeight="800" fontFamily="sans-serif" letterSpacing="0.5">
-              READY ✨
+              READY âœ¨
             </text>
           </g>
         </g>
@@ -197,3 +197,4 @@ function CareerVectorCanvas({ mode }: { mode: "signin" | "signup" | "forgot" }) 
     </div>
   );
 }
+

@@ -42,7 +42,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
           rel="noreferrer"
           className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-slate-900 text-white text-xs md:text-sm font-semibold hover:bg-slate-800 transition shrink-0 self-start sm:self-auto shadow-xs"
         >
-          <span>Official Pattern Guide ↗</span>
+          <span>Official Pattern Guide â†—</span>
           <ExternalLink className="h-4 w-4 text-slate-300" />
         </a>
       </div>
@@ -52,7 +52,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
         <div className="bg-white border border-slate-200/90 p-6 rounded-2xl space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-teal-800 uppercase tracking-wider font-mono bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200">
-              01 • Mode & Duration
+              01 â€¢ Mode & Duration
             </span>
             <FileText className="h-4.5 w-4.5 text-teal-700" />
           </div>
@@ -68,11 +68,11 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
         <div className="bg-white border border-slate-200/90 p-6 rounded-2xl space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-teal-800 uppercase tracking-wider font-mono bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200">
-              02 • Weightage Distribution
+              02 â€¢ Weightage Distribution
             </span>
             <Award className="h-4.5 w-4.5 text-teal-700" />
           </div>
-          <h3 className="text-lg font-bold text-slate-900">65 Questions • 100 Marks</h3>
+          <h3 className="text-lg font-bold text-slate-900">65 Questions â€¢ 100 Marks</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
             General Aptitude (GA) accounts for 15% (15 marks, 10 questions). Subject Specific Discipline covers 85% (85 marks, 55 questions).
           </p>
@@ -84,11 +84,11 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
         <div className="bg-white border border-slate-200/90 p-6 rounded-2xl space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <span className="text-xs font-bold text-teal-800 uppercase tracking-wider font-mono bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200">
-              03 • Question Types
+              03 â€¢ Question Types
             </span>
             <ShieldCheck className="h-4.5 w-4.5 text-teal-700" />
           </div>
-          <h3 className="text-lg font-bold text-slate-900">MCQ • MSQ • NAT</h3>
+          <h3 className="text-lg font-bold text-slate-900">MCQ â€¢ MSQ â€¢ NAT</h3>
           <p className="text-sm text-slate-600 leading-relaxed">
             Mix of 1-mark and 2-mark questions assessing recall, comprehension, application, and analytical synthesis across undergraduate syllabus.
           </p>
@@ -131,10 +131,10 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
             <div className="p-4 rounded-xl bg-rose-50/70 border border-rose-200 space-y-2 text-xs md:text-sm text-rose-950 font-mono">
               <div className="font-bold">Penalty Deductions:</div>
               <div className="leading-relaxed">
-                • 1-mark question: <strong>1/3 mark deducted</strong> for wrong answer
+                â€¢ 1-mark question: <strong>1/3 mark deducted</strong> for wrong answer
               </div>
               <div className="leading-relaxed">
-                • 2-mark question: <strong>2/3 mark deducted</strong> for wrong answer
+                â€¢ 2-mark question: <strong>2/3 mark deducted</strong> for wrong answer
               </div>
               <div className="text-xs text-slate-600 pt-1 font-sans">
                 Zero deduction for unattempted questions.
@@ -158,10 +158,10 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
             <div className="p-4 rounded-xl bg-emerald-50/70 border border-emerald-200 space-y-2 text-xs md:text-sm text-emerald-950 font-mono">
               <div className="font-bold">Scoring Policy:</div>
               <div className="leading-relaxed">
-                • Full marks awarded only if <strong>all correct choices</strong> are selected.
+                â€¢ Full marks awarded only if <strong>all correct choices</strong> are selected.
               </div>
               <div className="leading-relaxed">
-                • <strong>No partial credit</strong> for incomplete selection.
+                â€¢ <strong>No partial credit</strong> for incomplete selection.
               </div>
               <div className="text-xs text-emerald-800 font-bold pt-1 font-sans">
                 Zero negative marking for incorrect choices.
@@ -172,7 +172,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
           {/* NAT */}
           <div className="space-y-3 pt-5 md:pt-0 md:pl-6">
             <div className="flex items-center justify-between">
-              <span className="inline-flex px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-900 text-xs font-bold font-mono">
+              <span className="inline-flex px-2.5 py-1 rounded-lg bg-[#EEF2FB] text-[#17233F] text-xs font-bold font-mono border border-[#2457E6]/20">
                 NAT (Numerical Answer)
               </span>
               <span className="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -182,7 +182,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
             <p className="text-sm text-slate-600 leading-relaxed">
               No choices displayed. The answer is a signed real number entered via on-screen virtual keypad.
             </p>
-            <div className="p-4 rounded-xl bg-indigo-50/70 border border-indigo-200 space-y-2 text-xs md:text-sm text-indigo-950 font-mono">
+            <div className="p-4 rounded-xl bg-[#EEF2FB]/70 border border-[#2457E6]/20 space-y-2 text-xs md:text-sm text-[#17233F] font-mono">
               <div className="font-bold">Numerical Rules:</div>
               <div className="leading-relaxed">
                 • Answers are evaluated within specified numerical tolerance intervals.
@@ -190,7 +190,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
               <div className="leading-relaxed">
                 • Round off to specified decimal places as instructed in question.
               </div>
-              <div className="text-xs text-indigo-800 font-bold pt-1 font-sans">
+              <div className="text-xs text-[#2457E6] font-bold pt-1 font-sans">
                 Zero negative marking for incorrect numericals.
               </div>
             </div>
@@ -259,7 +259,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
             <div className="flex items-start gap-3">
               <span className="h-2 w-2 rounded-full bg-teal-600 mt-1.5 shrink-0" />
               <div>
-                <strong className="text-slate-900">Financial Assistance:</strong> Monthly AICTE/MHRD stipend (₹12,400/month for M.Tech candidates) during postgraduate tenure.
+                <strong className="text-slate-900">Financial Assistance:</strong> Monthly AICTE/MHRD stipend (â‚¹12,400/month for M.Tech candidates) during postgraduate tenure.
               </div>
             </div>
             <div className="flex items-start gap-3">
@@ -281,3 +281,4 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
     </div>
   );
 }
+

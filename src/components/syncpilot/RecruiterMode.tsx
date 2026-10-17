@@ -70,7 +70,7 @@ function ScoreBar({ label, value, icon: Icon }: { label: string; value: number; 
         </div>
         <div className="h-1.5 rounded-full bg-slate-100 overflow-hidden">
           <motion.div
-            className="h-full rounded-full bg-purple-600"
+            className="h-full rounded-full bg-[#2457E6]"
             initial={{ width: 0 }}
             animate={{ width: `${value}%` }}
             transition={{ duration: 0.8, ease: "easeOut" }}
@@ -90,7 +90,7 @@ function MessageBubble({ role, content }: { role: "user" | "assistant"; content:
       className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <div className="h-7 w-7 rounded-xl bg-purple-50 border border-purple-100 text-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="h-7 w-7 rounded-xl bg-[#EEF2FB] border border-purple-100 text-[#2457E6] flex items-center justify-center shrink-0 mt-0.5">
           <Briefcase className="h-3.5 w-3.5" />
         </div>
       )}
@@ -162,7 +162,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
       <div className="flex-shrink-0 px-4 py-3 bg-white border-b border-slate-200/90 z-10">
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
+            <div className="h-8 w-8 rounded-xl bg-[#EEF2FB] border border-purple-100 flex items-center justify-center text-[#2457E6] shrink-0">
               <Briefcase className="h-4 w-4" />
             </div>
             <div>
@@ -201,7 +201,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
           >
             Career Twin
           </button>
-          <button className="text-xs font-semibold bg-purple-600 text-white px-3 py-1 rounded-full whitespace-nowrap shadow-xs">
+          <button className="text-xs font-semibold bg-[#2457E6] text-white px-3 py-1 rounded-full whitespace-nowrap shadow-xs">
             Recruiter Mode
           </button>
           <button
@@ -261,7 +261,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
                 <button
                   key={p}
                   onClick={() => handleSend(p)}
-                  className="w-full text-left bg-white hover:bg-slate-50 rounded-xl p-2 text-[11px] font-medium text-slate-700 hover:text-purple-600 transition border border-slate-200/70 truncate cursor-pointer"
+                  className="w-full text-left bg-white hover:bg-slate-50 rounded-xl p-2 text-[11px] font-medium text-slate-700 hover:text-[#2457E6] transition border border-slate-200/70 truncate cursor-pointer"
                 >
                   {p}
                 </button>
@@ -322,7 +322,7 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
                 whileTap={{ scale: 0.95 }}
                 onClick={() => handleSend()}
                 disabled={!input.trim() || loading}
-                className="h-10 w-10 shrink-0 rounded-xl bg-purple-600 hover:bg-purple-700 text-white flex items-center justify-center disabled:opacity-40 transition shadow-xs cursor-pointer"
+                className="h-10 w-10 shrink-0 rounded-xl bg-[#2457E6] hover:bg-purple-700 text-white flex items-center justify-center disabled:opacity-40 transition shadow-xs cursor-pointer"
               >
                 {loading ? <Loader2 className="h-4 w-4 animate-spin text-white" /> : <Send className="h-4 w-4 text-white" />}
               </motion.button>
@@ -333,3 +333,4 @@ export function RecruiterMode({ onClose, onSwitchMode }: Props) {
     </div>
   );
 }
+

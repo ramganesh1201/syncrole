@@ -196,7 +196,7 @@ function getHeadingMeta(text: string) {
     return {
       badge: "PROBLEM UNDERSTANDING",
       icon: Target,
-      badgeBg: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      badgeBg: "bg-[#EEF2FB] text-[#2457E6] border-[#2457E6]/20",
       accentColor: "border-l-indigo-500",
     };
   }
@@ -347,10 +347,10 @@ export function AICallout({
     why: {
       icon: HelpCircle,
       defaultTitle: "WHY IT MATTERS",
-      bg: "bg-indigo-50/90 border-indigo-200/90 text-indigo-950",
-      accent: "bg-indigo-500",
-      titleColor: "text-indigo-800",
-      iconColor: "text-indigo-600",
+      bg: "bg-[#EEF2FB]/90 border-[#2457E6]/20 text-[#17233F]",
+      accent: "bg-[#EEF2FB]0",
+      titleColor: "text-[#17233F]",
+      iconColor: "text-[#2457E6]",
     },
     complexity: {
       icon: Activity,

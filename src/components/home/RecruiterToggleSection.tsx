@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Rocket, Target, AlertTriangle, CheckCircle,
@@ -22,7 +22,7 @@ const DEMO_RECRUITER = {
 function CustomAngleAxisTick({ x, y, payload }: any) {
   return (
     <text x={x} y={y} textAnchor="middle" fill="rgba(255,255,255,0.6)" fontSize={11} dy={4}>
-      {payload.value.length > 12 ? payload.value.slice(0, 10) + "…" : payload.value}
+      {payload.value.length > 12 ? payload.value.slice(0, 10) + "â€¦" : payload.value}
     </text>
   );
 }
@@ -256,3 +256,4 @@ export default function RecruiterToggleSection({ data }: { data: any }) {
     </section>
   );
 }
+

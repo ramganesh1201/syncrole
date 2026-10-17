@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+﻿import { useMemo } from "react";
 import { motion } from "framer-motion";
 import { Sparkles, Trophy, Flame, Target, ArrowRight } from "lucide-react";
 import {
@@ -51,7 +51,7 @@ export function AICoachHero({
         <div className="grid md:grid-cols-12 gap-6 items-center">
           <div className="md:col-span-8 space-y-3">
             <h1 className="text-2xl md:text-4xl font-display font-bold text-white leading-tight">
-              {orchestration?.coachHeadline ?? `Welcome back, ${userName?.split(" ")[0] || "Engineer"}! 🎯`}
+              {orchestration?.coachHeadline ?? `Welcome back, ${userName?.split(" ")[0] || "Engineer"}! ðŸŽ¯`}
             </h1>
             <p className="text-sm md:text-base text-white/80 leading-relaxed">
               {orchestration?.coachMessage ?? "Complete today's highest-priority tasks to advance your career."}
@@ -98,7 +98,7 @@ export function AICoachHero({
           <div className="glass rounded-xl p-3 border border-white/5 space-y-0.5">
             <div className="text-[10px] uppercase text-muted-foreground font-semibold">1. Target Goal</div>
             <div className="text-xs font-bold text-white truncate">
-              {readiness.companyName} • {readiness.roleTitle}
+              {readiness.companyName} â€¢ {readiness.roleTitle}
             </div>
           </div>
 
@@ -143,3 +143,4 @@ export function AICoachHero({
     </div>
   );
 }
+

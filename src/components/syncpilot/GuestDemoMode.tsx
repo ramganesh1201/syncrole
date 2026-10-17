@@ -187,7 +187,7 @@ export function GuestDemoMode({ onClose }: Props) {
                     <div className="h-1.5 w-1.5 rounded-full bg-blue-500" /> Career Twin & Roadmaps
                   </div>
                   <div className="flex items-center gap-2">
-                    <div className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Recruiter Mode & ATS Scan
+                    <div className="h-1.5 w-1.5 rounded-full bg-[#EEF2FB]0" /> Recruiter Mode & ATS Scan
                   </div>
                   <div className="flex items-center gap-2">
                     <div className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Interactive Mock Interviews
@@ -267,3 +267,4 @@ export function GuestDemoMode({ onClose }: Props) {
     </div>
   );
 }
+

@@ -79,7 +79,7 @@ function CompanyLogo({ name, className = "w-7 h-7" }: { name: string; className?
   if (!logoUrl || failed) {
     return (
       <div
-        className={`${className} rounded-full bg-purple-100 border border-purple-200 flex items-center justify-center font-display font-bold text-purple-700 text-xs shadow-xs select-none`}
+        className={`${className} rounded-full bg-[#EEF2FB] border border-[#2457E6]/20 flex items-center justify-center font-display font-bold text-[#2457E6] text-xs shadow-xs select-none`}
       >
         {initial}
       </div>
@@ -331,7 +331,7 @@ function DSACompaniesPage() {
 
       {/* Compact Header */}
       <div className="space-y-1.5">
-        <div className="text-[10px] font-mono uppercase tracking-widest text-purple-700 font-bold">
+        <div className="text-[10px] font-mono uppercase tracking-widest text-[#2457E6] font-bold">
           TARGET COMPANY PREPARATION
         </div>
         <h1 className="font-display text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
@@ -344,8 +344,8 @@ function DSACompaniesPage() {
 
       {/* Small Target Status Row */}
       <div className="flex flex-wrap items-center gap-2 pt-1 pb-1 text-xs font-mono">
-        <span className="inline-flex items-center gap-1.5 bg-purple-50 text-purple-700 border border-purple-200 px-3 py-1 rounded-full font-bold shadow-xs">
-          <Target className="w-3.5 h-3.5 text-purple-600" />
+        <span className="inline-flex items-center gap-1.5 bg-[#EEF2FB] text-[#2457E6] border border-[#2457E6]/20 px-3 py-1 rounded-full font-bold shadow-xs">
+          <Target className="w-3.5 h-3.5 text-[#2457E6]" />
           <span>{userFocus.size} Target {userFocus.size === 1 ? "Company" : "Companies"}</span>
         </span>
         <span className="inline-flex items-center gap-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 px-3 py-1 rounded-full font-bold shadow-xs">
@@ -392,7 +392,7 @@ function DSACompaniesPage() {
                 transition={{ delay: idx * 0.02 }}
                 className={`relative rounded-3xl p-6 text-left transition-all duration-300 group flex flex-col justify-between border ${
                   selected
-                    ? "bg-purple-50/40 border-purple-300 shadow-md"
+                    ? "bg-[#EEF2FB]/40 border-[#2457E6]/40 shadow-md"
                     : "bg-white border-slate-200/80 shadow-xs hover:shadow-sm hover:border-slate-300 hover:-translate-y-1"
                 }`}
               >
@@ -418,7 +418,7 @@ function DSACompaniesPage() {
                       onClick={() => toggleCompany(company.id)}
                       className={`shrink-0 text-xs px-3 py-1.5 rounded-full font-semibold transition-all flex items-center gap-1.5 ${
                         selected
-                          ? "bg-purple-600 text-white font-bold shadow-xs"
+                          ? "bg-[#2457E6] text-white font-bold shadow-xs"
                           : "bg-slate-100 text-slate-700 hover:text-slate-900 hover:bg-slate-200 border border-slate-200"
                       }`}
                     >
@@ -440,7 +440,7 @@ function DSACompaniesPage() {
                       <div className="text-[10px] uppercase tracking-widest text-slate-500 font-mono font-semibold">
                         Readiness
                       </div>
-                      <div className="text-sm font-bold text-purple-700">
+                      <div className="text-sm font-bold text-[#2457E6]">
                         {readiness !== null ? `${readiness}%` : "Not enough data"}
                       </div>
                     </div>
@@ -795,3 +795,4 @@ function CompanyStrategyModal({
     </div>
   );
 }
+

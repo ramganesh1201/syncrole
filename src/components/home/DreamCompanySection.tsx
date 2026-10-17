@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Target,
@@ -21,14 +21,14 @@ interface TargetSuggestion {
 }
 
 const POPULAR_TARGETS: TargetSuggestion[] = [
-  { id: "google", name: "Google", emoji: "🔵", tier: "Tier 1", defaultRole: "Software Engineer" },
-  { id: "microsoft", name: "Microsoft", emoji: "🪟", tier: "Tier 1", defaultRole: "Full Stack Engineer" },
-  { id: "amazon", name: "Amazon", emoji: "🟠", tier: "Tier 1", defaultRole: "Backend Engineer" },
-  { id: "atlassian", name: "Atlassian", emoji: "🔷", tier: "Tier 1", defaultRole: "Software Engineer" },
-  { id: "nvidia", name: "NVIDIA", emoji: "🟢", tier: "Tier 1", defaultRole: "AI / ML Engineer" },
-  { id: "adobe", name: "Adobe", emoji: "🔴", tier: "Tier 1", defaultRole: "Frontend Engineer" },
-  { id: "zoho", name: "Zoho", emoji: "🟨", tier: "Product", defaultRole: "Full Stack Engineer" },
-  { id: "startups", name: "High-Growth Startup", emoji: "🚀", tier: "Startup", defaultRole: "Full Stack Engineer" },
+  { id: "google", name: "Google", emoji: "ðŸ”µ", tier: "Tier 1", defaultRole: "Software Engineer" },
+  { id: "microsoft", name: "Microsoft", emoji: "ðŸªŸ", tier: "Tier 1", defaultRole: "Full Stack Engineer" },
+  { id: "amazon", name: "Amazon", emoji: "ðŸŸ ", tier: "Tier 1", defaultRole: "Backend Engineer" },
+  { id: "atlassian", name: "Atlassian", emoji: "ðŸ”·", tier: "Tier 1", defaultRole: "Software Engineer" },
+  { id: "nvidia", name: "NVIDIA", emoji: "ðŸŸ¢", tier: "Tier 1", defaultRole: "AI / ML Engineer" },
+  { id: "adobe", name: "Adobe", emoji: "ðŸ”´", tier: "Tier 1", defaultRole: "Frontend Engineer" },
+  { id: "zoho", name: "Zoho", emoji: "ðŸŸ¨", tier: "Product", defaultRole: "Full Stack Engineer" },
+  { id: "startups", name: "High-Growth Startup", emoji: "ðŸš€", tier: "Startup", defaultRole: "Full Stack Engineer" },
 ];
 
 export default function DreamCompanySection({ data }: { data: any }) {
@@ -305,7 +305,7 @@ export default function DreamCompanySection({ data }: { data: any }) {
                     <span>Path Sequence</span>
                   </div>
                   <p className="text-xs text-muted-foreground leading-relaxed">
-                    Close priority gap → Verify capability in log → Unlock interview readiness.
+                    Close priority gap â†’ Verify capability in log â†’ Unlock interview readiness.
                   </p>
                 </div>
               </div>
@@ -324,3 +324,4 @@ export default function DreamCompanySection({ data }: { data: any }) {
     </section>
   );
 }
+

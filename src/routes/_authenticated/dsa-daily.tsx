@@ -537,8 +537,8 @@ function DSADailyPage() {
       {/* Header */}
       <div>
         <div className="flex items-center gap-2 mb-1">
-          <span className="text-[10px] font-mono uppercase tracking-widest text-purple-700 font-bold bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shadow-xs">
-            <Calendar className="w-3 h-3 text-purple-600" /> DAILY CHALLENGE
+          <span className="text-[10px] font-mono uppercase tracking-widest text-[#2457E6] font-bold bg-[#EEF2FB] border border-[#2457E6]/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1 shadow-xs">
+            <Calendar className="w-3 h-3 text-[#2457E6]" /> DAILY CHALLENGE
           </span>
           <span className="text-[10px] font-mono text-slate-500 bg-white border border-slate-200 px-2.5 py-0.5 rounded-full font-semibold shadow-xs">
             {todayStr}
@@ -585,8 +585,8 @@ function DSADailyPage() {
               </h2>
             </div>
 
-            <div className="bg-purple-50/80 rounded-2xl p-3 border border-purple-200 text-center shrink-0 min-w-28 shadow-xs">
-              <div className="font-display text-2xl font-bold text-purple-700">
+            <div className="bg-[#EEF2FB]/80 rounded-2xl p-3 border border-[#2457E6]/20 text-center shrink-0 min-w-28 shadow-xs">
+              <div className="font-display text-2xl font-bold text-[#2457E6]">
                 +{today.xp_reward}
               </div>
               <div className="text-[10px] text-slate-500 font-mono font-semibold">
@@ -602,7 +602,7 @@ function DSADailyPage() {
                 Estimated Time
               </div>
               <div className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <Clock className="w-3.5 h-3.5 text-purple-600" />
+                <Clock className="w-3.5 h-3.5 text-[#2457E6]" />
                 <span>{estimateTime(today.problem.difficulty)}</span>
               </div>
             </div>
@@ -630,8 +630,8 @@ function DSADailyPage() {
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" /> Solved & Verified
                   </span>
                 ) : status === "in_progress" ? (
-                  <span className="text-purple-700 flex items-center gap-1">
-                    <Zap className="w-3.5 h-3.5 text-purple-600" /> In Progress
+                  <span className="text-[#2457E6] flex items-center gap-1">
+                    <Zap className="w-3.5 h-3.5 text-[#2457E6]" /> In Progress
                   </span>
                 ) : (
                   <span className="text-slate-500 font-normal">
@@ -669,7 +669,7 @@ function DSADailyPage() {
               <button
                 onClick={() => void openDailyWorkspace()}
                 disabled={busy}
-                className="w-full sm:w-auto bg-purple-600 text-white hover:bg-purple-700 rounded-xl px-6 py-2.5 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
+                className="w-full sm:w-auto bg-[#2457E6] text-white hover:bg-[#1E48C5] rounded-xl px-6 py-2.5 text-xs font-bold transition-colors flex items-center justify-center gap-1.5 shadow-xs"
               >
                 <span>{status === "not_started" ? "Start Challenge →" : "Open Workspace →"}</span>
                 <ChevronRight className="w-4 h-4" />
@@ -699,7 +699,7 @@ function DSADailyPage() {
               key={item.dateStr}
               className={`rounded-2xl p-3 border text-left space-y-2 transition-all ${
                 item.isToday
-                  ? "border-purple-300 bg-purple-50/40 shadow-xs"
+                  ? "border-[#2457E6]/40 bg-[#EEF2FB]/40 shadow-xs"
                   : "bg-slate-50/60 border-slate-200/80"
               }`}
             >
@@ -708,7 +708,7 @@ function DSADailyPage() {
                   {item.formattedDate}
                 </span>
                 {item.isToday && (
-                  <span className="text-[9px] font-mono bg-purple-100 text-purple-700 border border-purple-200 px-1.5 py-0.2 rounded font-bold">
+                  <span className="text-[9px] font-mono bg-[#EEF2FB] text-[#2457E6] border border-[#2457E6]/20 px-1.5 py-0.2 rounded font-bold">
                     Today
                   </span>
                 )}
@@ -724,7 +724,7 @@ function DSADailyPage() {
                     <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Solved
                   </span>
                 ) : item.status === "in_progress" ? (
-                  <span className="text-[10px] text-purple-700 font-mono font-bold">
+                  <span className="text-[10px] text-[#2457E6] font-mono font-bold">
                     Active
                   </span>
                 ) : item.isToday ? (
@@ -744,3 +744,4 @@ function DSADailyPage() {
     </main>
   );
 }
+

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Sparkles, ArrowRight, Zap, Target, HelpCircle, CheckCircle, ShieldCheck } from "lucide-react";
 import {
   ExplainableRecommendation,
@@ -83,3 +83,4 @@ export function AdaptiveFocusWidget({ userContext }: AdaptiveFocusWidgetProps) {
     </div>
   );
 }
+

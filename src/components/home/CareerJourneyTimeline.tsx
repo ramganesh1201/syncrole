@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+﻿import { useState, useRef } from "react";
 import { motion, useInView, AnimatePresence } from "framer-motion";
 import {
   TrendingUp, CheckCircle, Target, Clock,
@@ -49,7 +49,7 @@ const STAGES: PhaseDetail[] = [
   {
     id: "interview",
     label: "Interview Ready",
-    sub: "Est. 4–6 Weeks",
+    sub: "Est. 4â€“6 Weeks",
     phase: "future",
     done: false,
     active: false,
@@ -334,3 +334,4 @@ export default function CareerJourneyTimeline({ data }: { data: any }) {
     </section>
   );
 }
+

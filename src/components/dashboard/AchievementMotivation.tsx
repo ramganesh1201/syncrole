@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Trophy, Flame, Sparkles, Award, Star, ArrowRight } from "lucide-react";
 import { ACHIEVEMENT_CATALOG } from "@/lib/syncrole";
 
@@ -49,7 +49,7 @@ export function AchievementMotivation({
           </div>
           <div className="space-y-0.5 min-w-0">
             <div className="text-[10px] uppercase font-bold tracking-wider text-accent">
-              Latest Unlocked • {latestAchievement.rarity}
+              Latest Unlocked â€¢ {latestAchievement.rarity}
             </div>
             <div className="font-semibold text-white text-sm truncate">{latestAchievement.name}</div>
             <div className="text-xs text-muted-foreground truncate">{latestAchievement.desc}</div>
@@ -77,3 +77,4 @@ export function AchievementMotivation({
     </div>
   );
 }
+

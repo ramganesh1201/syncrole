@@ -1,4 +1,4 @@
-import { useState } from 'react';
+﻿import { useState } from 'react';
 import { GatePaperInfo, GateEvent, GateUpdate } from '@/lib/gate/gateTypes';
 import { downloadOrOpenGatePdf } from '@/lib/gate/gateDateUtils';
 import { getGatePaperMeta } from '@/lib/gate/gatePaperIcons';
@@ -90,7 +90,7 @@ export default function GateOverviewTab({
     {
       id: 'purpose',
       q: 'What opportunities does GATE open?',
-      a: 'GATE scores are used for: 1) Master’s (M.Tech/M.E.) & Ph.D. admissions at IISc, IITs, NITs, and premier institutes; 2) Financial assistance (monthly stipend) during post-graduation; 3) Group-A Officer recruitment at major Public Sector Undertakings (PSUs like IOCL, ONGC, NTPC, HPCL, BARC); 4) Master’s admissions at select international universities (NUS, NTU, German tech universities).',
+      a: 'GATE scores are used for: 1) Masterâ€™s (M.Tech/M.E.) & Ph.D. admissions at IISc, IITs, NITs, and premier institutes; 2) Financial assistance (monthly stipend) during post-graduation; 3) Group-A Officer recruitment at major Public Sector Undertakings (PSUs like IOCL, ONGC, NTPC, HPCL, BARC); 4) Masterâ€™s admissions at select international universities (NUS, NTU, German tech universities).',
     },
     {
       id: 'disclaimer',
@@ -131,7 +131,7 @@ export default function GateOverviewTab({
                 })}
               </strong>
             </span>
-            <span className="hidden sm:inline">•</span>
+            <span className="hidden sm:inline">â€¢</span>
             <span className="hidden sm:inline text-teal-900 bg-teal-100/90 px-2.5 py-0.5 rounded font-sans font-semibold">
               Free Public Access (No Login Required)
             </span>
@@ -143,7 +143,7 @@ export default function GateOverviewTab({
           <div className="space-y-3.5 max-w-4xl">
             <div className="flex flex-wrap items-center gap-2.5">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold uppercase tracking-wider font-mono">
-                Official Exam Workspace • GATE 2027
+                Official Exam Workspace â€¢ GATE 2027
               </span>
 
               <span
@@ -173,7 +173,7 @@ export default function GateOverviewTab({
             </div>
 
             <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold tracking-tight text-slate-900 leading-tight">
-              Graduate Aptitude Test in Engineering — GATE 2027
+              Graduate Aptitude Test in Engineering â€” GATE 2027
             </h1>
 
             <p className="text-sm md:text-base lg:text-[17px] text-slate-600 leading-relaxed max-w-3xl">
@@ -256,7 +256,7 @@ export default function GateOverviewTab({
               <span className="text-xs font-bold uppercase tracking-wider text-teal-800 font-mono">
                 Real-Time Schedule Monitor
               </span>
-              <span className="text-slate-300">•</span>
+              <span className="text-slate-300">â€¢</span>
               <span className="text-xs font-medium text-slate-500 font-mono">
                 Live IST Clock: {now.toLocaleTimeString('en-IN', { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
               </span>
@@ -302,7 +302,7 @@ export default function GateOverviewTab({
 
             {countdown.isTentative ? (
               <div className="text-sm md:text-base font-medium text-amber-200 bg-white/5 p-4 rounded-lg border border-white/10 leading-relaxed">
-                {countdown.formatted} — Verified schedule updates will synchronize automatically once IIT Madras publishes them.
+                {countdown.formatted} â€” Verified schedule updates will synchronize automatically once IIT Madras publishes them.
               </div>
             ) : countdown.isPassed ? (
               <div className="text-sm md:text-base font-semibold text-emerald-300 bg-white/5 p-4 rounded-lg border border-white/10 flex items-center gap-2">
@@ -386,7 +386,7 @@ export default function GateOverviewTab({
         </div>
       </section>
 
-      {/* 3. CHOOSE YOUR GATE PAPER — VISUALLY DISTINCTIVE PAPER DISCOVERY */}
+      {/* 3. CHOOSE YOUR GATE PAPER â€” VISUALLY DISTINCTIVE PAPER DISCOVERY */}
       <section className="bg-white border border-slate-200/90 p-6 md:p-7 rounded-2xl shadow-xs space-y-6">
         <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 border-b border-slate-100 pb-4">
           <div className="space-y-1">
@@ -485,7 +485,7 @@ export default function GateOverviewTab({
               <span className="text-xs font-bold uppercase tracking-wider text-teal-800 font-mono">
                 Currently Selected Context
               </span>
-              <span className="text-slate-300">•</span>
+              <span className="text-slate-300">â€¢</span>
               <span className="text-xs font-mono text-slate-500">
                 GATE {paper.code} ({activePaperMeta.displayCode})
               </span>
@@ -607,3 +607,4 @@ export default function GateOverviewTab({
     </div>
   );
 }
+

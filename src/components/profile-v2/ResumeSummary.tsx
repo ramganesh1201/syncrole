@@ -24,8 +24,8 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
     >
       <div className="space-y-4">
         <div className="flex justify-between items-start">
-          <div className="w-10 h-10 rounded-xl bg-purple-50 flex items-center justify-center border border-purple-200">
-            <FileText className="w-5 h-5 text-purple-600" />
+          <div className="w-10 h-10 rounded-xl bg-[#EEF2FB] flex items-center justify-center border border-[#2457E6]/20">
+            <FileText className="w-5 h-5 text-[#2457E6]" />
           </div>
           {hasResume ? (
             <div className="flex items-center gap-1 bg-emerald-50 text-emerald-700 border border-emerald-200 px-2.5 py-0.5 rounded-full text-[9px] font-extrabold uppercase tracking-wider">
@@ -51,7 +51,7 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
           <div className="grid grid-cols-2 gap-3 pt-2">
             <div className="bg-slate-50 rounded-xl border border-slate-200/80 p-3 flex flex-col items-center justify-center text-center">
               <span className="text-[10px] uppercase text-slate-500 font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
-                <FileSearch className="w-3 h-3 text-purple-600" /> ATS Score
+                <FileSearch className="w-3 h-3 text-[#2457E6]" /> ATS Score
               </span>
               <span className="text-2xl font-extrabold text-slate-900">{score}%</span>
             </div>
@@ -80,3 +80,4 @@ export const ResumeSummary = React.memo(function ResumeSummary({ placementStats,
     </motion.div>
   );
 });
+

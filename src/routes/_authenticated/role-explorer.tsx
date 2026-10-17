@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Briefcase, Map, Target, TrendingUp, Users, ArrowRight, DollarSign, BrainCircuit } from "lucide-react";
@@ -173,3 +173,4 @@ function RoleExplorerPage() {
     </div>
   );
 }
+

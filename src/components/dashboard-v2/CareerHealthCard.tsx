@@ -30,8 +30,8 @@ export function CareerHealthCard({ scores }: CareerHealthCardProps) {
       label: "DSA",
       score: scores.dsa_score || 0,
       icon: Code2,
-      color: "bg-indigo-600",
-      iconColor: "text-indigo-700 bg-indigo-50 border-indigo-200",
+      color: "bg-[#2457E6]",
+      iconColor: "text-[#2457E6] bg-[#EEF2FB] border-[#2457E6]/20",
       link: "/dashboard/dsa",
     },
     {
@@ -49,16 +49,16 @@ export function CareerHealthCard({ scores }: CareerHealthCardProps) {
       score: scores.skill_score || 0,
       icon: Sparkles,
       color: "bg-purple-600",
-      iconColor: "text-purple-700 bg-purple-50 border-purple-200",
+      iconColor: "text-[#2457E6] bg-[#EEF2FB] border-[#2457E6]/20",
       link: "/profile",
     },
   ];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs">
+    <div className="bg-white border border-[#E3E9F4] rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs">
       <div>
         <div className="flex items-center justify-between mb-5">
-          <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Career Health</h3>
+          <h3 className="text-xs font-bold text-[#8FA3C8] uppercase tracking-wider font-mono">Career Health</h3>
           <Link to="/profile" className="text-xs text-blue-600 font-semibold flex items-center gap-1 hover:underline">
             <span>View All</span>
             <ArrowRight className="w-3 h-3" />
@@ -79,7 +79,7 @@ export function CareerHealthCard({ scores }: CareerHealthCardProps) {
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-bold font-mono text-slate-700">{item.score}/100</span>
-                    <ArrowRight className="w-3.5 h-3.5 text-slate-400 opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0" />
+                    <ArrowRight className="w-3.5 h-3.5 text-[#8FA3C8] opacity-0 group-hover:opacity-100 transition-all -translate-x-1 group-hover:translate-x-0" />
                   </div>
                 </div>
                 <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
@@ -93,3 +93,4 @@ export function CareerHealthCard({ scores }: CareerHealthCardProps) {
     </div>
   );
 }
+

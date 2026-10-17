@@ -1,4 +1,4 @@
-import React from "react";
+﻿import React from "react";
 import { cn } from "@/lib/utils";
 import { Play, Send, Clock, CheckCircle2, Zap } from "lucide-react";
 
@@ -93,3 +93,4 @@ export const SessionPanel: React.FC<SessionPanelProps> = ({
     </div>
   );
 };
+

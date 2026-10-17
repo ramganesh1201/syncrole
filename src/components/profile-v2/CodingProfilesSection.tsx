@@ -84,7 +84,7 @@ export const CodingProfilesSection = React.memo(function CodingProfilesSection({
                 <div>
                   <h4 className={`font-bold text-base ${isConnected ? "text-slate-900" : "text-slate-700"}`}>{p.name}</h4>
                   {isConnected ? (
-                    <p className="text-xs font-semibold text-purple-700 truncate">{p.value.replace(/https?:\/\/(www\.)?/, '')}</p>
+                    <p className="text-xs font-semibold text-[#2457E6] truncate">{p.value.replace(/https?:\/\/(www\.)?/, '')}</p>
                   ) : (
                     <p className="text-[11px] font-medium text-slate-500 leading-relaxed">{p.benefit}</p>
                   )}
@@ -119,3 +119,4 @@ export const CodingProfilesSection = React.memo(function CodingProfilesSection({
     </motion.div>
   );
 });
+

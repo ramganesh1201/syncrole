@@ -1,4 +1,4 @@
-import { GatePaperInfo } from '@/lib/gate/gateTypes';
+﻿import { GatePaperInfo } from '@/lib/gate/gateTypes';
 import {
   ArrowRight,
   BookOpen,
@@ -80,7 +80,7 @@ export default function GateUnderstandTab({ paper, onExploreSyllabus }: GateUnde
         {/* Micro label */}
         <div className="flex items-center gap-2 text-xs font-mono uppercase tracking-widest text-accent font-semibold">
           <span className="h-1.5 w-1.5 rounded-full bg-accent" />
-          <span>UNDERSTAND GATE • GUIDED EXPLANATION</span>
+          <span>UNDERSTAND GATE â€¢ GUIDED EXPLANATION</span>
         </div>
 
         {/* Confident Heading */}
@@ -186,3 +186,4 @@ export default function GateUnderstandTab({ paper, onExploreSyllabus }: GateUnde
     </div>
   );
 }
+

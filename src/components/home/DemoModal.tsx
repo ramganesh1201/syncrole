@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+﻿import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
 import { DemoTimeline, Chapter } from "./demo/DemoTimeline";
@@ -163,7 +163,7 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
               opacity: [0.2, 0.4, 0.2]
             }}
             transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
-            className="absolute -bottom-1/4 -left-1/4 w-[150%] h-[150%] bg-indigo-500/10 blur-[120px] rounded-full mix-blend-screen"
+            className="absolute -bottom-1/4 -left-1/4 w-[150%] h-[150%] bg-[#EEF2FB]0/10 blur-[120px] rounded-full mix-blend-screen"
           />
         </div>
 
@@ -221,3 +221,4 @@ export default function DemoModal({ isOpen, onClose }: DemoModalProps) {
     </AnimatePresence>
   );
 }
+

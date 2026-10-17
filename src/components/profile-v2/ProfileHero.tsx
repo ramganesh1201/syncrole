@@ -43,7 +43,7 @@ export const ProfileHero = React.memo(function ProfileHero({
             {profile?.avatar_url ? (
               <img src={profile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
             ) : (
-              <div className="w-full h-full flex items-center justify-center text-3xl font-extrabold text-purple-600 bg-purple-50">
+              <div className="w-full h-full flex items-center justify-center text-3xl font-extrabold text-[#2457E6] bg-[#EEF2FB]">
                 {profile?.full_name?.charAt(0) || "U"}
               </div>
             )}
@@ -60,8 +60,8 @@ export const ProfileHero = React.memo(function ProfileHero({
               {profile?.full_name || "SyncRole User"}
             </h1>
             <div className="flex flex-col md:flex-row items-center gap-2 md:gap-3 flex-wrap">
-              <span className="flex items-center gap-1.5 text-xs font-bold text-purple-700 bg-purple-50 px-3 py-1 rounded-full border border-purple-200/80">
-                <Briefcase className="w-3.5 h-3.5 text-purple-600" /> {profile?.target_role || "Targeting Role"}
+              <span className="flex items-center gap-1.5 text-xs font-bold text-[#2457E6] bg-[#EEF2FB] px-3 py-1 rounded-full border border-[#2457E6]/20/80">
+                <Briefcase className="w-3.5 h-3.5 text-[#2457E6]" /> {profile?.target_role || "Targeting Role"}
               </span>
               {profile?.dream_companies?.[0] && (
                 <span className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 bg-slate-100/90 px-3 py-1 rounded-full border border-slate-200/80">
@@ -84,7 +84,7 @@ export const ProfileHero = React.memo(function ProfileHero({
             </div>
             <div className="bg-slate-50 rounded-xl p-3 border border-slate-200/80 flex flex-col items-start justify-center">
               <p className="text-[10px] text-slate-500 uppercase font-extrabold tracking-wider mb-1 flex items-center gap-1 font-mono">
-                <Star className="w-3 h-3 text-purple-600" /> Twin Score
+                <Star className="w-3 h-3 text-[#2457E6]" /> Twin Score
               </p>
               <p className="text-xl font-extrabold text-slate-900">{twinScore}%</p>
             </div>
@@ -134,10 +134,10 @@ export const ProfileHero = React.memo(function ProfileHero({
       </div>
 
       {/* Right: AI Coach Guidance Module */}
-      <div className="relative xl:w-[320px] shrink-0 bg-gradient-to-br from-purple-50/80 via-indigo-50/50 to-blue-50/40 border border-purple-200/80 rounded-2xl p-5 flex flex-col justify-between shadow-2xs">
+      <div className="relative xl:w-[320px] shrink-0 bg-gradient-to-br from-purple-50/80 via-indigo-50/50 to-blue-50/40 border border-[#2457E6]/20/80 rounded-2xl p-5 flex flex-col justify-between shadow-2xs">
         <div className="space-y-3">
-          <div className="flex items-center gap-2 text-xs font-bold text-purple-700 uppercase tracking-wider font-mono">
-            <Compass className="w-4 h-4 text-purple-600" />
+          <div className="flex items-center gap-2 text-xs font-bold text-[#2457E6] uppercase tracking-wider font-mono">
+            <Compass className="w-4 h-4 text-[#2457E6]" />
             <span>AI Coach Insight</span>
           </div>
 
@@ -145,7 +145,7 @@ export const ProfileHero = React.memo(function ProfileHero({
             <div>
               <p className="text-[10px] text-slate-500 font-extrabold uppercase tracking-wider font-mono mb-0.5">Target Goal</p>
               <p className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
-                <Target className="w-3.5 h-3.5 text-purple-600 shrink-0" /> 
+                <Target className="w-3.5 h-3.5 text-[#2457E6] shrink-0" /> 
                 <span className="truncate">{profile?.target_role || "Software Engineer"} at {profile?.dream_companies?.[0] || "Top Tech"}</span>
               </p>
             </div>
@@ -176,3 +176,4 @@ export const ProfileHero = React.memo(function ProfileHero({
     </motion.div>
   );
 });
+

@@ -32,7 +32,7 @@ function InterviewTimer({ running }: { running: boolean }) {
 
   return (
     <div className={`flex items-center gap-1.5 px-3 py-1 rounded-full border text-xs font-mono font-bold ${
-      isLong ? "border-amber-300 bg-amber-50 text-amber-700" : "border-indigo-100 bg-indigo-50 text-indigo-700"
+      isLong ? "border-amber-300 bg-amber-50 text-amber-700" : "border-[#E3E9F4] bg-[#EEF2FB] text-[#2457E6]"
     }`}>
       <Timer className="h-3.5 w-3.5" />
       <span>{m}:{s}</span>
@@ -48,7 +48,7 @@ function ScoreCard({ score, feedback, strengths, weaknesses }: { score: number; 
       className="bg-white rounded-3xl p-6 border border-slate-200/90 shadow-xl space-y-6 max-w-lg mx-auto"
     >
       <div className="text-center space-y-2">
-        <div className="inline-flex h-12 w-12 rounded-2xl bg-indigo-50 border border-indigo-100 items-center justify-center text-indigo-600">
+        <div className="inline-flex h-12 w-12 rounded-2xl bg-[#EEF2FB] border border-[#E3E9F4] items-center justify-center text-[#2457E6]">
           <Trophy className="h-6 w-6" />
         </div>
         <h3 className="text-xl font-bold text-slate-900">Interview Evaluation</h3>
@@ -474,3 +474,4 @@ export function InterviewMode({ onClose, onSwitchMode }: Props) {
     </div>
   );
 }
+

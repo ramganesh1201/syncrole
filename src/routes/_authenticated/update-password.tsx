@@ -1,4 +1,4 @@
-import { createFileRoute, useRouter } from "@tanstack/react-router";
+﻿import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Lock, Sparkles, KeyRound, CheckCircle2, XCircle, Check, Loader2 } from "lucide-react";
@@ -189,3 +189,4 @@ function RequirementItem({ met, text }: { met: boolean; text: string }) {
     </div>
   );
 }
+

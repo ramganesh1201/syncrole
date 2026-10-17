@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+﻿import { useRef, useState, useEffect } from "react";
 import { motion, animate, AnimatePresence } from "framer-motion";
 import {
   Target, Zap, Code2, Flame, ArrowRight,
@@ -9,7 +9,7 @@ import AuroraBackground from "@/components/AuroraBackground";
 import { useNavigate } from "@tanstack/react-router";
 import { SafeMetalFx } from "@/components/ui/safe-metal";
 
-/* ─── Target Role Benchmarks ────────────────────────────────── */
+/* â”€â”€â”€ Target Role Benchmarks â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const TARGET_ROLES = [
   {
@@ -62,7 +62,7 @@ const TARGET_ROLES = [
   }
 ];
 
-/* ─── Interactive Readiness Indicator ────────────────────────────── */
+/* â”€â”€â”€ Interactive Readiness Indicator â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function ReadinessCard({ score, isDemo }: { score: number; isDemo?: boolean }) {
   const [activeRoleIndex, setActiveRoleIndex] = useState(0);
@@ -229,7 +229,7 @@ function StatCard({
   );
 }
 
-/* ─── DEMO constants ────────────────────────────────────────── */
+/* â”€â”€â”€ DEMO constants â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const DEMO = {
   score: 72,
@@ -240,7 +240,7 @@ const DEMO = {
   streak: 12,
 };
 
-/* ─── Animated Counter ──────────────────────────────────────── */
+/* â”€â”€â”€ Animated Counter â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function AnimatedCount({ to, suffix }: { to: number; suffix: string }) {
   const [count, setCount] = useState(0);
@@ -259,7 +259,7 @@ function AnimatedCount({ to, suffix }: { to: number; suffix: string }) {
   return <>{count.toLocaleString()}{suffix}</>;
 }
 
-/* ─── Guest Hero ────────────────────────────────────────────── */
+/* â”€â”€â”€ Guest Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
   const nav = useNavigate();
@@ -278,7 +278,7 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
             className="inline-flex items-center gap-2 rounded-full bg-white/5 px-3.5 py-1 text-xs font-medium border border-white/10 text-muted-foreground mb-6"
           >
             <ShieldCheck className="h-3.5 w-3.5 text-violet-400" />
-            <span>AI Career Operating System · Built for Engineers</span>
+            <span>AI Career Operating System Â· Built for Engineers</span>
           </motion.div>
 
           {/* Headline */}
@@ -297,7 +297,7 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
             transition={{ delay: 0.35, duration: 0.6 }}
             className="text-base sm:text-lg text-muted-foreground leading-relaxed mb-8 max-w-2xl mx-auto"
           >
-            SyncRole continuously analyzes your journey toward employability — resume, GitHub activity, DSA proficiency, interview readiness, and skill gaps — in one unified dashboard.
+            SyncRole continuously analyzes your journey toward employability â€” resume, GitHub activity, DSA proficiency, interview readiness, and skill gaps â€” in one unified dashboard.
           </motion.p>
 
           {/* CTA buttons */}
@@ -337,7 +337,7 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
         {/* Stats Row */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mb-12">
           <StatCard icon={Target} label="Placement Score" value={`${DEMO.score}%`} sub="Career Readiness" delay={0.6} />
-          <StatCard icon={Zap} label="XP & Level" value={DEMO.xp.toLocaleString()} sub={`Lvl ${DEMO.level} · ${DEMO.levelName}`} delay={0.65} />
+          <StatCard icon={Zap} label="XP & Level" value={DEMO.xp.toLocaleString()} sub={`Lvl ${DEMO.level} Â· ${DEMO.levelName}`} delay={0.65} />
           <StatCard icon={Code2} label="DSA Solved" value={DEMO.problems} sub="Conquered Problems" delay={0.7} />
           <StatCard icon={Flame} label="Streak" value={`${DEMO.streak} Days`} sub="Active Practice" delay={0.75} />
         </div>
@@ -362,7 +362,7 @@ function GuestHero({ onOpenDemo }: { onOpenDemo?: () => void }) {
   );
 }
 
-/* ─── Auth Hero ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Auth Hero â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function AuthHero({ data }: { data: any }) {
   const nav = useNavigate();
@@ -389,8 +389,8 @@ function AuthHero({ data }: { data: any }) {
 
   const hiringTimeline =
     score >= 85 ? "< 1 month" :
-    score >= 70 ? "2 – 3 months" :
-    score >= 55 ? "4 – 6 months" : "6 – 12 months";
+    score >= 70 ? "2 â€“ 3 months" :
+    score >= 55 ? "4 â€“ 6 months" : "6 â€“ 12 months";
 
   const fastestPath =
     (bdScore.dsa_score || 0) < 60
@@ -446,7 +446,7 @@ function AuthHero({ data }: { data: any }) {
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <StatCard icon={Target} label="Placement Score" value={`${score}%`} sub="Overall Readiness" />
-              <StatCard icon={Zap} label="XP & Level" value={xp.toLocaleString()} sub={`Lvl ${lvl} · ${lvlName}`} />
+              <StatCard icon={Zap} label="XP & Level" value={xp.toLocaleString()} sub={`Lvl ${lvl} Â· ${lvlName}`} />
               <StatCard icon={Code2} label="DSA Solved" value={problems} sub="Conquered Problems" />
               <StatCard icon={Flame} label="Streak" value={`${streak} Days`} sub="Active Rhythm" />
             </div>
@@ -480,4 +480,5 @@ function AuthHero({ data }: { data: any }) {
 export default function HeroSection({ data, isAuthed, onOpenDemo }: { data: any; isAuthed: boolean; onOpenDemo?: () => void }) {
   return isAuthed ? <AuthHero data={data} /> : <GuestHero onOpenDemo={onOpenDemo} />;
 }
+
 

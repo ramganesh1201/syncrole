@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+﻿import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Star, Trophy, ArrowRight, Sparkles, X, ChevronRight,
@@ -9,7 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/use-auth";
 import { toast } from "sonner";
 
-/* ─── Types ─────────────────────────────────────────────────── */
+/* â”€â”€â”€ Types â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type Story = {
   id: string;
@@ -24,7 +24,7 @@ type Story = {
   likes_count: number;
 };
 
-/* ─── Static featured stories (seed data fallback) ─────────── */
+/* â”€â”€â”€ Static featured stories (seed data fallback) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 const FEATURED_STORIES: Story[] = [
   {
@@ -32,7 +32,7 @@ const FEATURED_STORIES: Story[] = [
     author_name: "Aarav S.",
     author_role: "SWE @ Razorpay",
     before_syncrole: "Applying to 50+ companies with generic resume, zero responses.",
-    current_results: "Landed SWE role at Razorpay — 3x my previous offer. 4 interview calls in 2 weeks.",
+    current_results: "Landed SWE role at Razorpay â€” 3x my previous offer. 4 interview calls in 2 weeks.",
     advice: "Stop optimizing in a vacuum. Let the data tell you what recruiters care about.",
     xp_growth: 3200, dsa_growth: 60, readiness_growth: 38, likes_count: 241,
   },
@@ -56,7 +56,7 @@ const FEATURED_STORIES: Story[] = [
   },
 ];
 
-/* ─── Story submission modal ─────────────────────────────────── */
+/* â”€â”€â”€ Story submission modal â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type FormData = {
   before: string;
@@ -76,7 +76,7 @@ export function StoryModal({ onClose, userProfile }: { onClose: () => void; user
     { key: "before" as const, label: "Before SyncRole", prompt: "What was your situation before using SyncRole?", placeholder: "I was applying to 50+ companies with no responses..." },
     { key: "problems" as const, label: "Biggest Problems", prompt: "What were your biggest challenges?", placeholder: "No feedback loop, weak resume, inconsistent DSA practice..." },
     { key: "actions" as const, label: "Actions Taken", prompt: "What specific steps did you take on SyncRole?", placeholder: "Used resume analyzer, built 2 projects, solved 60 DSA problems..." },
-    { key: "results" as const, label: "Current Results", prompt: "What's your outcome so far?", placeholder: "Landed SWE role at [Company] — [X]x my previous offer..." },
+    { key: "results" as const, label: "Current Results", prompt: "What's your outcome so far?", placeholder: "Landed SWE role at [Company] â€” [X]x my previous offer..." },
     { key: "advice" as const, label: "Advice to Others", prompt: "What's your best advice for others?", placeholder: "Don't optimize in a vacuum. Let data tell you what matters..." },
   ];
 
@@ -103,7 +103,7 @@ export function StoryModal({ onClose, userProfile }: { onClose: () => void; user
 
       if (error) throw error;
 
-      toast.success("Your story is submitted! Our team will review and publish it soon. 🚀");
+      toast.success("Your story is submitted! Our team will review and publish it soon. ðŸš€");
       onClose();
     } catch (err: any) {
       toast.error(err.message || "Failed to submit. Please try again.");
@@ -190,7 +190,7 @@ export function StoryModal({ onClose, userProfile }: { onClose: () => void; user
               <span className="absolute inset-0 rounded-full bg-aurora" />
               <span className="relative z-10 flex items-center gap-2">
                 {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : <Send className="h-4 w-4" />}
-                {submitting ? "Submitting…" : "Submit Story"}
+                {submitting ? "Submittingâ€¦" : "Submit Story"}
               </span>
             </button>
           ) : (
@@ -216,7 +216,7 @@ export function StoryModal({ onClose, userProfile }: { onClose: () => void; user
   );
 }
 
-/* ─── Story card ─────────────────────────────────────────────── */
+/* â”€â”€â”€ Story card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 function FeaturedStoryCard({ story, index }: { story: Story; index: number }) {
   return (
@@ -275,7 +275,7 @@ function FeaturedStoryCard({ story, index }: { story: Story; index: number }) {
   );
 }
 
-/* ─── Main ───────────────────────────────────────────────────── */
+/* â”€â”€â”€ Main â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 export default function CareerTransformationsSection({ data }: { data: any }) {
   const { user } = useAuth();
@@ -377,3 +377,4 @@ export default function CareerTransformationsSection({ data }: { data: any }) {
     </>
   );
 }
+

@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useId, useMemo } from "react";
+﻿import { useState, useEffect, useRef, useId, useMemo } from "react";
 import { createPortal } from "react-dom";
 import { useNavigate } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
@@ -478,7 +478,7 @@ export function QuickSearch({
             </button>
           ) : (
             <kbd className="absolute right-2.5 top-1/2 -translate-y-1/2 pointer-events-none hidden md:inline-flex items-center gap-0.5 rounded px-1.5 py-0.5 text-[10px] font-medium text-slate-400 bg-white border border-slate-200 shadow-2xs">
-              {isMac ? "⌘K" : "Ctrl+K"}
+              {isMac ? "âŒ˜K" : "Ctrl+K"}
             </kbd>
           )}
         </div>
@@ -604,12 +604,12 @@ export function QuickSearch({
               <div className="px-3 py-2 bg-slate-50/90 border-t border-slate-100 flex items-center justify-between text-[10px] text-slate-400">
                 <div className="flex items-center gap-3">
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">↑</kbd>
-                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">↓</kbd>
+                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">â†‘</kbd>
+                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">â†“</kbd>
                     <span>navigate</span>
                   </span>
                   <span className="flex items-center gap-1">
-                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">↵</kbd>
+                    <kbd className="px-1 py-0.5 bg-white border border-slate-200 rounded text-[9px]">â†µ</kbd>
                     <span>select</span>
                   </span>
                   <span className="flex items-center gap-1">
@@ -768,3 +768,4 @@ export function QuickSearch({
     </>
   );
 }
+

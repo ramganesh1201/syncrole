@@ -172,11 +172,11 @@ function Section({ router, title, description, color, topics, progress, onSelect
                   <div className="mt-2 flex items-center gap-2">
                     <div className="flex-1 h-1.5 rounded-full bg-slate-100 overflow-hidden">
                       <div
-                        className="h-full bg-purple-600 transition-all"
+                        className="h-full bg-[#2457E6] transition-all"
                         style={{ width: `${prog.completed_percent}%` }}
                       />
                     </div>
-                    <span className="text-xs font-mono font-bold text-purple-700">{prog.mastery_score}%</span>
+                    <span className="text-xs font-mono font-bold text-[#2457E6]">{prog.mastery_score}%</span>
                   </div>
                 )}
               </div>
@@ -194,7 +194,7 @@ function Section({ router, title, description, color, topics, progress, onSelect
                       search: { topic: topic.id },
                     });
                   }}
-                  className="px-4 py-1.5 rounded-full text-xs font-semibold bg-purple-600 text-white hover:bg-purple-700 transition-colors w-full sm:w-auto text-center shadow-xs"
+                  className="px-4 py-1.5 rounded-full text-xs font-semibold bg-[#2457E6] text-white hover:bg-[#1E48C5] transition-colors w-full sm:w-auto text-center shadow-xs"
                 >
                   Practice
                 </button>
@@ -223,13 +223,13 @@ function TopicStudyModal({ topic, onClose, router }: { topic: Topic; onClose: ()
       >
         <div className="p-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
           <div className="flex items-center gap-3">
-            <div className="p-2.5 bg-purple-100 text-purple-700 border border-purple-200 rounded-xl">
+            <div className="p-2.5 bg-[#EEF2FB] text-[#2457E6] border border-[#2457E6]/20 rounded-xl">
               <BookMarked className="w-6 h-6" />
             </div>
             <div>
               <h2 className="font-display text-2xl font-bold text-slate-900">{topic.name}</h2>
               <div className="flex items-center gap-3 text-xs text-slate-500 font-medium mt-1">
-                <span className="uppercase tracking-widest text-purple-700 font-bold">{topic.difficulty}</span>
+                <span className="uppercase tracking-widest text-[#2457E6] font-bold">{topic.difficulty}</span>
                 <span>Est. {topic.estimated_hours || 5} hours</span>
               </div>
             </div>
@@ -263,7 +263,7 @@ function TopicStudyModal({ topic, onClose, router }: { topic: Topic; onClose: ()
           <div className="space-y-6">
             {topic.theory_summary && (
               <section>
-                <h3 className="flex items-center gap-2 text-base font-bold mb-2.5 text-purple-700"><Info className="w-4 h-4" /> Theory & Concepts</h3>
+                <h3 className="flex items-center gap-2 text-base font-bold mb-2.5 text-[#2457E6]"><Info className="w-4 h-4" /> Theory & Concepts</h3>
                 <div className="text-sm text-slate-700 leading-relaxed p-4 bg-slate-50 border border-slate-200/80 rounded-2xl whitespace-pre-wrap">
                   {topic.theory_summary}
                 </div>
@@ -308,7 +308,7 @@ function TopicStudyModal({ topic, onClose, router }: { topic: Topic; onClose: ()
                 search: { topic: topic.id },
               });
             }}
-            className="px-6 py-2.5 rounded-full text-sm font-semibold bg-purple-600 text-white hover:bg-purple-700 transition shadow-md"
+            className="px-6 py-2.5 rounded-full text-sm font-semibold bg-[#2457E6] text-white hover:bg-[#1E48C5] transition shadow-md"
           >
             Start Practicing
           </button>
@@ -317,4 +317,5 @@ function TopicStudyModal({ topic, onClose, router }: { topic: Topic; onClose: ()
     </motion.div>
   );
 }
+
 

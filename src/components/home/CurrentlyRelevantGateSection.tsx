@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, BookOpen, Layers, Sparkles, CheckCircle2, Clock, ShieldAlert, FileText } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -7,7 +7,7 @@ const GATE_TABS = [
   {
     id: "overview",
     title: "Exam Structure",
-    badge: "100 Marks · 3 Hours",
+    badge: "100 Marks Â· 3 Hours",
     content: {
       heading: "Computer Science (CS) & Data Science (DA) Paper Structure",
       items: [
@@ -54,7 +54,7 @@ const GATE_TABS = [
       heading: "Important Notifications & Timeline Milestones",
       items: [
         { label: "Official Notification", detail: "Expected release by August 2026 on GOAPS portal" },
-        { label: "Application Window", detail: "September – October 2026" },
+        { label: "Application Window", detail: "September â€“ October 2026" },
         { label: "Exam Window", detail: "First two weekends of February 2027" },
       ],
       insight: "Stay updated with verified exam schedules directly on SyncRole."
@@ -152,4 +152,5 @@ export default function CurrentlyRelevantGateSection() {
     </section>
   );
 }
+
 

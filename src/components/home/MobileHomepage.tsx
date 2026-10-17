@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { Link, useNavigate, useRouter } from "@tanstack/react-router";
 import {
   Sparkles,
@@ -140,8 +140,8 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
   const realMemory = isAuthed && data?.activityLogs?.length > 0
     ? data.activityLogs.slice(0, 3).map((log: any) => {
         let text = "Activity logged";
-        if (log.type === "resume_upload") text = "Uploaded resume — analysis complete";
-        else if (log.type === "dsa_solve") text = `Solved DSA problem · +${log.xp_delta || 10} XP`;
+        if (log.type === "resume_upload") text = "Uploaded resume â€” analysis complete";
+        else if (log.type === "dsa_solve") text = `Solved DSA problem Â· +${log.xp_delta || 10} XP`;
         else if (log.type === "mock_interview") text = "Completed mock interview session";
         else if (log.type === "achievement") {
           const achName = ACHIEVEMENT_CATALOG[(log.meta as any)?.code || ""]?.name || "Achievement";
@@ -238,15 +238,15 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
                 onClick={() => setIsMenuOpen(false)}
                 className={`min-h-[42px] px-3 py-2 rounded-xl flex items-center justify-between transition text-xs font-medium ${
                   isItemActive
-                    ? "bg-purple-50 border border-purple-200/80 text-purple-700 font-semibold shadow-xs"
+                    ? "bg-[#EEF2FB] border border-[#2457E6]/20/80 text-[#2457E6] font-semibold shadow-xs"
                     : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
                 }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
+                  <item.icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-[#2457E6]" : "text-slate-500"}`} />
                   <span>{item.label}</span>
                 </div>
-                <ChevronRight className={`h-3.5 w-3.5 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
+                <ChevronRight className={`h-3.5 w-3.5 ${isItemActive ? "text-[#2457E6]" : "text-slate-400"}`} />
               </Link>
             );
           })}
@@ -269,8 +269,8 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         {/* Hero Card */}
         <section className="bg-white rounded-2xl border border-slate-200/90 p-5 space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
-            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-[11px] font-bold">
-              <Sparkles className="h-3.5 w-3.5 text-purple-600" />
+            <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#EEF2FB] border border-[#2457E6]/20 text-[#2457E6] text-[11px] font-bold">
+              <Sparkles className="h-3.5 w-3.5 text-[#2457E6]" />
               <span>AI Career OS</span>
             </div>
 
@@ -288,12 +288,12 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
           <div className="space-y-1">
             <p className="text-xs font-semibold text-slate-500">Welcome, {firstName}</p>
             <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-              Your digital <span className="text-purple-600">career twin.</span>
+              Your digital <span className="text-[#2457E6]">career twin.</span>
             </h1>
           </div>
 
           <p className="text-xs text-slate-600 leading-relaxed font-medium">
-            A continuous simulation of your readiness — built from resume analysis, GitHub contributions, DSA progress, and skill gaps.
+            A continuous simulation of your readiness â€” built from resume analysis, GitHub contributions, DSA progress, and skill gaps.
           </p>
 
           <button
@@ -321,7 +321,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
               onClick={() => nav({ to: action.href })}
               className="bg-white rounded-xl border border-slate-200/90 p-2.5 text-center flex flex-col items-center hover:bg-slate-50 active:scale-95 transition cursor-pointer shadow-2xs"
             >
-              <div className="h-7 w-7 rounded-lg bg-purple-50 border border-purple-200/80 flex items-center justify-center mb-1 text-purple-600">
+              <div className="h-7 w-7 rounded-lg bg-[#EEF2FB] border border-[#2457E6]/20/80 flex items-center justify-center mb-1 text-[#2457E6]">
                 <action.icon className="h-3.5 w-3.5" />
               </div>
               <span className="text-[11px] font-bold text-slate-900 line-clamp-1">{action.title}</span>
@@ -333,7 +333,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         {/* Metrics Banner */}
         <section className="bg-white rounded-xl border border-slate-200/90 p-3 grid grid-cols-4 gap-2 text-center divide-x divide-slate-100 shadow-2xs">
           <div className="px-1">
-            <div className="text-sm font-bold text-purple-600">{score}%</div>
+            <div className="text-sm font-bold text-[#2457E6]">{score}%</div>
             <div className="text-[9px] font-semibold text-slate-500">Readiness</div>
           </div>
           <div className="px-1">
@@ -354,11 +354,11 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-3 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
-              <div className="h-8 w-8 rounded-xl bg-purple-100 text-purple-700 border border-purple-200 flex items-center justify-center font-extrabold text-xs">
+              <div className="h-8 w-8 rounded-xl bg-purple-100 text-[#2457E6] border border-[#2457E6]/20 flex items-center justify-center font-extrabold text-xs">
                 L{level}
               </div>
               <div>
-                <div className="text-[10px] font-extrabold uppercase tracking-wider text-purple-600">Level {level}</div>
+                <div className="text-[10px] font-extrabold uppercase tracking-wider text-[#2457E6]">Level {level}</div>
                 <div className="text-sm font-bold text-slate-900">Career Growth Index</div>
               </div>
             </div>
@@ -371,7 +371,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
           <div className="space-y-1">
             <div className="flex justify-between text-xs font-semibold">
               <span className="text-slate-500">Career Readiness</span>
-              <span className="text-purple-600">{score}%</span>
+              <span className="text-[#2457E6]">{score}%</span>
             </div>
             <div className="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
               <div
@@ -394,7 +394,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <section className="space-y-3">
           <div className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-3 shadow-xs">
             <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
-              <Target className="h-3.5 w-3.5 text-purple-600" />
+              <Target className="h-3.5 w-3.5 text-[#2457E6]" />
               <span>Today&apos;s Priority Mission</span>
             </div>
 
@@ -403,7 +403,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
                 <h3 className="text-sm font-bold text-slate-900">
                   {activeMission?.title || "Complete Resume Review"}
                 </h3>
-                <p className="text-xs text-purple-600 font-semibold mt-0.5">
+                <p className="text-xs text-[#2457E6] font-semibold mt-0.5">
                   +{activeMission?.xp || activeMission?.xp_reward || 30} XP reward
                 </p>
               </div>
@@ -440,7 +440,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
                 onClick={() => setActiveTab("weaknesses")}
                 className={`flex-1 py-1.5 rounded-lg text-xs font-semibold transition cursor-pointer ${
                   activeTab === "weaknesses"
-                    ? "bg-white text-purple-700 shadow-2xs font-bold"
+                    ? "bg-white text-[#2457E6] shadow-2xs font-bold"
                     : "text-slate-600 hover:text-slate-900"
                 }`}
               >
@@ -470,7 +470,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
               {activeTab === "weaknesses" &&
                 realWeaknesses.map((item) => (
                   <div key={item} className="flex items-center gap-2 p-2 rounded-xl bg-slate-50 border border-slate-100 text-xs font-medium text-slate-800">
-                    <AlertCircle className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                    <AlertCircle className="h-3.5 w-3.5 text-[#2457E6] shrink-0" />
                     <span>{item}</span>
                   </div>
                 ))}
@@ -490,12 +490,12 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-2.5 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
-              <Layers className="h-3.5 w-3.5 text-purple-600" />
+              <Layers className="h-3.5 w-3.5 text-[#2457E6]" />
               <span>Career Activity Log</span>
             </div>
             <button
               onClick={() => nav({ to: "/career-identity" })}
-              className="text-[11px] text-purple-600 font-bold flex items-center gap-1 hover:underline cursor-pointer"
+              className="text-[11px] text-[#2457E6] font-bold flex items-center gap-1 hover:underline cursor-pointer"
             >
               <span>View all</span>
               <ArrowRight className="h-3 w-3" />
@@ -506,7 +506,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             {realMemory.map((mem: any, i: number) => (
               <div key={i} className="flex items-center justify-between p-2.5 rounded-xl bg-slate-50 border border-slate-100 text-xs">
                 <div className="flex items-center gap-2 pr-2">
-                  <Activity className="h-3.5 w-3.5 text-purple-600 shrink-0" />
+                  <Activity className="h-3.5 w-3.5 text-[#2457E6] shrink-0" />
                   <span className="text-slate-800 font-medium line-clamp-1">{mem.text}</span>
                 </div>
                 <span className="text-[10px] text-slate-400 font-mono shrink-0">{mem.time}</span>
@@ -519,7 +519,7 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
         <section className="bg-white rounded-2xl border border-slate-200/90 p-4 space-y-2 shadow-xs">
           <div className="flex items-center justify-between">
             <div className="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 font-mono">
-              <Zap className="h-3.5 w-3.5 text-purple-600" />
+              <Zap className="h-3.5 w-3.5 text-[#2457E6]" />
               <span>Career Synthesis</span>
             </div>
           </div>
@@ -538,12 +538,12 @@ export default function MobileHomepage({ data, onOpenDemo }: MobileHomepageProps
             Your intelligent career operating system.
           </p>
           <div className="flex justify-center gap-4 text-xs font-semibold text-slate-600">
-            <Link to="/help" className="hover:text-purple-600">Help</Link>
-            <Link to="/career-transformations" className="hover:text-purple-600">Stories</Link>
-            <Link to="/auth" className="hover:text-purple-600">Account</Link>
+            <Link to="/help" className="hover:text-[#2457E6]">Help</Link>
+            <Link to="/career-transformations" className="hover:text-[#2457E6]">Stories</Link>
+            <Link to="/auth" className="hover:text-[#2457E6]">Account</Link>
           </div>
           <div className="text-[10px] text-slate-400">
-            © {new Date().getFullYear()} SyncRole. All rights reserved.
+            Â© {new Date().getFullYear()} SyncRole. All rights reserved.
           </div>
         </footer>
       </main>
@@ -598,10 +598,10 @@ function GlobalHomepageBottomNav({ pathname }: { pathname: string }) {
             key={tab.label}
             to={tab.href!}
             className={`flex flex-col items-center gap-0.5 text-[10px] font-medium transition py-1 px-2.5 rounded-xl min-w-[44px] min-h-[44px] justify-center ${
-              isActive ? "text-purple-700 font-bold" : "text-slate-500 hover:text-slate-800"
+              isActive ? "text-[#2457E6] font-bold" : "text-slate-500 hover:text-slate-800"
             }`}
           >
-            <Icon className={`h-4 w-4 transition-transform ${isActive ? "text-purple-600 scale-110" : "text-slate-400"}`} />
+            <Icon className={`h-4 w-4 transition-transform ${isActive ? "text-[#2457E6] scale-110" : "text-slate-400"}`} />
             <span>{tab.label}</span>
           </Link>
         );
@@ -609,3 +609,4 @@ function GlobalHomepageBottomNav({ pathname }: { pathname: string }) {
     </nav>
   );
 }
+

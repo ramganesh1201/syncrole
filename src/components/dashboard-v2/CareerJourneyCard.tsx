@@ -18,9 +18,9 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
   ];
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs">
+    <div className="bg-white border border-[#E3E9F4] rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs">
       <div>
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 font-mono">Career Journey</h3>
+        <h3 className="text-xs font-bold text-[#8FA3C8] uppercase tracking-wider mb-6 font-mono">Career Journey</h3>
 
         <div className="relative mb-8 mt-4">
           {/* Connecting Line */}
@@ -37,15 +37,15 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
                       ? "bg-white border-blue-600 shadow-md text-blue-600"
                       : step.active
                       ? "bg-blue-600 border-blue-600 text-white"
-                      : "bg-slate-100 border-slate-300 text-slate-400"
+                      : "bg-slate-100 border-slate-300 text-[#8FA3C8]"
                   }`}>
                     <Icon className="w-4 h-4" />
                   </div>
                   <div className="text-center">
-                    <div className={`text-[11px] font-bold ${step.id === "current" ? "text-slate-900" : "text-slate-500"}`}>
+                    <div className={`text-[11px] font-bold ${step.id === "current" ? "text-[#17233F]" : "text-[#6B7799]"}`}>
                       {step.label}
                     </div>
-                    <div className="text-[10px] text-slate-400 font-mono mt-0.5">{step.score}%</div>
+                    <div className="text-[10px] text-[#8FA3C8] font-mono mt-0.5">{step.score}%</div>
                   </div>
                 </div>
               );
@@ -54,15 +54,16 @@ export function CareerJourneyCard({ userContext }: CareerJourneyCardProps) {
         </div>
 
         <div className="text-center mb-5 bg-slate-50 border border-slate-100 p-3 rounded-xl">
-          <p className="text-xs font-bold text-slate-900">You are currently at Step 1 ({currentScore}% Readiness)</p>
-          <p className="text-[11px] text-slate-500">Keep building skills to reach your target offer!</p>
+          <p className="text-xs font-bold text-[#17233F]">You are currently at Step 1 ({currentScore}% Readiness)</p>
+          <p className="text-[11px] text-[#6B7799]">Keep building skills to reach your target offer!</p>
         </div>
       </div>
 
-      <Link to="/role-explorer" className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-slate-200 rounded-xl py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-xs">
+      <Link to="/role-explorer" className="w-full bg-slate-100 hover:bg-slate-200 text-slate-800 border border-[#E3E9F4] rounded-xl py-2.5 text-xs font-semibold transition-all flex items-center justify-center gap-2 shadow-xs">
         <span>View Full Journey</span>
         <ArrowRight className="w-3.5 h-3.5" />
       </Link>
     </div>
   );
 }
+

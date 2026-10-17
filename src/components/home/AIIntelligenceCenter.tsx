@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+﻿import { useRef, useState } from "react";
 import { motion, useInView } from "framer-motion";
 import {
   FileText, Github, Target, Upload, Zap, Lock, TrendingUp,
@@ -29,7 +29,7 @@ const DEMO_GITHUB = {
     { name: "Python", pct: 30, color: "bg-cyan-400" },
     { name: "Go / SQL", pct: 15, color: "bg-emerald-400" }
   ],
-  strengths: "React · TS · Node",
+  strengths: "React Â· TS Â· Node",
   weak: "Integration Testing",
   missing: "CI/CD Pipeline",
   trend: "+12% contributions this month",
@@ -118,7 +118,7 @@ function ResumeIntelligence({ data }: { data: any }) {
           <div className="font-medium text-sm text-foreground mb-0.5">
             {isAuthed ? "Drop your resume here" : "Upload to unlock ATS analysis"}
           </div>
-          <div className="text-xs text-muted-foreground">PDF or DOCX · Max 5MB</div>
+          <div className="text-xs text-muted-foreground">PDF or DOCX Â· Max 5MB</div>
           {isAuthed && (
             <Link to="/resume-intelligence" className="mt-4 inline-flex items-center gap-2 rounded-lg bg-violet-600 hover:bg-violet-500 px-4 py-2 text-xs font-semibold text-white transition shadow-sm">
               <Upload className="h-3.5 w-3.5" /> Upload & Analyze
@@ -150,7 +150,7 @@ function ResumeIntelligence({ data }: { data: any }) {
         </div>
         <div>
           <div className="text-xs uppercase tracking-wider text-muted-foreground font-semibold">Resume Intelligence</div>
-          <div className="text-base font-bold text-foreground">v{r.versions[r.versions.length - 1]?.version || 1} · Active Analysis</div>
+          <div className="text-base font-bold text-foreground">v{r.versions[r.versions.length - 1]?.version || 1} Â· Active Analysis</div>
         </div>
       </div>
 
@@ -267,7 +267,7 @@ function GitHubIntelligence({ data }: { data: any }) {
       <div className="grid grid-cols-2 md:grid-cols-3 gap-2 mb-4">
         {repos.map((r) => (
           <div key={r} className="surface-secondary rounded-lg px-2.5 py-1.5 text-[11px] font-mono text-muted-foreground truncate border border-white/5 hover:border-violet-500/20 transition-all cursor-pointer">
-            <span className="text-violet-400 mr-1">→</span>{r}
+            <span className="text-violet-400 mr-1">â†’</span>{r}
           </div>
         ))}
       </div>
@@ -397,7 +397,7 @@ export default function AIIntelligenceCenter({ data }: { data: any }) {
             Every file. Every commit. <span className="text-cyan-400">Decoded.</span>
           </h2>
           <p className="mt-3 text-sm md:text-base text-muted-foreground leading-relaxed">
-            Resume health, GitHub activity, and placement readiness — analyzed and presented in one clear workspace.
+            Resume health, GitHub activity, and placement readiness â€” analyzed and presented in one clear workspace.
           </p>
         </div>
 
@@ -435,3 +435,4 @@ export default function AIIntelligenceCenter({ data }: { data: any }) {
     </section>
   );
 }
+

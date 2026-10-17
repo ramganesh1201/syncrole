@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+﻿import { useEffect, useState } from "react";
 import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 import { Bell, Check, Sparkles, Code2, FileText, Target, Trophy, Clock, Trash2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -169,7 +169,7 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
         <SheetHeader className="p-6 border-b border-slate-100 space-y-1">
           <div className="flex items-center justify-between">
             <SheetTitle className="flex items-center gap-2 text-slate-900">
-              <Bell className="w-5 h-5 text-purple-600" />
+              <Bell className="w-5 h-5 text-[#2457E6]" />
               Notifications
             </SheetTitle>
             {unreadCount > 0 && (
@@ -202,13 +202,13 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: i * 0.05 }}
                   className={`relative overflow-hidden rounded-xl border p-4 transition-all cursor-pointer ${
-                    !item.read ? "bg-purple-50/50 border-purple-200/80 shadow-xs" : "bg-slate-50/60 border-slate-200/60 hover:bg-slate-100/60"
+                    !item.read ? "bg-[#EEF2FB]/50 border-[#2457E6]/20/80 shadow-xs" : "bg-slate-50/60 border-slate-200/60 hover:bg-slate-100/60"
                   }`}
                   onClick={() => !item.read && markAsRead(item.id)}
                 >
                   <div className="flex gap-3">
                     <div className="mt-0.5 shrink-0">
-                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${!item.read ? 'bg-purple-100 border border-purple-200' : 'bg-slate-200/70'}`}>
+                      <div className={`w-8 h-8 rounded-full flex items-center justify-center ${!item.read ? 'bg-purple-100 border border-[#2457E6]/20' : 'bg-slate-200/70'}`}>
                         {getIcon(item.type || "")}
                       </div>
                     </div>
@@ -237,3 +237,4 @@ export function NotificationCenter({ children }: { children: React.ReactNode }) 
     </Sheet>
   );
 }
+

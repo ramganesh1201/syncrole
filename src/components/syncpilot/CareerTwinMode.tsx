@@ -28,7 +28,7 @@ const STARTER_PROMPTS = [
     desc: "Placement readiness analysis & gap report",
     prompt: "Give me a full placement readiness analysis based on my current data.",
     icon: Target,
-    color: "text-indigo-600 bg-indigo-50 border-indigo-100",
+    color: "text-[#2457E6] bg-[#EEF2FB] border-[#E3E9F4]",
   },
   {
     title: "DSA Study Plan",
@@ -49,7 +49,7 @@ const STARTER_PROMPTS = [
     desc: "Project depth & commit quality recommendations",
     prompt: "Analyze my GitHub profile and recommend project improvements.",
     icon: Github,
-    color: "text-purple-600 bg-purple-50 border-purple-100",
+    color: "text-[#2457E6] bg-[#EEF2FB] border-purple-100",
   },
 ];
 
@@ -64,7 +64,7 @@ function MessageBubble({ role, content, timestamp }: { role: "user" | "assistant
       className={`flex gap-2.5 ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <div className="h-7 w-7 rounded-xl bg-indigo-50 border border-indigo-100 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+        <div className="h-7 w-7 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] text-[#2457E6] flex items-center justify-center shrink-0 mt-0.5">
           <Sparkles className="h-3.5 w-3.5" />
         </div>
       )}
@@ -122,13 +122,13 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
   }
 
   return (
-    <div className="h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-indigo-500/20 font-sans">
+    <div className="h-full flex flex-col bg-[#F8FAFC] text-slate-900 selection:bg-[#EEF2FB]0/20 font-sans">
       {/* ── Top Header ── */}
       <div className="flex-shrink-0 px-4 py-3 bg-white border-b border-slate-200/90 z-10">
         <div className="flex items-center justify-between gap-2">
           {/* Brand & Status */}
           <div className="flex items-center gap-2.5">
-            <div className="h-8 w-8 rounded-xl bg-indigo-50 border border-indigo-100 flex items-center justify-center text-indigo-600 shrink-0">
+            <div className="h-8 w-8 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0">
               <Sparkles className="h-4 w-4" />
             </div>
             <div>
@@ -171,7 +171,7 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
 
         {/* Mode Selector Tabs */}
         <div className="mt-2.5 flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          <button className="text-xs font-semibold bg-indigo-600 text-white px-3 py-1 rounded-full whitespace-nowrap shadow-xs">
+          <button className="text-xs font-semibold bg-[#2457E6] text-white px-3 py-1 rounded-full whitespace-nowrap shadow-xs">
             Career Twin
           </button>
           <button
@@ -216,8 +216,8 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
               >
                 {/* Intro Banner */}
                 <div className="text-center space-y-2">
-                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold">
-                    <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF2FB] border border-[#E3E9F4] text-[#2457E6] text-xs font-semibold">
+                    <Sparkles className="w-3.5 h-3.5 text-[#2457E6]" />
                     <span>Your AI Career Companion</span>
                   </div>
                   <h2 className="text-xl font-bold text-slate-900 tracking-tight">What are you working toward?</h2>
@@ -236,14 +236,14 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
                       <button
                         key={sp.title}
                         onClick={() => handleSend(sp.prompt)}
-                        className="p-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-indigo-300 transition text-left group cursor-pointer"
+                        className="p-3 rounded-2xl bg-white hover:bg-slate-50 border border-slate-200/80 shadow-xs hover:shadow-md hover:border-[#2457E6]/40 transition text-left group cursor-pointer"
                       >
                         <div className="flex items-start gap-3">
                           <div className={`p-2 rounded-xl border ${sp.color} shrink-0`}>
                             <sp.icon className="w-4 h-4" />
                           </div>
                           <div className="flex-1 min-w-0">
-                            <div className="text-xs font-bold text-slate-900 group-hover:text-indigo-600 transition-colors flex items-center justify-between">
+                            <div className="text-xs font-bold text-slate-900 group-hover:text-[#2457E6] transition-colors flex items-center justify-between">
                               <span>{sp.title}</span>
                               <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
                             </div>
@@ -293,7 +293,7 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
         {/* ── Input Composer ── */}
         <div className="flex-shrink-0 p-3 bg-white border-t border-slate-200/90 pb-[calc(0.75rem+env(safe-area-inset-bottom,0px))]">
           <div className="flex gap-2 items-end">
-            <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:bg-white focus-within:border-indigo-500 focus-within:ring-4 focus-within:ring-indigo-500/10 transition-all">
+            <div className="flex-1 bg-slate-50 border border-slate-200 rounded-xl overflow-hidden focus-within:bg-white focus-within:border-[#2457E6] focus-within:ring-4 focus-within:ring-[#2457E6]/10 transition-all">
               <textarea
                 value={input}
                 onChange={(e) => {
@@ -326,3 +326,4 @@ export function CareerTwinMode({ onClose, onSwitchMode }: Props) {
     </div>
   );
 }
+

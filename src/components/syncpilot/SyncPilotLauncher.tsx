@@ -111,7 +111,7 @@ function SyncPilotLauncherInner() {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 20, scale: 0.97 }}
               transition={{ type: "spring", stiffness: 350, damping: 30 }}
-              className="fixed z-[9999] bg-white rounded-none md:rounded-3xl overflow-hidden border-0 md:border md:border-slate-200/90 shadow-2xl shadow-slate-900/15"
+              className="fixed z-[9999] bg-white rounded-none md:rounded-3xl overflow-hidden border-0 md:border md:border-[#E3E9F4] shadow-[0_20px_60px_rgba(23,35,63,0.18),0_4px_16px_rgba(23,35,63,0.08)]"
               style={
                 isMobile
                   ? {

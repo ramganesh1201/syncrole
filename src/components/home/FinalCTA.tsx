@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { ArrowRight, MessageSquare, Sparkles, CheckCircle2 } from "lucide-react";
 import { useNavigate } from "@tanstack/react-router";
 import { useAuth } from "@/hooks/use-auth";
@@ -76,12 +76,13 @@ export default function FinalCTA() {
           </motion.div>
 
           <div className="pt-4 flex flex-wrap justify-center gap-6 text-xs text-muted-foreground font-medium">
-            <span>✓ Free to get started</span>
-            <span>✓ Real AI analysis</span>
-            <span>✓ No credit card required</span>
+            <span>âœ“ Free to get started</span>
+            <span>âœ“ Real AI analysis</span>
+            <span>âœ“ No credit card required</span>
           </div>
         </div>
       </div>
     </section>
   );
 }
+

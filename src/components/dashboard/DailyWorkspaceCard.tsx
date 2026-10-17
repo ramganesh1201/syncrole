@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { Check, Target, Zap, Clock, ArrowRight, Award, Sparkles } from "lucide-react";
 import { UserCareerContext, ExplainableRecommendation, careerEngine } from "@/lib/career-intelligence";
 
@@ -106,3 +106,4 @@ export function DailyWorkspaceCard({
     </div>
   );
 }
+

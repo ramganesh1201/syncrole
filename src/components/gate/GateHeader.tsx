@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+﻿import { Link } from '@tanstack/react-router';
 import { GatePaperInfo } from '@/lib/gate/gateTypes';
 import {
   ArrowLeft,
@@ -116,7 +116,7 @@ export default function GateHeader({
               >
                 {papers.map((p) => (
                   <option key={p.code} value={p.code}>
-                    {p.code} — {p.name}
+                    {p.code} â€” {p.name}
                   </option>
                 ))}
               </select>
@@ -151,7 +151,7 @@ export default function GateHeader({
 
             <div className="text-[11px] text-slate-500 font-mono hidden lg:flex items-center gap-2">
               <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
-              <span>IIT Madras Organizing Institute • GATE 2027</span>
+              <span>IIT Madras Organizing Institute â€¢ GATE 2027</span>
             </div>
           </div>
         </div>
@@ -182,3 +182,4 @@ export default function GateHeader({
     </>
   );
 }
+

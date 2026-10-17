@@ -1,4 +1,4 @@
-import { useState, useMemo } from "react";
+﻿import { useState, useMemo } from "react";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -56,7 +56,7 @@ const FAQS: FAQ[] = [
     id: "placement-score",
     category: "scoring",
     question: "How is the Placement Readiness Score calculated?",
-    summary: "A holistic 0–100 index combining DSA solving, ATS resume strength, GitHub commits, and projects.",
+    summary: "A holistic 0â€“100 index combining DSA solving, ATS resume strength, GitHub commits, and projects.",
     answer: "Your Placement Readiness Score is computed from four core pillars: (1) DSA solving depth and topic mastery across Easy/Medium/Hard problems, (2) ATS Resume score parsed from your uploaded PDF, (3) GitHub commit consistency, repository breadth, and stars, and (4) verified projects and coding profile links. SyncRole evaluates these factors against current tech hiring benchmarks.",
     relatedLink: {
       label: "View Dashboard Analytics",
@@ -735,3 +735,4 @@ function HelpPage() {
     </div>
   );
 }
+

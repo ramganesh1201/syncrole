@@ -113,23 +113,23 @@ export function WeeklyProgressCard({ scores, currentXp, currentStreak }: WeeklyP
   }, [timeframe, scores]);
 
   return (
-    <div className="bg-white border border-slate-200/90 rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs relative">
+    <div className="bg-white border border-[#E3E9F4] rounded-2xl p-6 flex flex-col justify-between h-full shadow-xs relative">
       <div className="flex items-center justify-between mb-4 relative z-30">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Readiness Progress</h3>
+        <h3 className="text-xs font-bold text-[#8FA3C8] uppercase tracking-wider font-mono">Readiness Progress</h3>
         
         <div className="relative">
           <button 
             onClick={() => setIsOpen(!isOpen)}
-            className="text-xs text-slate-700 font-semibold bg-slate-100 border border-slate-200 px-3 py-1 rounded-lg flex items-center gap-1 hover:bg-slate-200 transition-colors cursor-pointer"
+            className="text-xs text-slate-700 font-semibold bg-slate-100 border border-[#E3E9F4] px-3 py-1 rounded-lg flex items-center gap-1 hover:bg-slate-200 transition-colors cursor-pointer"
             aria-label="Select timeframe"
           >
-            {timeframe} <ChevronDown className="w-3.5 h-3.5 text-slate-500" />
+            {timeframe} <ChevronDown className="w-3.5 h-3.5 text-[#6B7799]" />
           </button>
           
           {isOpen && (
             <>
               <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
-              <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-slate-200 rounded-xl shadow-lg overflow-hidden z-50 py-1">
+              <div className="absolute right-0 top-full mt-1 w-36 bg-white border border-[#E3E9F4] rounded-xl shadow-lg overflow-hidden z-50 py-1">
                 {timeframes.map((tf) => (
                   <button
                     key={tf.label}
@@ -156,7 +156,7 @@ export function WeeklyProgressCard({ scores, currentXp, currentStreak }: WeeklyP
       {!hasData ? (
         <div className="flex-1 flex flex-col items-center justify-center text-center p-6 bg-slate-50 border border-slate-100 rounded-xl">
           <p className="text-xs font-semibold text-slate-700">No progress recorded for this period.</p>
-          <p className="text-[11px] text-slate-500 mt-0.5">Complete AI assessments to build your activity graph.</p>
+          <p className="text-[11px] text-[#6B7799] mt-0.5">Complete AI assessments to build your activity graph.</p>
         </div>
       ) : (
         <>
@@ -165,19 +165,19 @@ export function WeeklyProgressCard({ scores, currentXp, currentStreak }: WeeklyP
               <div className="text-lg font-bold text-emerald-700">
                 {readinessIncrease > 0 ? "+" : ""}{readinessIncrease.toFixed(1)}%
               </div>
-              <div className="text-[10px] text-slate-500 font-medium leading-tight">Readiness</div>
+              <div className="text-[10px] text-[#6B7799] font-medium leading-tight">Readiness</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-slate-900">{tasksCompleted}</div>
-              <div className="text-[10px] text-slate-500 font-medium leading-tight">Assessments</div>
+              <div className="text-lg font-bold text-[#17233F]">{tasksCompleted}</div>
+              <div className="text-[10px] text-[#6B7799] font-medium leading-tight">Assessments</div>
             </div>
             <div>
-              <div className="text-lg font-bold text-indigo-700">{currentXp}</div>
-              <div className="text-[10px] text-slate-500 font-medium leading-tight">Total XP</div>
+              <div className="text-lg font-bold text-[#2457E6]">{currentXp}</div>
+              <div className="text-[10px] text-[#6B7799] font-medium leading-tight">Total XP</div>
             </div>
             <div>
               <div className="text-lg font-bold text-orange-600">{currentStreak}</div>
-              <div className="text-[10px] text-slate-500 font-medium leading-tight">Streak</div>
+              <div className="text-[10px] text-[#6B7799] font-medium leading-tight">Streak</div>
             </div>
           </div>
 
@@ -222,3 +222,4 @@ export function WeeklyProgressCard({ scores, currentXp, currentStreak }: WeeklyP
     </div>
   );
 }
+

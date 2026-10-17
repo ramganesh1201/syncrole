@@ -1,4 +1,4 @@
-import { Link } from '@tanstack/react-router';
+﻿import { Link } from '@tanstack/react-router';
 import { ExternalLink, ShieldCheck } from 'lucide-react';
 
 interface GateFooterProps {
@@ -13,7 +13,7 @@ export default function GateFooter({ lastVerifiedAt }: GateFooterProps) {
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <span className="font-bold text-slate-900 text-sm">SyncRole</span>
-              <span className="text-slate-300">•</span>
+              <span className="text-slate-300">â€¢</span>
               <span className="text-xs font-bold text-teal-800 bg-teal-50 px-2.5 py-0.5 rounded border border-teal-200 font-mono">
                 GATE 2027 Hub
               </span>
@@ -28,7 +28,7 @@ export default function GateFooter({ lastVerifiedAt }: GateFooterProps) {
               to="/"
               className="text-xs font-semibold text-slate-700 hover:text-slate-900 bg-slate-100 px-3 py-1.5 rounded-lg border border-slate-200 transition"
             >
-              ← Back to SyncRole Platform
+              â† Back to SyncRole Platform
             </Link>
             <a
               href="https://gate2027.iitm.ac.in/"
@@ -69,3 +69,4 @@ export default function GateFooter({ lastVerifiedAt }: GateFooterProps) {
     </footer>
   );
 }
+

@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+﻿import { motion } from "framer-motion";
 import { CheckCircle2, PartyPopper, Calendar, ArrowRight, Sparkles } from "lucide-react";
 import { CompanyReadinessResult } from "@/lib/career-intelligence";
 
@@ -55,3 +55,4 @@ export function SessionCompletionCard({ readiness }: SessionCompletionCardProps)
     </motion.div>
   );
 }
+

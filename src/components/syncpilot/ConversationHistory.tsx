@@ -17,8 +17,8 @@ interface Props {
 }
 
 const MODE_LABELS: Record<string, { label: string; color: string }> = {
-  career_twin: { label: "Career Twin", color: "bg-indigo-50 text-indigo-700 border-indigo-100" },
-  recruiter:   { label: "Recruiter",   color: "bg-purple-50 text-purple-700 border-purple-100" },
+  career_twin: { label: "Career Twin", color: "bg-[#EEF2FB] text-[#2457E6] border-[#E3E9F4]" },
+  recruiter:   { label: "Recruiter",   color: "bg-[#EEF2FB] text-[#2457E6] border-purple-100" },
   interview:   { label: "Interview",   color: "bg-blue-50 text-blue-700 border-blue-100" },
 };
 
@@ -95,7 +95,7 @@ export function ConversationHistory({ conversations, onSelect, onClose }: Props)
       <div className="p-3 border-b border-slate-100">
         <button
           onClick={handleNewChat}
-          className="w-full rounded-xl bg-indigo-50 hover:bg-indigo-100/80 border border-indigo-100 text-indigo-700 py-2 px-3 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
+          className="w-full rounded-xl bg-[#EEF2FB] hover:bg-[#EEF2FB] border border-[#E3E9F4] text-[#2457E6] py-2 px-3 text-xs font-semibold flex items-center justify-center gap-2 transition cursor-pointer"
         >
           <Plus className="h-3.5 w-3.5" />
           <span>Start New Chat</span>
@@ -125,12 +125,12 @@ export function ConversationHistory({ conversations, onSelect, onClose }: Props)
                     onClick={() => onSelect(conv.id)}
                     className={`w-full text-left p-2.5 rounded-xl transition group border cursor-pointer flex items-center justify-between gap-2 ${
                       isActive 
-                        ? "bg-indigo-50/60 border-indigo-200/80" 
+                        ? "bg-[#EEF2FB]/60 border-[#2457E6]/20/80" 
                         : "hover:bg-slate-50 border-transparent hover:border-slate-200/60"
                     }`}
                   >
                     <div className="flex items-start gap-2.5 min-w-0 flex-1">
-                      <MessageSquare className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${isActive ? "text-indigo-600" : "text-slate-400 group-hover:text-indigo-600"}`} />
+                      <MessageSquare className={`h-3.5 w-3.5 mt-0.5 shrink-0 ${isActive ? "text-[#2457E6]" : "text-slate-400 group-hover:text-[#2457E6]"}`} />
                       <div className="min-w-0 flex-1">
                         <div className="text-xs font-medium text-slate-800 truncate leading-snug group-hover:text-slate-900">
                           {conv.title || "Conversation"}
@@ -168,3 +168,4 @@ export function ConversationHistory({ conversations, onSelect, onClose }: Props)
     </motion.div>
   );
 }
+

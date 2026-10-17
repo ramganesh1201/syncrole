@@ -304,10 +304,10 @@ export function MobileProfile({
           </section>
 
           {/* AI Career Insight */}
-          <section className="bg-indigo-50/60 border border-indigo-100/90 rounded-2xl p-4.5 space-y-3 shadow-2xs">
+          <section className="bg-[#EEF2FB]/60 border border-[#E3E9F4] rounded-2xl p-4.5 space-y-3 shadow-2xs">
             <div className="flex items-center justify-between">
-              <div className="flex items-center gap-1.5 text-xs font-bold text-indigo-900 uppercase tracking-wider">
-                <Sparkles className="h-4 w-4 text-indigo-600" />
+              <div className="flex items-center gap-1.5 text-xs font-bold text-[#17233F] uppercase tracking-wider">
+                <Sparkles className="h-4 w-4 text-[#2457E6]" />
                 <span>AI Career Insight</span>
               </div>
             </div>
@@ -316,16 +316,16 @@ export function MobileProfile({
               &ldquo;{summaryText}&rdquo;
             </p>
 
-            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-indigo-100/80">
-              <div className="p-2.5 rounded-xl bg-white border border-indigo-100/70 shadow-2xs">
+            <div className="grid grid-cols-2 gap-2 pt-2 border-t border-[#E3E9F4]">
+              <div className="p-2.5 rounded-xl bg-white border border-[#E3E9F4] shadow-2xs">
                 <div className="text-[10px] font-bold text-emerald-700 uppercase flex items-center gap-1">
                   <CheckCircle2 className="h-3 w-3" /> Key Strength
                 </div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">{primaryStrength}</div>
               </div>
 
-              <div className="p-2.5 rounded-xl bg-white border border-indigo-100/70 shadow-2xs">
-                <div className="text-[10px] font-bold text-indigo-700 uppercase flex items-center gap-1">
+              <div className="p-2.5 rounded-xl bg-white border border-[#E3E9F4] shadow-2xs">
+                <div className="text-[10px] font-bold text-[#2457E6] uppercase flex items-center gap-1">
                   <TrendingUp className="h-3 w-3" /> Recommended
                 </div>
                 <div className="text-xs font-bold text-slate-900 truncate mt-0.5">{nextStep}</div>
@@ -497,7 +497,7 @@ export function MobileProfile({
             </div>
 
             <div className="relative space-y-0.5 pt-2">
-              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-indigo-600 ring-4 ring-white" />
+              <span className="absolute -left-[21px] top-3 h-2.5 w-2.5 rounded-full bg-[#2457E6] ring-4 ring-white" />
               <div className="text-xs font-bold text-slate-900">Resume updated (v2.1)</div>
               <p className="text-[10px] text-slate-500">ATS match score calculation · 1 day ago</p>
             </div>
@@ -507,3 +507,4 @@ export function MobileProfile({
     </div>
   );
 }
+

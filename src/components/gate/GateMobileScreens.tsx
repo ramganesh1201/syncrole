@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useMemo } from 'react';
+﻿import React, { useEffect, useState, useMemo } from 'react';
 import { GatePaperInfo, GateEvent, GateUpdate, GateSyllabusTopic } from '@/lib/gate/gateTypes';
 import {
   ArrowRight,
@@ -89,9 +89,9 @@ export function GateMobileScreens({
   }
 }
 
-/* ─────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    1. MOBILE HOME SCREEN (Overview / Gateway Screen)
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function GateMobileHomeScreen({
   paper,
   events,
@@ -123,7 +123,7 @@ function GateMobileHomeScreen({
           rel="noreferrer"
           className="text-teal-900 font-bold underline text-[11px] shrink-0"
         >
-          IIT Madras ↗
+          IIT Madras â†—
         </a>
       </div>
 
@@ -252,7 +252,7 @@ function GateMobileHomeScreen({
           onClick={() => onNavigateScreen('more')}
           className="w-full text-center text-xs font-semibold text-teal-800 hover:underline pt-1"
         >
-          Learn more about GATE rules →
+          Learn more about GATE rules â†’
         </button>
       </section>
 
@@ -273,7 +273,7 @@ function GateMobileHomeScreen({
 
         <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold text-slate-900">GATE {paper.code} — {paper.name}</span>
+            <span className="text-xs font-bold text-slate-900">GATE {paper.code} â€” {paper.name}</span>
             <span className="text-[10px] font-bold text-teal-700 bg-teal-50 px-2 py-0.5 rounded border border-teal-200">
               Verified
             </span>
@@ -345,9 +345,9 @@ function GateMobileHomeScreen({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    2. MOBILE SYLLABUS SCREEN
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function GateMobileSyllabusScreen({
   paper,
   papers,
@@ -443,12 +443,12 @@ function GateMobileSyllabusScreen({
             <div className="text-left truncate">
               <div className="text-[10px] font-bold font-mono uppercase text-teal-300">SELECTED TEST PAPER</div>
               <div className="text-xs font-bold text-white truncate">
-                GATE {paper.code} — {paper.name}
+                GATE {paper.code} â€” {paper.name}
               </div>
             </div>
           </div>
           <span className="text-[10px] font-bold bg-white/10 hover:bg-white/20 text-white px-2.5 py-1 rounded-lg border border-white/20 shrink-0">
-            Change Paper ▾
+            Change Paper â–¾
           </span>
         </button>
       </div>
@@ -467,7 +467,7 @@ function GateMobileSyllabusScreen({
                 onClick={() => setIsPaperPickerOpen(false)}
                 className="p-1.5 rounded-xl bg-slate-200 text-slate-700 hover:bg-slate-300 transition text-xs font-bold"
               >
-                Close ✕
+                Close âœ•
               </button>
             </div>
 
@@ -675,9 +675,9 @@ function GateMobileSyllabusScreen({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    3. MOBILE DATES SCREEN
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function GateMobileDatesScreen({
   events,
   lastVerifiedAt,
@@ -705,7 +705,7 @@ function GateMobileDatesScreen({
           Official timeline milestones & schedule verified from IIT Madras.
         </p>
         <div className="text-[11px] text-teal-800 font-mono font-medium pt-1">
-          Last Verified: {new Date(lastVerifiedAt).toLocaleDateString()} • Live IST Time
+          Last Verified: {new Date(lastVerifiedAt).toLocaleDateString()} â€¢ Live IST Time
         </div>
       </div>
 
@@ -857,9 +857,9 @@ function GateMobileDatesScreen({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    4. MOBILE UPDATES SCREEN
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function GateMobileUpdatesScreen({
   updates,
   lastVerifiedAt,
@@ -921,9 +921,9 @@ function GateMobileUpdatesScreen({
   );
 }
 
-/* ─────────────────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    5. MOBILE MORE SCREEN (Resources, Exam Pattern, Roadmap, FAQ)
-   ───────────────────────────────────────────────────────────── */
+   â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function GateMobileMoreScreen({
   paper,
   onNavigateScreen,
@@ -1097,3 +1097,4 @@ function GateMobileMoreScreen({
     </div>
   );
 }
+

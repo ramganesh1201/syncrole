@@ -96,7 +96,7 @@ function CompanyLogo({ name, className = "w-5 h-5" }: { name: string; className?
   if (!logoUrl || failed) {
     return (
       <div
-        className={`${className} rounded-md bg-purple-100 border border-purple-200 flex items-center justify-center font-display font-bold text-purple-700 text-[11px] shrink-0 select-none`}
+        className={`${className} rounded-md bg-[#EEF2FB] border border-[#2457E6]/20 flex items-center justify-center font-display font-bold text-[#2457E6] text-[11px] shrink-0 select-none`}
       >
         {initial}
       </div>
@@ -301,8 +301,8 @@ function DSAMentorPage() {
           ...d,
           icon: defaultDnaDimensions[idx]?.icon ?? Brain,
           delta: defaultDnaDimensions[idx]?.delta ?? "↑ 2%",
-          box: defaultDnaDimensions[idx]?.box ?? "bg-purple-500/10 border-purple-500/20",
-          iconColor: defaultDnaDimensions[idx]?.iconColor ?? "text-purple-400",
+          box: defaultDnaDimensions[idx]?.box ?? "bg-[#EEF2FB]0/10 border-purple-500/20",
+          iconColor: defaultDnaDimensions[idx]?.iconColor ?? "text-[#5B89F7]",
         }))
       : defaultDnaDimensions;
 
@@ -351,12 +351,12 @@ function DSAMentorPage() {
         </div>
 
         {/* Top Right High Confidence Shield Card matching Reference */}
-        <div className="bg-purple-50/80 border border-purple-200 rounded-2xl p-3.5 px-4 shrink-0 flex items-center gap-3.5 shadow-xs select-none">
-          <div className="w-9 h-9 rounded-xl bg-purple-100 border border-purple-200 flex items-center justify-center text-purple-700 shrink-0">
-            <Shield className="w-5 h-5 text-purple-600" />
+        <div className="bg-[#EEF2FB]/80 border border-[#2457E6]/20 rounded-2xl p-3.5 px-4 shrink-0 flex items-center gap-3.5 shadow-xs select-none">
+          <div className="w-9 h-9 rounded-xl bg-[#EEF2FB] border border-[#2457E6]/20 flex items-center justify-center text-[#2457E6] shrink-0">
+            <Shield className="w-5 h-5 text-[#2457E6]" />
           </div>
           <div className="space-y-0.5">
-            <div className="text-xs font-mono uppercase tracking-wider text-purple-900 font-bold">
+            <div className="text-xs font-mono uppercase tracking-wider text-[#17233F] font-bold">
               HIGH CONFIDENCE
             </div>
             <div className="text-[10px] text-slate-600 font-medium">
@@ -376,7 +376,7 @@ function DSAMentorPage() {
             <div className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
               <span>CODING DNA</span>
             </div>
-            <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2.5 py-0.5 rounded-full">
+            <span className="text-[10px] font-mono font-bold text-[#2457E6] bg-[#EEF2FB] border border-[#2457E6]/20 px-2.5 py-0.5 rounded-full">
               HIGH CONFIDENCE
             </span>
           </div>
@@ -392,7 +392,7 @@ function DSAMentorPage() {
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2.5">
                       <div className={cn("w-7 h-7 rounded-lg flex items-center justify-center border shrink-0 bg-slate-50 border-slate-200", d.box)}>
-                        <IconComp className={cn("w-4 h-4 text-purple-600", d.iconColor)} />
+                        <IconComp className={cn("w-4 h-4 text-[#2457E6]", d.iconColor)} />
                       </div>
                       <span className="text-slate-900 font-bold text-xs">{d.name}</span>
                     </div>
@@ -426,7 +426,7 @@ function DSAMentorPage() {
               <div className="text-xs font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
                 <span>CONSISTENCY SNAPSHOT</span>
               </div>
-              <span className="text-[10px] font-mono font-bold text-purple-700 bg-purple-50 border border-purple-200 px-2 py-0.5 rounded-full">
+              <span className="text-[10px] font-mono font-bold text-[#2457E6] bg-[#EEF2FB] border border-[#2457E6]/20 px-2 py-0.5 rounded-full">
                 UPDATED
               </span>
             </div>
@@ -466,10 +466,10 @@ function DSAMentorPage() {
             </div>
           </div>
 
-          <div className="bg-purple-50/60 border border-purple-100 rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-purple-900">
-            <Sparkles className="w-4 h-4 text-purple-600 shrink-0 mt-0.5" />
+          <div className="bg-[#EEF2FB]/60 border border-[#E3E9F4] rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-[#17233F]">
+            <Sparkles className="w-4 h-4 text-[#2457E6] shrink-0 mt-0.5" />
             <span>
-              <strong className="text-purple-950 font-semibold">Insight:</strong> Your strongest practice pattern currently comes from consistent problem-solving sessions.
+              <strong className="text-[#17233F] font-semibold">Insight:</strong> Your strongest practice pattern currently comes from consistent problem-solving sessions.
             </span>
           </div>
         </div>
@@ -506,8 +506,8 @@ function DSAMentorPage() {
                     className="bg-slate-50/70 border border-slate-200/60 p-3.5 rounded-xl flex items-center justify-between text-xs"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded-lg bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0">
-                        <PatternIconComp className="w-4 h-4 text-purple-600" />
+                      <div className="w-8 h-8 rounded-lg bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0">
+                        <PatternIconComp className="w-4 h-4 text-[#2457E6]" />
                       </div>
                       <div className="space-y-0.5">
                         <div className="font-semibold text-slate-900">{p.name}</div>
@@ -531,7 +531,7 @@ function DSAMentorPage() {
           <div>
             <Link
               to="/dsa-problems"
-              className="inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-[#2457E6] hover:text-[#2457E6] font-medium transition-colors"
             >
               View all patterns →
             </Link>
@@ -539,10 +539,10 @@ function DSAMentorPage() {
         </div>
 
         {/* NEXT ACTION Card with Target Graphic */}
-        <div className="bg-gradient-to-br from-purple-50 via-white to-indigo-50/40 border border-purple-100 rounded-2xl p-5 space-y-4 relative overflow-hidden flex flex-col justify-between shadow-xs">
+        <div className="bg-gradient-to-br from-[#EEF2FB] via-white to-[#EEF2FB]/40 border border-[#E3E9F4] rounded-2xl p-5 space-y-4 relative overflow-hidden flex flex-col justify-between shadow-xs">
           <div className="relative z-10 space-y-2 max-w-sm">
-            <div className="text-xs font-mono uppercase tracking-widest text-purple-700 font-semibold flex items-center gap-2">
-              <Target className="w-4 h-4 text-purple-700" />
+            <div className="text-xs font-mono uppercase tracking-widest text-[#2457E6] font-semibold flex items-center gap-2">
+              <Target className="w-4 h-4 text-[#2457E6]" />
               <span>NEXT ACTION</span>
             </div>
             <h3 className="font-display font-bold text-base md:text-lg text-slate-900 leading-snug">
@@ -575,7 +575,7 @@ function DSAMentorPage() {
           <div className="relative z-10 pt-2">
             <button
               onClick={() => navigate({ to: "/dsa-problems" })}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-medium px-4 py-2 rounded-xl text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
+              className="bg-[#2457E6] hover:bg-[#1E48C5] text-white font-medium px-4 py-2 rounded-xl text-xs transition-all inline-flex items-center gap-1.5 cursor-pointer shadow-xs"
             >
               <span>Start Practice</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -590,7 +590,7 @@ function DSAMentorPage() {
       <div className="bg-white rounded-2xl p-5 border border-slate-200/80 space-y-4 shadow-xs">
         <div>
           <div className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-            <Briefcase className="w-4 h-4 text-purple-600" />
+            <Briefcase className="w-4 h-4 text-[#2457E6]" />
             <span>COMPANY READINESS</span>
           </div>
           <p className="text-xs text-slate-500 mt-0.5">
@@ -660,7 +660,7 @@ function DSAMentorPage() {
         <div>
           <Link
             to="/dsa-companies"
-            className="inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
+            className="inline-flex items-center gap-1 text-xs text-[#2457E6] hover:text-[#2457E6] font-medium transition-colors"
           >
             View all target companies →
           </Link>
@@ -675,7 +675,7 @@ function DSAMentorPage() {
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 space-y-3 flex flex-col justify-between shadow-xs">
           <div className="space-y-3">
             <div className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-              <Database className="w-4 h-4 text-purple-600" />
+              <Database className="w-4 h-4 text-[#2457E6]" />
               <span>TOPIC MASTERY</span>
             </div>
 
@@ -688,9 +688,9 @@ function DSAMentorPage() {
                   </div>
                   <div className="flex items-center gap-2 pt-0.5">
                     <div className="flex-1 h-1 bg-slate-200/70 rounded-full overflow-hidden">
-                      <div className="h-full bg-purple-600 rounded-full" style={{ width: `${Math.min(Math.max(t.mastery, 0), 100)}%` }} />
+                      <div className="h-full bg-[#2457E6] rounded-full" style={{ width: `${Math.min(Math.max(t.mastery, 0), 100)}%` }} />
                     </div>
-                    <span className="text-[10px] font-mono font-bold text-purple-700">{t.mastery}%</span>
+                    <span className="text-[10px] font-mono font-bold text-[#2457E6]">{t.mastery}%</span>
                   </div>
                 </div>
               ))}
@@ -700,7 +700,7 @@ function DSAMentorPage() {
           <div>
             <Link
               to="/dsa-problems"
-              className="inline-flex items-center gap-1 text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
+              className="inline-flex items-center gap-1 text-xs text-[#2457E6] hover:text-[#2457E6] font-medium transition-colors"
             >
               View all topics →
             </Link>
@@ -711,7 +711,7 @@ function DSAMentorPage() {
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 space-y-3 flex flex-col justify-between shadow-xs">
           <div className="space-y-3">
             <div className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-              <Activity className="w-4 h-4 text-purple-600" />
+              <Activity className="w-4 h-4 text-[#2457E6]" />
               <span>PERFORMANCE SIGNALS</span>
             </div>
 
@@ -755,7 +755,7 @@ function DSAMentorPage() {
         <div className="bg-white rounded-2xl p-5 border border-slate-200/80 space-y-4 flex flex-col justify-between shadow-xs">
           <div className="space-y-3">
             <div className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-              <Target className="w-4 h-4 text-purple-600" />
+              <Target className="w-4 h-4 text-[#2457E6]" />
               <span>INTERVIEW READINESS</span>
             </div>
 
@@ -778,11 +778,11 @@ function DSAMentorPage() {
             </div>
           </div>
 
-          <div className="bg-purple-50/80 rounded-xl p-3 border border-purple-200/80 space-y-1">
-            <div className="text-[10px] font-mono font-bold text-purple-700 uppercase flex items-center gap-1">
-              <Star className="w-3 h-3 text-purple-600" /> AI VERDICT
+          <div className="bg-[#EEF2FB]/80 rounded-xl p-3 border border-[#2457E6]/20/80 space-y-1">
+            <div className="text-[10px] font-mono font-bold text-[#2457E6] uppercase flex items-center gap-1">
+              <Star className="w-3 h-3 text-[#2457E6]" /> AI VERDICT
             </div>
-            <p className="text-[11px] text-purple-900 leading-relaxed">
+            <p className="text-[11px] text-[#17233F] leading-relaxed">
               Focus on your weakest verified topic to improve technical interview pass rates.
             </p>
           </div>
@@ -795,12 +795,12 @@ function DSAMentorPage() {
       <div className="bg-white rounded-2xl p-5 border border-slate-200/80 space-y-3 shadow-xs">
         <div className="flex items-center justify-between">
           <div className="text-[11px] font-mono uppercase tracking-widest text-slate-500 font-semibold flex items-center gap-2">
-            <CalendarDays className="w-4 h-4 text-purple-600" />
+            <CalendarDays className="w-4 h-4 text-[#2457E6]" />
             <span>ACTIVE MISSIONS</span>
           </div>
           <Link
             to="/dashboard/dsa"
-            className="text-xs text-purple-600 hover:text-purple-700 font-medium transition-colors"
+            className="text-xs text-[#2457E6] hover:text-[#2457E6] font-medium transition-colors"
           >
             View all missions →
           </Link>
@@ -820,8 +820,8 @@ function DSAMentorPage() {
               className="bg-slate-50/70 rounded-xl p-3.5 border border-slate-200/60 flex items-center justify-between gap-3 text-xs"
             >
               <div className="min-w-0 space-y-0.5">
-                <div className="text-[9px] font-mono uppercase font-bold text-purple-700 flex items-center gap-1">
-                  <CalendarDays className="w-3 h-3 text-purple-600" />
+                <div className="text-[9px] font-mono uppercase font-bold text-[#2457E6] flex items-center gap-1">
+                  <CalendarDays className="w-3 h-3 text-[#2457E6]" />
                   <span>{dayItem.day}</span>
                 </div>
                 <div className="font-semibold text-slate-900 truncate">{dayItem.focus}</div>
@@ -830,7 +830,7 @@ function DSAMentorPage() {
 
               <button
                 onClick={() => navigate({ to: "/dsa-problems" })}
-                className="bg-purple-50 hover:bg-purple-600 text-purple-700 hover:text-white border border-purple-200/60 font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
+                className="bg-[#EEF2FB] hover:bg-[#2457E6] text-[#2457E6] hover:text-white border border-[#2457E6]/20/60 font-semibold px-3 py-1.5 rounded-lg text-xs transition-colors shrink-0 flex items-center gap-1 cursor-pointer"
               >
                 <span>Start</span>
                 <ArrowRight className="w-3 h-3" />
@@ -850,8 +850,8 @@ function DSAMentorPage() {
         {/* Chat Header */}
         <div className="flex items-center justify-between p-4 md:p-5 border-b border-slate-200/80 bg-slate-50/50">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 shadow-xs">
-              <Bot className="w-5 h-5 text-purple-600" />
+            <div className="w-10 h-10 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0 shadow-xs">
+              <Bot className="w-5 h-5 text-[#2457E6]" />
             </div>
             <div className="space-y-0.5">
               <h2 className="font-display text-lg font-bold text-slate-900 tracking-tight flex items-center gap-2">
@@ -879,8 +879,8 @@ function DSAMentorPage() {
               {/* Left Hero Prompting Column */}
               <div className="lg:col-span-7 space-y-4">
                 <div className="flex items-start gap-3.5">
-                  <div className="w-11 h-11 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 shadow-xs">
-                    <Bot className="w-6 h-6 text-purple-600" />
+                  <div className="w-11 h-11 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0 shadow-xs">
+                    <Bot className="w-6 h-6 text-[#2457E6]" />
                   </div>
                   <div className="space-y-1">
                     <h3 className="font-display font-bold text-lg md:text-xl text-slate-900">
@@ -896,33 +896,33 @@ function DSAMentorPage() {
               {/* Right Feature Highlights Column */}
               <div className="lg:col-span-5 bg-slate-50/80 rounded-xl p-4 border border-slate-200/80 space-y-3 shadow-xs">
                 <div className="flex items-center gap-2 text-xs font-semibold text-slate-900 pb-2 border-b border-slate-200/60 font-mono">
-                  <FileText className="w-4 h-4 text-purple-600" />
+                  <FileText className="w-4 h-4 text-[#2457E6]" />
                   <span>Coach Capabilities</span>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs">
                   <div className="flex items-start gap-2">
-                    <BookOpen className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
+                    <BookOpen className="w-3.5 h-3.5 text-[#2457E6] shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-slate-900">Explain concepts clearly</div>
                       <div className="text-[10px] text-slate-500">Step-by-step guidance</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Bug className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
+                    <Bug className="w-3.5 h-3.5 text-[#2457E6] shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-slate-900">Review & debug code</div>
                       <div className="text-[10px] text-slate-500">Find issues & optimize</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <Lightbulb className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
+                    <Lightbulb className="w-3.5 h-3.5 text-[#2457E6] shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-slate-900">Practice smarter</div>
                       <div className="text-[10px] text-slate-500">Curated problems & hints</div>
                     </div>
                   </div>
                   <div className="flex items-start gap-2">
-                    <MessageSquareCode className="w-3.5 h-3.5 text-purple-600 shrink-0 mt-0.5" />
+                    <MessageSquareCode className="w-3.5 h-3.5 text-[#2457E6] shrink-0 mt-0.5" />
                     <div>
                       <div className="font-medium text-slate-900">Interview prep</div>
                       <div className="text-[10px] text-slate-500">Real-world insights</div>
@@ -947,20 +947,20 @@ function DSAMentorPage() {
                 >
                   {m.role === "user" ? (
                     /* User Message Bubble */
-                    <div className="max-w-[85%] md:max-w-[70%] bg-purple-600 text-white rounded-2xl rounded-tr-xs p-4 shadow-xs space-y-1.5">
+                    <div className="max-w-[85%] md:max-w-[70%] bg-[#2457E6] text-white rounded-2xl rounded-tr-xs p-4 shadow-xs space-y-1.5">
                       <div className="text-sm leading-relaxed whitespace-pre-wrap">
                         {m.content}
                       </div>
-                      <div className="flex items-center justify-end gap-1.5 text-[10px] text-purple-200 font-mono">
+                      <div className="flex items-center justify-end gap-1.5 text-[10px] text-[#93b4f7] font-mono">
                         <span>{m.timestamp || "11:47 AM"}</span>
-                        <CheckCheck className="w-3.5 h-3.5 text-purple-200" />
+                        <CheckCheck className="w-3.5 h-3.5 text-[#93b4f7]" />
                       </div>
                     </div>
                   ) : (
                     /* Assistant Message Bubble */
                     <div className="flex items-start gap-3 max-w-[95%] md:max-w-[85%]">
-                      <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 mt-1 shadow-xs">
-                        <Bot className="w-5 h-5 text-purple-600" />
+                      <div className="w-9 h-9 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0 mt-1 shadow-xs">
+                        <Bot className="w-5 h-5 text-[#2457E6]" />
                       </div>
                       <div className="bg-slate-50/90 border border-slate-200/80 text-slate-800 rounded-2xl rounded-tl-xs p-4 md:p-5 space-y-3 shadow-xs flex-1 min-w-0">
                         <MarkdownRenderer content={m.content} />
@@ -983,7 +983,7 @@ function DSAMentorPage() {
                               title="Helpful"
                               className={cn(
                                 "p-1.5 hover:bg-slate-200/60 rounded-md hover:text-slate-900 transition-colors cursor-pointer",
-                                feedbackMap[m.id] === "like" && "text-purple-600 font-bold"
+                                feedbackMap[m.id] === "like" && "text-[#2457E6] font-bold"
                               )}
                             >
                               <ThumbsUp className="w-3.5 h-3.5" />
@@ -1014,10 +1014,10 @@ function DSAMentorPage() {
                   exit={{ opacity: 0, transition: { duration: 0.15 } }}
                   className="flex items-start gap-3 max-w-[85%]"
                 >
-                  <div className="w-9 h-9 rounded-xl bg-purple-50 border border-purple-100 flex items-center justify-center text-purple-600 shrink-0 mt-1 shadow-xs">
-                    <Bot className="w-5 h-5 text-purple-600 animate-pulse" />
+                  <div className="w-9 h-9 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] flex items-center justify-center text-[#2457E6] shrink-0 mt-1 shadow-xs">
+                    <Bot className="w-5 h-5 text-[#2457E6] animate-pulse" />
                   </div>
-                  <div className="bg-purple-50/80 border border-purple-100 text-purple-900 rounded-2xl rounded-tl-xs p-4 flex items-center gap-3 shadow-xs">
+                  <div className="bg-[#EEF2FB]/80 border border-[#E3E9F4] text-[#17233F] rounded-2xl rounded-tl-xs p-4 flex items-center gap-3 shadow-xs">
                     <AnimatePresence mode="wait">
                       <motion.div
                         key={thinkingMessageIndex}
@@ -1025,19 +1025,19 @@ function DSAMentorPage() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -4 }}
                         transition={{ duration: 0.25 }}
-                        className="text-xs font-medium text-purple-800"
+                        className="text-xs font-medium text-[#17233F]"
                       >
                         {THINKING_MESSAGES[thinkingMessageIndex]}
                       </motion.div>
                     </AnimatePresence>
                     <div className="flex items-center gap-1">
-                      <div className="w-1.5 h-1.5 bg-purple-600/60 rounded-full animate-bounce" />
+                      <div className="w-1.5 h-1.5 bg-[#2457E6]/60 rounded-full animate-bounce" />
                       <div
-                        className="w-1.5 h-1.5 bg-purple-600/60 rounded-full animate-bounce"
+                        className="w-1.5 h-1.5 bg-[#2457E6]/60 rounded-full animate-bounce"
                         style={{ animationDelay: "0.15s" }}
                       />
                       <div
-                        className="w-1.5 h-1.5 bg-purple-600/60 rounded-full animate-bounce"
+                        className="w-1.5 h-1.5 bg-[#2457E6]/60 rounded-full animate-bounce"
                         style={{ animationDelay: "0.3s" }}
                       />
                     </div>
@@ -1052,7 +1052,7 @@ function DSAMentorPage() {
         <div className="px-4 md:px-6 pt-3 pb-2.5 border-t border-slate-200/80 bg-slate-50/50 space-y-2">
           <div className="flex items-center justify-between text-[11px] font-mono text-slate-500 font-medium">
             <span className="flex items-center gap-1.5">
-              <Sparkles className="w-3 h-3 text-purple-600" />
+              <Sparkles className="w-3 h-3 text-[#2457E6]" />
               <span>Try asking:</span>
             </span>
             <span className="text-[10px] text-slate-400 hidden sm:inline">Scroll for more</span>
@@ -1072,7 +1072,7 @@ function DSAMentorPage() {
               {
                 text: "Why does my DP code fail?",
                 icon: HelpCircle,
-                iconColor: "text-purple-600",
+                iconColor: "text-[#2457E6]",
               },
               {
                 text: "Memoization vs Tabulation",
@@ -1091,7 +1091,7 @@ function DSAMentorPage() {
                   key={qp.text}
                   onClick={() => void handleSend(qp.text)}
                   disabled={chatBusy}
-                  className="shrink-0 bg-white hover:bg-purple-50/90 focus:bg-purple-50 focus:border-purple-400 disabled:opacity-50 text-slate-700 hover:text-purple-950 border border-slate-200/90 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shadow-2xs hover:shadow-xs active:scale-[0.98]"
+                  className="shrink-0 bg-white hover:bg-[#EEF2FB]/90 focus:bg-[#EEF2FB] focus:border-[#2457E6] disabled:opacity-50 text-slate-700 hover:text-[#17233F] border border-slate-200/90 px-3 py-1.5 rounded-xl text-xs font-medium transition-all cursor-pointer flex items-center gap-2 shadow-2xs hover:shadow-xs active:scale-[0.98]"
                 >
                   <IconComponent className={cn("w-3.5 h-3.5 shrink-0", qp.iconColor)} />
                   <span className="whitespace-nowrap">{qp.text}</span>
@@ -1127,7 +1127,7 @@ function DSAMentorPage() {
             </button>
           </div>
           <div className="text-center mt-2.5 text-[11px] font-medium text-slate-400 flex items-center justify-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-indigo-500" />
+            <Sparkles className="w-3 h-3 text-[#2457E6]" />
             <span>The AI Code Coach adapts its explanations based on your precise SyncRole analytics.</span>
           </div>
         </div>
@@ -1135,4 +1135,5 @@ function DSAMentorPage() {
     </main>
   );
 }
+
 

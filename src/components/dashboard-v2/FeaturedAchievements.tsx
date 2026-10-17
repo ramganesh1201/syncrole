@@ -16,7 +16,7 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
       description: "Maintain 7-day streak",
       xp: "+100 XP",
       icon: Hexagon,
-      badgeColor: "bg-purple-50 text-purple-700 border-purple-200",
+      badgeColor: "bg-[#EEF2FB] text-[#2457E6] border-[#2457E6]/20",
     },
     {
       id: "code_consistent",
@@ -56,7 +56,7 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
       description: "Reach 30% readiness",
       xp: "+100 XP",
       icon: Star,
-      badgeColor: "bg-indigo-50 text-indigo-700 border-indigo-200",
+      badgeColor: "bg-[#EEF2FB] text-[#2457E6] border-[#2457E6]/20",
     }
   ];
 
@@ -70,7 +70,7 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
   return (
     <div className="mb-8" id="achievement-vault">
       <div className="flex items-center justify-between mb-4">
-        <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider font-mono">Achievements</h3>
+        <h3 className="text-xs font-bold text-[#8FA3C8] uppercase tracking-wider font-mono">Achievements</h3>
         <button 
           onClick={() => setShowAll(!showAll)}
           className="text-xs text-blue-600 font-semibold flex items-center gap-1 hover:underline cursor-pointer"
@@ -84,7 +84,7 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
       </div>
 
       {showAll ? (
-        <div className="bg-white border border-slate-200/90 rounded-2xl p-5 shadow-xs">
+        <div className="bg-white border border-[#E3E9F4] rounded-2xl p-5 shadow-xs">
           <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
             {Object.entries(ACHIEVEMENT_CATALOG).map(([code, a]) => {
               const unlocked = unlockedCodes.includes(code);
@@ -94,13 +94,13 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
                 <div 
                   key={code} 
                   className={`bg-slate-50 border rounded-xl p-3 flex flex-col items-center justify-center text-center transition-all ${
-                    unlocked ? "border-blue-200 bg-blue-50/40 text-slate-900" : "border-slate-200 opacity-50 grayscale"
+                    unlocked ? "border-blue-200 bg-blue-50/40 text-[#17233F]" : "border-[#E3E9F4] opacity-50 grayscale"
                   }`}
                 >
-                  <div className={`mb-2 ${unlocked ? "text-blue-600" : "text-slate-400"}`}>
+                  <div className={`mb-2 ${unlocked ? "text-blue-600" : "text-[#8FA3C8]"}`}>
                     <IconComponent className="h-6 w-6 mx-auto" />
                   </div>
-                  <div className="text-[11px] font-bold leading-tight text-slate-900">
+                  <div className="text-[11px] font-bold leading-tight text-[#17233F]">
                     {a.name}
                   </div>
                 </div>
@@ -113,12 +113,12 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
           {featured.map((ach) => {
             const Icon = ach.icon;
             return (
-              <div key={ach.id} className="bg-white border border-slate-200/90 hover:border-slate-300 rounded-2xl p-4 flex flex-col items-center text-center shadow-xs transition group">
-                <div className="w-12 h-12 rounded-xl bg-slate-100 border border-slate-200 flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
+              <div key={ach.id} className="bg-white border border-[#E3E9F4] hover:border-slate-300 rounded-2xl p-4 flex flex-col items-center text-center shadow-xs transition group">
+                <div className="w-12 h-12 rounded-xl bg-slate-100 border border-[#E3E9F4] flex items-center justify-center mb-3 group-hover:scale-105 transition-transform">
                   <Icon className="w-6 h-6 text-slate-800" />
                 </div>
-                <h4 className="text-slate-900 font-bold text-xs mb-0.5 line-clamp-1">{ach.title}</h4>
-                <p className="text-[10px] text-slate-500 mb-2 line-clamp-1">{ach.description}</p>
+                <h4 className="text-[#17233F] font-bold text-xs mb-0.5 line-clamp-1">{ach.title}</h4>
+                <p className="text-[10px] text-[#6B7799] mb-2 line-clamp-1">{ach.description}</p>
                 <div className={`text-[10px] font-bold px-2.5 py-0.5 rounded-full border font-mono ${ach.badgeColor}`}>
                   {ach.xp}
                 </div>
@@ -130,3 +130,4 @@ export function FeaturedAchievements({ unlockedCodes }: FeaturedAchievementsProp
     </div>
   );
 }
+

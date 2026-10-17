@@ -77,3 +77,4 @@ export const AchievementsSection = React.memo(function AchievementsSection({ onV
     </motion.div>
   );
 });
+

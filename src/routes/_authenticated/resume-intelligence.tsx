@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+﻿import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, useCallback } from "react";
 import { extractTextFromPDF } from "@/lib/pdf";
 import { motion, AnimatePresence } from "framer-motion";
@@ -27,7 +27,7 @@ import { XP } from "@/lib/syncrole";
 
 export const Route = createFileRoute("/_authenticated/resume-intelligence")({
   component: ResumeIntelligence,
-  head: () => ({ meta: [{ title: "Resume Intelligence — SyncRole" }] }),
+  head: () => ({ meta: [{ title: "Resume Intelligence â€” SyncRole" }] }),
 });
 
 type TabId = "overview" | "ats" | "recruiter" | "jd" | "company" | "rewrite";
@@ -821,3 +821,4 @@ function RewriteTab({ resume }: { resume: any }) {
     </div>
   );
 }
+

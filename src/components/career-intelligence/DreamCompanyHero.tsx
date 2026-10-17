@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Link } from "@tanstack/react-router";
 import {
@@ -115,17 +115,17 @@ export function DreamCompanyHero({
         <div className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-6">
           <div className="space-y-1">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full glass text-xs text-accent font-medium uppercase tracking-wider">
-              <Sparkles className="w-3.5 h-3.5" /> Dream Path · Your Goal. Your Gap. Your Next Move.
+              <Sparkles className="w-3.5 h-3.5" /> Dream Path Â· Your Goal. Your Gap. Your Next Move.
             </div>
             <div className="flex items-center gap-3 mt-1">
               <h2 className="text-2xl md:text-3xl font-display font-bold text-white flex items-center gap-2">
-                <span className="text-xs px-2.5 py-1 rounded-full bg-purple-500/20 border border-purple-500/30 text-purple-300 font-mono font-semibold uppercase">
+                <span className="text-xs px-2.5 py-1 rounded-full bg-[#EEF2FB]0/20 border border-purple-500/30 text-purple-300 font-mono font-semibold uppercase">
                   ACTIVE TARGET
                 </span>
                 <span>{companyProfile.name}</span>
               </h2>
               <span className="text-xs px-2.5 py-1 rounded-full bg-white/10 border border-white/15 text-muted-foreground font-normal">
-                Tier {companyProfile.tier} • {companyProfile.hiringDifficulty} Difficulty
+                Tier {companyProfile.tier} â€¢ {companyProfile.hiringDifficulty} Difficulty
               </span>
             </div>
           </div>
@@ -407,3 +407,4 @@ export function DreamCompanyHero({
     </div>
   );
 }
+

@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
+﻿import { createFileRoute, Link, useRouter } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { 
@@ -298,7 +298,7 @@ function SettingsPage() {
             {/* Proactive Intelligence Toggle */}
             <div className="p-4 sm:p-5 flex items-center justify-between gap-4">
               <div className="flex items-start gap-3.5">
-                <div className="w-9 h-9 rounded-xl bg-indigo-50 border border-indigo-200/70 text-indigo-600 flex items-center justify-center shrink-0 mt-0.5">
+                <div className="w-9 h-9 rounded-xl bg-[#EEF2FB] border border-[#2457E6]/20/70 text-[#2457E6] flex items-center justify-center shrink-0 mt-0.5">
                   <Sparkles className="w-4.5 h-4.5" />
                 </div>
                 <div>
@@ -537,3 +537,4 @@ function SettingsPage() {
     </div>
   );
 }
+

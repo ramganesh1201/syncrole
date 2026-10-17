@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { motion, AnimatePresence } from "framer-motion";
 import { Inbox, Bell, AlertTriangle, Sparkles, Trophy, Info, ChevronRight, X } from "lucide-react";
@@ -86,3 +86,4 @@ export function AIInbox({ items }: AIInboxProps) {
     </div>
   );
 }
+

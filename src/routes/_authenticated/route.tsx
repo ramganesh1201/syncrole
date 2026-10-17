@@ -1,4 +1,4 @@
-import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
+﻿import { createFileRoute, Outlet, redirect, Link, useRouter } from "@tanstack/react-router";
 import { supabase } from "@/integrations/supabase/client";
 import { LogOut, LayoutDashboard, Code2, Settings, User, Sparkles, HelpCircle, Briefcase, GraduationCap, X, Menu, Calendar, FileText, Target, Fingerprint, Bell, TrendingUp, Clock, Building2, ChevronRight, Compass } from "lucide-react";
 import { BrandLogo } from "@/components/ui/brand-logo";
@@ -96,21 +96,22 @@ function AuthedLayout() {
 
   if (loading || !user) {
     return (
-      <div className="min-h-screen bg-[#F7F9FC] grid place-items-center">
-        <div className="h-8 w-8 rounded-full border-2 border-purple-600 border-t-transparent animate-spin" />
+      <div className="min-h-screen bg-[#F5F7FC] grid place-items-center">
+        <div className="h-8 w-8 rounded-full border-2 border-[#2457E6] border-t-transparent animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen relative bg-[#F7F9FC] text-slate-900 font-sans">
-      {/* APP HEADER */}
-      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/90 border-b border-slate-200/80 shadow-xs transition-all pt-[env(safe-area-inset-top)]">
+    <div className="min-h-screen relative bg-[#F5F7FC] text-[#17233F] font-sans">
+      {/* â”€â”€ APP HEADER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
+      <header className="sticky top-0 z-40 backdrop-blur-xl bg-white/92 border-b border-[#E3E9F4] shadow-[0_1px_3px_rgba(23,35,63,0.05)] transition-all pt-[env(safe-area-inset-top)]">
         <div className="mx-auto max-w-7xl px-4 md:px-6 h-14 md:h-16 flex items-center justify-between">
+          {/* Left: hamburger (mobile) + logo */}
           <div className="flex items-center gap-2.5">
             <button
               onClick={() => setIsMenuOpen(true)}
-              className="md:hidden p-2 rounded-xl bg-slate-100/90 border border-slate-200/80 text-slate-700 hover:text-slate-900 hover:bg-slate-200/80 active:scale-95 transition flex items-center justify-center min-w-[40px] min-h-[40px]"
+              className="md:hidden p-2 rounded-xl bg-[#EEF2FB] border border-[#E3E9F4] text-[#374166] hover:text-[#17233F] hover:bg-[#dde5f7] active:scale-95 transition-all flex items-center justify-center min-w-[40px] min-h-[40px]"
               aria-label="Open navigation menu"
             >
               <Menu className="h-5 w-5" />
@@ -121,12 +122,13 @@ function AuthedLayout() {
 
           {/* Center Title on Mobile */}
           <div className="md:hidden text-center">
-            <span className="text-xs font-bold text-slate-700 tracking-tight">
+            <span className="text-xs font-bold text-[#17233F] tracking-tight">
               {getPageTitle(pathname)}
             </span>
           </div>
 
-          <nav className="hidden md:flex items-center gap-1.5 text-sm">
+          {/* Desktop Navigation Links */}
+          <nav className="hidden md:flex items-center gap-1 text-sm">
             <NavLink to="/dashboard" icon={LayoutDashboard}>
               Dashboard
             </NavLink>
@@ -135,67 +137,79 @@ function AuthedLayout() {
             </NavLink>
           </nav>
 
+          {/* Right: Notifications + Avatar */}
           <div className="flex items-center gap-2">
             <NotificationCenter>
-              <button className="relative h-9 w-9 grid place-items-center rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-200/80 text-slate-700 hover:text-slate-900 transition active:scale-95 shadow-2xs" aria-label="Notifications">
+              <button
+                className="relative h-9 w-9 grid place-items-center rounded-xl bg-[#F5F7FC] hover:bg-[#EEF2FB] border border-[#E3E9F4] text-[#374166] hover:text-[#17233F] transition-all active:scale-95"
+                aria-label="Notifications"
+              >
                 <Bell className="h-4 w-4" />
               </button>
             </NotificationCenter>
 
+            {/* Mobile profile avatar link */}
             <Link to="/profile" className="md:hidden">
-              <Avatar className="h-8 w-8 border border-slate-200/90 cursor-pointer shadow-2xs">
+              <Avatar className="h-8 w-8 border border-[#E3E9F4] cursor-pointer shadow-xs">
                 <AvatarImage src={profile?.avatar_url || ""} />
-                <AvatarFallback className="bg-blue-50 text-xs text-blue-700 font-bold">
+                <AvatarFallback className="bg-[#EEF2FB] text-xs text-[#2457E6] font-bold">
                   {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
             </Link>
 
+            {/* Desktop user dropdown */}
             <div className="hidden md:block">
               <DropdownMenu>
                 <DropdownMenuTrigger className="outline-none ml-2">
-                  <Avatar className="h-9 w-9 border border-slate-200 cursor-pointer transition transform hover:scale-105 hover:border-blue-300 shadow-2xs">
+                  <Avatar className="h-9 w-9 border border-[#E3E9F4] cursor-pointer transition-all hover:scale-105 hover:border-[#2457E6]/40 shadow-xs">
                     <AvatarImage src={profile?.avatar_url || ""} />
-                    <AvatarFallback className="bg-blue-50 text-xs text-blue-700 font-bold">
+                    <AvatarFallback className="bg-[#EEF2FB] text-xs text-[#2457E6] font-bold">
                       {profile?.full_name?.charAt(0) || user.email?.charAt(0) || "U"}
                     </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56 bg-white/95 backdrop-blur-xl border-slate-200/90 text-slate-900 shadow-xl rounded-xl p-1.5">
+                <DropdownMenuContent
+                  align="end"
+                  className="w-56 bg-white border-[#E3E9F4] shadow-[0_8px_32px_rgba(23,35,63,0.12)] rounded-xl p-1.5"
+                >
                   <DropdownMenuLabel className="font-normal px-2.5 py-2">
-                    <div className="flex flex-col space-y-1">
-                      <p className="text-sm font-semibold leading-none text-slate-900">{profile?.full_name || "User"}</p>
-                      <p className="text-xs leading-none text-slate-500 truncate">{user.email}</p>
+                    <div className="flex flex-col space-y-0.5">
+                      <p className="text-sm font-semibold leading-none text-[#17233F]">{profile?.full_name || "User"}</p>
+                      <p className="text-xs leading-none text-[#6B7799] truncate">{user.email}</p>
                     </div>
                   </DropdownMenuLabel>
-                  <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
+                  <DropdownMenuSeparator className="bg-[#E3E9F4] my-1" />
+                  <DropdownMenuItem asChild className="cursor-pointer text-[#374166] hover:text-[#17233F] hover:bg-[#EEF2FB] focus:bg-[#EEF2FB] rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/profile">
-                      <User className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <User className="mr-2.5 h-4 w-4 text-[#6B7799]" />
                       <span className="font-medium">My Profile</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-[#374166] hover:text-[#17233F] hover:bg-[#EEF2FB] focus:bg-[#EEF2FB] rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/career-identity">
-                      <Fingerprint className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <Fingerprint className="mr-2.5 h-4 w-4 text-[#6B7799]" />
                       <span className="font-medium">Career Identity</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-[#374166] hover:text-[#17233F] hover:bg-[#EEF2FB] focus:bg-[#EEF2FB] rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/settings">
-                      <Settings className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <Settings className="mr-2.5 h-4 w-4 text-[#6B7799]" />
                       <span className="font-medium">Settings</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild className="cursor-pointer text-slate-700 hover:text-slate-900 hover:bg-slate-100 focus:bg-slate-100 rounded-lg transition-colors py-2 px-2.5">
+                  <DropdownMenuItem asChild className="cursor-pointer text-[#374166] hover:text-[#17233F] hover:bg-[#EEF2FB] focus:bg-[#EEF2FB] rounded-lg transition-colors py-2 px-2.5">
                     <Link to="/help">
-                      <HelpCircle className="mr-2.5 h-4 w-4 text-slate-500" />
+                      <HelpCircle className="mr-2.5 h-4 w-4 text-[#6B7799]" />
                       <span className="font-medium">Help</span>
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuSeparator className="bg-slate-100 my-1" />
-                  <DropdownMenuItem onClick={signOut} className="text-rose-600 focus:text-rose-600 cursor-pointer hover:bg-rose-50 focus:bg-rose-50 rounded-lg transition-colors py-2 px-2.5">
-                    <LogOut className="mr-2.5 h-4 w-4 text-rose-500" />
+                  <DropdownMenuSeparator className="bg-[#E3E9F4] my-1" />
+                  <DropdownMenuItem
+                    onClick={signOut}
+                    className="text-[#DC2626] focus:text-[#DC2626] cursor-pointer hover:bg-red-50 focus:bg-red-50 rounded-lg transition-colors py-2 px-2.5"
+                  >
+                    <LogOut className="mr-2.5 h-4 w-4 text-[#DC2626]" />
                     <span className="font-medium">Sign Out</span>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -205,37 +219,39 @@ function AuthedLayout() {
         </div>
       </header>
 
-      {/* MOBILE LEFT-SLIDING DRAWER OVERLAY */}
+      {/* â”€â”€ MOBILE DRAWER OVERLAY â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div
-        className={`fixed inset-0 z-[60] bg-slate-900/40 backdrop-blur-xs transition-opacity duration-300 md:hidden ${
+        className={`fixed inset-0 z-[60] bg-[#17233F]/40 backdrop-blur-sm transition-opacity duration-300 md:hidden ${
           isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
         }`}
         onClick={() => setIsMenuOpen(false)}
       />
 
-      {/* MOBILE CATEGORIZED DRAWER CONTAINER */}
+      {/* â”€â”€ MOBILE CATEGORIZED DRAWER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <div
-        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,340px)] max-w-[340px] bg-white border-r border-slate-200/90 p-4 flex flex-col justify-between transition-transform duration-300 ease-out shadow-2xl md:hidden ${
+        className={`fixed inset-y-0 left-0 z-[70] h-[100dvh] w-[min(85vw,340px)] max-w-[340px] bg-white border-r border-[#E3E9F4] p-4 flex flex-col justify-between transition-transform duration-300 ease-out shadow-[4px_0_24px_rgba(23,35,63,0.12)] md:hidden ${
           isMenuOpen ? "translate-x-0" : "-translate-x-full"
         }`}
       >
         {/* DRAWER HEADER */}
-        <div className="flex-none flex items-center justify-between pb-3.5 border-b border-slate-100">
+        <div className="flex-none flex items-center justify-between pb-3.5 border-b border-[#E3E9F4]">
           <BrandLogo size="md" />
           <button
             onClick={() => setIsMenuOpen(false)}
-            className="p-2 rounded-full bg-slate-100 text-slate-600 hover:text-slate-900 hover:bg-slate-200 transition active:scale-95 flex items-center justify-center min-w-[36px] min-h-[36px]"
+            className="p-2 rounded-full bg-[#EEF2FB] text-[#374166] hover:text-[#17233F] hover:bg-[#dde5f7] transition-all active:scale-95 flex items-center justify-center min-w-[36px] min-h-[36px]"
             aria-label="Close menu"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
-        {/* CATEGORIZED NAVIGATION LIST */}
+        {/* CATEGORIZED NAVIGATION */}
         <nav className="flex-1 overflow-y-auto min-h-0 py-3 space-y-4">
-          {/* PRIMARY */}
+          {/* PRIMARY WORKSPACE */}
           <div className="space-y-1">
-            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Primary Workspace</span>
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-[#8FA3C8]">
+              Primary Workspace
+            </span>
             {[
               { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
               { label: "Today Workspace", href: "/dashboard/workspace", icon: Calendar },
@@ -245,9 +261,11 @@ function AuthedLayout() {
             ))}
           </div>
 
-          {/* CAREER */}
-          <div className="space-y-1 pt-1 border-t border-slate-100">
-            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Career & Skills</span>
+          {/* CAREER & SKILLS */}
+          <div className="space-y-1 pt-1 border-t border-[#E3E9F4]">
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-[#8FA3C8]">
+              Career & Skills
+            </span>
             {[
               { label: "Resume Intelligence", href: "/resume-intelligence", icon: FileText },
               { label: "Career Identity", href: "/career-identity", icon: Fingerprint },
@@ -258,9 +276,11 @@ function AuthedLayout() {
             ))}
           </div>
 
-          {/* ACCOUNT */}
-          <div className="space-y-1 pt-1 border-t border-slate-100">
-            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-slate-400">Account & Settings</span>
+          {/* ACCOUNT & SETTINGS */}
+          <div className="space-y-1 pt-1 border-t border-[#E3E9F4]">
+            <span className="px-3 text-[10px] font-extrabold uppercase tracking-wider text-[#8FA3C8]">
+              Account & Settings
+            </span>
             {[
               { label: "My Profile", href: "/profile", icon: User },
               { label: "Settings", href: "/settings", icon: Settings },
@@ -271,14 +291,14 @@ function AuthedLayout() {
           </div>
         </nav>
 
-        {/* FOOTER */}
-        <div className="flex-none pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-slate-100">
+        {/* DRAWER FOOTER: Sign Out */}
+        <div className="flex-none pt-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] border-t border-[#E3E9F4]">
           <button
             onClick={() => {
               setIsMenuOpen(false);
               signOut();
             }}
-            className="w-full min-h-[42px] flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-rose-50 border border-rose-200/80 text-rose-600 font-semibold text-xs hover:bg-rose-100 active:scale-[0.98] transition"
+            className="w-full min-h-[42px] flex items-center justify-center gap-2 px-3.5 py-2 rounded-xl bg-red-50 border border-red-100 text-[#DC2626] font-semibold text-xs hover:bg-red-100 active:scale-[0.98] transition-all"
           >
             <LogOut className="h-4 w-4" />
             <span>Sign Out</span>
@@ -286,18 +306,26 @@ function AuthedLayout() {
         </div>
       </div>
 
-      {/* MAIN CONTENT CONTAINER */}
+      {/* â”€â”€ MAIN CONTENT â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <main className={isFullScreenRoute ? "" : "pb-24 md:pb-0"}>
         <Outlet />
       </main>
 
-      {/* NATIVE APP BOTTOM NAV BAR */}
+      {/* â”€â”€ MOBILE BOTTOM NAV â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       {!isFullScreenRoute && <GlobalMobileBottomNav pathname={pathname} />}
     </div>
   );
 }
 
-function DrawerLink({ item, pathname, onClose }: { item: { label: string; href: string; icon: any }; pathname: string; onClose: () => void }) {
+function DrawerLink({
+  item,
+  pathname,
+  onClose,
+}: {
+  item: { label: string; href: string; icon: any };
+  pathname: string;
+  onClose: () => void;
+}) {
   const isItemActive =
     item.href === "/dashboard"
       ? pathname === "/dashboard" || pathname === "/dashboard/"
@@ -309,17 +337,25 @@ function DrawerLink({ item, pathname, onClose }: { item: { label: string; href: 
     <Link
       to={item.href}
       onClick={onClose}
-      className={`min-h-[42px] px-3 py-2 rounded-xl flex items-center justify-between transition text-xs font-medium ${
+      className={`min-h-[42px] px-3 py-2 rounded-xl flex items-center justify-between transition-all duration-150 text-xs font-medium ${
         isItemActive
-          ? "bg-purple-50 border border-purple-200/80 text-purple-700 font-semibold shadow-xs"
-          : "text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+          ? "bg-[#EEF2FB] border border-[#2457E6]/20 text-[#2457E6] font-semibold"
+          : "text-[#374166] hover:bg-[#F5F7FC] hover:text-[#17233F]"
       }`}
     >
       <div className="flex items-center gap-2.5">
-        <Icon className={`h-4 w-4 flex-shrink-0 ${isItemActive ? "text-purple-600" : "text-slate-500"}`} />
+        <Icon
+          className={`h-4 w-4 flex-shrink-0 ${
+            isItemActive ? "text-[#2457E6]" : "text-[#6B7799]"
+          }`}
+        />
         <span>{item.label}</span>
       </div>
-      <ChevronRight className={`h-3.5 w-3.5 ${isItemActive ? "text-purple-600" : "text-slate-400"}`} />
+      <ChevronRight
+        className={`h-3.5 w-3.5 ${
+          isItemActive ? "text-[#2457E6]" : "text-[#8FA3C8]"
+        }`}
+      />
     </Link>
   );
 }
@@ -343,13 +379,14 @@ function NavLink({
         e.preventDefault();
         router.navigate({ to });
       }}
-      className={`px-4 py-2 rounded-full text-sm font-medium transition inline-flex items-center gap-2 ${
+      className={`px-4 py-2 rounded-full text-sm font-medium transition-all duration-150 inline-flex items-center gap-2 ${
         isActive
-          ? "text-purple-700 bg-purple-50 font-semibold border border-purple-200/80 shadow-xs"
-          : "text-slate-600 hover:text-slate-900 hover:bg-slate-100/80"
+          ? "text-[#2457E6] bg-[#EEF2FB] font-semibold border border-[#2457E6]/20"
+          : "text-[#374166] hover:text-[#17233F] hover:bg-[#F5F7FC]"
       }`}
     >
-      <Icon className={`h-4 w-4 ${isActive ? "text-purple-600" : "text-slate-500"}`} /> {children}
+      <Icon className={`h-4 w-4 ${isActive ? "text-[#2457E6]" : "text-[#6B7799]"}`} />
+      {children}
     </Link>
   );
 }
@@ -358,7 +395,6 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
   const { openSyncPilot, panelState } = useSyncPilot();
   const isSyncPilotOpen = panelState !== "closed";
 
-  // Five balanced destinations in logical order
   const tabs = [
     { label: "Dashboard", href: "/dashboard", icon: TrendingUp },
     { label: "Workspace", href: "/dashboard/workspace", icon: Clock },
@@ -369,7 +405,7 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
 
   return (
     <nav
-      className="fixed bottom-0 inset-x-0 z-50 bg-white/98 backdrop-blur-xl border-t border-slate-200/90 shadow-[0_-1px_3px_rgba(0,0,0,0.03)] md:hidden"
+      className="fixed bottom-0 inset-x-0 z-50 bg-white/98 backdrop-blur-xl border-t border-[#E3E9F4] shadow-[0_-2px_12px_rgba(23,35,63,0.06)] md:hidden"
       style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       aria-label="Mobile navigation"
     >
@@ -381,10 +417,10 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
                 <button
                   type="button"
                   onClick={() => tab.action?.()}
-                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-400 ${
+                  className={`h-10 w-10 rounded-full flex items-center justify-center transition-all active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2457E6] ${
                     isSyncPilotOpen
-                      ? "bg-slate-900 text-indigo-300 ring-2 ring-indigo-400/50 shadow-xs"
-                      : "bg-gradient-to-tr from-blue-600 to-indigo-600 text-white shadow-sm shadow-indigo-600/20 hover:brightness-105"
+                      ? "bg-[#17233F] text-[#93b4f7] ring-2 ring-[#2457E6]/40"
+                      : "bg-gradient-to-tr from-[#2457E6] to-[#1a45cc] text-white shadow-sm shadow-[#2457E6]/25 hover:brightness-105"
                   }`}
                   aria-label="Open SyncPilot AI Assistant"
                   aria-pressed={isSyncPilotOpen}
@@ -429,20 +465,18 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
             <Link
               key={tab.label}
               to={tab.href!}
-              className={`flex flex-col items-center justify-center h-full w-full py-1 text-center select-none outline-none focus-visible:ring-2 focus-visible:ring-blue-500 rounded-xl transition-colors active:scale-95 ${
-                isActive
-                  ? "text-blue-600"
-                  : "text-slate-500 hover:text-slate-800"
+              className={`flex flex-col items-center justify-center h-full w-full py-1 text-center select-none outline-none focus-visible:ring-2 focus-visible:ring-[#2457E6] rounded-xl transition-colors active:scale-95 ${
+                isActive ? "text-[#2457E6]" : "text-[#6B7799] hover:text-[#374166]"
               }`}
             >
               <Icon
                 className={`h-5 w-5 transition-none ${
-                  isActive ? "text-blue-600 stroke-[2.2]" : "text-slate-400 stroke-[2]"
+                  isActive ? "text-[#2457E6] stroke-[2.2]" : "text-[#8FA3C8] stroke-[2]"
                 }`}
               />
               <span
                 className={`text-[10px] tracking-tight mt-1 leading-none truncate max-w-full px-0.5 ${
-                  isActive ? "font-semibold text-blue-600" : "font-medium text-slate-500"
+                  isActive ? "font-semibold text-[#2457E6]" : "font-medium text-[#6B7799]"
                 }`}
               >
                 {tab.label}
@@ -454,3 +488,4 @@ function GlobalMobileBottomNav({ pathname }: { pathname: string }) {
     </nav>
   );
 }
+

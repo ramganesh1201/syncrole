@@ -298,7 +298,7 @@ function DSAProblemsPage() {
                   </span>
                 )}
                 {opt.id === "neetcode150" && (
-                  <span className="text-[9px] bg-purple-500/20 text-purple-300 px-1.5 py-0.5 rounded font-mono">
+                  <span className="text-[9px] bg-[#EEF2FB]0/20 text-[#5B89F7] px-1.5 py-0.5 rounded font-mono">
                     150
                   </span>
                 )}
@@ -403,8 +403,8 @@ function DSAProblemsPage() {
           </Link>
           <h1 className="font-display text-2xl md:text-3xl font-bold text-slate-900 tracking-tight flex flex-wrap items-center gap-2.5">
             <span>DSA Problem Library</span>
-            <span className="text-[11px] font-sans font-semibold bg-purple-50 text-purple-700 border border-purple-200 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 shadow-xs">
-              <Code2 className="w-3.5 h-3.5 text-purple-600 shrink-0" />
+            <span className="text-[11px] font-sans font-semibold bg-[#EEF2FB] text-[#2457E6] border border-[#2457E6]/20 px-2.5 py-0.5 rounded-full inline-flex items-center gap-1.5 shrink-0 shadow-xs">
+              <Code2 className="w-3.5 h-3.5 text-[#2457E6] shrink-0" />
               <span>Internal Engine</span>
             </span>
           </h1>
@@ -417,22 +417,22 @@ function DSAProblemsPage() {
           {/* Mobile Filter Toggle Button */}
           <button
             onClick={() => setMobileFiltersOpen(!mobileFiltersOpen)}
-            className="lg:hidden bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-purple-700 shadow-xs"
+            className="lg:hidden bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-[#2457E6] shadow-xs"
             aria-label="Toggle filters menu"
           >
-            <Filter className="w-4 h-4 text-purple-600 shrink-0" />
+            <Filter className="w-4 h-4 text-[#2457E6] shrink-0" />
             <span>Filters</span>
             {hasActiveFilters && (
-              <span className="w-2 h-2 rounded-full bg-purple-600 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#2457E6] animate-pulse" />
             )}
           </button>
 
           {/* Roadmap View Button */}
           <Link
             to="/dsa-roadmap"
-            className="bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-slate-800 shadow-xs hover:text-purple-700 shrink-0"
+            className="bg-white rounded-xl px-4 py-2.5 text-xs font-semibold hover:bg-slate-50 transition-colors flex items-center gap-2 border border-slate-200 text-slate-800 shadow-xs hover:text-[#2457E6] shrink-0"
           >
-            <MapIcon className="w-4 h-4 text-purple-600 shrink-0" />
+            <MapIcon className="w-4 h-4 text-[#2457E6] shrink-0" />
             <span>Roadmap View</span>
           </Link>
         </div>
@@ -471,11 +471,11 @@ function DSAProblemsPage() {
         <aside className="hidden lg:block w-64 shrink-0 bg-white rounded-3xl p-5 border border-slate-200/80 shadow-xs space-y-6 sticky top-20">
           <div className="flex items-center justify-between border-b border-slate-100 pb-3">
             <h3 className="font-display font-semibold text-sm text-slate-900 flex items-center gap-2">
-              <Filter className="w-4 h-4 text-purple-600 shrink-0" />
+              <Filter className="w-4 h-4 text-[#2457E6] shrink-0" />
               <span>Filters</span>
             </h3>
             {hasActiveFilters && (
-              <span className="text-[10px] bg-purple-50 text-purple-700 border border-purple-200 px-2 py-0.5 rounded-full font-mono font-bold">
+              <span className="text-[10px] bg-[#EEF2FB] text-[#2457E6] border border-[#2457E6]/20 px-2 py-0.5 rounded-full font-mono font-bold">
                 Active
               </span>
             )}
@@ -535,7 +535,7 @@ function DSAProblemsPage() {
                     setPage(0);
                     setSearchTerm(e.target.value);
                   }}
-                  className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 h-9 transition-all"
+                  className="w-full bg-slate-50 border border-slate-200 rounded-full pl-10 pr-4 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#2457E6]/20 focus:border-[#2457E6] h-9 transition-all"
                 />
               </div>
             </div>
@@ -659,7 +659,7 @@ function DSAProblemsPage() {
                         isSolved
                           ? "border-emerald-200/90 bg-emerald-50/30"
                           : hasStarted
-                          ? "border-purple-200 bg-purple-50/30"
+                          ? "border-[#2457E6]/20 bg-[#EEF2FB]/30"
                           : "border-slate-200/80 hover:border-slate-300"
                       }`}
                     >
@@ -676,7 +676,7 @@ function DSAProblemsPage() {
                           >
                             {problem.difficulty}
                           </span>
-                          <span className="text-slate-900 font-bold truncate group-hover:text-purple-700 transition-colors">{problem.title}</span>
+                          <span className="text-slate-900 font-bold truncate group-hover:text-[#2457E6] transition-colors">{problem.title}</span>
                           {isSolved && (
                             <span className="inline-flex items-center text-emerald-700 text-xs bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200 font-sans font-semibold">
                               <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-600" /> Solved
@@ -697,7 +697,7 @@ function DSAProblemsPage() {
                             </span>
                           )}
                           {problem.neetcode150 && (
-                            <span className="bg-purple-500/20 text-purple-300 px-2 py-0.5 rounded-full border border-purple-500/30 font-medium text-[10px]">
+                            <span className="bg-[#EEF2FB]0/20 text-[#5B89F7] px-2 py-0.5 rounded-full border border-purple-500/30 font-medium text-[10px]">
                               NeetCode 150
                             </span>
                           )}
@@ -841,3 +841,4 @@ function DSAProblemsPage() {
     </main>
   );
 }
+

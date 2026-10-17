@@ -1,4 +1,4 @@
-import { GateEvent, GateUpdate } from '@/lib/gate/gateTypes';
+﻿import { GateEvent, GateUpdate } from '@/lib/gate/gateTypes';
 import { useGateLiveClock, enrichEventsWithDynamicStatus } from '@/lib/gate/gateDateUtils';
 import {
   Calendar,
@@ -98,7 +98,7 @@ export default function GateUpdatesTab({ events, updates, lastVerifiedAt }: Gate
                     rel="noreferrer"
                     className="text-xs md:text-sm font-semibold text-teal-700 hover:underline inline-flex items-center gap-1"
                   >
-                    <span>Verify ↗</span>
+                    <span>Verify â†—</span>
                   </a>
                 )}
               </div>
@@ -164,3 +164,4 @@ export default function GateUpdatesTab({ events, updates, lastVerifiedAt }: Gate
     </div>
   );
 }
+
