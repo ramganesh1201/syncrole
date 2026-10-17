@@ -124,19 +124,19 @@ function AuthPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#F5F7FC] text-[#17233F] flex flex-col relative overflow-hidden font-sans">
-      {/* Ambient background gradients — blue-tinted, clean */}
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col relative overflow-hidden font-sans selection:bg-indigo-500/20 selection:text-slate-900">
+      {/* Ambient background gradients */}
       <div className="pointer-events-none absolute inset-0 overflow-hidden">
         <div 
-          className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] rounded-full opacity-50 blur-3xl"
+          className="absolute -top-32 left-1/2 -translate-x-1/2 w-[1000px] h-[500px] rounded-full opacity-40 blur-3xl"
           style={{
-            background: "radial-gradient(circle, rgba(36, 87, 230, 0.12), rgba(36, 87, 230, 0.04), transparent 70%)",
+            background: "radial-gradient(circle, rgba(99, 102, 241, 0.15), rgba(59, 130, 246, 0.08), transparent 70%)",
           }}
         />
         <div 
-          className="absolute top-1/2 -right-40 w-[600px] h-[600px] rounded-full opacity-25 blur-3xl"
+          className="absolute top-1/2 -right-40 w-[600px] h-[600px] rounded-full opacity-30 blur-3xl"
           style={{
-            background: "radial-gradient(circle, rgba(15, 118, 110, 0.1), transparent 70%)",
+            background: "radial-gradient(circle, rgba(168, 85, 247, 0.12), transparent 70%)",
           }}
         />
         <div className="absolute inset-0 grid-bg opacity-30" />
@@ -155,7 +155,7 @@ function AuthPage() {
             type="button"
             onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
             disabled={busy}
-            className="px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl bg-white hover:bg-[#EEF2FB] border border-[#E3E9F4] text-[#2457E6] hover:text-[#1e4acf] shadow-xs transition-all active:scale-[0.98] cursor-pointer disabled:opacity-50"
+            className="px-3.5 py-1.5 md:px-4 md:py-2 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 text-blue-600 hover:text-blue-700 shadow-2xs transition active:scale-[0.98] cursor-pointer disabled:opacity-50"
           >
             {mode === "signin" ? "Create account" : "Sign in"}
           </button>
@@ -175,11 +175,11 @@ function AuthPage() {
           <div className="lg:col-span-6 w-full max-w-md mx-auto">
             {/* Mobile Header Accent */}
             <div className="lg:hidden mb-6 text-center space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF2FB] border border-[#2457E6]/20 text-[#2457E6] text-xs font-semibold">
-                <Sparkles className="w-3.5 h-3.5 text-[#2457E6]" />
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 border border-indigo-100 text-indigo-700 text-xs font-semibold">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-600" />
                 <span>SyncRole Career OS</span>
               </div>
-              <h1 className="text-2xl font-bold text-[#17233F]">
+              <h1 className="text-2xl font-bold text-slate-900">
                 {mode === "signin" ? "Welcome back" : mode === "signup" ? "Create your account" : "Reset password"}
               </h1>
               <p className="text-xs text-slate-500 max-w-xs mx-auto">
@@ -192,7 +192,7 @@ function AuthPage() {
             </div>
 
             {/* Auth Form Card Surface */}
-            <div className="bg-white rounded-3xl border border-[#E3E9F4] shadow-[0_8px_40px_rgba(23,35,63,0.1),0_2px_8px_rgba(23,35,63,0.06)] p-6 sm:p-8">
+            <div className="bg-white/95 backdrop-blur-xl rounded-3xl border border-slate-200/90 shadow-2xl shadow-slate-200/60 p-6 sm:p-8">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={mode}
@@ -237,10 +237,10 @@ function AuthPage() {
                         Continue with Google
                       </button>
 
-                      <div className="my-5 flex items-center gap-3 text-[11px] font-medium text-[#8FA3C8]">
-                        <div className="h-px flex-1 bg-[#E3E9F4]" />
+                      <div className="my-5 flex items-center gap-3 text-[11px] font-medium text-slate-400">
+                        <div className="h-px flex-1 bg-slate-200" />
                         <span>or email</span>
-                        <div className="h-px flex-1 bg-[#E3E9F4]" />
+                        <div className="h-px flex-1 bg-slate-200" />
                       </div>
                     </>
                   )}
@@ -249,7 +249,7 @@ function AuthPage() {
                   <form onSubmit={submit} className="space-y-4">
                     {mode === "signup" && (
                       <div className="space-y-1">
-                        <label className="text-xs font-semibold text-[#374166] block">Full name</label>
+                        <label className="text-xs font-semibold text-slate-700 block">Full name</label>
                         <Field 
                           icon={UserIcon} 
                           value={name} 
@@ -262,7 +262,7 @@ function AuthPage() {
                     )}
 
                     <div className="space-y-1">
-                      <label className="text-xs font-semibold text-[#374166] block">Email address</label>
+                      <label className="text-xs font-semibold text-slate-700 block">Email address</label>
                       <Field
                         icon={Mail}
                         type="email"
@@ -277,13 +277,13 @@ function AuthPage() {
                     {mode !== "forgot" && (
                       <div className="space-y-1">
                         <div className="flex items-center justify-between">
-                          <label className="text-xs font-semibold text-[#374166] block">Password</label>
+                          <label className="text-xs font-semibold text-slate-700 block">Password</label>
                           {mode === "signin" && (
                             <button
                               type="button"
                               onClick={() => setMode("forgot")}
                               disabled={busy}
-                              className="text-[11px] font-semibold text-[#2457E6] hover:text-[#1e4acf] transition-colors disabled:opacity-50 cursor-pointer"
+                              className="text-[11px] font-semibold text-indigo-600 hover:text-indigo-700 transition-colors disabled:opacity-50 cursor-pointer"
                             >
                               Forgot password?
                             </button>
@@ -305,7 +305,7 @@ function AuthPage() {
                       <button
                         type="submit"
                         disabled={busy}
-                        className="w-full rounded-xl bg-[#2457E6] hover:bg-[#1e4acf] active:bg-[#1940b8] text-white font-semibold py-3 text-xs tracking-wide shadow-md shadow-[#2457E6]/20 transition-all active:scale-[0.99] disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
+                        className="w-full rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-violet-600 hover:from-blue-700 hover:via-indigo-700 hover:to-violet-700 text-white font-semibold py-3 text-xs tracking-wide shadow-md shadow-indigo-500/20 transition active:scale-[0.99] disabled:opacity-60 cursor-pointer flex items-center justify-center gap-2"
                       >
                         {busy ? (
                           <Loader2 className="h-4 w-4 animate-spin text-white" />
@@ -322,12 +322,12 @@ function AuthPage() {
                   </form>
 
                   {/* Bottom switcher link */}
-                  <div className="mt-6 text-center text-xs text-[#6B7799]">
+                  <div className="mt-6 text-center text-xs text-slate-500">
                     {mode === "forgot" ? (
                       <button
                         onClick={() => setMode("signin")}
                         disabled={busy}
-                        className="inline-flex items-center gap-1.5 text-[#2457E6] font-semibold hover:underline transition disabled:opacity-50 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-indigo-600 font-semibold hover:underline transition disabled:opacity-50 cursor-pointer"
                       >
                         <ArrowLeft className="h-3.5 w-3.5" /> Back to sign in
                       </button>
@@ -338,7 +338,7 @@ function AuthPage() {
                           type="button"
                           onClick={() => setMode(mode === "signin" ? "signup" : "signin")}
                           disabled={busy}
-                          className="text-[#2457E6] font-bold hover:underline ml-1 cursor-pointer disabled:opacity-50"
+                          className="text-indigo-600 font-bold hover:underline ml-1 cursor-pointer disabled:opacity-50"
                         >
                           {mode === "signin" ? "Create account" : "Sign in"}
                         </button>
@@ -353,7 +353,7 @@ function AuthPage() {
       </main>
 
       {/* Footer copyright */}
-      <footer className="relative z-10 py-4 text-center text-[11px] text-[#8FA3C8]">
+      <footer className="relative z-10 py-4 text-center text-[11px] text-slate-400">
         © {new Date().getFullYear()} SyncRole Career OS. All rights reserved.
       </footer>
     </div>
@@ -380,7 +380,7 @@ function Field({
 
   return (
     <div className="relative group flex items-center">
-      <Icon className="pointer-events-none absolute left-3.5 h-4 w-4 text-[#8FA3C8] z-10 transition-colors group-focus-within:text-[#2457E6]" />
+      <Icon className="pointer-events-none absolute left-3.5 h-4 w-4 text-slate-400 z-10 transition-colors group-focus-within:text-indigo-600" />
       <input
         type={inputType}
         value={p.value}
@@ -388,7 +388,7 @@ function Field({
         placeholder={p.placeholder}
         disabled={disabled}
         autoComplete={autoComplete}
-        className={`w-full bg-[#F5F7FC] border border-[#E3E9F4] rounded-xl py-2.5 pl-10 text-xs font-medium text-[#17233F] placeholder:text-[#8FA3C8] outline-none focus:bg-white focus:border-[#2457E6] focus:ring-4 focus:ring-[#2457E6]/10 disabled:opacity-50 transition-all ${isPassword ? 'pr-10' : 'pr-3'}`}
+        className={`w-full bg-slate-50/80 border border-slate-200 rounded-xl py-2.5 pl-10 text-xs font-medium text-slate-900 placeholder:text-slate-400 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-500/10 disabled:opacity-50 transition-all ${isPassword ? 'pr-10' : 'pr-3'}`}
         aria-label={p.placeholder}
       />
       {isPassword && (

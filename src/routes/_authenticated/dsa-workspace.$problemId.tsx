@@ -305,14 +305,14 @@ function DSAWorkspacePage() {
   return (
     <div className="flex flex-col h-[calc(100vh-4rem)] overflow-hidden">
       {/* Mobile Laptop / Desktop Recommendation Banner */}
-      <div className="md:hidden bg-[#17233F] text-blue-100 border-b border-[#2457E6]/30 px-4 py-2.5 text-xs flex items-center justify-between gap-3 shrink-0">
+      <div className="md:hidden bg-indigo-950 text-indigo-100 border-b border-indigo-800/80 px-4 py-2.5 text-xs flex items-center justify-between gap-3 shrink-0">
         <div className="flex items-center gap-2 min-w-0">
-          <Laptop className="h-4 w-4 text-[#93b4f7] shrink-0" />
+          <Laptop className="h-4 w-4 text-indigo-300 shrink-0" />
           <span className="truncate">This coding workspace is best experienced on a laptop or desktop.</span>
         </div>
         <Link
           to="/dsa-problems"
-          className="shrink-0 px-2.5 py-1 rounded-lg bg-[#2457E6] hover:bg-[#1E48C5] text-white font-semibold text-[11px] transition shadow-xs"
+          className="shrink-0 px-2.5 py-1 rounded-lg bg-indigo-800 hover:bg-indigo-700 text-white font-semibold text-[11px] transition"
         >
           Back
         </Link>

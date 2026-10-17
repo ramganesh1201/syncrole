@@ -1127,7 +1127,7 @@ function DSAMentorPage() {
             </button>
           </div>
           <div className="text-center mt-2.5 text-[11px] font-medium text-slate-400 flex items-center justify-center gap-1.5">
-            <Sparkles className="w-3 h-3 text-[#2457E6]" />
+            <Sparkles className="w-3 h-3 text-indigo-500" />
             <span>The AI Code Coach adapts its explanations based on your precise SyncRole analytics.</span>
           </div>
         </div>

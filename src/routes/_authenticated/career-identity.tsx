@@ -567,13 +567,13 @@ function CareerIdentityPage() {
             ))}
 
             {selectedRole && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF2FB] border border-[#2457E6]/20 text-xs font-semibold text-[#17233F]">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#EEF2FB] border border-[#2457E6]/20/80 text-xs font-semibold text-indigo-900">
                 <Briefcase className="w-3 h-3 text-[#2457E6]" />
                 <span>{selectedRole}</span>
                 <button
                   type="button"
                   onClick={() => setSelectedRole("")}
-                  className="hover:text-[#2457E6] text-[#2457E6]/70 p-0.5 rounded-full"
+                  className="hover:text-[#2457E6] text-indigo-500 p-0.5 rounded-full"
                   aria-label="Clear role"
                 >
                   <X className="w-3 h-3" />

@@ -172,7 +172,7 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
           {/* NAT */}
           <div className="space-y-3 pt-5 md:pt-0 md:pl-6">
             <div className="flex items-center justify-between">
-              <span className="inline-flex px-2.5 py-1 rounded-lg bg-[#EEF2FB] text-[#17233F] text-xs font-bold font-mono border border-[#2457E6]/20">
+              <span className="inline-flex px-2.5 py-1 rounded-lg bg-indigo-100 text-indigo-900 text-xs font-bold font-mono">
                 NAT (Numerical Answer)
               </span>
               <span className="text-xs font-mono text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">
@@ -182,15 +182,15 @@ export default function GatePatternTab({ paper, onExploreSyllabus }: GatePattern
             <p className="text-sm text-slate-600 leading-relaxed">
               No choices displayed. The answer is a signed real number entered via on-screen virtual keypad.
             </p>
-            <div className="p-4 rounded-xl bg-[#EEF2FB]/70 border border-[#2457E6]/20 space-y-2 text-xs md:text-sm text-[#17233F] font-mono">
+            <div className="p-4 rounded-xl bg-[#EEF2FB]/70 border border-[#2457E6]/20 space-y-2 text-xs md:text-sm text-indigo-950 font-mono">
               <div className="font-bold">Numerical Rules:</div>
               <div className="leading-relaxed">
-                • Answers are evaluated within specified numerical tolerance intervals.
+                â€¢ Answers are evaluated within specified numerical tolerance intervals.
               </div>
               <div className="leading-relaxed">
-                • Round off to specified decimal places as instructed in question.
+                â€¢ Round off to specified decimal places as instructed in question.
               </div>
-              <div className="text-xs text-[#2457E6] font-bold pt-1 font-sans">
+              <div className="text-xs text-indigo-800 font-bold pt-1 font-sans">
                 Zero negative marking for incorrect numericals.
               </div>
             </div>

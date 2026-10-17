@@ -33,16 +33,13 @@ export function BrandLogo({
       to="/"
       className={cn(
         "inline-flex items-center gap-2.5 outline-none transition-all duration-200 group shrink-0 active:scale-[0.98] select-none",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2457E6] focus-visible:ring-offset-2 rounded-lg",
         className
       )}
     >
-      {/* Logo Icon — deep navy background with inner product icon */}
+      {/* Logo Icon Container with subtle glass depth & crisp scaling */}
       <div
         className={cn(
-          "relative flex items-center justify-center overflow-hidden shrink-0",
-          "bg-gradient-to-tr from-[#17233F] via-[#1f2f52] to-[#2457E6]",
-          "p-1 shadow-sm transition-transform duration-300 group-hover:scale-105",
+          "relative flex items-center justify-center overflow-hidden shrink-0 bg-gradient-to-tr from-slate-900 via-blue-950 to-indigo-950 p-1 shadow-xs transition-transform duration-300 group-hover:scale-105",
           sizeMap[size]
         )}
       >
@@ -54,7 +51,7 @@ export function BrandLogo({
         />
       </div>
 
-      {/* Brand Wordmark */}
+      {/* Brand Wordmark with sleek typography */}
       {showText && (
         <div className="flex items-center gap-1">
           <span
@@ -63,12 +60,10 @@ export function BrandLogo({
               textSizeMap[size]
             )}
           >
-            {/* "Sync" — deep navy or white depending on variant */}
-            <span className={variant === "light" ? "text-white" : "text-[#17233F]"}>
+            <span className={variant === "light" ? "text-white" : "text-slate-900"}>
               Sync
             </span>
-            {/* "Role" — primary blue gradient */}
-            <span className="bg-gradient-to-r from-[#2457E6] to-[#1a45cc] bg-clip-text text-transparent font-extrabold ml-[1px]">
+            <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 bg-clip-text text-transparent font-extrabold ml-[1px]">
               Role
             </span>
           </span>

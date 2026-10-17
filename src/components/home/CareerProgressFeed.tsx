@@ -99,11 +99,11 @@ const CATEGORY_STYLES: Record<string, CategoryStyle> = {
   },
   github: {
     icon: Github,
-    color: "text-blue-400",
-    bg: "bg-slate-950/80",
-    border: "border-blue-500/40",
-    glow: "shadow-[0_0_15px_rgba(36,87,230,0.25)]",
-    badgeBg: "bg-slate-900/60 border-blue-500/30 text-blue-400",
+    color: "text-indigo-400",
+    bg: "bg-indigo-950/80",
+    border: "border-indigo-500/40",
+    glow: "shadow-[0_0_15px_rgba(99,102,241,0.25)]",
+    badgeBg: "bg-indigo-950/60 border-indigo-500/30 text-indigo-400",
   },
   profile: {
     icon: User,
